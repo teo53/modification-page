@@ -11,6 +11,7 @@ import AdvertiserDashboard from './pages/AdvertiserDashboard';
 import AdminCRM from './pages/AdminCRM';
 
 import CommunityPage from './pages/CommunityPage';
+import CommunityPostDetail from './pages/CommunityPostDetail';
 
 import SearchResults from './pages/SearchResults';
 
@@ -33,13 +34,15 @@ function App() {
           <Route path="/post-ad" element={<PostAd />} />
           <Route path="/theme/:category" element={<ThemePage />} />
           <Route path="/industry/:type" element={<IndustryPage />} />
-          <Route path="/region/:location" element={<RegionPage />} />
+          {/* <Route path="/region/:location" element={<RegionPage />} /> */}
           <Route path="/search" element={<SearchResults />} />
           <Route path="/community" element={<CommunityPage />} />
+          <Route path="/community/post/:id" element={<CommunityPostDetail />} />
           <Route path="/advertiser/dashboard" element={<AdvertiserDashboard />} />
 
           {/* Admin Routes */}
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          {/* <Route path="/admin/dashboard" element={<AdminDashboard />} /> */}
+          <Route path="/admin/crm" element={<AdminCRM />} />
           <Route path="urgent" element={<UrgentPage />} />
           <Route path="login" element={<Login />} />
           <Route path="signup" element={<Signup />} />

@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, X, Check, Building2, FileText, Upload, Search } from 'lucide-react';
 import SelectionGroup from '../components/ui/SelectionGroup';
-import ImageUploadSection from '../components/ui/ImageUploadSection';
 import RichTextEditor from '../components/ui/RichTextEditor';
 import type { AdFormState } from '../types/ad';
 import { INDUSTRY_OPTIONS, LOCATION_OPTIONS, SALARY_TYPES, WORK_HOURS_TYPES, RECRUITMENT_TYPES, THEME_OPTIONS } from '../types/ad';

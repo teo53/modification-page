@@ -12,11 +12,11 @@ const Home: React.FC = () => {
         <div className="pb-20">
             <HeroSection />
             <PremiumAdGrid />
+            <CommunityPreview />
             <SpecialAdGrid />
             <QuickMenuBar />
             <RegularAdList />
             <TextAdsList />
-            <CommunityPreview />
         </div>
     );
 };
