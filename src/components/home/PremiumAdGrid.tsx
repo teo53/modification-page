@@ -3,15 +3,7 @@ import { Link } from 'react-router-dom';
 import AdCard from '../ui/AdCard';
 import { vipAds } from '../../data/mockAds';
 
-// Expand 2 real crawled VIP ads to 12 by repeating (reduced from 24)
-const premiumAds = Array(12).fill(null).map((_, i) => {
-    const sourceAd = vipAds[i % vipAds.length];
-    return {
-        ...sourceAd,
-        id: i,
-        title: `${sourceAd.title}${i > 1 ? ` ${i}` : ''}`,
-    };
-});
+// Use all 12 VIP ads directly from scraped data
 
 const PremiumAdGrid: React.FC = () => {
     return (
@@ -24,7 +16,7 @@ const PremiumAdGrid: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
-                {premiumAds.map((ad) => (
+                {vipAds.map((ad) => (
                     <AdCard
                         key={ad.id}
                         variant="vip"

@@ -10,7 +10,7 @@ const Footer: React.FC = () => {
                 <div className="grid md:grid-cols-4 gap-8 mb-8">
                     {/* Company Info */}
                     <div className="space-y-4">
-                        <h3 className="text-lg font-bold text-white mb-4">QueenAlba</h3>
+                        <h3 className="text-lg font-bold text-white mb-4">LunaAlba</h3>
                         <p className="text-sm text-text-muted leading-relaxed">
                             대한민국 No.1 유흥알바 채용 플랫폼
                         </p>
@@ -60,11 +60,11 @@ const Footer: React.FC = () => {
                             </li>
                             <li className="flex items-center gap-2">
                                 <Mail size={14} />
-                                <span>contact@queenalba.com</span>
+                                <span>contact@lunaalba.com</span>
                             </li>
                             <li className="flex items-start gap-2">
                                 <MapPin size={14} className="mt-1 shrink-0" />
-                                <span>서울특별시 강남구 테헤란로<br />123 퀸알바빌딩 5층</span>
+                                <span>서울특별시 강남구 테헤란로<br />123 루나알바빌딩 5층</span>
                             </li>
                         </ul>
                     </div>
@@ -83,17 +83,17 @@ const Footer: React.FC = () => {
 
                     {/* Company Info */}
                     <div className="text-center text-xs text-text-muted/70 space-y-1">
-                        <p>상호명: (주)퀸알바 | 대표: 홍길동 | 사업자등록번호: 123-45-67890</p>
+                        <p>상호명: (주)루나알바 | 대표: 홍길동 | 사업자등록번호: 123-45-67890</p>
                         <p>통신판매업신고번호: 2025-서울강남-00000 | 직업정보제공사업 신고번호: J1234567890123</p>
                         <p className="mt-3 text-text-muted/50">
-                            퀸알바는 통신판매중개자이며 통신판매의 당사자가 아닙니다.<br />
-                            따라서 퀸알바는 상품·거래정보 및 거래에 대하여 책임을 지지 않습니다.
+                            루나알바는 통신판매중개자이며 통신판매의 당사자가 아닙니다.<br />
+                            따라서 루나알바는 상품·거래정보 및 거래에 대하여 책임을 지지 않습니다.
                         </p>
                     </div>
 
                     {/* Copyright */}
                     <div className="text-center mt-6 text-sm text-text-muted">
-                        <p>© 2025 QueenAlba. All Rights Reserved.</p>
+                        <p>© 2025 LunaAlba. All Rights Reserved.</p>
                     </div>
                 </div>
             </div>

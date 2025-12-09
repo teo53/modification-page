@@ -3,15 +3,8 @@ import { Link } from 'react-router-dom';
 import AdCard from '../ui/AdCard';
 import { specialAds } from '../../data/mockAds';
 
-// Expand 2 real crawled special ads to 12 by repeating (reduced from 24)
-const specialGridAds = Array(12).fill(null).map((_, i) => {
-    const sourceAd = specialAds[i % specialAds.length];
-    return {
-        ...sourceAd,
-        id: i + 100,
-        title: `${sourceAd.title}${i > 1 ? ` ${i}` : ''}`,
-    };
-});
+// Use 12 special ads from the scraped data (slice to limit display)
+const displayAds = specialAds.slice(0, 12);
 
 const SpecialAdGrid: React.FC = () => {
     return (
@@ -25,7 +18,7 @@ const SpecialAdGrid: React.FC = () => {
                 </div>
 
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
-                    {specialGridAds.map((ad) => (
+                    {displayAds.map((ad) => (
                         <AdCard
                             key={ad.id}
                             variant="special"

@@ -3,15 +3,8 @@ import { Link } from 'react-router-dom';
 import AdCard from '../ui/AdCard';
 import { regularAds } from '../../data/mockAds';
 
-// Expand 2 real crawled regular ads to 24 by repeating (reduced from 48)
-const regularGridAds = Array(24).fill(null).map((_, i) => {
-    const sourceAd = regularAds[i % regularAds.length];
-    return {
-        ...sourceAd,
-        id: i + 200,
-        title: `${sourceAd.title}${i > 1 ? ` ${i}` : ''}`,
-    };
-});
+// Use 24 regular ads from the scraped data (slice to limit display)
+const displayAds = regularAds.slice(0, 24);
 
 const RegularAdList: React.FC = () => {
     return (
@@ -22,7 +15,7 @@ const RegularAdList: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
-                {regularGridAds.map((ad) => (
+                {displayAds.map((ad) => (
                     <AdCard
                         key={ad.id}
                         variant="regular"

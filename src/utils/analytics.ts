@@ -14,8 +14,8 @@ export interface ScrollData {
     timestamp: number;
 }
 
-const CLICK_STORAGE_KEY = 'queenalba_heatmap_clicks';
-const SCROLL_STORAGE_KEY = 'queenalba_heatmap_scrolls';
+const CLICK_STORAGE_KEY = 'lunaalba_heatmap_clicks';
+const SCROLL_STORAGE_KEY = 'lunaalba_heatmap_scrolls';
 
 export const AnalyticsService = {
     // Track a click event
