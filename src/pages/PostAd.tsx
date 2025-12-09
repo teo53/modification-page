@@ -1,9 +1,7 @@
-import React, { useState, useMemo } from 'react';
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, X, Check, Building2, FileText, Upload, Search } from 'lucide-react';
-import SelectionGroup from '../components/ui/SelectionGroup';
+import { useState } from 'react';
+import { Check, Building2, FileText } from 'lucide-react';
 import RichTextEditor from '../components/ui/RichTextEditor';
 import type { AdFormState } from '../types/ad';
-import { INDUSTRY_OPTIONS, LOCATION_OPTIONS, SALARY_TYPES, WORK_HOURS_TYPES, RECRUITMENT_TYPES, THEME_OPTIONS } from '../types/ad';
 
 const PostAd = () => {
     const [step, setStep] = useState(1);
@@ -38,21 +36,9 @@ const PostAd = () => {
         themes: []
     });
 
-    // Extra locations state
-    const [location2, setLocation2] = useState({ city: '', district: '' });
-    const [location3, setLocation3] = useState({ city: '', district: '' });
-
     // Multi-select products state
     const [selectedProducts, setSelectedProducts] = useState<Record<string, number>>({});
 
-    // Ad scheduling state
-    const [adScheduling, setAdScheduling] = useState<{
-        startDate: Date;
-        isImmediate: boolean;
-    }>({
-        startDate: new Date(),
-        isImmediate: true
-    });
 
     const products = [
         {
@@ -109,21 +95,6 @@ const PostAd = () => {
 
     const handleInputChange = (field: keyof AdFormState, value: any) => {
         setFormData(prev => ({ ...prev, [field]: value }));
-    };
-
-    const handleNestedChange = (parent: keyof AdFormState, child: string, value: any) => {
-        setFormData(prev => ({
-            ...prev,
-            [parent]: { ...(prev[parent] as any), [child]: value }
-        }));
-    };
-
-    const getDistricts = (city: string) => {
-        return (LOCATION_OPTIONS as any)[city] || [];
-    };
-
-    const getSubIndustries = (level1: string) => {
-        return (INDUSTRY_OPTIONS as any)[level1] || [];
     };
 
     return (

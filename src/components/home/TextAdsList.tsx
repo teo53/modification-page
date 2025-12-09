@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Clock, MapPin, DollarSign, TrendingUp } from 'lucide-react';
+import { Clock, MapPin } from 'lucide-react';
 
 const textAds = [
     { id: 1, title: '⭐세상 어디에도 없는【직인으뮤】육상리제이!!!', location: '서울', badge: 'VIP', isNew: true },

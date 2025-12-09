@@ -25,7 +25,7 @@ const DEFAULT_TEMPLATE = `
 <p><br></p>
 `;
 
-const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, placeholder }) => {
+const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, placeholder: _placeholder }) => {
     const editorRef = useRef<HTMLDivElement>(null);
     const [isFocused, setIsFocused] = useState(false);
 

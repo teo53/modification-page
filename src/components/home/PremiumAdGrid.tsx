@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import AdCard from '../ui/AdCard';
+import AdCard from '../ad/AdCard';
 import { vipAds } from '../../data/mockAds';
 
 // Use all 12 VIP ads directly from scraped data

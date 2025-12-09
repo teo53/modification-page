@@ -17,7 +17,7 @@ interface AdScheduleTimelineProps {
     startDate: Date;
 }
 
-const AdScheduleTimeline: React.FC<AdScheduleTimelineProps> = ({ schedule, startDate }) => {
+const AdScheduleTimeline: React.FC<AdScheduleTimelineProps> = ({ schedule }) => {
     const formatDate = (date: Date) => {
         return date.toLocaleDateString('ko-KR', {
             year: 'numeric',

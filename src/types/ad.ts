@@ -1,8 +1,11 @@
+/**
+ * 광고 폼 상태 인터페이스
+ */
 export interface AdFormState {
     // Step 1: Business Info
-    businessName: string; // 업소명 (Nickname)
-    contactPerson: string; // 담당자
-    contactPhone: string; // 담당자 연락처
+    businessName: string;
+    contactPerson: string;
+    contactPhone: string;
     kakaoId: string;
     lineId: string;
     telegramId: string;
@@ -12,11 +15,11 @@ export interface AdFormState {
         roadAddress: string;
         detailAddress: string;
     };
-    isLocationVerified: boolean; // 사업장 위치 확인
-    verificationDocument: File | null; // 확인문서
+    isLocationVerified: boolean;
+    verificationDocument: File | null;
 
     // Step 2: Recruitment Info
-    title: string; // 채용제목 (40 chars)
+    title: string;
     businessLogo: File | null;
     adLogo: File | null;
 
@@ -28,16 +31,16 @@ export interface AdFormState {
     location: {
         city: string;
         district: string;
-        town: string; // Optional 3rd level if needed, or just 2
+        town: string;
     };
 
-    recruitmentType: string; // 고용, 파견, 도급, 협의
+    recruitmentType: string;
 
     workHours: {
         type: 'day' | 'night' | 'both' | 'negotiable' | 'direct';
         start?: string;
         end?: string;
-        text?: string; // For direct input
+        text?: string;
     };
 
     salary: {
@@ -57,76 +60,46 @@ export interface AdFormState {
     images: {
         file: File | null;
         description: string;
-    }[]; // 5 slots
+    }[];
 
-    description: string; // Rich text content
-
-    themes: string[]; // 테마/우대사항
+    description: string;
+    themes: string[];
 }
 
-export const THEME_OPTIONS = [
-    "초보가능", "경력우대", "당일지급", "숙식제공", "출퇴근지원",
-    "성형지원", "선불가능", "만근비지원", "원룸제공", "투잡가능",
-    "주말알바", "교포가능", "외국인가능", "대학생", "백조",
-    "30대", "40대", "50대", "주부", "마이킹", "차비지원",
-    "팁별도", "홀복지원", "개수보장", "지명우대", "초이스없음",
-    "해외지원여행", "뒷방없음", "푸쉬가능", "칼퇴보장", "텃세없음",
-    "신규업소", "생리휴무"
-];
+/**
+ * 광고 카드 Props
+ */
+export interface AdCardProps {
+    id?: number | string;
+    variant?: 'vip' | 'special' | 'premium' | 'regular';
+    title: string;
+    location: string;
+    pay: string;
+    image: string;
+    badges?: string[];
+    isNew?: boolean;
+    isHot?: boolean;
+    price?: string;
+    duration?: string;
+    productType?: 'vip' | 'special' | 'premium' | 'general';
+}
 
-export const INDUSTRY_OPTIONS = {
-    "룸싸롱": ["텐프로/쩜오", "퍼블릭", "셔츠룸", "레깅스룸", "텐카페", "세미", "클럽", "하코", "룸싸롱", "컨셉직접입력"],
-    "노래주점": ["노래방", "가라오케", "7080", "단란주점", "노래빠", "라이브카페", "컨셉직접입력"],
-    "다방": ["다방", "커피숍", "컨셉직접입력"],
-    "요정": ["요정", "한정식", "컨셉직접입력"],
-    "BAR": ["모던바", "착석바", "토킹바", "와인바", "칵테일바", "라운지바", "스낵바", "웨스턴바", "컨셉직접입력"],
-    "마사지": ["스포츠마사지", "아로마", "스웨디시", "타이마사지", "중국마사지", "왁싱", "체형관리", "컨셉직접입력"],
-    "아로마": ["1인샵", "건마", "스파", "사우나", "컨셉직접입력"],
-    "직업소개소": ["직업소개소", "보도방", "실장님", "컨셉직접입력"],
-    "BJ": ["인터넷방송", "유튜버", "모델", "피팅모델", "컨셉직접입력"],
-    "기타": ["기타", "홀서빙", "주방", "카운터", "청소", "발렛", "운전", "사무", "경리", "컨셉직접입력"]
-};
-
-export const LOCATION_OPTIONS = {
-    "서울": ["강남구", "강동구", "강북구", "강서구", "관악구", "광진구", "구로구", "금천구", "노원구", "도봉구", "동대문구", "동작구", "마포구", "서대문구", "서초구", "성동구", "성북구", "송파구", "양천구", "영등포구", "용산구", "은평구", "종로구", "중구", "중랑구"],
-    "경기": ["수원시", "성남시", "의정부시", "안양시", "부천시", "광명시", "평택시", "동두천시", "안산시", "고양시", "과천시", "구리시", "남양주시", "오산시", "시흥시", "군포시", "의왕시", "하남시", "용인시", "파주시", "이천시", "안성시", "김포시", "화성시", "광주시", "양주시", "포천시", "여주시", "연천군", "가평군", "양평군"],
-    "인천": ["중구", "동구", "미추홀구", "연수구", "남동구", "부평구", "계양구", "서구", "강화군", "옹진군"],
-    // Add major cities for brevity, can expand later
-    "부산": ["중구", "서구", "동구", "영도구", "부산진구", "동래구", "남구", "북구", "해운대구", "사하구", "금정구", "강서구", "연제구", "수영구", "사상구", "기장군"],
-    "대구": ["중구", "동구", "서구", "남구", "북구", "수성구", "달서구", "달성군", "군위군"],
-    "광주": ["동구", "서구", "남구", "북구", "광산구"],
-    "대전": ["동구", "중구", "서구", "유성구", "대덕구"],
-    "울산": ["중구", "남구", "동구", "북구", "울주군"],
-    "세종": ["세종시"],
-    "강원": ["춘천시", "원주시", "강릉시", "동해시", "태백시", "속초시", "삼척시", "홍천군", "횡성군", "영월군", "평창군", "정선군", "철원군", "화천군", "양구군", "인제군", "고성군", "양양군"],
-    "충북": ["청주시", "충주시", "제천시", "보은군", "옥천군", "영동군", "증평군", "진천군", "괴산군", "음성군", "단양군"],
-    "충남": ["천안시", "공주시", "보령시", "아산시", "서산시", "논산시", "계룡시", "당진시", "금산군", "부여군", "서천군", "청양군", "홍성군", "예산군", "태안군"],
-    "전북": ["전주시", "군산시", "익산시", "정읍시", "남원시", "김제시", "완주군", "진안군", "무주군", "장수군", "임실군", "순창군", "고창군", "부안군"],
-    "전남": ["목포시", "여수시", "순천시", "나주시", "광양시", "담양군", "곡성군", "구례군", "고흥군", "보성군", "화순군", "장흥군", "강진군", "해남군", "영암군", "무안군", "함평군", "영광군", "장성군", "완도군", "진도군", "신안군"],
-    "경북": ["포항시", "경주시", "김천시", "안동시", "구미시", "영주시", "영천시", "상주시", "문경시", "경산시", "군위군", "의성군", "청송군", "영양군", "영덕군", "청도군", "고령군", "성주군", "칠곡군", "예천군", "봉화군", "울진군", "울릉군"],
-    "경남": ["창원시", "진주시", "통영시", "사천시", "김해시", "밀양시", "거제시", "양산시", "의령군", "함안군", "창녕군", "고성군", "남해군", "하동군", "산청군", "함양군", "거창군", "합천군"],
-    "제주": ["제주시", "서귀포시"]
-};
-
-export const SALARY_TYPES = [
-    { value: 'hourly', label: '시급' },
-    { value: 'daily', label: '일급' },
-    { value: 'monthly', label: '월급' },
-    { value: 'annual', label: '연봉' },
-    { value: 'negotiable', label: '협의' },
-];
-
-export const WORK_HOURS_TYPES = [
-    { value: 'day', label: '주간' },
-    { value: 'night', label: '야간' },
-    { value: 'both', label: '주야간' },
-    { value: 'negotiable', label: '시간협의' },
-    { value: 'direct', label: '직접입력' },
-];
-
-export const RECRUITMENT_TYPES = [
-    { value: 'hire', label: '고용' },
-    { value: 'dispatch', label: '파견' },
-    { value: 'contract', label: '도급' },
-    { value: 'negotiable', label: '협의' },
-];
+/**
+ * 스크래핑된 광고 데이터 인터페이스
+ */
+export interface ScrapedAd {
+    id: number;
+    title: string;
+    thumbnail: string;
+    location: string;
+    pay: string;
+    ad_type: 'vip' | 'special' | 'premium' | 'general';
+    industry?: string;
+    theme?: string[];
+    badges?: string[];
+    is_new?: boolean;
+    is_hot?: boolean;
+    detail_images?: string[];
+    advertiser_info?: Record<string, string>;
+    recruitment_info?: Record<string, string>;
+}

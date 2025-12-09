@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapPin, Briefcase, DollarSign, Clock, Users, Star } from 'lucide-react';
+import { MapPin, Briefcase, DollarSign, Clock, Users, Star, Sparkles } from 'lucide-react';
 
 interface FilterOption {
     id: string;
@@ -7,11 +7,50 @@ interface FilterOption {
     icon?: React.ComponentType<{ size?: number; className?: string }>;
 }
 
-const HorizontalFilterBar: React.FC = () => {
+interface HorizontalFilterBarProps {
+    onFilterChange?: (filters: {
+        region: string;
+        industry: string;
+        salary: string;
+        type: string;
+    }) => void;
+}
+
+const HorizontalFilterBar: React.FC<HorizontalFilterBarProps> = ({ onFilterChange }) => {
     const [selectedRegion, setSelectedRegion] = useState('all');
     const [selectedIndustry, setSelectedIndustry] = useState('all');
     const [selectedSalary, setSelectedSalary] = useState('all');
     const [selectedType, setSelectedType] = useState('all');
+
+    const handleFilterChange = (category: string, value: string) => {
+        let newFilters = {
+            region: selectedRegion,
+            industry: selectedIndustry,
+            salary: selectedSalary,
+            type: selectedType
+        };
+
+        switch (category) {
+            case 'region':
+                setSelectedRegion(value);
+                newFilters.region = value;
+                break;
+            case 'industry':
+                setSelectedIndustry(value);
+                newFilters.industry = value;
+                break;
+            case 'salary':
+                setSelectedSalary(value);
+                newFilters.salary = value;
+                break;
+            case 'type':
+                setSelectedType(value);
+                newFilters.type = value;
+                break;
+        }
+
+        onFilterChange?.(newFilters);
+    };
 
     const regions: FilterOption[] = [
         { id: 'all', label: '전체지역', icon: MapPin },
@@ -47,41 +86,41 @@ const HorizontalFilterBar: React.FC = () => {
         { id: 'all', label: '전체', icon: Star },
         { id: 'urgent', label: '급구', icon: Clock },
         { id: 'beginner', label: '초보환영', icon: Users },
-        { id: 'high-pay', label: '고수입' },
+        { id: 'high-pay', label: '고수입', icon: Sparkles },
         { id: 'same-day', label: '당일지급' },
     ];
 
     const FilterGroup = ({
         title,
+        category,
         options,
-        selected,
-        onChange
+        selected
     }: {
         title: string;
+        category: string;
         options: FilterOption[];
         selected: string;
-        onChange: (value: string) => void;
     }) => (
-        <div className="flex items-center gap-2">
-            <span className="text-sm text-text-muted whitespace-nowrap">{title}:</span>
-            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
+        <div className="flex items-center gap-4">
+            <span className="text-sm font-medium text-primary whitespace-nowrap w-12">{title}</span>
+            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
                 {options.map((option) => {
                     const Icon = option.icon;
                     const isSelected = selected === option.id;
                     return (
                         <button
                             key={option.id}
-                            onClick={() => onChange(option.id)}
+                            onClick={() => handleFilterChange(category, option.id)}
                             className={`
-                                px-3 py-1.5 rounded-full text-sm whitespace-nowrap transition-all
+                                px-4 py-2 rounded-lg text-sm whitespace-nowrap transition-all duration-200
+                                flex items-center gap-1.5 font-medium border
                                 ${isSelected
-                                    ? 'bg-primary text-black font-bold'
-                                    : 'bg-accent border border-white/10 text-white hover:border-primary'
+                                    ? 'bg-primary text-black border-primary shadow-[0_0_15px_rgba(212,175,55,0.3)]'
+                                    : 'bg-accent/50 text-text-muted border-white/5 hover:border-white/20 hover:text-white hover:bg-white/5'
                                 }
-                                flex items-center gap-1.5
                             `}
                         >
-                            {Icon && <Icon size={14} />}
+                            {Icon && <Icon size={14} className={isSelected ? 'text-black' : 'text-text-muted group-hover:text-white'} />}
                             {option.label}
                         </button>
                     );
@@ -91,34 +130,39 @@ const HorizontalFilterBar: React.FC = () => {
     );
 
     return (
-        <div className="bg-accent/50 border-y border-white/5 py-4 mb-6 sticky top-0 z-10 backdrop-blur-md">
+        <div className="bg-black/95 border-y border-white/10 py-6 mb-8 sticky top-0 z-20 backdrop-blur-md shadow-xl">
             <div className="container mx-auto px-4">
-                <div className="space-y-3">
+                <div className="space-y-4">
                     <FilterGroup
                         title="지역"
+                        category="region"
                         options={regions}
                         selected={selectedRegion}
-                        onChange={setSelectedRegion}
                     />
                     <FilterGroup
                         title="업종"
+                        category="industry"
                         options={industries}
                         selected={selectedIndustry}
-                        onChange={setSelectedIndustry}
                     />
-                    <div className="flex flex-wrap gap-3">
-                        <FilterGroup
-                            title="급여"
-                            options={salaryRanges}
-                            selected={selectedSalary}
-                            onChange={setSelectedSalary}
-                        />
-                        <FilterGroup
-                            title="조건"
-                            options={types}
-                            selected={selectedType}
-                            onChange={setSelectedType}
-                        />
+                    <div className="flex flex-col lg:flex-row gap-4 lg:items-center">
+                        <div className="flex-1">
+                            <FilterGroup
+                                title="급여"
+                                category="salary"
+                                options={salaryRanges}
+                                selected={selectedSalary}
+                            />
+                        </div>
+                        <div className="w-px h-8 bg-white/10 hidden lg:block mx-4"></div>
+                        <div className="flex-1">
+                            <FilterGroup
+                                title="조건"
+                                category="type"
+                                options={types}
+                                selected={selectedType}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>

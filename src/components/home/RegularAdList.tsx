@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import AdCard from '../ui/AdCard';
+import AdCard from '../ad/AdCard';
 import { regularAds } from '../../data/mockAds';
 
 // Use 24 regular ads from the scraped data (slice to limit display)

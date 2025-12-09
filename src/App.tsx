@@ -32,7 +32,9 @@ function App() {
           <Route index element={<Home />} />
           <Route path="/ad/:id" element={<AdDetail />} />
           <Route path="/post-ad" element={<PostAd />} />
+          <Route path="/theme" element={<ThemePage />} />
           <Route path="/theme/:category" element={<ThemePage />} />
+          <Route path="/industry" element={<IndustryPage />} />
           <Route path="/industry/:type" element={<IndustryPage />} />
           {/* <Route path="/region/:location" element={<RegionPage />} /> */}
           <Route path="/search" element={<SearchResults />} />

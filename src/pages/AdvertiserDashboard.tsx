@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FileText, TrendingUp, Clock, CheckCircle, MapPin, DollarSign, HelpCircle, Settings, Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import AdCard from '../components/ui/AdCard';
+import AdCard from '../components/ad/AdCard';
 
 const AdvertiserDashboard: React.FC = () => {
     const [selectedRegion, setSelectedRegion] = useState('전체');
@@ -16,22 +16,34 @@ const AdvertiserDashboard: React.FC = () => {
     };
 
     // Mock ads data
-    const myAds = [
-        {
-            id: 1,
-            title: '강남 룸살롱 급구',
-            location: '서울 강남구',
-            pay: '시급 100,000원',
-            image: '/images/ads/thumbnails/vip_ad_1_thumb.jpg',
-            status: 'active',
-            views: 234,
-            badges: ['VIP', '급구'],
-            productType: 'vip',
-            price: '300,000원',
-            duration: '30일'
-        },
-        // Add more mock ads as needed
-    ];
+    const myAds: Array<{
+        id: number;
+        title: string;
+        location: string;
+        pay: string;
+        image: string;
+        status: string;
+        views: number;
+        badges: string[];
+        productType: 'vip' | 'special' | 'premium' | 'general';
+        price: string;
+        duration: string;
+    }> = [
+            {
+                id: 1,
+                title: '강남 룸살롱 급구',
+                location: '서울 강남구',
+                pay: '시급 100,000원',
+                image: '/images/ads/thumbnails/vip_ad_1_thumb.jpg',
+                status: 'active',
+                views: 234,
+                badges: ['VIP', '급구'],
+                productType: 'vip',
+                price: '300,000원',
+                duration: '30일'
+            },
+            // Add more mock ads as needed
+        ];
 
     const regions = ['전체', '서울', '경기', '인천', '부산', '대구', '대전', '광주'];
     const categories = ['전체', '룸살롱', '클럽', '바(Bar)', '노래방', '텐카페'];

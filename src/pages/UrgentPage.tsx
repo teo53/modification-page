@@ -1,6 +1,6 @@
 import React from 'react';
 import { Siren, Clock, Zap } from 'lucide-react';
-import AdCard from '../components/ui/AdCard';
+import AdCard from '../components/ad/AdCard';
 
 const UrgentPage: React.FC = () => {
     // Mock data for urgent ads

@@ -1,12 +1,7 @@
 import React from 'react';
 import { MapPin, DollarSign, Heart } from 'lucide-react';
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import { cn } from '../../utils/cn';
 import { Link } from 'react-router-dom';
-
-function cn(...inputs: ClassValue[]) {
-    return twMerge(clsx(inputs));
-}
 
 interface AdCardProps {
     id?: number | string;
