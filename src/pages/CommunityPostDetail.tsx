@@ -1,13 +1,13 @@
 import React from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, ThumbsUp, MessageSquare, Eye, Share2 } from 'lucide-react';
-import { MOCK_POSTS } from './CommunityPage';
+import communityData from '../data/community_data.json';
 
 const CommunityPostDetail: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
 
-    const post = MOCK_POSTS.find(p => p.id === Number(id));
+    const post = communityData.find(p => p.id === Number(id));
 
     if (!post) {
         return (
@@ -38,11 +38,8 @@ const CommunityPostDetail: React.FC = () => {
                 {/* Header */}
                 <div className="flex items-center justify-between mb-4 pb-4 border-b border-white/5">
                     <div className="flex items-center gap-3">
-                        <span className={`text-xs font-bold px-2 py-1 rounded ${post.isNotice || post.isBest
-                                ? 'bg-primary text-black'
-                                : 'bg-white/10 text-text-muted'
-                            }`}>
-                            {post.categoryLabel}
+                        <span className="text-xs font-bold px-2 py-1 rounded bg-primary/20 text-primary">
+                            {post.category}
                         </span>
                         <span className="text-sm text-text-muted">{post.date}</span>
                     </div>

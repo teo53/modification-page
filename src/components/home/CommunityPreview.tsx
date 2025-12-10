@@ -2,13 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { MessageSquare, Eye, ThumbsUp, Sparkles } from 'lucide-react';
 
-const communityPosts = [
-    { id: 1, title: '강남 룸 초보 환영 경력우대', category: '구인구직', views: 342, likes: 12, comments: 5, time: '1시간 전' },
-    { id: 2, title: 'VIP 제주시 추천', category: '지역정보', views: 128, likes: 8, comments: 3, time: '2시간 전' },
-    { id: 3, title: 'MAX 텐카페 후기', category: '업소후기', views: 256, likes: 15, comments: 8, time: '3시간 전' },
-    { id: 4, title: '당일지급 확실한 곳 추천해주세요', category: '질문답변', views: 189, likes: 6, comments: 12, time: '4시간 전' },
-    { id: 5, title: '신림 쪽 괜찮은 곳 있나요?', category: '지역정보', views: 95, likes: 4, comments: 7, time: '5시간 전' },
-];
+import communityData from '../../data/community_data.json';
+
+const communityPosts = communityData.slice(0, 5);
 
 const CommunityPreview: React.FC = () => {
     return (
@@ -43,7 +39,7 @@ const CommunityPreview: React.FC = () => {
                                             <span className="text-xs px-2 py-0.5 rounded bg-primary/20 text-primary">
                                                 {post.category}
                                             </span>
-                                            <span className="text-xs text-text-muted">{post.time}</span>
+                                            <span className="text-xs text-text-muted">{post.date}</span>
                                         </div>
                                         <p className="text-white group-hover:text-primary transition-colors truncate">
                                             {post.title}

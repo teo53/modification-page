@@ -1,9 +1,26 @@
-import { useState } from 'react';
-import { Check, Building2, FileText } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Check, Building2, FileText, AlertCircle, CheckCircle } from 'lucide-react';
 import RichTextEditor from '../components/ui/RichTextEditor';
 import type { AdFormState } from '../types/ad';
+import { getCurrentUser, isAdvertiser } from '../utils/auth';
+import { createAd } from '../utils/adStorage';
 
 const PostAd = () => {
+    const navigate = useNavigate();
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    // Check if user is advertiser
+    useEffect(() => {
+        const user = getCurrentUser();
+        if (!user) {
+            setError('로그인이 필요합니다. 로그인 후 다시 시도해주세요.');
+        } else if (user.type !== 'advertiser') {
+            setError('광고주 계정만 광고를 등록할 수 있습니다. 광고주로 회원가입해주세요.');
+        }
+    }, []);
     const [step, setStep] = useState(1);
     const [formData, setFormData] = useState<AdFormState>({
         businessName: '',
@@ -97,10 +114,79 @@ const PostAd = () => {
         setFormData(prev => ({ ...prev, [field]: value }));
     };
 
+    const handleSubmit = () => {
+        setError('');
+        setSuccess('');
+        setLoading(true);
+
+        // Validation
+        if (!formData.businessName || !formData.title) {
+            setError('업소명과 공고 제목은 필수입니다.');
+            setLoading(false);
+            return;
+        }
+
+        if (Object.keys(selectedProducts).length === 0) {
+            setError('최소 1개의 광고 상품을 선택해주세요.');
+            setLoading(false);
+            return;
+        }
+
+        // Determine product type based on selection
+        let productType: 'premium' | 'special' | 'regular' = 'regular';
+        if (selectedProducts['vip']) productType = 'premium';
+        else if (selectedProducts['special']) productType = 'special';
+        else if (selectedProducts['premium']) productType = 'premium';
+
+        // Create ad
+        const result = createAd({
+            title: formData.title,
+            businessName: formData.businessName,
+            location: formData.address.roadAddress || '서울특별시',
+            salary: formData.salary.amount || '협의',
+            workHours: formData.workHours.type || '주간',
+            description: formData.description || '',
+            contact: formData.contactPhone || '',
+            productType: productType,
+        });
+
+        if (result.success) {
+            setSuccess(result.message + ' 대시보드로 이동합니다...');
+            setTimeout(() => {
+                navigate('/advertiser/dashboard');
+            }, 1500);
+        } else {
+            setError(result.message);
+        }
+
+        setLoading(false);
+    };
+
     return (
         <div className="min-h-screen bg-background text-white p-4 md:p-8">
             <div className="max-w-4xl mx-auto">
                 <h1 className="text-3xl font-bold mb-8 text-center">광고 등록</h1>
+
+                {/* Error Message */}
+                {error && (
+                    <div className="flex items-center gap-2 p-4 mb-6 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400">
+                        <AlertCircle size={20} />
+                        <span>{error}</span>
+                        {!getCurrentUser() && (
+                            <button onClick={() => navigate('/login')} className="ml-auto text-sm underline">
+                                로그인하기
+                            </button>
+                        )}
+                    </div>
+                )}
+
+                {/* Success Message */}
+                {success && (
+                    <div className="flex items-center gap-2 p-4 mb-6 rounded-lg bg-green-500/10 border border-green-500/20 text-green-400">
+                        <CheckCircle size={20} />
+                        <span>{success}</span>
+                    </div>
+                )}
 
                 {/* Progress Steps */}
                 <div className="flex justify-between mb-12 relative">
@@ -256,9 +342,11 @@ const PostAd = () => {
                                 이전 단계
                             </button>
                             <button
-                                className="bg-primary text-black font-bold px-8 py-3 rounded-lg hover:bg-primary/90 transition-colors"
+                                onClick={handleSubmit}
+                                disabled={loading}
+                                className="bg-primary text-black font-bold px-8 py-3 rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
                             >
-                                등록 완료
+                                {loading ? '등록 중...' : '등록 완료'}
                             </button>
                         </div>
                     </div>
