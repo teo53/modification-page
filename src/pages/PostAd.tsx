@@ -12,15 +12,54 @@ const PostAd = () => {
     const [success, setSuccess] = useState('');
     const [loading, setLoading] = useState(false);
 
+    const [isAuthorized, setIsAuthorized] = useState(false);
+
     // Check if user is advertiser
     useEffect(() => {
         const user = getCurrentUser();
         if (!user) {
-            setError('로그인이 필요합니다. 로그인 후 다시 시도해주세요.');
-        } else if (user.type !== 'advertiser') {
-            setError('광고주 계정만 광고를 등록할 수 있습니다. 광고주로 회원가입해주세요.');
+            alert('로그인이 필요한 서비스입니다.');
+            navigate('/login');
+            return;
         }
-    }, []);
+
+        if (user.type !== 'advertiser') {
+            setLoading(false); // Stop loading if it was true
+            return; // Stay on page but show access denied view (handled in render)
+        }
+
+        setIsAuthorized(true);
+    }, [navigate]);
+
+    if (!isAuthorized && getCurrentUser()) {
+        return (
+            <div className="min-h-screen bg-background flex items-center justify-center p-4">
+                <div className="max-w-md w-full bg-accent rounded-xl border border-white/10 p-8 text-center space-y-4">
+                    <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto text-red-500">
+                        <AlertCircle size={32} />
+                    </div>
+                    <h2 className="text-xl font-bold text-white">접근 권한이 없습니다</h2>
+                    <p className="text-text-muted">광고주 계정만 광고를 등록할 수 있습니다.<br />광고주로 회원가입 후 이용해주세요.</p>
+                    <div className="flex gap-2 justify-center pt-4">
+                        <button
+                            onClick={() => navigate('/')}
+                            className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors"
+                        >
+                            홈으로
+                        </button>
+                        <button
+                            onClick={() => navigate('/signup')}
+                            className="px-4 py-2 bg-primary text-black font-bold rounded-lg hover:bg-primary/90 transition-colors"
+                        >
+                            광고주 가입
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    if (!isAuthorized) return null; // Prevent flash while redirecting
     const [step, setStep] = useState(1);
     const [formData, setFormData] = useState<AdFormState>({
         businessName: '',
