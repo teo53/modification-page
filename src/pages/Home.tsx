@@ -1,5 +1,5 @@
 import React from 'react';
-import HeroSection from '../components/home/HeroSection';
+import PremiumHeroAds from '../components/home/PremiumHeroAds';
 import QuickMenuBar from '../components/home/QuickMenuBar';
 import PremiumAdGrid from '../components/home/PremiumAdGrid';
 import SpecialAdGrid from '../components/home/SpecialAdGrid';
@@ -10,10 +10,10 @@ import CommunityPreview from '../components/home/CommunityPreview';
 const Home: React.FC = () => {
     return (
         <div className="pb-20">
-            <HeroSection />
+            <PremiumHeroAds />
             <PremiumAdGrid />
-            <CommunityPreview />
             <SpecialAdGrid />
+            <CommunityPreview />
             <QuickMenuBar />
             <RegularAdList />
             <TextAdsList />
