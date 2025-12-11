@@ -1,0 +1,3044 @@
+[
+  {
+    "id": 1,
+    "title": "광고 #1",
+    "original_title": "원본 제목 1",
+    "thumbnail": "/images/ads/thumbnails/thumb_1.gif",
+    "detail_images": [
+      "/images/ads/details/detail_1_1.jpg",
+      "/images/ads/details/detail_1_2.jpg",
+      "/images/ads/details/detail_1_3.jpg",
+      "/images/ads/details/detail_1_4.jpg",
+      "/images/ads/details/detail_1_5.jpg",
+      "/images/ads/details/detail_1_6.jpg",
+      "/images/ads/details/detail_1_7.jpg",
+      "/images/ads/details/detail_1_8.png",
+      "/images/ads/details/detail_1_9.gif",
+      "/images/ads/details/detail_1_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 1 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=1",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 2,
+    "title": "광고 #2",
+    "original_title": "원본 제목 2",
+    "thumbnail": "/images/ads/thumbnails/thumb_2.gif",
+    "detail_images": [
+      "/images/ads/details/detail_2_1.jpg",
+      "/images/ads/details/detail_2_2.jpg",
+      "/images/ads/details/detail_2_3.jpg",
+      "/images/ads/details/detail_2_4.jpg",
+      "/images/ads/details/detail_2_5.jpg",
+      "/images/ads/details/detail_2_6.jpg",
+      "/images/ads/details/detail_2_7.jpg",
+      "/images/ads/details/detail_2_8.png",
+      "/images/ads/details/detail_2_9.gif",
+      "/images/ads/details/detail_2_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 2 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=2",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 3,
+    "title": "광고 #3",
+    "original_title": "원본 제목 3",
+    "thumbnail": "/images/ads/thumbnails/thumb_3.gif",
+    "detail_images": [
+      "/images/ads/details/detail_3_1.jpg",
+      "/images/ads/details/detail_3_2.jpg",
+      "/images/ads/details/detail_3_3.jpg",
+      "/images/ads/details/detail_3_4.jpg",
+      "/images/ads/details/detail_3_5.jpg",
+      "/images/ads/details/detail_3_6.jpg",
+      "/images/ads/details/detail_3_7.jpg",
+      "/images/ads/details/detail_3_8.png",
+      "/images/ads/details/detail_3_9.gif",
+      "/images/ads/details/detail_3_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 3 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=3",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 4,
+    "title": "광고 #4",
+    "original_title": "원본 제목 4",
+    "thumbnail": "/images/ads/thumbnails/thumb_4.gif",
+    "detail_images": [
+      "/images/ads/details/detail_4_1.jpg",
+      "/images/ads/details/detail_4_2.jpg",
+      "/images/ads/details/detail_4_3.jpg",
+      "/images/ads/details/detail_4_4.jpg",
+      "/images/ads/details/detail_4_5.jpg",
+      "/images/ads/details/detail_4_6.jpg",
+      "/images/ads/details/detail_4_7.jpg",
+      "/images/ads/details/detail_4_8.png",
+      "/images/ads/details/detail_4_9.gif",
+      "/images/ads/details/detail_4_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 4 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=4",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 5,
+    "title": "광고 #5",
+    "original_title": "원본 제목 5",
+    "thumbnail": "/images/ads/thumbnails/thumb_5.gif",
+    "detail_images": [
+      "/images/ads/details/detail_5_1.jpg",
+      "/images/ads/details/detail_5_2.jpg",
+      "/images/ads/details/detail_5_3.jpg",
+      "/images/ads/details/detail_5_4.jpg",
+      "/images/ads/details/detail_5_5.jpg",
+      "/images/ads/details/detail_5_6.jpg",
+      "/images/ads/details/detail_5_7.jpg",
+      "/images/ads/details/detail_5_8.png",
+      "/images/ads/details/detail_5_9.gif",
+      "/images/ads/details/detail_5_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 5 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=5",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 6,
+    "title": "광고 #6",
+    "original_title": "원본 제목 6",
+    "thumbnail": "/images/ads/thumbnails/thumb_6.gif",
+    "detail_images": [
+      "/images/ads/details/detail_6_1.jpg",
+      "/images/ads/details/detail_6_2.jpg",
+      "/images/ads/details/detail_6_3.jpg",
+      "/images/ads/details/detail_6_4.jpg",
+      "/images/ads/details/detail_6_5.jpg",
+      "/images/ads/details/detail_6_6.jpg",
+      "/images/ads/details/detail_6_7.jpg",
+      "/images/ads/details/detail_6_8.png",
+      "/images/ads/details/detail_6_9.gif",
+      "/images/ads/details/detail_6_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 6 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=6",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 7,
+    "title": "광고 #7",
+    "original_title": "원본 제목 7",
+    "thumbnail": "/images/ads/thumbnails/thumb_7.gif",
+    "detail_images": [
+      "/images/ads/details/detail_7_1.jpg",
+      "/images/ads/details/detail_7_2.jpg",
+      "/images/ads/details/detail_7_3.jpg",
+      "/images/ads/details/detail_7_4.jpg",
+      "/images/ads/details/detail_7_5.jpg",
+      "/images/ads/details/detail_7_6.jpg",
+      "/images/ads/details/detail_7_7.jpg",
+      "/images/ads/details/detail_7_8.png",
+      "/images/ads/details/detail_7_9.gif",
+      "/images/ads/details/detail_7_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 7 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=7",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 8,
+    "title": "광고 #8",
+    "original_title": "원본 제목 8",
+    "thumbnail": "/images/ads/thumbnails/thumb_8.gif",
+    "detail_images": [
+      "/images/ads/details/detail_8_1.jpg",
+      "/images/ads/details/detail_8_2.jpg",
+      "/images/ads/details/detail_8_3.jpg",
+      "/images/ads/details/detail_8_4.jpg",
+      "/images/ads/details/detail_8_5.jpg",
+      "/images/ads/details/detail_8_6.jpg",
+      "/images/ads/details/detail_8_7.jpg",
+      "/images/ads/details/detail_8_8.png",
+      "/images/ads/details/detail_8_9.gif",
+      "/images/ads/details/detail_8_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 8 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=8",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 9,
+    "title": "광고 #9",
+    "original_title": "원본 제목 9",
+    "thumbnail": "/images/ads/thumbnails/thumb_9.gif",
+    "detail_images": [
+      "/images/ads/details/detail_9_1.jpg",
+      "/images/ads/details/detail_9_2.jpg",
+      "/images/ads/details/detail_9_3.jpg",
+      "/images/ads/details/detail_9_4.jpg",
+      "/images/ads/details/detail_9_5.jpg",
+      "/images/ads/details/detail_9_6.jpg",
+      "/images/ads/details/detail_9_7.jpg",
+      "/images/ads/details/detail_9_8.png",
+      "/images/ads/details/detail_9_9.gif",
+      "/images/ads/details/detail_9_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 9 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=9",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 10,
+    "title": "광고 #10",
+    "original_title": "원본 제목 10",
+    "thumbnail": "/images/ads/thumbnails/thumb_10.gif",
+    "detail_images": [
+      "/images/ads/details/detail_10_1.jpg",
+      "/images/ads/details/detail_10_2.jpg",
+      "/images/ads/details/detail_10_3.jpg",
+      "/images/ads/details/detail_10_4.jpg",
+      "/images/ads/details/detail_10_5.jpg",
+      "/images/ads/details/detail_10_6.jpg",
+      "/images/ads/details/detail_10_7.jpg",
+      "/images/ads/details/detail_10_8.png",
+      "/images/ads/details/detail_10_9.gif",
+      "/images/ads/details/detail_10_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 10 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=10",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 11,
+    "title": "광고 #11",
+    "original_title": "원본 제목 11",
+    "thumbnail": "/images/ads/thumbnails/thumb_11.gif",
+    "detail_images": [
+      "/images/ads/details/detail_11_1.jpg",
+      "/images/ads/details/detail_11_2.jpg",
+      "/images/ads/details/detail_11_3.jpg",
+      "/images/ads/details/detail_11_4.jpg",
+      "/images/ads/details/detail_11_5.jpg",
+      "/images/ads/details/detail_11_6.jpg",
+      "/images/ads/details/detail_11_7.jpg",
+      "/images/ads/details/detail_11_8.png",
+      "/images/ads/details/detail_11_9.gif",
+      "/images/ads/details/detail_11_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 11 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=11",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 12,
+    "title": "광고 #12",
+    "original_title": "원본 제목 12",
+    "thumbnail": "/images/ads/thumbnails/thumb_12.gif",
+    "detail_images": [
+      "/images/ads/details/detail_12_1.jpg",
+      "/images/ads/details/detail_12_2.jpg",
+      "/images/ads/details/detail_12_3.jpg",
+      "/images/ads/details/detail_12_4.jpg",
+      "/images/ads/details/detail_12_5.jpg",
+      "/images/ads/details/detail_12_6.jpg",
+      "/images/ads/details/detail_12_7.jpg",
+      "/images/ads/details/detail_12_8.png",
+      "/images/ads/details/detail_12_9.gif",
+      "/images/ads/details/detail_12_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 12 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=12",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 13,
+    "title": "광고 #13",
+    "original_title": "원본 제목 13",
+    "thumbnail": "/images/ads/thumbnails/thumb_13.gif",
+    "detail_images": [
+      "/images/ads/details/detail_13_1.jpg",
+      "/images/ads/details/detail_13_2.jpg",
+      "/images/ads/details/detail_13_3.jpg",
+      "/images/ads/details/detail_13_4.jpg",
+      "/images/ads/details/detail_13_5.jpg",
+      "/images/ads/details/detail_13_6.jpg",
+      "/images/ads/details/detail_13_7.jpg",
+      "/images/ads/details/detail_13_8.png",
+      "/images/ads/details/detail_13_9.gif",
+      "/images/ads/details/detail_13_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 13 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=13",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 14,
+    "title": "광고 #14",
+    "original_title": "원본 제목 14",
+    "thumbnail": "/images/ads/thumbnails/thumb_14.gif",
+    "detail_images": [
+      "/images/ads/details/detail_14_1.jpg",
+      "/images/ads/details/detail_14_2.jpg",
+      "/images/ads/details/detail_14_3.jpg",
+      "/images/ads/details/detail_14_4.jpg",
+      "/images/ads/details/detail_14_5.jpg",
+      "/images/ads/details/detail_14_6.jpg",
+      "/images/ads/details/detail_14_7.jpg",
+      "/images/ads/details/detail_14_8.png",
+      "/images/ads/details/detail_14_9.gif",
+      "/images/ads/details/detail_14_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 14 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=14",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 15,
+    "title": "광고 #15",
+    "original_title": "원본 제목 15",
+    "thumbnail": "/images/ads/thumbnails/thumb_15.gif",
+    "detail_images": [
+      "/images/ads/details/detail_15_1.jpg",
+      "/images/ads/details/detail_15_2.jpg",
+      "/images/ads/details/detail_15_3.jpg",
+      "/images/ads/details/detail_15_4.jpg",
+      "/images/ads/details/detail_15_5.jpg",
+      "/images/ads/details/detail_15_6.jpg",
+      "/images/ads/details/detail_15_7.jpg",
+      "/images/ads/details/detail_15_8.png",
+      "/images/ads/details/detail_15_9.gif",
+      "/images/ads/details/detail_15_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 15 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=15",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 16,
+    "title": "광고 #16",
+    "original_title": "원본 제목 16",
+    "thumbnail": "/images/ads/thumbnails/thumb_16.gif",
+    "detail_images": [
+      "/images/ads/details/detail_16_1.jpg",
+      "/images/ads/details/detail_16_2.jpg",
+      "/images/ads/details/detail_16_3.jpg",
+      "/images/ads/details/detail_16_4.jpg",
+      "/images/ads/details/detail_16_5.jpg",
+      "/images/ads/details/detail_16_6.jpg",
+      "/images/ads/details/detail_16_7.jpg",
+      "/images/ads/details/detail_16_8.png",
+      "/images/ads/details/detail_16_9.gif",
+      "/images/ads/details/detail_16_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 16 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=16",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 17,
+    "title": "광고 #17",
+    "original_title": "원본 제목 17",
+    "thumbnail": "/images/ads/thumbnails/thumb_17.gif",
+    "detail_images": [
+      "/images/ads/details/detail_17_1.jpg",
+      "/images/ads/details/detail_17_2.jpg",
+      "/images/ads/details/detail_17_3.jpg",
+      "/images/ads/details/detail_17_4.jpg",
+      "/images/ads/details/detail_17_5.jpg",
+      "/images/ads/details/detail_17_6.jpg",
+      "/images/ads/details/detail_17_7.jpg",
+      "/images/ads/details/detail_17_8.png",
+      "/images/ads/details/detail_17_9.gif",
+      "/images/ads/details/detail_17_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 17 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=17",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 18,
+    "title": "광고 #18",
+    "original_title": "원본 제목 18",
+    "thumbnail": "/images/ads/thumbnails/thumb_18.gif",
+    "detail_images": [
+      "/images/ads/details/detail_18_1.jpg",
+      "/images/ads/details/detail_18_2.jpg",
+      "/images/ads/details/detail_18_3.jpg",
+      "/images/ads/details/detail_18_4.jpg",
+      "/images/ads/details/detail_18_5.jpg",
+      "/images/ads/details/detail_18_6.jpg",
+      "/images/ads/details/detail_18_7.jpg",
+      "/images/ads/details/detail_18_8.png",
+      "/images/ads/details/detail_18_9.gif",
+      "/images/ads/details/detail_18_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 18 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=18",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 19,
+    "title": "광고 #19",
+    "original_title": "원본 제목 19",
+    "thumbnail": "/images/ads/thumbnails/thumb_19.gif",
+    "detail_images": [
+      "/images/ads/details/detail_19_1.jpg",
+      "/images/ads/details/detail_19_2.jpg",
+      "/images/ads/details/detail_19_3.jpg",
+      "/images/ads/details/detail_19_4.jpg",
+      "/images/ads/details/detail_19_5.jpg",
+      "/images/ads/details/detail_19_6.jpg",
+      "/images/ads/details/detail_19_7.jpg",
+      "/images/ads/details/detail_19_8.png",
+      "/images/ads/details/detail_19_9.gif",
+      "/images/ads/details/detail_19_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 19 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=19",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 20,
+    "title": "광고 #20",
+    "original_title": "원본 제목 20",
+    "thumbnail": "/images/ads/thumbnails/thumb_20.gif",
+    "detail_images": [
+      "/images/ads/details/detail_20_1.jpg",
+      "/images/ads/details/detail_20_2.jpg",
+      "/images/ads/details/detail_20_3.jpg",
+      "/images/ads/details/detail_20_4.jpg",
+      "/images/ads/details/detail_20_5.jpg",
+      "/images/ads/details/detail_20_6.jpg",
+      "/images/ads/details/detail_20_7.jpg",
+      "/images/ads/details/detail_20_8.png",
+      "/images/ads/details/detail_20_9.gif",
+      "/images/ads/details/detail_20_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 20 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=20",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 21,
+    "title": "광고 #21",
+    "original_title": "원본 제목 21",
+    "thumbnail": "/images/ads/thumbnails/thumb_21.gif",
+    "detail_images": [
+      "/images/ads/details/detail_21_1.jpg",
+      "/images/ads/details/detail_21_2.jpg",
+      "/images/ads/details/detail_21_3.jpg",
+      "/images/ads/details/detail_21_4.jpg",
+      "/images/ads/details/detail_21_5.jpg",
+      "/images/ads/details/detail_21_6.jpg",
+      "/images/ads/details/detail_21_7.jpg",
+      "/images/ads/details/detail_21_8.png",
+      "/images/ads/details/detail_21_9.gif",
+      "/images/ads/details/detail_21_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 21 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=21",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 22,
+    "title": "광고 #22",
+    "original_title": "원본 제목 22",
+    "thumbnail": "/images/ads/thumbnails/thumb_22.gif",
+    "detail_images": [
+      "/images/ads/details/detail_22_1.jpg",
+      "/images/ads/details/detail_22_2.jpg",
+      "/images/ads/details/detail_22_3.jpg",
+      "/images/ads/details/detail_22_4.jpg",
+      "/images/ads/details/detail_22_5.jpg",
+      "/images/ads/details/detail_22_6.jpg",
+      "/images/ads/details/detail_22_7.jpg",
+      "/images/ads/details/detail_22_8.png",
+      "/images/ads/details/detail_22_9.gif",
+      "/images/ads/details/detail_22_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 22 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=22",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 23,
+    "title": "광고 #23",
+    "original_title": "원본 제목 23",
+    "thumbnail": "/images/ads/thumbnails/thumb_23.gif",
+    "detail_images": [
+      "/images/ads/details/detail_23_1.jpg",
+      "/images/ads/details/detail_23_2.jpg",
+      "/images/ads/details/detail_23_3.jpg",
+      "/images/ads/details/detail_23_4.jpg",
+      "/images/ads/details/detail_23_5.jpg",
+      "/images/ads/details/detail_23_6.jpg",
+      "/images/ads/details/detail_23_7.jpg",
+      "/images/ads/details/detail_23_8.png",
+      "/images/ads/details/detail_23_9.gif",
+      "/images/ads/details/detail_23_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 23 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=23",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 24,
+    "title": "광고 #24",
+    "original_title": "원본 제목 24",
+    "thumbnail": "/images/ads/thumbnails/thumb_24.gif",
+    "detail_images": [
+      "/images/ads/details/detail_24_1.jpg",
+      "/images/ads/details/detail_24_2.jpg",
+      "/images/ads/details/detail_24_3.jpg",
+      "/images/ads/details/detail_24_4.jpg",
+      "/images/ads/details/detail_24_5.jpg",
+      "/images/ads/details/detail_24_6.jpg",
+      "/images/ads/details/detail_24_7.jpg",
+      "/images/ads/details/detail_24_8.png",
+      "/images/ads/details/detail_24_9.gif",
+      "/images/ads/details/detail_24_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 24 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=24",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 25,
+    "title": "광고 #25",
+    "original_title": "원본 제목 25",
+    "thumbnail": "/images/ads/thumbnails/thumb_25.gif",
+    "detail_images": [
+      "/images/ads/details/detail_25_1.jpg",
+      "/images/ads/details/detail_25_2.jpg",
+      "/images/ads/details/detail_25_3.jpg",
+      "/images/ads/details/detail_25_4.jpg",
+      "/images/ads/details/detail_25_5.jpg",
+      "/images/ads/details/detail_25_6.jpg",
+      "/images/ads/details/detail_25_7.jpg",
+      "/images/ads/details/detail_25_8.png",
+      "/images/ads/details/detail_25_9.gif",
+      "/images/ads/details/detail_25_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 25 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=25",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 26,
+    "title": "광고 #26",
+    "original_title": "원본 제목 26",
+    "thumbnail": "/images/ads/thumbnails/thumb_26.gif",
+    "detail_images": [
+      "/images/ads/details/detail_26_1.jpg",
+      "/images/ads/details/detail_26_2.jpg",
+      "/images/ads/details/detail_26_3.jpg",
+      "/images/ads/details/detail_26_4.jpg",
+      "/images/ads/details/detail_26_5.jpg",
+      "/images/ads/details/detail_26_6.jpg",
+      "/images/ads/details/detail_26_7.jpg",
+      "/images/ads/details/detail_26_8.png",
+      "/images/ads/details/detail_26_9.gif",
+      "/images/ads/details/detail_26_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 26 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=26",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 27,
+    "title": "광고 #27",
+    "original_title": "원본 제목 27",
+    "thumbnail": "/images/ads/thumbnails/thumb_27.gif",
+    "detail_images": [
+      "/images/ads/details/detail_27_1.jpg",
+      "/images/ads/details/detail_27_2.jpg",
+      "/images/ads/details/detail_27_3.jpg",
+      "/images/ads/details/detail_27_4.jpg",
+      "/images/ads/details/detail_27_5.jpg",
+      "/images/ads/details/detail_27_6.jpg",
+      "/images/ads/details/detail_27_7.jpg",
+      "/images/ads/details/detail_27_8.png",
+      "/images/ads/details/detail_27_9.gif",
+      "/images/ads/details/detail_27_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 27 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=27",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 28,
+    "title": "광고 #28",
+    "original_title": "원본 제목 28",
+    "thumbnail": "/images/ads/thumbnails/thumb_28.gif",
+    "detail_images": [
+      "/images/ads/details/detail_28_1.jpg",
+      "/images/ads/details/detail_28_2.jpg",
+      "/images/ads/details/detail_28_3.jpg",
+      "/images/ads/details/detail_28_4.jpg",
+      "/images/ads/details/detail_28_5.jpg",
+      "/images/ads/details/detail_28_6.jpg",
+      "/images/ads/details/detail_28_7.jpg",
+      "/images/ads/details/detail_28_8.png",
+      "/images/ads/details/detail_28_9.gif",
+      "/images/ads/details/detail_28_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 28 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=28",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 29,
+    "title": "광고 #29",
+    "original_title": "원본 제목 29",
+    "thumbnail": "/images/ads/thumbnails/thumb_29.gif",
+    "detail_images": [
+      "/images/ads/details/detail_29_1.jpg",
+      "/images/ads/details/detail_29_2.jpg",
+      "/images/ads/details/detail_29_3.jpg",
+      "/images/ads/details/detail_29_4.jpg",
+      "/images/ads/details/detail_29_5.jpg",
+      "/images/ads/details/detail_29_6.jpg",
+      "/images/ads/details/detail_29_7.jpg",
+      "/images/ads/details/detail_29_8.png",
+      "/images/ads/details/detail_29_9.gif",
+      "/images/ads/details/detail_29_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 29 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=29",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 30,
+    "title": "광고 #30",
+    "original_title": "원본 제목 30",
+    "thumbnail": "/images/ads/thumbnails/thumb_30.gif",
+    "detail_images": [
+      "/images/ads/details/detail_30_1.jpg",
+      "/images/ads/details/detail_30_2.jpg",
+      "/images/ads/details/detail_30_3.jpg",
+      "/images/ads/details/detail_30_4.jpg",
+      "/images/ads/details/detail_30_5.jpg",
+      "/images/ads/details/detail_30_6.jpg",
+      "/images/ads/details/detail_30_7.jpg",
+      "/images/ads/details/detail_30_8.png",
+      "/images/ads/details/detail_30_9.gif",
+      "/images/ads/details/detail_30_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 30 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=30",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 31,
+    "title": "광고 #31",
+    "original_title": "원본 제목 31",
+    "thumbnail": "/images/ads/thumbnails/thumb_31.gif",
+    "detail_images": [
+      "/images/ads/details/detail_31_1.jpg",
+      "/images/ads/details/detail_31_2.jpg",
+      "/images/ads/details/detail_31_3.jpg",
+      "/images/ads/details/detail_31_4.jpg",
+      "/images/ads/details/detail_31_5.jpg",
+      "/images/ads/details/detail_31_6.jpg",
+      "/images/ads/details/detail_31_7.jpg",
+      "/images/ads/details/detail_31_8.png",
+      "/images/ads/details/detail_31_9.gif",
+      "/images/ads/details/detail_31_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 31 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=31",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 32,
+    "title": "광고 #32",
+    "original_title": "원본 제목 32",
+    "thumbnail": "/images/ads/thumbnails/thumb_32.gif",
+    "detail_images": [
+      "/images/ads/details/detail_32_1.jpg",
+      "/images/ads/details/detail_32_2.jpg",
+      "/images/ads/details/detail_32_3.jpg",
+      "/images/ads/details/detail_32_4.jpg",
+      "/images/ads/details/detail_32_5.jpg",
+      "/images/ads/details/detail_32_6.jpg",
+      "/images/ads/details/detail_32_7.jpg",
+      "/images/ads/details/detail_32_8.png",
+      "/images/ads/details/detail_32_9.gif",
+      "/images/ads/details/detail_32_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 32 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=32",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 33,
+    "title": "광고 #33",
+    "original_title": "원본 제목 33",
+    "thumbnail": "/images/ads/thumbnails/thumb_33.gif",
+    "detail_images": [
+      "/images/ads/details/detail_33_1.jpg",
+      "/images/ads/details/detail_33_2.jpg",
+      "/images/ads/details/detail_33_3.jpg",
+      "/images/ads/details/detail_33_4.jpg",
+      "/images/ads/details/detail_33_5.jpg",
+      "/images/ads/details/detail_33_6.jpg",
+      "/images/ads/details/detail_33_7.jpg",
+      "/images/ads/details/detail_33_8.png",
+      "/images/ads/details/detail_33_9.gif",
+      "/images/ads/details/detail_33_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 33 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=33",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 34,
+    "title": "광고 #34",
+    "original_title": "원본 제목 34",
+    "thumbnail": "/images/ads/thumbnails/thumb_34.gif",
+    "detail_images": [
+      "/images/ads/details/detail_34_1.jpg",
+      "/images/ads/details/detail_34_2.jpg",
+      "/images/ads/details/detail_34_3.jpg",
+      "/images/ads/details/detail_34_4.jpg",
+      "/images/ads/details/detail_34_5.jpg",
+      "/images/ads/details/detail_34_6.jpg",
+      "/images/ads/details/detail_34_7.jpg",
+      "/images/ads/details/detail_34_8.png",
+      "/images/ads/details/detail_34_9.gif",
+      "/images/ads/details/detail_34_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 34 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=34",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 35,
+    "title": "광고 #35",
+    "original_title": "원본 제목 35",
+    "thumbnail": "/images/ads/thumbnails/thumb_35.gif",
+    "detail_images": [
+      "/images/ads/details/detail_35_1.jpg",
+      "/images/ads/details/detail_35_2.jpg",
+      "/images/ads/details/detail_35_3.jpg",
+      "/images/ads/details/detail_35_4.jpg",
+      "/images/ads/details/detail_35_5.jpg",
+      "/images/ads/details/detail_35_6.jpg",
+      "/images/ads/details/detail_35_7.jpg",
+      "/images/ads/details/detail_35_8.png",
+      "/images/ads/details/detail_35_9.gif",
+      "/images/ads/details/detail_35_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 35 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=35",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 36,
+    "title": "광고 #36",
+    "original_title": "원본 제목 36",
+    "thumbnail": "/images/ads/thumbnails/thumb_36.gif",
+    "detail_images": [
+      "/images/ads/details/detail_36_1.jpg",
+      "/images/ads/details/detail_36_2.jpg",
+      "/images/ads/details/detail_36_3.jpg",
+      "/images/ads/details/detail_36_4.jpg",
+      "/images/ads/details/detail_36_5.jpg",
+      "/images/ads/details/detail_36_6.jpg",
+      "/images/ads/details/detail_36_7.jpg",
+      "/images/ads/details/detail_36_8.png",
+      "/images/ads/details/detail_36_9.gif",
+      "/images/ads/details/detail_36_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 36 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=36",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 37,
+    "title": "광고 #37",
+    "original_title": "원본 제목 37",
+    "thumbnail": "/images/ads/thumbnails/thumb_37.gif",
+    "detail_images": [
+      "/images/ads/details/detail_37_1.jpg",
+      "/images/ads/details/detail_37_2.jpg",
+      "/images/ads/details/detail_37_3.jpg",
+      "/images/ads/details/detail_37_4.jpg",
+      "/images/ads/details/detail_37_5.jpg",
+      "/images/ads/details/detail_37_6.jpg",
+      "/images/ads/details/detail_37_7.jpg",
+      "/images/ads/details/detail_37_8.png",
+      "/images/ads/details/detail_37_9.gif",
+      "/images/ads/details/detail_37_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 37 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=37",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 38,
+    "title": "광고 #38",
+    "original_title": "원본 제목 38",
+    "thumbnail": "/images/ads/thumbnails/thumb_38.gif",
+    "detail_images": [
+      "/images/ads/details/detail_38_1.jpg",
+      "/images/ads/details/detail_38_2.jpg",
+      "/images/ads/details/detail_38_3.jpg",
+      "/images/ads/details/detail_38_4.jpg",
+      "/images/ads/details/detail_38_5.jpg",
+      "/images/ads/details/detail_38_6.jpg",
+      "/images/ads/details/detail_38_7.jpg",
+      "/images/ads/details/detail_38_8.png",
+      "/images/ads/details/detail_38_9.gif",
+      "/images/ads/details/detail_38_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 38 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=38",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 39,
+    "title": "광고 #39",
+    "original_title": "원본 제목 39",
+    "thumbnail": "/images/ads/thumbnails/thumb_39.gif",
+    "detail_images": [
+      "/images/ads/details/detail_39_1.jpg",
+      "/images/ads/details/detail_39_2.jpg",
+      "/images/ads/details/detail_39_3.jpg",
+      "/images/ads/details/detail_39_4.jpg",
+      "/images/ads/details/detail_39_5.jpg",
+      "/images/ads/details/detail_39_6.jpg",
+      "/images/ads/details/detail_39_7.jpg",
+      "/images/ads/details/detail_39_8.png",
+      "/images/ads/details/detail_39_9.gif",
+      "/images/ads/details/detail_39_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 39 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=39",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 40,
+    "title": "광고 #40",
+    "original_title": "원본 제목 40",
+    "thumbnail": "/images/ads/thumbnails/thumb_40.gif",
+    "detail_images": [
+      "/images/ads/details/detail_40_1.jpg",
+      "/images/ads/details/detail_40_2.jpg",
+      "/images/ads/details/detail_40_3.jpg",
+      "/images/ads/details/detail_40_4.jpg",
+      "/images/ads/details/detail_40_5.jpg",
+      "/images/ads/details/detail_40_6.jpg",
+      "/images/ads/details/detail_40_7.jpg",
+      "/images/ads/details/detail_40_8.png",
+      "/images/ads/details/detail_40_9.gif",
+      "/images/ads/details/detail_40_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 40 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=40",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 41,
+    "title": "광고 #41",
+    "original_title": "원본 제목 41",
+    "thumbnail": "/images/ads/thumbnails/thumb_41.gif",
+    "detail_images": [
+      "/images/ads/details/detail_41_1.jpg",
+      "/images/ads/details/detail_41_2.jpg",
+      "/images/ads/details/detail_41_3.jpg",
+      "/images/ads/details/detail_41_4.jpg",
+      "/images/ads/details/detail_41_5.jpg",
+      "/images/ads/details/detail_41_6.jpg",
+      "/images/ads/details/detail_41_7.jpg",
+      "/images/ads/details/detail_41_8.png",
+      "/images/ads/details/detail_41_9.gif",
+      "/images/ads/details/detail_41_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 41 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=41",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 42,
+    "title": "광고 #42",
+    "original_title": "원본 제목 42",
+    "thumbnail": "/images/ads/thumbnails/thumb_42.gif",
+    "detail_images": [
+      "/images/ads/details/detail_42_1.jpg",
+      "/images/ads/details/detail_42_2.jpg",
+      "/images/ads/details/detail_42_3.jpg",
+      "/images/ads/details/detail_42_4.jpg",
+      "/images/ads/details/detail_42_5.jpg",
+      "/images/ads/details/detail_42_6.jpg",
+      "/images/ads/details/detail_42_7.jpg",
+      "/images/ads/details/detail_42_8.png",
+      "/images/ads/details/detail_42_9.gif",
+      "/images/ads/details/detail_42_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 42 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=42",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 43,
+    "title": "광고 #43",
+    "original_title": "원본 제목 43",
+    "thumbnail": "/images/ads/thumbnails/thumb_43.gif",
+    "detail_images": [
+      "/images/ads/details/detail_43_1.jpg",
+      "/images/ads/details/detail_43_2.jpg",
+      "/images/ads/details/detail_43_3.jpg",
+      "/images/ads/details/detail_43_4.jpg",
+      "/images/ads/details/detail_43_5.jpg",
+      "/images/ads/details/detail_43_6.jpg",
+      "/images/ads/details/detail_43_7.jpg",
+      "/images/ads/details/detail_43_8.png",
+      "/images/ads/details/detail_43_9.gif",
+      "/images/ads/details/detail_43_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 43 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=43",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 44,
+    "title": "광고 #44",
+    "original_title": "원본 제목 44",
+    "thumbnail": "/images/ads/thumbnails/thumb_44.gif",
+    "detail_images": [
+      "/images/ads/details/detail_44_1.jpg",
+      "/images/ads/details/detail_44_2.jpg",
+      "/images/ads/details/detail_44_3.jpg",
+      "/images/ads/details/detail_44_4.jpg",
+      "/images/ads/details/detail_44_5.jpg",
+      "/images/ads/details/detail_44_6.jpg",
+      "/images/ads/details/detail_44_7.jpg",
+      "/images/ads/details/detail_44_8.png",
+      "/images/ads/details/detail_44_9.gif",
+      "/images/ads/details/detail_44_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 44 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=44",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 45,
+    "title": "광고 #45",
+    "original_title": "원본 제목 45",
+    "thumbnail": "/images/ads/thumbnails/thumb_45.gif",
+    "detail_images": [
+      "/images/ads/details/detail_45_1.jpg",
+      "/images/ads/details/detail_45_2.jpg",
+      "/images/ads/details/detail_45_3.jpg",
+      "/images/ads/details/detail_45_4.jpg",
+      "/images/ads/details/detail_45_5.jpg",
+      "/images/ads/details/detail_45_6.jpg",
+      "/images/ads/details/detail_45_7.jpg",
+      "/images/ads/details/detail_45_8.png",
+      "/images/ads/details/detail_45_9.gif",
+      "/images/ads/details/detail_45_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 45 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=45",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 46,
+    "title": "광고 #46",
+    "original_title": "원본 제목 46",
+    "thumbnail": "/images/ads/thumbnails/thumb_46.gif",
+    "detail_images": [
+      "/images/ads/details/detail_46_1.jpg",
+      "/images/ads/details/detail_46_2.jpg",
+      "/images/ads/details/detail_46_3.jpg",
+      "/images/ads/details/detail_46_4.jpg",
+      "/images/ads/details/detail_46_5.jpg",
+      "/images/ads/details/detail_46_6.jpg",
+      "/images/ads/details/detail_46_7.jpg",
+      "/images/ads/details/detail_46_8.png",
+      "/images/ads/details/detail_46_9.gif",
+      "/images/ads/details/detail_46_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 46 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=46",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 47,
+    "title": "광고 #47",
+    "original_title": "원본 제목 47",
+    "thumbnail": "/images/ads/thumbnails/thumb_47.gif",
+    "detail_images": [
+      "/images/ads/details/detail_47_1.jpg",
+      "/images/ads/details/detail_47_2.jpg",
+      "/images/ads/details/detail_47_3.jpg",
+      "/images/ads/details/detail_47_4.jpg",
+      "/images/ads/details/detail_47_5.jpg",
+      "/images/ads/details/detail_47_6.jpg",
+      "/images/ads/details/detail_47_7.jpg",
+      "/images/ads/details/detail_47_8.png",
+      "/images/ads/details/detail_47_9.gif",
+      "/images/ads/details/detail_47_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 47 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=47",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 48,
+    "title": "광고 #48",
+    "original_title": "원본 제목 48",
+    "thumbnail": "/images/ads/thumbnails/thumb_48.gif",
+    "detail_images": [
+      "/images/ads/details/detail_48_1.jpg",
+      "/images/ads/details/detail_48_2.jpg",
+      "/images/ads/details/detail_48_3.jpg",
+      "/images/ads/details/detail_48_4.jpg",
+      "/images/ads/details/detail_48_5.jpg",
+      "/images/ads/details/detail_48_6.jpg",
+      "/images/ads/details/detail_48_7.jpg",
+      "/images/ads/details/detail_48_8.png",
+      "/images/ads/details/detail_48_9.gif",
+      "/images/ads/details/detail_48_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 48 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=48",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 49,
+    "title": "광고 #49",
+    "original_title": "원본 제목 49",
+    "thumbnail": "/images/ads/thumbnails/thumb_49.gif",
+    "detail_images": [
+      "/images/ads/details/detail_49_1.jpg",
+      "/images/ads/details/detail_49_2.jpg",
+      "/images/ads/details/detail_49_3.jpg",
+      "/images/ads/details/detail_49_4.jpg",
+      "/images/ads/details/detail_49_5.jpg",
+      "/images/ads/details/detail_49_6.jpg",
+      "/images/ads/details/detail_49_7.jpg",
+      "/images/ads/details/detail_49_8.png",
+      "/images/ads/details/detail_49_9.gif",
+      "/images/ads/details/detail_49_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 49 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=49",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 50,
+    "title": "광고 #50",
+    "original_title": "원본 제목 50",
+    "thumbnail": "/images/ads/thumbnails/thumb_50.gif",
+    "detail_images": [
+      "/images/ads/details/detail_50_1.jpg",
+      "/images/ads/details/detail_50_2.jpg",
+      "/images/ads/details/detail_50_3.jpg",
+      "/images/ads/details/detail_50_4.jpg",
+      "/images/ads/details/detail_50_5.jpg",
+      "/images/ads/details/detail_50_6.jpg",
+      "/images/ads/details/detail_50_7.jpg",
+      "/images/ads/details/detail_50_8.png",
+      "/images/ads/details/detail_50_9.gif",
+      "/images/ads/details/detail_50_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 50 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=50",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 51,
+    "title": "광고 #51",
+    "original_title": "원본 제목 51",
+    "thumbnail": "/images/ads/thumbnails/thumb_51.gif",
+    "detail_images": [
+      "/images/ads/details/detail_51_1.jpg",
+      "/images/ads/details/detail_51_2.jpg",
+      "/images/ads/details/detail_51_3.jpg",
+      "/images/ads/details/detail_51_4.jpg",
+      "/images/ads/details/detail_51_5.jpg",
+      "/images/ads/details/detail_51_6.jpg",
+      "/images/ads/details/detail_51_7.jpg",
+      "/images/ads/details/detail_51_8.png",
+      "/images/ads/details/detail_51_9.gif",
+      "/images/ads/details/detail_51_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 51 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=51",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 52,
+    "title": "광고 #52",
+    "original_title": "원본 제목 52",
+    "thumbnail": "/images/ads/thumbnails/thumb_52.gif",
+    "detail_images": [
+      "/images/ads/details/detail_52_1.jpg",
+      "/images/ads/details/detail_52_2.jpg",
+      "/images/ads/details/detail_52_3.jpg",
+      "/images/ads/details/detail_52_4.jpg",
+      "/images/ads/details/detail_52_5.jpg",
+      "/images/ads/details/detail_52_6.jpg",
+      "/images/ads/details/detail_52_7.jpg",
+      "/images/ads/details/detail_52_8.png",
+      "/images/ads/details/detail_52_9.gif",
+      "/images/ads/details/detail_52_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 52 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=52",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 53,
+    "title": "광고 #53",
+    "original_title": "원본 제목 53",
+    "thumbnail": "/images/ads/thumbnails/thumb_53.gif",
+    "detail_images": [
+      "/images/ads/details/detail_53_1.jpg",
+      "/images/ads/details/detail_53_2.jpg",
+      "/images/ads/details/detail_53_3.jpg",
+      "/images/ads/details/detail_53_4.jpg",
+      "/images/ads/details/detail_53_5.jpg",
+      "/images/ads/details/detail_53_6.jpg",
+      "/images/ads/details/detail_53_7.jpg",
+      "/images/ads/details/detail_53_8.png",
+      "/images/ads/details/detail_53_9.gif",
+      "/images/ads/details/detail_53_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 53 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=53",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 54,
+    "title": "광고 #54",
+    "original_title": "원본 제목 54",
+    "thumbnail": "/images/ads/thumbnails/thumb_54.gif",
+    "detail_images": [
+      "/images/ads/details/detail_54_1.jpg",
+      "/images/ads/details/detail_54_2.jpg",
+      "/images/ads/details/detail_54_3.jpg",
+      "/images/ads/details/detail_54_4.jpg",
+      "/images/ads/details/detail_54_5.jpg",
+      "/images/ads/details/detail_54_6.jpg",
+      "/images/ads/details/detail_54_7.jpg",
+      "/images/ads/details/detail_54_8.png",
+      "/images/ads/details/detail_54_9.gif",
+      "/images/ads/details/detail_54_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 54 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=54",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 55,
+    "title": "광고 #55",
+    "original_title": "원본 제목 55",
+    "thumbnail": "/images/ads/thumbnails/thumb_55.gif",
+    "detail_images": [
+      "/images/ads/details/detail_55_1.jpg",
+      "/images/ads/details/detail_55_2.jpg",
+      "/images/ads/details/detail_55_3.jpg",
+      "/images/ads/details/detail_55_4.jpg",
+      "/images/ads/details/detail_55_5.jpg",
+      "/images/ads/details/detail_55_6.jpg",
+      "/images/ads/details/detail_55_7.jpg",
+      "/images/ads/details/detail_55_8.png",
+      "/images/ads/details/detail_55_9.gif",
+      "/images/ads/details/detail_55_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 55 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=55",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 56,
+    "title": "광고 #56",
+    "original_title": "원본 제목 56",
+    "thumbnail": "/images/ads/thumbnails/thumb_56.gif",
+    "detail_images": [
+      "/images/ads/details/detail_56_1.jpg",
+      "/images/ads/details/detail_56_2.jpg",
+      "/images/ads/details/detail_56_3.jpg",
+      "/images/ads/details/detail_56_4.jpg",
+      "/images/ads/details/detail_56_5.jpg",
+      "/images/ads/details/detail_56_6.jpg",
+      "/images/ads/details/detail_56_7.jpg",
+      "/images/ads/details/detail_56_8.png",
+      "/images/ads/details/detail_56_9.gif",
+      "/images/ads/details/detail_56_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 56 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=56",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 57,
+    "title": "광고 #57",
+    "original_title": "원본 제목 57",
+    "thumbnail": "/images/ads/thumbnails/thumb_57.gif",
+    "detail_images": [
+      "/images/ads/details/detail_57_1.jpg",
+      "/images/ads/details/detail_57_2.jpg",
+      "/images/ads/details/detail_57_3.jpg",
+      "/images/ads/details/detail_57_4.jpg",
+      "/images/ads/details/detail_57_5.jpg",
+      "/images/ads/details/detail_57_6.jpg",
+      "/images/ads/details/detail_57_7.jpg",
+      "/images/ads/details/detail_57_8.png",
+      "/images/ads/details/detail_57_9.gif",
+      "/images/ads/details/detail_57_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 57 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=57",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 58,
+    "title": "광고 #58",
+    "original_title": "원본 제목 58",
+    "thumbnail": "/images/ads/thumbnails/thumb_58.gif",
+    "detail_images": [
+      "/images/ads/details/detail_58_1.jpg",
+      "/images/ads/details/detail_58_2.jpg",
+      "/images/ads/details/detail_58_3.jpg",
+      "/images/ads/details/detail_58_4.jpg",
+      "/images/ads/details/detail_58_5.jpg",
+      "/images/ads/details/detail_58_6.jpg",
+      "/images/ads/details/detail_58_7.jpg",
+      "/images/ads/details/detail_58_8.png",
+      "/images/ads/details/detail_58_9.gif",
+      "/images/ads/details/detail_58_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 58 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=58",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 59,
+    "title": "광고 #59",
+    "original_title": "원본 제목 59",
+    "thumbnail": "/images/ads/thumbnails/thumb_59.gif",
+    "detail_images": [
+      "/images/ads/details/detail_59_1.jpg",
+      "/images/ads/details/detail_59_2.jpg",
+      "/images/ads/details/detail_59_3.jpg",
+      "/images/ads/details/detail_59_4.jpg",
+      "/images/ads/details/detail_59_5.jpg",
+      "/images/ads/details/detail_59_6.jpg",
+      "/images/ads/details/detail_59_7.jpg",
+      "/images/ads/details/detail_59_8.png",
+      "/images/ads/details/detail_59_9.gif",
+      "/images/ads/details/detail_59_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 59 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=59",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 60,
+    "title": "광고 #60",
+    "original_title": "원본 제목 60",
+    "thumbnail": "/images/ads/thumbnails/thumb_60.gif",
+    "detail_images": [
+      "/images/ads/details/detail_60_1.jpg",
+      "/images/ads/details/detail_60_2.jpg",
+      "/images/ads/details/detail_60_3.jpg",
+      "/images/ads/details/detail_60_4.jpg",
+      "/images/ads/details/detail_60_5.jpg",
+      "/images/ads/details/detail_60_6.jpg",
+      "/images/ads/details/detail_60_7.jpg",
+      "/images/ads/details/detail_60_8.png",
+      "/images/ads/details/detail_60_9.gif",
+      "/images/ads/details/detail_60_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 60 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=60",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 61,
+    "title": "광고 #61",
+    "original_title": "원본 제목 61",
+    "thumbnail": "/images/ads/thumbnails/thumb_61.gif",
+    "detail_images": [
+      "/images/ads/details/detail_61_1.jpg",
+      "/images/ads/details/detail_61_2.jpg",
+      "/images/ads/details/detail_61_3.jpg",
+      "/images/ads/details/detail_61_4.jpg",
+      "/images/ads/details/detail_61_5.jpg",
+      "/images/ads/details/detail_61_6.jpg",
+      "/images/ads/details/detail_61_7.jpg",
+      "/images/ads/details/detail_61_8.png",
+      "/images/ads/details/detail_61_9.gif",
+      "/images/ads/details/detail_61_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 61 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=61",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 62,
+    "title": "광고 #62",
+    "original_title": "원본 제목 62",
+    "thumbnail": "/images/ads/thumbnails/thumb_62.gif",
+    "detail_images": [
+      "/images/ads/details/detail_62_1.jpg",
+      "/images/ads/details/detail_62_2.jpg",
+      "/images/ads/details/detail_62_3.jpg",
+      "/images/ads/details/detail_62_4.jpg",
+      "/images/ads/details/detail_62_5.jpg",
+      "/images/ads/details/detail_62_6.jpg",
+      "/images/ads/details/detail_62_7.jpg",
+      "/images/ads/details/detail_62_8.png",
+      "/images/ads/details/detail_62_9.gif",
+      "/images/ads/details/detail_62_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 62 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=62",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 63,
+    "title": "광고 #63",
+    "original_title": "원본 제목 63",
+    "thumbnail": "/images/ads/thumbnails/thumb_63.gif",
+    "detail_images": [
+      "/images/ads/details/detail_63_1.jpg",
+      "/images/ads/details/detail_63_2.jpg",
+      "/images/ads/details/detail_63_3.jpg",
+      "/images/ads/details/detail_63_4.jpg",
+      "/images/ads/details/detail_63_5.jpg",
+      "/images/ads/details/detail_63_6.jpg",
+      "/images/ads/details/detail_63_7.jpg",
+      "/images/ads/details/detail_63_8.png",
+      "/images/ads/details/detail_63_9.gif",
+      "/images/ads/details/detail_63_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 63 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=63",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 64,
+    "title": "광고 #64",
+    "original_title": "원본 제목 64",
+    "thumbnail": "/images/ads/thumbnails/thumb_64.gif",
+    "detail_images": [
+      "/images/ads/details/detail_64_1.jpg",
+      "/images/ads/details/detail_64_2.jpg",
+      "/images/ads/details/detail_64_3.jpg",
+      "/images/ads/details/detail_64_4.jpg",
+      "/images/ads/details/detail_64_5.jpg",
+      "/images/ads/details/detail_64_6.jpg",
+      "/images/ads/details/detail_64_7.jpg",
+      "/images/ads/details/detail_64_8.png",
+      "/images/ads/details/detail_64_9.gif",
+      "/images/ads/details/detail_64_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 64 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=64",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 65,
+    "title": "광고 #65",
+    "original_title": "원본 제목 65",
+    "thumbnail": "/images/ads/thumbnails/thumb_65.gif",
+    "detail_images": [
+      "/images/ads/details/detail_65_1.jpg",
+      "/images/ads/details/detail_65_2.jpg",
+      "/images/ads/details/detail_65_3.jpg",
+      "/images/ads/details/detail_65_4.jpg",
+      "/images/ads/details/detail_65_5.jpg",
+      "/images/ads/details/detail_65_6.jpg",
+      "/images/ads/details/detail_65_7.jpg",
+      "/images/ads/details/detail_65_8.png",
+      "/images/ads/details/detail_65_9.gif",
+      "/images/ads/details/detail_65_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 65 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=65",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 66,
+    "title": "광고 #66",
+    "original_title": "원본 제목 66",
+    "thumbnail": "/images/ads/thumbnails/thumb_66.gif",
+    "detail_images": [
+      "/images/ads/details/detail_66_1.jpg",
+      "/images/ads/details/detail_66_2.jpg",
+      "/images/ads/details/detail_66_3.jpg",
+      "/images/ads/details/detail_66_4.jpg",
+      "/images/ads/details/detail_66_5.jpg",
+      "/images/ads/details/detail_66_6.jpg",
+      "/images/ads/details/detail_66_7.jpg",
+      "/images/ads/details/detail_66_8.png",
+      "/images/ads/details/detail_66_9.gif",
+      "/images/ads/details/detail_66_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 66 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=66",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 67,
+    "title": "광고 #67",
+    "original_title": "원본 제목 67",
+    "thumbnail": "/images/ads/thumbnails/thumb_67.gif",
+    "detail_images": [
+      "/images/ads/details/detail_67_1.jpg",
+      "/images/ads/details/detail_67_2.jpg",
+      "/images/ads/details/detail_67_3.jpg",
+      "/images/ads/details/detail_67_4.jpg",
+      "/images/ads/details/detail_67_5.jpg",
+      "/images/ads/details/detail_67_6.jpg",
+      "/images/ads/details/detail_67_7.jpg",
+      "/images/ads/details/detail_67_8.png",
+      "/images/ads/details/detail_67_9.gif",
+      "/images/ads/details/detail_67_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 67 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=67",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 68,
+    "title": "광고 #68",
+    "original_title": "원본 제목 68",
+    "thumbnail": "/images/ads/thumbnails/thumb_68.gif",
+    "detail_images": [
+      "/images/ads/details/detail_68_1.jpg",
+      "/images/ads/details/detail_68_2.jpg",
+      "/images/ads/details/detail_68_3.jpg",
+      "/images/ads/details/detail_68_4.jpg",
+      "/images/ads/details/detail_68_5.jpg",
+      "/images/ads/details/detail_68_6.jpg",
+      "/images/ads/details/detail_68_7.jpg",
+      "/images/ads/details/detail_68_8.png",
+      "/images/ads/details/detail_68_9.gif",
+      "/images/ads/details/detail_68_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 68 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=68",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 69,
+    "title": "광고 #69",
+    "original_title": "원본 제목 69",
+    "thumbnail": "/images/ads/thumbnails/thumb_69.gif",
+    "detail_images": [
+      "/images/ads/details/detail_69_1.jpg",
+      "/images/ads/details/detail_69_2.jpg",
+      "/images/ads/details/detail_69_3.jpg",
+      "/images/ads/details/detail_69_4.jpg",
+      "/images/ads/details/detail_69_5.jpg",
+      "/images/ads/details/detail_69_6.jpg",
+      "/images/ads/details/detail_69_7.jpg",
+      "/images/ads/details/detail_69_8.png",
+      "/images/ads/details/detail_69_9.gif",
+      "/images/ads/details/detail_69_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 69 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=69",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 70,
+    "title": "광고 #70",
+    "original_title": "원본 제목 70",
+    "thumbnail": "/images/ads/thumbnails/thumb_70.gif",
+    "detail_images": [
+      "/images/ads/details/detail_70_1.jpg",
+      "/images/ads/details/detail_70_2.jpg",
+      "/images/ads/details/detail_70_3.jpg",
+      "/images/ads/details/detail_70_4.jpg",
+      "/images/ads/details/detail_70_5.jpg",
+      "/images/ads/details/detail_70_6.jpg",
+      "/images/ads/details/detail_70_7.jpg",
+      "/images/ads/details/detail_70_8.png",
+      "/images/ads/details/detail_70_9.gif",
+      "/images/ads/details/detail_70_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 70 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=70",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 71,
+    "title": "광고 #71",
+    "original_title": "원본 제목 71",
+    "thumbnail": "/images/ads/thumbnails/thumb_71.gif",
+    "detail_images": [
+      "/images/ads/details/detail_71_1.jpg",
+      "/images/ads/details/detail_71_2.jpg",
+      "/images/ads/details/detail_71_3.jpg",
+      "/images/ads/details/detail_71_4.jpg",
+      "/images/ads/details/detail_71_5.jpg",
+      "/images/ads/details/detail_71_6.jpg",
+      "/images/ads/details/detail_71_7.jpg",
+      "/images/ads/details/detail_71_8.png",
+      "/images/ads/details/detail_71_9.gif",
+      "/images/ads/details/detail_71_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 71 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=71",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 72,
+    "title": "광고 #72",
+    "original_title": "원본 제목 72",
+    "thumbnail": "/images/ads/thumbnails/thumb_72.gif",
+    "detail_images": [
+      "/images/ads/details/detail_72_1.jpg",
+      "/images/ads/details/detail_72_2.jpg",
+      "/images/ads/details/detail_72_3.jpg",
+      "/images/ads/details/detail_72_4.jpg",
+      "/images/ads/details/detail_72_5.jpg",
+      "/images/ads/details/detail_72_6.jpg",
+      "/images/ads/details/detail_72_7.jpg",
+      "/images/ads/details/detail_72_8.png",
+      "/images/ads/details/detail_72_9.gif",
+      "/images/ads/details/detail_72_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 72 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=72",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 73,
+    "title": "광고 #73",
+    "original_title": "원본 제목 73",
+    "thumbnail": "/images/ads/thumbnails/thumb_73.gif",
+    "detail_images": [
+      "/images/ads/details/detail_73_1.jpg",
+      "/images/ads/details/detail_73_2.jpg",
+      "/images/ads/details/detail_73_3.jpg",
+      "/images/ads/details/detail_73_4.jpg",
+      "/images/ads/details/detail_73_5.jpg",
+      "/images/ads/details/detail_73_6.jpg",
+      "/images/ads/details/detail_73_7.jpg",
+      "/images/ads/details/detail_73_8.png",
+      "/images/ads/details/detail_73_9.gif",
+      "/images/ads/details/detail_73_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 73 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=73",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 74,
+    "title": "광고 #74",
+    "original_title": "원본 제목 74",
+    "thumbnail": "/images/ads/thumbnails/thumb_74.gif",
+    "detail_images": [
+      "/images/ads/details/detail_74_1.jpg",
+      "/images/ads/details/detail_74_2.jpg",
+      "/images/ads/details/detail_74_3.jpg",
+      "/images/ads/details/detail_74_4.jpg",
+      "/images/ads/details/detail_74_5.jpg",
+      "/images/ads/details/detail_74_6.jpg",
+      "/images/ads/details/detail_74_7.jpg",
+      "/images/ads/details/detail_74_8.png",
+      "/images/ads/details/detail_74_9.gif",
+      "/images/ads/details/detail_74_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 74 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=74",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 75,
+    "title": "광고 #75",
+    "original_title": "원본 제목 75",
+    "thumbnail": "/images/ads/thumbnails/thumb_75.gif",
+    "detail_images": [
+      "/images/ads/details/detail_75_1.jpg",
+      "/images/ads/details/detail_75_2.jpg",
+      "/images/ads/details/detail_75_3.jpg",
+      "/images/ads/details/detail_75_4.jpg",
+      "/images/ads/details/detail_75_5.jpg",
+      "/images/ads/details/detail_75_6.jpg",
+      "/images/ads/details/detail_75_7.jpg",
+      "/images/ads/details/detail_75_8.png",
+      "/images/ads/details/detail_75_9.gif",
+      "/images/ads/details/detail_75_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 75 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=75",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 76,
+    "title": "광고 #76",
+    "original_title": "원본 제목 76",
+    "thumbnail": "/images/ads/thumbnails/thumb_76.gif",
+    "detail_images": [
+      "/images/ads/details/detail_76_1.jpg",
+      "/images/ads/details/detail_76_2.jpg",
+      "/images/ads/details/detail_76_3.jpg",
+      "/images/ads/details/detail_76_4.jpg",
+      "/images/ads/details/detail_76_5.jpg",
+      "/images/ads/details/detail_76_6.jpg",
+      "/images/ads/details/detail_76_7.jpg",
+      "/images/ads/details/detail_76_8.png",
+      "/images/ads/details/detail_76_9.gif",
+      "/images/ads/details/detail_76_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 76 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=76",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 77,
+    "title": "광고 #77",
+    "original_title": "원본 제목 77",
+    "thumbnail": "/images/ads/thumbnails/thumb_77.gif",
+    "detail_images": [
+      "/images/ads/details/detail_77_1.jpg",
+      "/images/ads/details/detail_77_2.jpg",
+      "/images/ads/details/detail_77_3.jpg",
+      "/images/ads/details/detail_77_4.jpg",
+      "/images/ads/details/detail_77_5.jpg",
+      "/images/ads/details/detail_77_6.jpg",
+      "/images/ads/details/detail_77_7.jpg",
+      "/images/ads/details/detail_77_8.png",
+      "/images/ads/details/detail_77_9.gif",
+      "/images/ads/details/detail_77_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 77 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=77",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 78,
+    "title": "광고 #78",
+    "original_title": "원본 제목 78",
+    "thumbnail": "/images/ads/thumbnails/thumb_78.gif",
+    "detail_images": [
+      "/images/ads/details/detail_78_1.jpg",
+      "/images/ads/details/detail_78_2.jpg",
+      "/images/ads/details/detail_78_3.jpg",
+      "/images/ads/details/detail_78_4.jpg",
+      "/images/ads/details/detail_78_5.jpg",
+      "/images/ads/details/detail_78_6.jpg",
+      "/images/ads/details/detail_78_7.jpg",
+      "/images/ads/details/detail_78_8.png",
+      "/images/ads/details/detail_78_9.gif",
+      "/images/ads/details/detail_78_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 78 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=78",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 79,
+    "title": "광고 #79",
+    "original_title": "원본 제목 79",
+    "thumbnail": "/images/ads/thumbnails/thumb_79.gif",
+    "detail_images": [
+      "/images/ads/details/detail_79_1.jpg",
+      "/images/ads/details/detail_79_2.jpg",
+      "/images/ads/details/detail_79_3.jpg",
+      "/images/ads/details/detail_79_4.jpg",
+      "/images/ads/details/detail_79_5.jpg",
+      "/images/ads/details/detail_79_6.jpg",
+      "/images/ads/details/detail_79_7.jpg",
+      "/images/ads/details/detail_79_8.png",
+      "/images/ads/details/detail_79_9.gif",
+      "/images/ads/details/detail_79_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 79 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=79",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 80,
+    "title": "광고 #80",
+    "original_title": "원본 제목 80",
+    "thumbnail": "/images/ads/thumbnails/thumb_80.gif",
+    "detail_images": [
+      "/images/ads/details/detail_80_1.jpg",
+      "/images/ads/details/detail_80_2.jpg",
+      "/images/ads/details/detail_80_3.jpg",
+      "/images/ads/details/detail_80_4.jpg",
+      "/images/ads/details/detail_80_5.jpg",
+      "/images/ads/details/detail_80_6.jpg",
+      "/images/ads/details/detail_80_7.jpg",
+      "/images/ads/details/detail_80_8.png",
+      "/images/ads/details/detail_80_9.gif",
+      "/images/ads/details/detail_80_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 80 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=80",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 81,
+    "title": "광고 #81",
+    "original_title": "원본 제목 81",
+    "thumbnail": "/images/ads/thumbnails/thumb_81.gif",
+    "detail_images": [
+      "/images/ads/details/detail_81_1.jpg",
+      "/images/ads/details/detail_81_2.jpg",
+      "/images/ads/details/detail_81_3.jpg",
+      "/images/ads/details/detail_81_4.jpg",
+      "/images/ads/details/detail_81_5.jpg",
+      "/images/ads/details/detail_81_6.jpg",
+      "/images/ads/details/detail_81_7.jpg",
+      "/images/ads/details/detail_81_8.png",
+      "/images/ads/details/detail_81_9.gif",
+      "/images/ads/details/detail_81_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 81 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=81",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 82,
+    "title": "광고 #82",
+    "original_title": "원본 제목 82",
+    "thumbnail": "/images/ads/thumbnails/thumb_82.gif",
+    "detail_images": [
+      "/images/ads/details/detail_82_1.jpg",
+      "/images/ads/details/detail_82_2.jpg",
+      "/images/ads/details/detail_82_3.jpg",
+      "/images/ads/details/detail_82_4.jpg",
+      "/images/ads/details/detail_82_5.jpg",
+      "/images/ads/details/detail_82_6.jpg",
+      "/images/ads/details/detail_82_7.jpg",
+      "/images/ads/details/detail_82_8.png",
+      "/images/ads/details/detail_82_9.gif",
+      "/images/ads/details/detail_82_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 82 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=82",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 83,
+    "title": "광고 #83",
+    "original_title": "원본 제목 83",
+    "thumbnail": "/images/ads/thumbnails/thumb_83.gif",
+    "detail_images": [
+      "/images/ads/details/detail_83_1.jpg",
+      "/images/ads/details/detail_83_2.jpg",
+      "/images/ads/details/detail_83_3.jpg",
+      "/images/ads/details/detail_83_4.jpg",
+      "/images/ads/details/detail_83_5.jpg",
+      "/images/ads/details/detail_83_6.jpg",
+      "/images/ads/details/detail_83_7.jpg",
+      "/images/ads/details/detail_83_8.png",
+      "/images/ads/details/detail_83_9.gif",
+      "/images/ads/details/detail_83_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 83 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=83",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 84,
+    "title": "광고 #84",
+    "original_title": "원본 제목 84",
+    "thumbnail": "/images/ads/thumbnails/thumb_84.gif",
+    "detail_images": [
+      "/images/ads/details/detail_84_1.jpg",
+      "/images/ads/details/detail_84_2.jpg",
+      "/images/ads/details/detail_84_3.jpg",
+      "/images/ads/details/detail_84_4.jpg",
+      "/images/ads/details/detail_84_5.jpg",
+      "/images/ads/details/detail_84_6.jpg",
+      "/images/ads/details/detail_84_7.jpg",
+      "/images/ads/details/detail_84_8.png",
+      "/images/ads/details/detail_84_9.gif",
+      "/images/ads/details/detail_84_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 84 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=84",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 85,
+    "title": "광고 #85",
+    "original_title": "원본 제목 85",
+    "thumbnail": "/images/ads/thumbnails/thumb_85.gif",
+    "detail_images": [
+      "/images/ads/details/detail_85_1.jpg",
+      "/images/ads/details/detail_85_2.jpg",
+      "/images/ads/details/detail_85_3.jpg",
+      "/images/ads/details/detail_85_4.jpg",
+      "/images/ads/details/detail_85_5.jpg",
+      "/images/ads/details/detail_85_6.jpg",
+      "/images/ads/details/detail_85_7.jpg",
+      "/images/ads/details/detail_85_8.png",
+      "/images/ads/details/detail_85_9.gif",
+      "/images/ads/details/detail_85_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 85 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=85",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 86,
+    "title": "광고 #86",
+    "original_title": "원본 제목 86",
+    "thumbnail": "/images/ads/thumbnails/thumb_86.gif",
+    "detail_images": [
+      "/images/ads/details/detail_86_1.jpg",
+      "/images/ads/details/detail_86_2.jpg",
+      "/images/ads/details/detail_86_3.jpg",
+      "/images/ads/details/detail_86_4.jpg",
+      "/images/ads/details/detail_86_5.jpg",
+      "/images/ads/details/detail_86_6.jpg",
+      "/images/ads/details/detail_86_7.jpg",
+      "/images/ads/details/detail_86_8.png",
+      "/images/ads/details/detail_86_9.gif",
+      "/images/ads/details/detail_86_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 86 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=86",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 87,
+    "title": "광고 #87",
+    "original_title": "원본 제목 87",
+    "thumbnail": "/images/ads/thumbnails/thumb_87.gif",
+    "detail_images": [
+      "/images/ads/details/detail_87_1.jpg",
+      "/images/ads/details/detail_87_2.jpg",
+      "/images/ads/details/detail_87_3.jpg",
+      "/images/ads/details/detail_87_4.jpg",
+      "/images/ads/details/detail_87_5.jpg",
+      "/images/ads/details/detail_87_6.jpg",
+      "/images/ads/details/detail_87_7.jpg",
+      "/images/ads/details/detail_87_8.png",
+      "/images/ads/details/detail_87_9.gif",
+      "/images/ads/details/detail_87_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 87 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=87",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 88,
+    "title": "광고 #88",
+    "original_title": "원본 제목 88",
+    "thumbnail": "/images/ads/thumbnails/thumb_88.gif",
+    "detail_images": [
+      "/images/ads/details/detail_88_1.jpg",
+      "/images/ads/details/detail_88_2.jpg",
+      "/images/ads/details/detail_88_3.jpg",
+      "/images/ads/details/detail_88_4.jpg",
+      "/images/ads/details/detail_88_5.jpg",
+      "/images/ads/details/detail_88_6.jpg",
+      "/images/ads/details/detail_88_7.jpg",
+      "/images/ads/details/detail_88_8.png",
+      "/images/ads/details/detail_88_9.gif",
+      "/images/ads/details/detail_88_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 88 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=88",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 89,
+    "title": "광고 #89",
+    "original_title": "원본 제목 89",
+    "thumbnail": "/images/ads/thumbnails/thumb_89.gif",
+    "detail_images": [
+      "/images/ads/details/detail_89_1.jpg",
+      "/images/ads/details/detail_89_2.jpg",
+      "/images/ads/details/detail_89_3.jpg",
+      "/images/ads/details/detail_89_4.jpg",
+      "/images/ads/details/detail_89_5.jpg",
+      "/images/ads/details/detail_89_6.jpg",
+      "/images/ads/details/detail_89_7.jpg",
+      "/images/ads/details/detail_89_8.png",
+      "/images/ads/details/detail_89_9.gif",
+      "/images/ads/details/detail_89_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 89 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=89",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 90,
+    "title": "광고 #90",
+    "original_title": "원본 제목 90",
+    "thumbnail": "/images/ads/thumbnails/thumb_90.gif",
+    "detail_images": [
+      "/images/ads/details/detail_90_1.jpg",
+      "/images/ads/details/detail_90_2.jpg",
+      "/images/ads/details/detail_90_3.jpg",
+      "/images/ads/details/detail_90_4.jpg",
+      "/images/ads/details/detail_90_5.jpg",
+      "/images/ads/details/detail_90_6.jpg",
+      "/images/ads/details/detail_90_7.jpg",
+      "/images/ads/details/detail_90_8.png",
+      "/images/ads/details/detail_90_9.gif",
+      "/images/ads/details/detail_90_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 90 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=90",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 91,
+    "title": "광고 #91",
+    "original_title": "원본 제목 91",
+    "thumbnail": "/images/ads/thumbnails/thumb_91.gif",
+    "detail_images": [
+      "/images/ads/details/detail_91_1.jpg",
+      "/images/ads/details/detail_91_2.jpg",
+      "/images/ads/details/detail_91_3.jpg",
+      "/images/ads/details/detail_91_4.jpg",
+      "/images/ads/details/detail_91_5.jpg",
+      "/images/ads/details/detail_91_6.jpg",
+      "/images/ads/details/detail_91_7.jpg",
+      "/images/ads/details/detail_91_8.png",
+      "/images/ads/details/detail_91_9.gif",
+      "/images/ads/details/detail_91_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 91 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=91",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 92,
+    "title": "광고 #92",
+    "original_title": "원본 제목 92",
+    "thumbnail": "/images/ads/thumbnails/thumb_92.gif",
+    "detail_images": [
+      "/images/ads/details/detail_92_1.jpg",
+      "/images/ads/details/detail_92_2.jpg",
+      "/images/ads/details/detail_92_3.jpg",
+      "/images/ads/details/detail_92_4.jpg",
+      "/images/ads/details/detail_92_5.jpg",
+      "/images/ads/details/detail_92_6.jpg",
+      "/images/ads/details/detail_92_7.jpg",
+      "/images/ads/details/detail_92_8.png",
+      "/images/ads/details/detail_92_9.gif",
+      "/images/ads/details/detail_92_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 92 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=92",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 93,
+    "title": "광고 #93",
+    "original_title": "원본 제목 93",
+    "thumbnail": "/images/ads/thumbnails/thumb_93.gif",
+    "detail_images": [
+      "/images/ads/details/detail_93_1.jpg",
+      "/images/ads/details/detail_93_2.jpg",
+      "/images/ads/details/detail_93_3.jpg",
+      "/images/ads/details/detail_93_4.jpg",
+      "/images/ads/details/detail_93_5.jpg",
+      "/images/ads/details/detail_93_6.jpg",
+      "/images/ads/details/detail_93_7.jpg",
+      "/images/ads/details/detail_93_8.png",
+      "/images/ads/details/detail_93_9.gif",
+      "/images/ads/details/detail_93_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 93 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=93",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 94,
+    "title": "광고 #94",
+    "original_title": "원본 제목 94",
+    "thumbnail": "/images/ads/thumbnails/thumb_94.gif",
+    "detail_images": [
+      "/images/ads/details/detail_94_1.jpg",
+      "/images/ads/details/detail_94_2.jpg",
+      "/images/ads/details/detail_94_3.jpg",
+      "/images/ads/details/detail_94_4.jpg",
+      "/images/ads/details/detail_94_5.jpg",
+      "/images/ads/details/detail_94_6.jpg",
+      "/images/ads/details/detail_94_7.jpg",
+      "/images/ads/details/detail_94_8.png",
+      "/images/ads/details/detail_94_9.gif",
+      "/images/ads/details/detail_94_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 94 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=94",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 95,
+    "title": "광고 #95",
+    "original_title": "원본 제목 95",
+    "thumbnail": "/images/ads/thumbnails/thumb_95.gif",
+    "detail_images": [
+      "/images/ads/details/detail_95_1.jpg",
+      "/images/ads/details/detail_95_2.jpg",
+      "/images/ads/details/detail_95_3.jpg",
+      "/images/ads/details/detail_95_4.jpg",
+      "/images/ads/details/detail_95_5.jpg",
+      "/images/ads/details/detail_95_6.jpg",
+      "/images/ads/details/detail_95_7.jpg",
+      "/images/ads/details/detail_95_8.png",
+      "/images/ads/details/detail_95_9.gif",
+      "/images/ads/details/detail_95_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 95 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=95",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 96,
+    "title": "광고 #96",
+    "original_title": "원본 제목 96",
+    "thumbnail": "/images/ads/thumbnails/thumb_96.gif",
+    "detail_images": [
+      "/images/ads/details/detail_96_1.jpg",
+      "/images/ads/details/detail_96_2.jpg",
+      "/images/ads/details/detail_96_3.jpg",
+      "/images/ads/details/detail_96_4.jpg",
+      "/images/ads/details/detail_96_5.jpg",
+      "/images/ads/details/detail_96_6.jpg",
+      "/images/ads/details/detail_96_7.jpg",
+      "/images/ads/details/detail_96_8.png",
+      "/images/ads/details/detail_96_9.gif",
+      "/images/ads/details/detail_96_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 96 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=96",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 97,
+    "title": "광고 #97",
+    "original_title": "원본 제목 97",
+    "thumbnail": "/images/ads/thumbnails/thumb_97.gif",
+    "detail_images": [
+      "/images/ads/details/detail_97_1.jpg",
+      "/images/ads/details/detail_97_2.jpg",
+      "/images/ads/details/detail_97_3.jpg",
+      "/images/ads/details/detail_97_4.jpg",
+      "/images/ads/details/detail_97_5.jpg",
+      "/images/ads/details/detail_97_6.jpg",
+      "/images/ads/details/detail_97_7.jpg",
+      "/images/ads/details/detail_97_8.png",
+      "/images/ads/details/detail_97_9.gif",
+      "/images/ads/details/detail_97_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 97 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=97",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 98,
+    "title": "광고 #98",
+    "original_title": "원본 제목 98",
+    "thumbnail": "/images/ads/thumbnails/thumb_98.gif",
+    "detail_images": [
+      "/images/ads/details/detail_98_1.jpg",
+      "/images/ads/details/detail_98_2.jpg",
+      "/images/ads/details/detail_98_3.jpg",
+      "/images/ads/details/detail_98_4.jpg",
+      "/images/ads/details/detail_98_5.jpg",
+      "/images/ads/details/detail_98_6.jpg",
+      "/images/ads/details/detail_98_7.jpg",
+      "/images/ads/details/detail_98_8.png",
+      "/images/ads/details/detail_98_9.gif",
+      "/images/ads/details/detail_98_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 98 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=98",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 99,
+    "title": "광고 #99",
+    "original_title": "원본 제목 99",
+    "thumbnail": "/images/ads/thumbnails/thumb_99.gif",
+    "detail_images": [
+      "/images/ads/details/detail_99_1.jpg",
+      "/images/ads/details/detail_99_2.jpg",
+      "/images/ads/details/detail_99_3.jpg",
+      "/images/ads/details/detail_99_4.jpg",
+      "/images/ads/details/detail_99_5.jpg",
+      "/images/ads/details/detail_99_6.jpg",
+      "/images/ads/details/detail_99_7.jpg",
+      "/images/ads/details/detail_99_8.png",
+      "/images/ads/details/detail_99_9.gif",
+      "/images/ads/details/detail_99_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 99 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=99",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 100,
+    "title": "광고 #100",
+    "original_title": "원본 제목 100",
+    "thumbnail": "/images/ads/thumbnails/thumb_100.gif",
+    "detail_images": [
+      "/images/ads/details/detail_100_1.jpg",
+      "/images/ads/details/detail_100_2.jpg",
+      "/images/ads/details/detail_100_3.jpg",
+      "/images/ads/details/detail_100_4.jpg",
+      "/images/ads/details/detail_100_5.jpg",
+      "/images/ads/details/detail_100_6.jpg",
+      "/images/ads/details/detail_100_7.jpg",
+      "/images/ads/details/detail_100_8.png",
+      "/images/ads/details/detail_100_9.gif",
+      "/images/ads/details/detail_100_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 100 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=100",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 101,
+    "title": "광고 #101",
+    "original_title": "원본 제목 101",
+    "thumbnail": "/images/ads/thumbnails/thumb_101.gif",
+    "detail_images": [
+      "/images/ads/details/detail_101_1.jpg",
+      "/images/ads/details/detail_101_2.jpg",
+      "/images/ads/details/detail_101_3.jpg",
+      "/images/ads/details/detail_101_4.jpg",
+      "/images/ads/details/detail_101_5.jpg",
+      "/images/ads/details/detail_101_6.jpg",
+      "/images/ads/details/detail_101_7.jpg",
+      "/images/ads/details/detail_101_8.png",
+      "/images/ads/details/detail_101_9.gif",
+      "/images/ads/details/detail_101_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 101 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=101",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 102,
+    "title": "광고 #102",
+    "original_title": "원본 제목 102",
+    "thumbnail": "/images/ads/thumbnails/thumb_102.gif",
+    "detail_images": [
+      "/images/ads/details/detail_102_1.jpg",
+      "/images/ads/details/detail_102_2.jpg",
+      "/images/ads/details/detail_102_3.jpg",
+      "/images/ads/details/detail_102_4.jpg",
+      "/images/ads/details/detail_102_5.jpg",
+      "/images/ads/details/detail_102_6.jpg",
+      "/images/ads/details/detail_102_7.jpg",
+      "/images/ads/details/detail_102_8.png",
+      "/images/ads/details/detail_102_9.gif",
+      "/images/ads/details/detail_102_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 102 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=102",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 103,
+    "title": "광고 #103",
+    "original_title": "원본 제목 103",
+    "thumbnail": "/images/ads/thumbnails/thumb_103.gif",
+    "detail_images": [
+      "/images/ads/details/detail_103_1.jpg",
+      "/images/ads/details/detail_103_2.jpg",
+      "/images/ads/details/detail_103_3.jpg",
+      "/images/ads/details/detail_103_4.jpg",
+      "/images/ads/details/detail_103_5.jpg",
+      "/images/ads/details/detail_103_6.jpg",
+      "/images/ads/details/detail_103_7.jpg",
+      "/images/ads/details/detail_103_8.png",
+      "/images/ads/details/detail_103_9.gif",
+      "/images/ads/details/detail_103_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 103 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=103",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 104,
+    "title": "광고 #104",
+    "original_title": "원본 제목 104",
+    "thumbnail": "/images/ads/thumbnails/thumb_104.gif",
+    "detail_images": [
+      "/images/ads/details/detail_104_1.jpg",
+      "/images/ads/details/detail_104_2.jpg",
+      "/images/ads/details/detail_104_3.jpg",
+      "/images/ads/details/detail_104_4.jpg",
+      "/images/ads/details/detail_104_5.jpg",
+      "/images/ads/details/detail_104_6.jpg",
+      "/images/ads/details/detail_104_7.jpg",
+      "/images/ads/details/detail_104_8.png",
+      "/images/ads/details/detail_104_9.gif",
+      "/images/ads/details/detail_104_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 104 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=104",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 105,
+    "title": "광고 #105",
+    "original_title": "원본 제목 105",
+    "thumbnail": "/images/ads/thumbnails/thumb_105.gif",
+    "detail_images": [
+      "/images/ads/details/detail_105_1.jpg",
+      "/images/ads/details/detail_105_2.jpg",
+      "/images/ads/details/detail_105_3.jpg",
+      "/images/ads/details/detail_105_4.jpg",
+      "/images/ads/details/detail_105_5.jpg",
+      "/images/ads/details/detail_105_6.jpg",
+      "/images/ads/details/detail_105_7.jpg",
+      "/images/ads/details/detail_105_8.png",
+      "/images/ads/details/detail_105_9.gif",
+      "/images/ads/details/detail_105_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 105 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=105",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 106,
+    "title": "광고 #106",
+    "original_title": "원본 제목 106",
+    "thumbnail": "/images/ads/thumbnails/thumb_106.gif",
+    "detail_images": [
+      "/images/ads/details/detail_106_1.jpg",
+      "/images/ads/details/detail_106_2.jpg",
+      "/images/ads/details/detail_106_3.jpg",
+      "/images/ads/details/detail_106_4.jpg",
+      "/images/ads/details/detail_106_5.jpg",
+      "/images/ads/details/detail_106_6.jpg",
+      "/images/ads/details/detail_106_7.jpg",
+      "/images/ads/details/detail_106_8.png",
+      "/images/ads/details/detail_106_9.gif",
+      "/images/ads/details/detail_106_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 106 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=106",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 107,
+    "title": "광고 #107",
+    "original_title": "원본 제목 107",
+    "thumbnail": "/images/ads/thumbnails/thumb_107.gif",
+    "detail_images": [
+      "/images/ads/details/detail_107_1.jpg",
+      "/images/ads/details/detail_107_2.jpg",
+      "/images/ads/details/detail_107_3.jpg",
+      "/images/ads/details/detail_107_4.jpg",
+      "/images/ads/details/detail_107_5.jpg",
+      "/images/ads/details/detail_107_6.jpg",
+      "/images/ads/details/detail_107_7.jpg",
+      "/images/ads/details/detail_107_8.png",
+      "/images/ads/details/detail_107_9.gif",
+      "/images/ads/details/detail_107_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 107 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=107",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 108,
+    "title": "광고 #108",
+    "original_title": "원본 제목 108",
+    "thumbnail": "/images/ads/thumbnails/thumb_108.gif",
+    "detail_images": [
+      "/images/ads/details/detail_108_1.jpg",
+      "/images/ads/details/detail_108_2.jpg",
+      "/images/ads/details/detail_108_3.jpg",
+      "/images/ads/details/detail_108_4.jpg",
+      "/images/ads/details/detail_108_5.jpg",
+      "/images/ads/details/detail_108_6.jpg",
+      "/images/ads/details/detail_108_7.jpg",
+      "/images/ads/details/detail_108_8.png",
+      "/images/ads/details/detail_108_9.gif",
+      "/images/ads/details/detail_108_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 108 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=108",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 109,
+    "title": "광고 #109",
+    "original_title": "원본 제목 109",
+    "thumbnail": "/images/ads/thumbnails/thumb_109.gif",
+    "detail_images": [
+      "/images/ads/details/detail_109_1.jpg",
+      "/images/ads/details/detail_109_2.jpg",
+      "/images/ads/details/detail_109_3.jpg",
+      "/images/ads/details/detail_109_4.jpg",
+      "/images/ads/details/detail_109_5.jpg",
+      "/images/ads/details/detail_109_6.jpg",
+      "/images/ads/details/detail_109_7.jpg",
+      "/images/ads/details/detail_109_8.png",
+      "/images/ads/details/detail_109_9.gif",
+      "/images/ads/details/detail_109_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 109 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=109",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 110,
+    "title": "광고 #110",
+    "original_title": "원본 제목 110",
+    "thumbnail": "/images/ads/thumbnails/thumb_110.gif",
+    "detail_images": [
+      "/images/ads/details/detail_110_1.jpg",
+      "/images/ads/details/detail_110_2.jpg",
+      "/images/ads/details/detail_110_3.jpg",
+      "/images/ads/details/detail_110_4.jpg",
+      "/images/ads/details/detail_110_5.jpg",
+      "/images/ads/details/detail_110_6.jpg",
+      "/images/ads/details/detail_110_7.jpg",
+      "/images/ads/details/detail_110_8.png",
+      "/images/ads/details/detail_110_9.gif",
+      "/images/ads/details/detail_110_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 110 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=110",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 111,
+    "title": "광고 #111",
+    "original_title": "원본 제목 111",
+    "thumbnail": "/images/ads/thumbnails/thumb_111.gif",
+    "detail_images": [
+      "/images/ads/details/detail_111_1.jpg",
+      "/images/ads/details/detail_111_2.jpg",
+      "/images/ads/details/detail_111_3.jpg",
+      "/images/ads/details/detail_111_4.jpg",
+      "/images/ads/details/detail_111_5.jpg",
+      "/images/ads/details/detail_111_6.jpg",
+      "/images/ads/details/detail_111_7.jpg",
+      "/images/ads/details/detail_111_8.png",
+      "/images/ads/details/detail_111_9.gif",
+      "/images/ads/details/detail_111_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 111 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=111",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 112,
+    "title": "광고 #112",
+    "original_title": "원본 제목 112",
+    "thumbnail": "/images/ads/thumbnails/thumb_112.gif",
+    "detail_images": [
+      "/images/ads/details/detail_112_1.jpg",
+      "/images/ads/details/detail_112_2.jpg",
+      "/images/ads/details/detail_112_3.jpg",
+      "/images/ads/details/detail_112_4.jpg",
+      "/images/ads/details/detail_112_5.jpg",
+      "/images/ads/details/detail_112_6.jpg",
+      "/images/ads/details/detail_112_7.jpg",
+      "/images/ads/details/detail_112_8.png",
+      "/images/ads/details/detail_112_9.gif",
+      "/images/ads/details/detail_112_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 112 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=112",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 113,
+    "title": "광고 #113",
+    "original_title": "원본 제목 113",
+    "thumbnail": "/images/ads/thumbnails/thumb_113.gif",
+    "detail_images": [
+      "/images/ads/details/detail_113_1.jpg",
+      "/images/ads/details/detail_113_2.jpg",
+      "/images/ads/details/detail_113_3.jpg",
+      "/images/ads/details/detail_113_4.jpg",
+      "/images/ads/details/detail_113_5.jpg",
+      "/images/ads/details/detail_113_6.jpg",
+      "/images/ads/details/detail_113_7.jpg",
+      "/images/ads/details/detail_113_8.png",
+      "/images/ads/details/detail_113_9.gif",
+      "/images/ads/details/detail_113_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 113 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=113",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 114,
+    "title": "광고 #114",
+    "original_title": "원본 제목 114",
+    "thumbnail": "/images/ads/thumbnails/thumb_114.gif",
+    "detail_images": [
+      "/images/ads/details/detail_114_1.jpg",
+      "/images/ads/details/detail_114_2.jpg",
+      "/images/ads/details/detail_114_3.jpg",
+      "/images/ads/details/detail_114_4.jpg",
+      "/images/ads/details/detail_114_5.jpg",
+      "/images/ads/details/detail_114_6.jpg",
+      "/images/ads/details/detail_114_7.jpg",
+      "/images/ads/details/detail_114_8.png",
+      "/images/ads/details/detail_114_9.gif",
+      "/images/ads/details/detail_114_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 114 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=114",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 115,
+    "title": "광고 #115",
+    "original_title": "원본 제목 115",
+    "thumbnail": "/images/ads/thumbnails/thumb_115.gif",
+    "detail_images": [
+      "/images/ads/details/detail_115_1.jpg",
+      "/images/ads/details/detail_115_2.jpg",
+      "/images/ads/details/detail_115_3.jpg",
+      "/images/ads/details/detail_115_4.jpg",
+      "/images/ads/details/detail_115_5.jpg",
+      "/images/ads/details/detail_115_6.jpg",
+      "/images/ads/details/detail_115_7.jpg",
+      "/images/ads/details/detail_115_8.png",
+      "/images/ads/details/detail_115_9.gif",
+      "/images/ads/details/detail_115_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 115 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=115",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 116,
+    "title": "광고 #116",
+    "original_title": "원본 제목 116",
+    "thumbnail": "/images/ads/thumbnails/thumb_116.gif",
+    "detail_images": [
+      "/images/ads/details/detail_116_1.jpg",
+      "/images/ads/details/detail_116_2.jpg",
+      "/images/ads/details/detail_116_3.jpg",
+      "/images/ads/details/detail_116_4.jpg",
+      "/images/ads/details/detail_116_5.jpg",
+      "/images/ads/details/detail_116_6.jpg",
+      "/images/ads/details/detail_116_7.jpg",
+      "/images/ads/details/detail_116_8.png",
+      "/images/ads/details/detail_116_9.gif",
+      "/images/ads/details/detail_116_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 116 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=116",
+    "scraped_at": "2025-12-08T18:00:00"
+  },
+  {
+    "id": 117,
+    "title": "광고 #117",
+    "original_title": "원본 제목 117",
+    "thumbnail": "/images/ads/thumbnails/thumb_117.gif",
+    "detail_images": [
+      "/images/ads/details/detail_117_1.jpg",
+      "/images/ads/details/detail_117_2.jpg",
+      "/images/ads/details/detail_117_3.jpg",
+      "/images/ads/details/detail_117_4.jpg",
+      "/images/ads/details/detail_117_5.jpg",
+      "/images/ads/details/detail_117_6.jpg",
+      "/images/ads/details/detail_117_7.jpg",
+      "/images/ads/details/detail_117_8.png",
+      "/images/ads/details/detail_117_9.gif",
+      "/images/ads/details/detail_117_10.gif"
+    ],
+    "location": "서울 강남구",
+    "pay": "시급 90,000원",
+    "phones": [
+      "010-xxxx-xxxx"
+    ],
+    "content": "광고 117 내용입니다",
+    "url": "https://lunaalba.net/guin_detail.php?num=117",
+    "scraped_at": "2025-12-08T18:00:00"
+  }
+]
