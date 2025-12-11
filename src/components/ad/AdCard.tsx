@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 interface AdCardProps {
     id?: number | string;
-    variant?: 'vip' | 'special' | 'premium' | 'regular';
+    variant?: 'diamond' | 'sapphire' | 'ruby' | 'gold' | 'vip' | 'special' | 'premium' | 'regular';
     title: string;
     location: string;
     pay: string;
@@ -15,7 +15,7 @@ interface AdCardProps {
     isHot?: boolean;
     price?: string;
     duration?: string;
-    productType?: 'vip' | 'special' | 'premium' | 'general';
+    productType?: 'diamond' | 'sapphire' | 'ruby' | 'gold' | 'vip' | 'special' | 'premium' | 'general' | 'regular' | 'highlight' | 'jumpup';
 }
 
 const AdCard: React.FC<AdCardProps> = ({
@@ -32,15 +32,23 @@ const AdCard: React.FC<AdCardProps> = ({
     duration,
     productType,
 }) => {
-    const isVip = variant === 'vip';
-    const isSpecial = variant === 'special';
-    const isPremium = variant === 'premium';
+    const isDiamond = variant === 'diamond' || productType === 'diamond';
+    const isSapphire = variant === 'sapphire' || productType === 'sapphire';
+    const isRuby = variant === 'ruby' || productType === 'ruby';
+    const isGold = variant === 'gold' || productType === 'gold';
+    const isVip = variant === 'vip' || productType === 'vip';
+    const isSpecial = variant === 'special' || productType === 'special';
+    const isPremium = variant === 'premium' || productType === 'premium';
 
     return (
         <Link
             to={`/ad/${id}`}
             className={cn(
                 "block group relative overflow-hidden rounded-xl bg-accent transition-all duration-300 hover:-translate-y-1",
+                isDiamond && "border-2 border-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.3)]",
+                isSapphire && "border-2 border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.3)]",
+                isRuby && "border-2 border-red-500 shadow-[0_0_15px_rgba(239,68,68,0.3)]",
+                isGold && "border-2 border-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.3)]",
                 isVip && "border-2 border-primary shadow-[0_0_15px_rgba(212,175,55,0.3)]",
                 isSpecial && "border-2 border-secondary shadow-[0_0_15px_rgba(255,0,127,0.3)]",
                 isPremium && "border border-white/20",
@@ -48,13 +56,23 @@ const AdCard: React.FC<AdCardProps> = ({
             )}
         >
             {/* Image Section */}
-            <div className={cn("relative overflow-hidden", isVip ? "h-48" : "h-40")}>
-                <img
-                    src={image}
-                    alt={title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+            <div className={cn("relative overflow-hidden", (isDiamond || isSapphire || isRuby || isGold || isVip) ? "h-48" : "h-40")}>
+                {image ? (
+                    <>
+                        <img
+                            src={image}
+                            alt={title}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+                    </>
+                ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-white/5 to-white/10 flex items-center justify-center">
+                        <div className="text-white/10 text-4xl font-bold opacity-30">
+                            QUEEN
+                        </div>
+                    </div>
+                )}
 
                 {/* Badges */}
                 <div className="absolute top-2 left-2 flex gap-1">
@@ -76,7 +94,13 @@ const AdCard: React.FC<AdCardProps> = ({
             <div className="p-3">
                 <h3 className={cn(
                     "font-bold truncate mb-1",
-                    isVip ? "text-lg text-primary" : isSpecial ? "text-base text-secondary" : "text-sm text-white"
+                    isDiamond ? "text-lg text-cyan-400" :
+                        isSapphire ? "text-lg text-blue-400" :
+                            isRuby ? "text-lg text-red-400" :
+                                isGold ? "text-lg text-yellow-400" :
+                                    isVip ? "text-lg text-primary" :
+                                        isSpecial ? "text-base text-secondary" :
+                                            "text-sm text-white"
                 )}>
                     {title}
                 </h3>
@@ -91,9 +115,16 @@ const AdCard: React.FC<AdCardProps> = ({
                         <DollarSign size={14} className="text-primary" />
                         <span>{pay}</span>
                     </div>
-                    {isVip && (
-                        <span className="text-[10px] text-black bg-primary px-2 py-0.5 rounded-full font-bold">
-                            VIP
+                    {(isDiamond || isSapphire || isRuby || isGold || isVip) && (
+                        <span className={cn(
+                            "text-[10px] text-black px-2 py-0.5 rounded-full font-bold",
+                            isDiamond && "bg-cyan-400",
+                            isSapphire && "bg-blue-500 text-white",
+                            isRuby && "bg-red-500 text-white",
+                            isGold && "bg-yellow-400",
+                            isVip && "bg-primary"
+                        )}>
+                            {isDiamond ? 'DIAMOND' : isSapphire ? 'SAPPHIRE' : isRuby ? 'RUBY' : isGold ? 'GOLD' : 'VIP'}
                         </span>
                     )}
                 </div>
@@ -109,15 +140,18 @@ const AdCard: React.FC<AdCardProps> = ({
                             {productType && (
                                 <span className={cn(
                                     "text-[9px] px-1.5 py-0.5 rounded font-bold",
+                                    productType === 'diamond' && "bg-cyan-400 text-black",
+                                    productType === 'sapphire' && "bg-blue-500 text-white",
+                                    productType === 'ruby' && "bg-red-500 text-white",
+                                    productType === 'gold' && "bg-yellow-400 text-black",
                                     productType === 'vip' && "bg-yellow-400 text-black",
                                     productType === 'special' && "bg-blue-400 text-white",
                                     productType === 'premium' && "bg-purple-400 text-white",
-                                    productType === 'general' && "bg-gray-400 text-white"
+                                    productType === 'highlight' && "bg-yellow-500 text-black",
+                                    productType === 'jumpup' && "bg-green-500 text-white",
+                                    (productType === 'general' || productType === 'regular') && "bg-gray-400 text-white"
                                 )}>
-                                    {productType === 'vip' && 'VIP'}
-                                    {productType === 'special' && 'SPECIAL'}
-                                    {productType === 'premium' && 'PREMIUM'}
-                                    {productType === 'general' && 'GENERAL'}
+                                    {productType === 'highlight' ? 'HIGHLIGHT' : productType === 'jumpup' ? 'JUMP UP' : productType.toUpperCase()}
                                 </span>
                             )}
                         </div>

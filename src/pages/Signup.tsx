@@ -1,15 +1,29 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, User, Phone, Eye, EyeOff, AlertCircle, CheckCircle } from 'lucide-react';
+import { Mail, Lock, User, Eye, EyeOff, AlertCircle, CheckCircle, Shield, FileCheck, ChevronRight, ChevronDown, Building2 } from 'lucide-react';
 import { signup } from '../utils/auth';
+import PhoneVerification from '../components/auth/PhoneVerification';
+import BusinessVerification from '../components/auth/BusinessVerification';
 
 const Signup: React.FC = () => {
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [loading, setLoading] = useState(false);
-    const [agreed, setAgreed] = useState(false);
+    const [isPhoneVerified, setIsPhoneVerified] = useState(false);
+    const [isBusinessVerified, setIsBusinessVerified] = useState(false);
+    const [businessCertificate, setBusinessCertificate] = useState<File | null>(null);
+
+    // Agreement states
+    const [allAgreed, setAllAgreed] = useState(false);
+    const [agreements, setAgreements] = useState({
+        terms: false,
+        privacy: false,
+        marketing: false
+    });
+    const [expandedTerms, setExpandedTerms] = useState<string | null>(null);
 
     const [formData, setFormData] = useState({
         email: '',
@@ -17,11 +31,47 @@ const Signup: React.FC = () => {
         confirmPassword: '',
         name: '',
         phone: '',
-        type: 'worker' as 'worker' | 'advertiser'
+        type: 'worker' as 'worker' | 'advertiser',
+        businessNumber: '',
+        businessName: '',
+        nickname: ''
     });
+
+    // Password strength calculation
+    const getPasswordStrength = (password: string): { level: number; text: string; color: string } => {
+        if (!password) return { level: 0, text: '', color: '' };
+        let strength = 0;
+        if (password.length >= 6) strength++;
+        if (password.length >= 10) strength++;
+        if (/[A-Z]/.test(password)) strength++;
+        if (/[0-9]/.test(password)) strength++;
+        if (/[^A-Za-z0-9]/.test(password)) strength++;
+
+        if (strength <= 2) return { level: 1, text: '약함', color: 'bg-red-500' };
+        if (strength <= 3) return { level: 2, text: '보통', color: 'bg-yellow-500' };
+        if (strength <= 4) return { level: 3, text: '강함', color: 'bg-green-500' };
+        return { level: 4, text: '매우 강함', color: 'bg-primary' };
+    };
+
+    const passwordStrength = getPasswordStrength(formData.password);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleAllAgreedChange = (checked: boolean) => {
+        setAllAgreed(checked);
+        setAgreements({
+            terms: checked,
+            privacy: checked,
+            marketing: checked
+        });
+    };
+
+    const handleAgreementChange = (key: keyof typeof agreements, checked: boolean) => {
+        const newAgreements = { ...agreements, [key]: checked };
+        setAgreements(newAgreements);
+        setAllAgreed(newAgreements.terms && newAgreements.privacy && newAgreements.marketing);
     };
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -31,10 +81,34 @@ const Signup: React.FC = () => {
         setLoading(true);
 
         // Validation
-        if (!formData.email || !formData.password || !formData.name) {
+        if (!formData.email || !formData.password || !formData.name || !formData.nickname) {
             setError('필수 항목을 모두 입력해주세요.');
             setLoading(false);
             return;
+        }
+
+        if (!formData.email.includes('@')) {
+            setError('올바른 이메일 형식을 입력해주세요.');
+            setLoading(false);
+            return;
+        }
+
+        if (formData.type === 'advertiser') {
+            if (!formData.businessNumber || !formData.businessName) {
+                setError('사업자 정보를 모두 입력해주세요.');
+                setLoading(false);
+                return;
+            }
+            if (!isBusinessVerified) {
+                setError('사업자등록번호 확인을 완료해주세요.');
+                setLoading(false);
+                return;
+            }
+            if (!businessCertificate) {
+                setError('사업자등록증 사본을 업로드해주세요.');
+                setLoading(false);
+                return;
+            }
         }
 
         if (formData.password.length < 6) {
@@ -49,8 +123,14 @@ const Signup: React.FC = () => {
             return;
         }
 
-        if (!agreed) {
-            setError('이용약관에 동의해주세요.');
+        if (!agreements.terms || !agreements.privacy) {
+            setError('필수 약관에 동의해주세요.');
+            setLoading(false);
+            return;
+        }
+
+        if (!isPhoneVerified) {
+            setError('휴대폰 본인인증을 완료해주세요.');
             setLoading(false);
             return;
         }
@@ -62,6 +142,9 @@ const Signup: React.FC = () => {
             name: formData.name,
             phone: formData.phone,
             type: formData.type,
+            businessNumber: formData.businessNumber,
+            businessName: formData.businessName,
+            nickname: formData.nickname
         });
 
         if (result.success) {
@@ -82,16 +165,17 @@ const Signup: React.FC = () => {
 
     return (
         <div className="min-h-screen flex items-center justify-center py-12 px-4">
-            <div className="max-w-md w-full space-y-8">
+            <div className="max-w-lg w-full space-y-8">
+                {/* Header */}
                 <div className="text-center">
                     <h1 className="text-3xl font-bold text-white mb-2">회원가입</h1>
-                    <p className="text-text-muted">QueenAlba의 회원이 되어주세요</p>
+                    <p className="text-text-muted">LunaAlba의 회원이 되어주세요</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="mt-8 space-y-6 bg-accent rounded-xl p-8 border border-white/5">
                     {/* Error Message */}
                     {error && (
-                        <div className="flex items-center gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400">
+                        <div className="flex items-center gap-2 p-4 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 animate-shake">
                             <AlertCircle size={18} />
                             <span className="text-sm">{error}</span>
                         </div>
@@ -99,39 +183,77 @@ const Signup: React.FC = () => {
 
                     {/* Success Message */}
                     {success && (
-                        <div className="flex items-center gap-2 p-3 rounded-lg bg-green-500/10 border border-green-500/20 text-green-400">
+                        <div className="flex items-center gap-2 p-4 rounded-lg bg-green-500/10 border border-green-500/20 text-green-400">
                             <CheckCircle size={18} />
                             <span className="text-sm">{success}</span>
                         </div>
                     )}
 
                     {/* User Type Selection */}
-                    <div className="flex gap-2 p-1 bg-background rounded-lg">
-                        <button
-                            type="button"
-                            className={`flex-1 py-2 text-sm font-bold rounded-md transition-all ${formData.type === 'worker'
-                                ? 'bg-primary text-black shadow-lg'
-                                : 'text-text-muted hover:text-white'
-                                }`}
-                            onClick={() => setFormData({ ...formData, type: 'worker' })}
-                        >
-                            일반회원
-                        </button>
-                        <button
-                            type="button"
-                            className={`flex-1 py-2 text-sm font-bold rounded-md transition-all ${formData.type === 'advertiser'
-                                ? 'bg-primary text-black shadow-lg'
-                                : 'text-text-muted hover:text-white'
-                                }`}
-                            onClick={() => setFormData({ ...formData, type: 'advertiser' })}
-                        >
-                            광고주
-                        </button>
+                    <div>
+                        <label className="block text-sm font-medium text-white mb-3">회원 유형 선택</label>
+                        <div className="grid grid-cols-2 gap-3">
+                            <button
+                                type="button"
+                                className={`relative p-4 rounded-xl border-2 transition-all text-left ${formData.type === 'worker'
+                                    ? 'border-primary bg-primary/10'
+                                    : 'border-white/10 hover:border-white/20'
+                                    }`}
+                                onClick={() => setFormData({ ...formData, type: 'worker' })}
+                            >
+                                <div className="flex items-center gap-3">
+                                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${formData.type === 'worker' ? 'bg-primary text-black' : 'bg-white/10 text-text-muted'}`}>
+                                        <User size={20} />
+                                    </div>
+                                    <div>
+                                        <div className={`font-bold ${formData.type === 'worker' ? 'text-white' : 'text-text-muted'}`}>일반회원</div>
+                                        <div className="text-xs text-text-muted">구직 및 커뮤니티 이용</div>
+                                    </div>
+                                </div>
+                                {formData.type === 'worker' && (
+                                    <div className="absolute top-2 right-2 w-5 h-5 bg-primary rounded-full flex items-center justify-center">
+                                        <CheckCircle size={14} className="text-black" />
+                                    </div>
+                                )}
+                            </button>
+
+                            <button
+                                type="button"
+                                className={`relative p-4 rounded-xl border-2 transition-all text-left ${formData.type === 'advertiser'
+                                    ? 'border-primary bg-primary/10'
+                                    : 'border-white/10 hover:border-white/20'
+                                    }`}
+                                onClick={() => setFormData({ ...formData, type: 'advertiser' })}
+                            >
+                                <div className="flex items-center gap-3">
+                                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${formData.type === 'advertiser' ? 'bg-primary text-black' : 'bg-white/10 text-text-muted'}`}>
+                                        <Building2 size={20} />
+                                    </div>
+                                    <div>
+                                        <div className={`font-bold ${formData.type === 'advertiser' ? 'text-white' : 'text-text-muted'}`}>광고주</div>
+                                        <div className="text-xs text-text-muted">광고 등록 및 관리</div>
+                                    </div>
+                                </div>
+                                {formData.type === 'advertiser' && (
+                                    <div className="absolute top-2 right-2 w-5 h-5 bg-primary rounded-full flex items-center justify-center">
+                                        <CheckCircle size={14} className="text-black" />
+                                    </div>
+                                )}
+                            </button>
+                        </div>
                     </div>
 
+                    <div className="h-px bg-white/10" />
+
+                    {/* Basic Info Section */}
                     <div className="space-y-4">
+                        <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                            <User size={16} className="text-primary" /> 기본 정보
+                        </h3>
+
+                        {/* Email */}
                         <div>
-                            <label className="block text-sm font-medium text-white mb-2">이메일 *</label>
+                            <label className="block text-sm font-medium text-text-muted mb-1.5">이메일 <span className="text-red-400">*</span></label>
                             <div className="relative">
                                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
                                 <input
@@ -139,14 +261,15 @@ const Signup: React.FC = () => {
                                     type="email"
                                     value={formData.email}
                                     onChange={handleChange}
-                                    className="w-full bg-background border border-white/10 rounded-lg py-3 pl-10 pr-4 text-white focus:border-primary outline-none"
-                                    placeholder="example@queenalba.com"
+                                    className="w-full bg-background border border-white/10 rounded-lg py-3 pl-10 pr-4 text-white focus:border-primary outline-none transition-colors"
+                                    placeholder="example@lunaalba.com"
                                 />
                             </div>
                         </div>
 
+                        {/* Password */}
                         <div>
-                            <label className="block text-sm font-medium text-white mb-2">비밀번호 *</label>
+                            <label className="block text-sm font-medium text-text-muted mb-1.5">비밀번호 <span className="text-red-400">*</span></label>
                             <div className="relative">
                                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
                                 <input
@@ -154,89 +277,235 @@ const Signup: React.FC = () => {
                                     type={showPassword ? 'text' : 'password'}
                                     value={formData.password}
                                     onChange={handleChange}
-                                    className="w-full bg-background border border-white/10 rounded-lg py-3 pl-10 pr-12 text-white focus:border-primary outline-none"
+                                    className="w-full bg-background border border-white/10 rounded-lg py-3 pl-10 pr-12 text-white focus:border-primary outline-none transition-colors"
                                     placeholder="6자 이상 입력"
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-white"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-white transition-colors"
                                 >
                                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                 </button>
                             </div>
+                            {/* Password Strength Indicator */}
+                            {formData.password && (
+                                <div className="mt-2 space-y-1">
+                                    <div className="flex gap-1">
+                                        {[1, 2, 3, 4].map((level) => (
+                                            <div
+                                                key={level}
+                                                className={`h-1 flex-1 rounded-full transition-colors ${level <= passwordStrength.level ? passwordStrength.color : 'bg-white/10'
+                                                    }`}
+                                            />
+                                        ))}
+                                    </div>
+                                    <div className="text-xs text-text-muted">비밀번호 강도: <span className={passwordStrength.level >= 3 ? 'text-green-400' : passwordStrength.level >= 2 ? 'text-yellow-400' : 'text-red-400'}>{passwordStrength.text}</span></div>
+                                </div>
+                            )}
                         </div>
 
+                        {/* Confirm Password */}
                         <div>
-                            <label className="block text-sm font-medium text-white mb-2">비밀번호 확인 *</label>
+                            <label className="block text-sm font-medium text-text-muted mb-1.5">비밀번호 확인 <span className="text-red-400">*</span></label>
                             <div className="relative">
                                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
                                 <input
                                     name="confirmPassword"
-                                    type={showPassword ? 'text' : 'password'}
+                                    type={showConfirmPassword ? 'text' : 'password'}
                                     value={formData.confirmPassword}
                                     onChange={handleChange}
-                                    className="w-full bg-background border border-white/10 rounded-lg py-3 pl-10 pr-4 text-white focus:border-primary outline-none"
+                                    className={`w-full bg-background border rounded-lg py-3 pl-10 pr-12 text-white outline-none transition-colors ${formData.confirmPassword
+                                        ? formData.password === formData.confirmPassword
+                                            ? 'border-green-500/50 focus:border-green-500'
+                                            : 'border-red-500/50 focus:border-red-500'
+                                        : 'border-white/10 focus:border-primary'
+                                        }`}
                                     placeholder="비밀번호 다시 입력"
                                 />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-white transition-colors"
+                                >
+                                    {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </button>
                             </div>
+                            {formData.confirmPassword && (
+                                <div className={`text-xs mt-1 ${formData.password === formData.confirmPassword ? 'text-green-400' : 'text-red-400'}`}>
+                                    {formData.password === formData.confirmPassword ? '✓ 비밀번호가 일치합니다' : '✗ 비밀번호가 일치하지 않습니다'}
+                                </div>
+                            )}
                         </div>
 
-                        <div>
-                            <label className="block text-sm font-medium text-white mb-2">이름 *</label>
-                            <div className="relative">
-                                <User className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
+                        {/* Name & Nickname */}
+                        <div className="grid grid-cols-2 gap-3">
+                            <div>
+                                <label className="block text-sm font-medium text-text-muted mb-1.5">이름 <span className="text-red-400">*</span></label>
+                                <div className="relative">
+                                    <User className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
+                                    <input
+                                        name="name"
+                                        type="text"
+                                        value={formData.name}
+                                        onChange={handleChange}
+                                        className="w-full bg-background border border-white/10 rounded-lg py-3 pl-10 pr-4 text-white focus:border-primary outline-none transition-colors"
+                                        placeholder="이름"
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-text-muted mb-1.5">닉네임 <span className="text-red-400">*</span></label>
                                 <input
-                                    name="name"
+                                    name="nickname"
                                     type="text"
-                                    value={formData.name}
+                                    value={formData.nickname}
                                     onChange={handleChange}
-                                    className="w-full bg-background border border-white/10 rounded-lg py-3 pl-10 pr-4 text-white focus:border-primary outline-none"
-                                    placeholder="이름을 입력해주세요"
+                                    className="w-full bg-background border border-white/10 rounded-lg py-3 px-4 text-white focus:border-primary outline-none transition-colors"
+                                    placeholder="닉네임"
                                 />
                             </div>
                         </div>
 
-                        <div>
-                            <label className="block text-sm font-medium text-white mb-2">휴대폰 번호</label>
-                            <div className="relative">
-                                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
-                                <input
-                                    name="phone"
-                                    type="tel"
-                                    value={formData.phone}
-                                    onChange={handleChange}
-                                    className="w-full bg-background border border-white/10 rounded-lg py-3 pl-10 pr-4 text-white focus:border-primary outline-none"
-                                    placeholder="010-0000-0000"
-                                />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="flex items-start gap-2 text-sm text-text-muted">
-                        <input
-                            type="checkbox"
-                            checked={agreed}
-                            onChange={(e) => setAgreed(e.target.checked)}
-                            className="mt-1 rounded border-white/20"
+                        {/* Phone Verification */}
+                        <PhoneVerification
+                            phone={formData.phone}
+                            onPhoneChange={(phone) => setFormData({ ...formData, phone })}
+                            onVerified={setIsPhoneVerified}
+                            isVerified={isPhoneVerified}
                         />
-                        <span>
-                            <a href="#" className="text-white hover:underline">이용약관</a> 및
-                            <a href="#" className="text-white hover:underline"> 개인정보처리방침</a>에 동의합니다. *
-                        </span>
                     </div>
 
+                    {/* Business Fields - Conditional Render */}
+                    {formData.type === 'advertiser' && (
+                        <>
+                            <div className="h-px bg-white/10" />
+                            <BusinessVerification
+                                businessNumber={formData.businessNumber}
+                                businessName={formData.businessName}
+                                onBusinessNumberChange={(value) => setFormData({ ...formData, businessNumber: value })}
+                                onBusinessNameChange={(value) => setFormData({ ...formData, businessName: value })}
+                                onVerified={setIsBusinessVerified}
+                                onCertificateChange={setBusinessCertificate}
+                                isVerified={isBusinessVerified}
+                            />
+                        </>
+                    )}
+
+                    <div className="h-px bg-white/10" />
+
+                    {/* Terms & Agreements Section */}
+                    <div className="space-y-3">
+                        <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                            <Shield size={16} className="text-primary" /> 약관 동의
+                        </h3>
+
+                        {/* All Agree */}
+                        <label className="flex items-center gap-3 p-3 bg-primary/10 rounded-lg cursor-pointer hover:bg-primary/20 transition-colors border border-primary/20">
+                            <input
+                                type="checkbox"
+                                checked={allAgreed}
+                                onChange={(e) => handleAllAgreedChange(e.target.checked)}
+                                className="w-5 h-5 rounded border-white/20 bg-black/40 accent-primary"
+                            />
+                            <span className="text-white font-bold">전체 동의</span>
+                        </label>
+
+                        {/* Individual Agreements */}
+                        <div className="space-y-2 pl-2">
+                            {/* Terms of Service */}
+                            <div className="rounded-lg border border-white/5 overflow-hidden">
+                                <label className="flex items-center gap-3 p-3 cursor-pointer hover:bg-white/5 transition-colors">
+                                    <input
+                                        type="checkbox"
+                                        checked={agreements.terms}
+                                        onChange={(e) => handleAgreementChange('terms', e.target.checked)}
+                                        className="w-4 h-4 rounded border-white/20 bg-black/40 accent-primary"
+                                    />
+                                    <span className="text-text-muted flex-1">이용약관 동의 <span className="text-red-400">*</span></span>
+                                    <button
+                                        type="button"
+                                        onClick={() => setExpandedTerms(expandedTerms === 'terms' ? null : 'terms')}
+                                        className="text-text-muted hover:text-white transition-colors"
+                                    >
+                                        {expandedTerms === 'terms' ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
+                                    </button>
+                                </label>
+                                {expandedTerms === 'terms' && (
+                                    <div className="px-3 pb-3">
+                                        <div className="bg-background rounded p-3 text-xs text-text-muted max-h-32 overflow-y-auto">
+                                            제1조 (목적) 이 약관은 LunaAlba가 제공하는 서비스의 이용조건 및 절차, 회사와 이용자의 권리, 의무 및 책임사항을 규정함을 목적으로 합니다.<br /><br />
+                                            제2조 (약관의 효력과 변경) 1) 이 약관은 서비스 화면에 게시하거나 기타의 방법으로 공지함으로써 이용자에게 공시하고, 이에 동의한 이용자가 서비스에 가입함으로써 효력이 발생합니다.
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Privacy Policy */}
+                            <div className="rounded-lg border border-white/5 overflow-hidden">
+                                <label className="flex items-center gap-3 p-3 cursor-pointer hover:bg-white/5 transition-colors">
+                                    <input
+                                        type="checkbox"
+                                        checked={agreements.privacy}
+                                        onChange={(e) => handleAgreementChange('privacy', e.target.checked)}
+                                        className="w-4 h-4 rounded border-white/20 bg-black/40 accent-primary"
+                                    />
+                                    <span className="text-text-muted flex-1">개인정보처리방침 동의 <span className="text-red-400">*</span></span>
+                                    <button
+                                        type="button"
+                                        onClick={() => setExpandedTerms(expandedTerms === 'privacy' ? null : 'privacy')}
+                                        className="text-text-muted hover:text-white transition-colors"
+                                    >
+                                        {expandedTerms === 'privacy' ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
+                                    </button>
+                                </label>
+                                {expandedTerms === 'privacy' && (
+                                    <div className="px-3 pb-3">
+                                        <div className="bg-background rounded p-3 text-xs text-text-muted max-h-32 overflow-y-auto">
+                                            1. 수집하는 개인정보 항목: 이메일, 이름, 닉네임, 휴대폰번호<br /><br />
+                                            2. 개인정보의 수집 및 이용목적: 회원관리, 서비스 제공<br /><br />
+                                            3. 개인정보의 보유 및 이용기간: 회원탈퇴 시까지
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Marketing */}
+                            <label className="flex items-center gap-3 p-3 cursor-pointer hover:bg-white/5 transition-colors rounded-lg border border-white/5">
+                                <input
+                                    type="checkbox"
+                                    checked={agreements.marketing}
+                                    onChange={(e) => handleAgreementChange('marketing', e.target.checked)}
+                                    className="w-4 h-4 rounded border-white/20 bg-black/40 accent-primary"
+                                />
+                                <span className="text-text-muted flex-1">마케팅 정보 수신 동의 <span className="text-text-muted/50">(선택)</span></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    {/* Submit Button */}
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-primary text-black font-bold py-3 rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
+                        className="w-full bg-primary text-black font-bold py-4 rounded-lg hover:bg-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-lg"
                     >
-                        {loading ? '처리 중...' : '회원가입'}
+                        {loading ? (
+                            <>
+                                <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                                처리 중...
+                            </>
+                        ) : (
+                            <>
+                                <FileCheck size={20} />
+                                회원가입
+                            </>
+                        )}
                     </button>
 
+                    {/* Login Link */}
                     <div className="text-center text-sm text-text-muted">
                         이미 계정이 있으신가요?{' '}
-                        <Link to="/login" className="text-primary hover:underline">로그인</Link>
+                        <Link to="/login" className="text-primary hover:underline font-medium">로그인</Link>
                     </div>
                 </form>
             </div>

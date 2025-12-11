@@ -4,19 +4,21 @@
 export interface AdFormState {
     // Step 1: Business Info
     businessName: string;
-    contactPerson: string;
-    contactPhone: string;
-    kakaoId: string;
-    lineId: string;
-    telegramId: string;
-    wechatId: string;
+    managerName: string;
+    managerPhone: string;
+    messengers: {
+        kakao: string;
+        line: string;
+        telegram: string;
+        wechat?: string;
+    };
     address: {
         zonecode: string;
         roadAddress: string;
         detailAddress: string;
     };
     isLocationVerified: boolean;
-    verificationDocument: File | null;
+    businessLicense: File | null;
 
     // Step 2: Recruitment Info
     title: string;
@@ -37,7 +39,7 @@ export interface AdFormState {
     recruitmentType: string;
 
     workHours: {
-        type: 'day' | 'night' | 'both' | 'negotiable' | 'direct';
+        type: 'day' | 'night' | 'full' | 'negotiable';
         start?: string;
         end?: string;
         text?: string;
@@ -54,12 +56,31 @@ export interface AdFormState {
         noLimit: boolean;
     };
 
+    // Detailed Conditions
+    gender: 'female' | 'male' | 'any';
+    experience: 'novice' | 'experienced' | 'any';
+    daysOff: 'weekly' | 'biweekly' | 'negotiable';
+
+    // Detailed Recruitment Outline
+    recruitNumber: string;
+    deadline: {
+        date: string;
+        always: boolean;
+    };
+    workDays: string[];
+
+    welfare: string[];
+    preferredConditions: string[];
+    receptionMethods: string[];
+    requiredDocuments: string[];
+
     keywords: string[];
     customKeywords: string;
 
     images: {
         file: File | null;
         description: string;
+        preview?: string | null;
     }[];
 
     description: string;

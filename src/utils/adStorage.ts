@@ -13,7 +13,17 @@ export interface UserAd {
     workHours: string;
     description: string;
     contact: string;
-    productType: 'premium' | 'special' | 'regular';
+    highlightConfig?: {
+        color: 'yellow' | 'pink' | 'green' | 'cyan';
+        text: string; // The specific substring to highlight
+    };
+    jumpUpConfig?: {
+        enabled: boolean;
+        intervalDays: number; // e.g. 1, 3, 7
+        totalCount: number; // Total paid jumps
+        remainingCount: number;
+    };
+    productType: 'diamond' | 'sapphire' | 'ruby' | 'gold' | 'premium' | 'special' | 'regular' | 'highlight' | 'jumpup';
     status: 'pending' | 'active' | 'expired' | 'rejected';
     views: number;
     inquiries: number;
@@ -21,7 +31,7 @@ export interface UserAd {
     expiresAt: string;
 }
 
-const ADS_KEY = 'queenalba_user_ads';
+const ADS_KEY = 'lunaalba_user_ads';
 
 // Get all ads
 export const getAllAds = (): UserAd[] => {
