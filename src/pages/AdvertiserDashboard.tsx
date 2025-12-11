@@ -226,7 +226,7 @@ const AdvertiserDashboard: React.FC = () => {
                                                 location={ad.location}
                                                 pay={ad.salary}
                                                 image="/images/ads/thumbnails/default_thumb.jpg"
-                                                productType={ad.productType === 'premium' ? 'vip' : ad.productType === 'special' ? 'special' : 'general'}
+                                                productType={ad.productType}
                                             />
                                             <div className="absolute top-2 right-2 flex gap-2">
                                                 <button className="bg-white/10 backdrop-blur-sm text-white px-3 py-1 rounded text-xs hover:bg-white/20 transition-colors">

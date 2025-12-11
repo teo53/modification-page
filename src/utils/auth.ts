@@ -5,13 +5,16 @@ export interface User {
     id: string;
     email: string;
     name: string;
+    nickname?: string;
     phone: string;
     type: 'worker' | 'advertiser';
+    businessNumber?: string;
+    businessName?: string;
     createdAt: string;
 }
 
-const USERS_KEY = 'queenalba_users';
-const CURRENT_USER_KEY = 'queenalba_current_user';
+const USERS_KEY = 'lunaalba_users';
+const CURRENT_USER_KEY = 'lunaalba_current_user';
 
 // Get all users
 export const getUsers = (): User[] => {
@@ -37,15 +40,18 @@ export const signup = (userData: Omit<User, 'id' | 'createdAt'> & { password: st
         id: Date.now().toString(),
         email: userData.email,
         name: userData.name,
+        nickname: userData.nickname,
         phone: userData.phone,
         type: userData.type,
+        businessNumber: userData.businessNumber,
+        businessName: userData.businessName,
         createdAt: new Date().toISOString(),
     };
 
     // Store password separately (simple hash simulation)
-    const passwords = JSON.parse(localStorage.getItem('queenalba_passwords') || '{}');
+    const passwords = JSON.parse(localStorage.getItem('lunaalba_passwords') || '{}');
     passwords[newUser.id] = userData.password;
-    localStorage.setItem('queenalba_passwords', JSON.stringify(passwords));
+    localStorage.setItem('lunaalba_passwords', JSON.stringify(passwords));
 
     users.push(newUser);
     saveUsers(users);
@@ -65,7 +71,7 @@ export const login = (email: string, password: string): { success: boolean; mess
         return { success: false, message: '등록되지 않은 이메일입니다.' };
     }
 
-    const passwords = JSON.parse(localStorage.getItem('queenalba_passwords') || '{}');
+    const passwords = JSON.parse(localStorage.getItem('lunaalba_passwords') || '{}');
     if (passwords[user.id] !== password) {
         return { success: false, message: '비밀번호가 일치하지 않습니다.' };
     }
@@ -82,7 +88,13 @@ export const logout = () => {
 // Get current user
 export const getCurrentUser = (): User | null => {
     const data = localStorage.getItem(CURRENT_USER_KEY);
-    return data ? JSON.parse(data) : null;
+    try {
+        return data ? JSON.parse(data) : null;
+    } catch (e) {
+        console.error('Failed to parse user data:', e);
+        localStorage.removeItem(CURRENT_USER_KEY);
+        return null;
+    }
 };
 
 // Check if logged in

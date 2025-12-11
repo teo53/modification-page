@@ -1,4 +1,4 @@
-// Mock ad data using real crawled images from queenalba.net
+// Mock ad data using real crawled images from lunaalba.net
 // Updated to use 117 scraped ads from scraped_ads.json
 
 import scrapedAdsData from './scraped_ads.json';
