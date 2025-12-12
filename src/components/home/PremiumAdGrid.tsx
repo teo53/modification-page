@@ -3,7 +3,12 @@ import { Link } from 'react-router-dom';
 import AdCard from '../ad/AdCard';
 import { vipAds } from '../../data/mockAds';
 
-// Use all 12 VIP ads directly from scraped data
+// Filter ads that have valid thumbnails (not empty, not default placeholder)
+const adsWithThumbnails = vipAds.filter(ad =>
+    ad.thumbnail &&
+    ad.thumbnail.trim() !== '' &&
+    !ad.thumbnail.includes('mobile_img/banner')  // Exclude default placeholder
+);
 
 const PremiumAdGrid: React.FC = () => {
     return (
@@ -16,9 +21,10 @@ const PremiumAdGrid: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
-                {vipAds.map((ad) => (
+                {adsWithThumbnails.slice(0, 12).map((ad) => (
                     <AdCard
                         key={ad.id}
+                        id={ad.id}
                         variant="vip"
                         title={ad.title}
                         location={ad.location}
@@ -38,3 +44,4 @@ const PremiumAdGrid: React.FC = () => {
 };
 
 export default PremiumAdGrid;
+

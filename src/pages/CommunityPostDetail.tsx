@@ -107,21 +107,23 @@ const CommunityPostDetail: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Sample Comments */}
+                {/* Comments from data */}
                 <div className="space-y-4">
-                    {[
-                        { author: 'ㅇㅇ', content: '정보 감사합니다!!', date: '2025.12.08 17:20' },
-                        { author: '궁금', content: '저도 궁금했는데 도움됐어요ㅎㅎ', date: '2025.12.08 17:15' },
-                        { author: 'ㄱㄱ', content: '좋은정보 ㄱㅅㄱㅅ', date: '2025.12.08 17:10' },
-                    ].map((comment, idx) => (
-                        <div key={idx} className="p-4 rounded-lg bg-background border border-white/5">
-                            <div className="flex items-center justify-between mb-2">
-                                <span className="text-sm font-bold text-white">{comment.author}</span>
-                                <span className="text-xs text-text-muted">{comment.date}</span>
+                    {(post as any).commentList && (post as any).commentList.length > 0 ? (
+                        (post as any).commentList.map((comment: { author: string; content: string; date: string }, idx: number) => (
+                            <div key={idx} className="p-4 rounded-lg bg-background border border-white/5">
+                                <div className="flex items-center justify-between mb-2">
+                                    <span className="text-sm font-bold text-white">{comment.author}</span>
+                                    <span className="text-xs text-text-muted">{comment.date}</span>
+                                </div>
+                                <p className="text-white">{comment.content}</p>
                             </div>
-                            <p className="text-white">{comment.content}</p>
+                        ))
+                    ) : (
+                        <div className="text-center text-text-muted py-8">
+                            아직 댓글이 없습니다. 첫 번째 댓글을 작성해보세요!
                         </div>
-                    ))}
+                    )}
                 </div>
             </div>
         </div>

@@ -1,54 +1,40 @@
 import React from 'react';
-import { MapPin, Clock, DollarSign, Star, ChevronRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { MapPin, DollarSign, Star, ChevronRight, Eye } from 'lucide-react';
+import scrapedAdsData from '../../data/scraped_ads.json';
 
-interface DiamondAd {
-    id: string;
-    businessName: string;
+interface ScrapedAd {
+    id: number;
     title: string;
-    location: string;
-    salary: string;
-    workHours: string;
-    imageUrl?: string;
-    tags?: string[];
+    thumbnail: string;
+    location?: string;
+    pay?: string;
+    advertiser?: {
+        nickname?: string;
+        business_name?: string;
+        work_location?: string;
+        views?: number;
+    };
+    recruitment?: {
+        salary?: string;
+    };
 }
 
-// Sample Diamond ads data
-const diamondAds: DiamondAd[] = [
-    {
-        id: 'diamond-1',
-        businessName: '강남 프레스티지',
-        title: 'VIP 룸살롱 정규직/알바 모집',
-        location: '강남역 5번출구',
-        salary: '일 100만~200만',
-        workHours: '저녁 7시~새벽 3시',
-        imageUrl: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800&auto=format&fit=crop&q=60',
-        tags: ['고수익', '당일지급', '숙소제공']
-    },
-    {
-        id: 'diamond-2',
-        businessName: '청담 엘리트',
-        title: '하이엔드 클럽 신규 오픈 멤버',
-        location: '청담동 명품거리',
-        salary: '일 80만~150만',
-        workHours: '저녁 8시~새벽 4시',
-        imageUrl: 'https://images.unsplash.com/photo-1566737236500-c8ac43014a67?w=800&auto=format&fit=crop&q=60',
-        tags: ['신규오픈', '텃세없음', '초보환영']
-    },
-    {
-        id: 'diamond-3',
-        businessName: '압구정 로얄',
-        title: '프리미엄 라운지 스탭 모집',
-        location: '압구정역 3번출구',
-        salary: '일 70만~120만',
-        workHours: '저녁 7시~새벽 2시',
-        imageUrl: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=800&auto=format&fit=crop&q=60',
-        tags: ['주말알바', '대학생환영', '경력우대']
-    },
-];
+// Filter ads with valid thumbnails (not empty, not placeholder)
+const validAds = (scrapedAdsData as ScrapedAd[]).filter(ad =>
+    ad.thumbnail &&
+    ad.thumbnail.trim() !== '' &&
+    !ad.thumbnail.includes('mobile_img/banner')
+);
 
-const DiamondAdCard: React.FC<{ ad: DiamondAd }> = ({ ad }) => {
+// Get top 3 ads with highest views for Diamond section
+const diamondAds = [...validAds]
+    .sort((a, b) => (b.advertiser?.views || 0) - (a.advertiser?.views || 0))
+    .slice(0, 3);
+
+const DiamondAdCard: React.FC<{ ad: ScrapedAd }> = ({ ad }) => {
     return (
-        <div className="diamond-card group relative h-80 overflow-hidden rounded-2xl cursor-pointer transition-all duration-500 hover:scale-[1.02] hover:z-10">
+        <Link to={`/ad/${ad.id}`} className="diamond-card group relative h-80 overflow-hidden rounded-2xl cursor-pointer transition-all duration-500 hover:scale-[1.02] hover:z-10">
             {/* Aurora Border Effect */}
             <div className="aurora-border absolute inset-0 rounded-2xl p-[3px]">
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-yellow-400 via-amber-200 to-yellow-600 opacity-80" />
@@ -60,9 +46,12 @@ const DiamondAdCard: React.FC<{ ad: DiamondAd }> = ({ ad }) => {
                 {/* Background Image */}
                 <div className="absolute inset-0">
                     <img
-                        src={ad.imageUrl}
-                        alt={ad.businessName}
+                        src={ad.thumbnail}
+                        alt={ad.title}
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        onError={(e) => {
+                            (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400x300?text=No+Image';
+                        }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent" />
                 </div>
@@ -73,18 +62,19 @@ const DiamondAdCard: React.FC<{ ad: DiamondAd }> = ({ ad }) => {
                         <Star size={10} fill="currentColor" />
                         DIAMOND
                     </div>
-                    {ad.tags?.map((tag, i) => (
-                        <span key={i} className="px-2 py-1 rounded-full bg-black/50 border border-white/20 text-white text-[10px] backdrop-blur-sm">
-                            #{tag}
+                    {ad.advertiser?.views && ad.advertiser.views > 50000 && (
+                        <span className="px-2 py-1 rounded-full bg-red-500/80 text-white text-[10px]">
+                            🔥 HOT
                         </span>
-                    ))}
+                    )}
                 </div>
 
                 {/* Info Content (Bottom Aligned) */}
                 <div className="absolute bottom-0 left-0 right-0 p-5 pt-10">
                     <div className="transform transition-transform duration-300 group-hover:-translate-y-2">
                         <p className="text-yellow-400 text-sm font-bold mb-1 flex items-center gap-2">
-                            {ad.businessName} <ChevronRight size={14} />
+                            {ad.advertiser?.business_name || ad.advertiser?.nickname || '업체명'}
+                            <ChevronRight size={14} />
                         </p>
                         <h3 className="text-xl font-bold text-white mb-3 leading-snug shadow-black drop-shadow-lg">
                             {ad.title}
@@ -93,25 +83,27 @@ const DiamondAdCard: React.FC<{ ad: DiamondAd }> = ({ ad }) => {
                         <div className="space-y-1.5 text-sm">
                             <div className="flex items-center gap-2 text-gray-300">
                                 <DollarSign size={14} className="text-yellow-400" />
-                                <span className="font-semibold text-white">{ad.salary}</span>
+                                <span className="font-semibold text-white">{ad.pay || ad.recruitment?.salary || '협의'}</span>
                             </div>
                             <div className="flex items-center gap-2 text-gray-300">
                                 <MapPin size={14} className="text-yellow-400" />
-                                <span>{ad.location}</span>
+                                <span>{ad.location || ad.advertiser?.work_location || '위치 정보 없음'}</span>
                             </div>
                             <div className="flex items-center gap-2 text-gray-300">
-                                <Clock size={14} className="text-yellow-400" />
-                                <span>{ad.workHours}</span>
+                                <Eye size={14} className="text-yellow-400" />
+                                <span>조회수 {(ad.advertiser?.views || 0).toLocaleString()}</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </Link>
     );
 };
 
 const DiamondAdSection: React.FC = () => {
+    if (diamondAds.length === 0) return null;
+
     return (
         <section className="mb-12">
             {/* Section Header */}
@@ -123,9 +115,9 @@ const DiamondAdSection: React.FC = () => {
                     </div>
                     <span className="text-text-muted text-sm hidden sm:inline">상위 1% 고수익 보장 업소</span>
                 </div>
-                <button className="text-sm text-text-muted hover:text-white transition-colors">
+                <Link to="/theme" className="text-sm text-text-muted hover:text-white transition-colors">
                     더보기 +
-                </button>
+                </Link>
             </div>
 
             {/* Diamond Cards Grid */}
@@ -168,3 +160,4 @@ const DiamondAdSection: React.FC = () => {
 };
 
 export default DiamondAdSection;
+

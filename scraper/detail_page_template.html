@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #050510;
+            font-family: 'Noto Sans KR', sans-serif;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 480px;
+            /* 모바일 상세페이지 너비 */
+            background: linear-gradient(180deg, #0a0a1a 0%, #1a0b2e 100%);
+            position: relative;
+            overflow: hidden;
+            padding-bottom: 50px;
+        }
+
+        /* 배경 장식 (파티클/반짝임 효과) */
+        .bg-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #ffd700;
+            border-radius: 50%;
+            opacity: 0.5;
+        }
+
+        /* 헤더 섹션 */
+        .header {
+            text-align: center;
+            padding: 40px 20px 20px;
+            background: radial-gradient(circle at center, #2a0e45 0%, transparent 70%);
+        }
+
+        .trophy-icon {
+            font-size: 60px;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 0 10px gold);
+        }
+
+        .main-title {
+            font-size: 48px;
+            font-weight: 900;
+            margin: 0;
+            background: linear-gradient(to right, #ffd700, #fff, #ffd700);
+            -webkit-background-clip: text;
+            color: transparent;
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            letter-spacing: -2px;
+        }
+
+        /* 인트로 박스 */
+        .intro-box {
+            background: linear-gradient(90deg, #a855f7, #ec4899);
+            margin: 20px;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 0 20px rgba(236, 72, 153, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .intro-text {
+            font-size: 14px;
+            line-height: 1.6;
+            font-weight: 700;
+            margin: 0;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .emphasis {
+            color: #ffe4e1;
+            /* 연한 핑크 */
+            font-weight: 900;
+        }
+
+        /* 섹션 공통 스타일 */
+        .section-title {
+            font-size: 28px;
+            font-weight: 900;
+            text-align: center;
+            margin: 40px 0 15px;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .section-title.gold {
+            color: #ffd700;
+        }
+
+        .section-title.pink {
+            color: #ff69b4;
+        }
+
+        .section-title.cyan {
+            color: #00ffff;
+        }
+
+        .content-box {
+            text-align: center;
+            color: white;
+            padding: 0 20px;
+        }
+
+        .content-text {
+            font-size: 18px;
+            line-height: 1.5;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .highlight-text {
+            font-size: 22px;
+            color: #ffd700;
+            font-weight: 900;
+            margin: 15px 0;
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+        }
+
+        .box-border {
+            border: 2px solid #ffd700;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .box-border::after {
+            content: '👑';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #050510;
+            padding: 0 10px;
+            font-size: 20px;
+        }
+
+        .footer-tag {
+            background: #ec4899;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-align: center;
+            font-weight: 900;
+            font-size: 18px;
+            margin: 40px auto;
+            width: fit-content;
+            box-shadow: 0 0 15px #ec4899;
+        }
+
+        /* 반짝이 효과 */
+        @keyframes twinkle {
+            0% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.5);
+            }
+
+            100% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- 배경 장식 -->
+        <div class="bg-particle" style="top: 10%; left: 10%; animation: twinkle 2s infinite;"></div>
+        <div class="bg-particle" style="top: 20%; right: 20%; animation: twinkle 3s infinite;"></div>
+        <div class="bg-particle" style="bottom: 30%; left: 15%; animation: twinkle 2.5s infinite;"></div>
+
+        <!-- 헤더 -->
+        <div class="header">
+            <div class="trophy-icon">🏆</div>
+            <h1 class="main-title">카지노VIP</h1>
+        </div>
+
+        <!-- 소개 박스 -->
+        <div class="intro-box">
+            <p class="intro-text">
+                손님 맞춤케어는 기본, 급여는 높고 근무 환경은 최고!<br>
+                꿈꾸던 최고의 에스코트 서비스를 면접주세요!<br>
+                <span class="emphasis">누구나 경험해보지 못한 페이 받게 해드리겠습니다.</span><br><br>
+                요즘 어바웃 최고 수입을 자랑하는 에스코트 서비스(VVIP) 아시죠?<br>
+                가장 높은 대우와 5성급 최고급 카지노 호텔에서<br>
+                가족같은 분위기로 함께 할 분을 구하고 있어요~
+            </p>
+        </div>
+
+        <!-- 모집분야 -->
+        <h2 class="section-title gold">모집 분야</h2>
+        <div class="content-box">
+            <div class="highlight-text">★VVIP 의전 아웃 서비스★</div>
+            <div class="highlight-text">★에스코트 서비스★</div>
+            <p class="content-text" style="font-size: 14px; color: #ccc; margin-top: 20px;">
+                명문 호텔 카지노 VIP 손님을 위주로<br>
+                데이트 / 여행 / 쇼핑 / 카지노게임 / 골프 등등<br>
+                같이 하시는 일입니다.
+            </p>
+        </div>
+
+        <!-- 페이 -->
+        <div class="box-border">
+            <h2 class="section-title cyan" style="margin-top: 0;">★페이★</h2>
+            <div class="highlight-text" style="font-size: 28px; color: #fff;">
+                <span style="color: #ffd700;">월 기본</span> = 3000 + TIP
+            </div>
+            <p class="content-text" style="font-size: 14px; color: #ccc;">
+                손님에게 받은 모든 팁은 개인소유<br>
+                팁 단위도 높고 아주 많습니다.
+            </p>
+        </div>
+
+        <!-- 정산 -->
+        <div class="box-border" style="border-color: #ec4899;">
+            <h2 class="section-title pink" style="margin-top: 0;">★정산★</h2>
+            <div class="highlight-text" style="color: #ec4899;">
+                정산은 무조건 당일 정산입니다.
+            </div>
+            <p class="content-text" style="font-size: 14px;">
+                (계좌이체 / 현금지급 모두 가능)
+            </p>
+        </div>
+
+        <!-- 구인대상 -->
+        <h2 class="section-title gold">구인대상</h2>
+        <div class="content-box">
+            <p class="content-text">대한민국 20세 이상 성인 여성</p>
+            <p class="content-text" style="font-size: 14px; color: #ccc; margin-top: 10px;">
+                초보 / 경력자 / 대학생 / 투잡<br>
+                모두 환영합니다!
+            </p>
+        </div>
+
+        <!-- 하단 강조 -->
+        <div class="footer-tag">
+            대한민국 20세 이상 ~ 35세 이하
+        </div>
+
+        <div style="text-align: center; color: #888; font-size: 12px; margin-top: 20px;">
+            최고의 조건, 최고의 환경으로 맞춰드리겠습니다.
+        </div>
+    </div>
+</body>
+
+</html>

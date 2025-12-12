@@ -3,8 +3,12 @@ import { Link } from 'react-router-dom';
 import AdCard from '../ad/AdCard';
 import { specialAds } from '../../data/mockAds';
 
-// Use 12 special ads from the scraped data (slice to limit display)
-const displayAds = specialAds.slice(0, 12);
+// Filter ads that have valid thumbnails (not empty, not default placeholder)
+const adsWithThumbnails = specialAds.filter(ad =>
+    ad.thumbnail &&
+    ad.thumbnail.trim() !== '' &&
+    !ad.thumbnail.includes('mobile_img/banner')
+);
 
 const SpecialAdGrid: React.FC = () => {
     return (
@@ -18,9 +22,10 @@ const SpecialAdGrid: React.FC = () => {
                 </div>
 
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
-                    {displayAds.map((ad) => (
+                    {adsWithThumbnails.slice(0, 12).map((ad) => (
                         <AdCard
                             key={ad.id}
+                            id={ad.id}
                             variant="special"
                             title={ad.title}
                             location={ad.location}
@@ -40,3 +45,4 @@ const SpecialAdGrid: React.FC = () => {
 };
 
 export default SpecialAdGrid;
+

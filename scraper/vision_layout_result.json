@@ -1,0 +1,35 @@
+{
+    "theme": "luxury_dark",
+    "sections": [
+        {
+            "type": "header",
+            "content": "놀면 뭐하니?"
+        },
+        {
+            "type": "image_text",
+            "content": "놀면 뭐하나요"
+        },
+        {
+            "type": "text",
+            "content": "그 시간에 일이냐 해야죠"
+        },
+        {
+            "type": "highlight_box",
+            "content": ""
+        },
+        {
+            "type": "key_value",
+            "content": {
+                "label": "급여",
+                "value": "500만원"
+            }
+        },
+        {
+            "type": "contact",
+            "content": {
+                "phone": "",
+                "kakao": ""
+            }
+        }
+    ]
+}

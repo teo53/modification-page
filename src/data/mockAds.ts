@@ -1,5 +1,5 @@
-// Mock ad data using real crawled images from lunaalba.net
-// Updated to use 117 scraped ads from scraped_ads.json
+// Mock ad data using real crawled images from queenalba.net
+// Updated to use real scraped data from scraped_ads.json
 
 import scrapedAdsData from './scraped_ads.json';
 
@@ -18,53 +18,49 @@ export interface Advertisement {
     duration: string;
 }
 
-// Titles for ad variety
-const TITLES = [
-    '강남 하이퍼블릭 VIP 급구', '역삼 텐프로 VIP 모집', '신논현 룸 스페셜 채용',
-    '압구정 클럽 스페셜', '홍대 노래방 모집', '강남 퍼블릭 일반', '청담 라운지 VIP',
-    '논현 룸살롱 급구', '잠실 클럽 스페셜', '건대 퍼블릭 모집', '신사 하이퍼블릭',
-    '강남역 텐프로', '선릉 룸 VIP', '삼성 클럽 급구', '서초 라운지 스페셜',
-    '이태원 클럽 모집', '홍대 바 VIP', '신촌 노래방 급구', '강북 룸 스페샬',
-    '동대문 클럽 모집', '명동 라운지 VIP', '종로 퍼블릭 급구', '마포 룸 스페셜',
-    '용산 클럽 모집', '성수 하이퍼블릭 VIP'
-];
 
-const LOCATIONS = [
-    '서울 강남구', '서울 강남구 역삼동', '서울 강남구 신논현', '서울 강남구 압구정',
-    '서울 마포구 홍대', '서울 강남구 청담동', '서울 강남구 논현동', '서울 송파구 잠실',
-    '서울 광진구 건대입구', '서울 강남구 신사동', '서울 서초구', '서울 용산구 이태원',
-    '서울 마포구 신촌', '서울 동대문구', '서울 중구 명동', '서울 종로구', '서울 성동구 성수동'
-];
-
-const BADGES_LIST = [
-    ['당일지급', '숙소지원'], ['경력우대', '급여협의'], ['초보환영', '교육가능'],
-    ['고수입', '유연근무'], ['초보가능'], ['당일지급'], ['VIP'], ['급구', '고수입'],
-    ['신입환영', '숙소제공'], ['경력자우대', '인센티브'], ['근무시간협의', '주휴수당']
-];
-
-const PAYS = [
-    '시급 100,000원', '일급 500,000원', '시급 80,000원', '일급 400,000원',
-    '시급 50,000원', '일급 300,000원', '시급 120,000원', '일급 600,000원',
-    '시급 70,000원', '일급 350,000원', '협의 후 결정'
-];
-
-// Convert scraped ads to Advertisement format
+// Convert scraped ads to Advertisement format - Using REAL scraped data
 const convertToAd = (scrapedAd: any, productType: 'vip' | 'special' | 'premium' | 'general'): Advertisement => {
-    const titleIndex = (scrapedAd.id - 1) % TITLES.length;
-    const locationIndex = (scrapedAd.id - 1) % LOCATIONS.length;
-    const badgeIndex = (scrapedAd.id - 1) % BADGES_LIST.length;
-    const payIndex = (scrapedAd.id - 1) % PAYS.length;
+    // Use actual scraped data
+    const title = scrapedAd.title || scrapedAd.advertiser?.nickname || `광고 #${scrapedAd.id}`;
+    const location = scrapedAd.location || scrapedAd.advertiser?.work_location || '서울';
+    const pay = scrapedAd.pay || scrapedAd.recruitment?.salary || '협의';
+
+    // Generate badges from job_type and salary
+    const badges: string[] = [];
+    const jobType = scrapedAd.recruitment?.job_type || '';
+    const salary = scrapedAd.recruitment?.salary || '';
+
+    // Add industry-based badges
+    if (jobType.includes('룸살롱') || jobType.includes('룸싸롱')) badges.push('룸');
+    if (jobType.includes('하이퍼블릭')) badges.push('하이퍼블릭');
+    if (jobType.includes('텐프로')) badges.push('텐프로');
+    if (jobType.includes('쩜오')) badges.push('쩜오');
+    if (jobType.includes('클럽')) badges.push('클럽');
+    if (jobType.includes('노래방')) badges.push('노래방');
+    if (jobType.includes('바')) badges.push('바');
+
+    // Add salary-based badges
+    if (salary && parseInt(salary.replace(/[^0-9]/g, '')) >= 1000000) badges.push('고수입');
+
+    // Add default badges if none
+    if (badges.length === 0) badges.push('채용중');
+
+    // Determine isNew/isHot based on views
+    const views = scrapedAd.advertiser?.views || 0;
+    const isHot = views > 10000;
+    const isNew = scrapedAd.id % 3 === 0;
 
     return {
         id: scrapedAd.id,
-        title: TITLES[titleIndex],
-        location: LOCATIONS[locationIndex],
-        pay: PAYS[payIndex],
-        thumbnail: scrapedAd.thumbnail,
-        images: scrapedAd.detail_images || [],
-        badges: BADGES_LIST[badgeIndex],
-        isNew: scrapedAd.id % 3 === 0,
-        isHot: scrapedAd.id % 5 === 0,
+        title,
+        location,
+        pay,
+        thumbnail: scrapedAd.thumbnail || scrapedAd.detail_images?.[0] || '',
+        images: scrapedAd.detail_images || scrapedAd.detail?.images || [],
+        badges,
+        isNew,
+        isHot,
         productType,
         price: productType === 'vip' ? '300,000원' : productType === 'special' ? '150,000원' : '50,000원',
         duration: productType === 'vip' ? '30일' : productType === 'special' ? '15일' : '7일',

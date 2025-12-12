@@ -3,8 +3,12 @@ import { Link } from 'react-router-dom';
 import AdCard from '../ad/AdCard';
 import { regularAds } from '../../data/mockAds';
 
-// Use 24 regular ads from the scraped data (slice to limit display)
-const displayAds = regularAds.slice(0, 24);
+// Filter ads that have valid thumbnails (not empty, not default placeholder)
+const adsWithThumbnails = regularAds.filter(ad =>
+    ad.thumbnail &&
+    ad.thumbnail.trim() !== '' &&
+    !ad.thumbnail.includes('mobile_img/banner')
+);
 
 const RegularAdList: React.FC = () => {
     return (
@@ -15,9 +19,10 @@ const RegularAdList: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
-                {displayAds.map((ad) => (
+                {adsWithThumbnails.slice(0, 24).map((ad) => (
                     <AdCard
                         key={ad.id}
+                        id={ad.id}
                         variant="regular"
                         title={ad.title}
                         location={ad.location}
@@ -36,3 +41,4 @@ const RegularAdList: React.FC = () => {
 };
 
 export default RegularAdList;
+

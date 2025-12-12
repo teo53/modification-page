@@ -1,0 +1,194 @@
+[
+  {
+    "domain": ".queenalba.net",
+    "expiry": 1765517379,
+    "httpOnly": false,
+    "name": "_gat",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": false,
+    "value": "1"
+  },
+  {
+    "domain": ".queenalba.net",
+    "expiry": 1766726947,
+    "httpOnly": false,
+    "name": "adultcode",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": false,
+    "value": "251001123940KC000879"
+  },
+  {
+    "domain": ".queenalba.net",
+    "expiry": 1766726947,
+    "httpOnly": false,
+    "name": "adulsex",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": false,
+    "value": "1"
+  },
+  {
+    "domain": ".queenalba.net",
+    "httpOnly": false,
+    "name": "happyjob_userid",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": true,
+    "value": "bdc0001"
+  },
+  {
+    "domain": ".queenalba.net",
+    "expiry": 1765603748,
+    "httpOnly": false,
+    "name": "_gid",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": false,
+    "value": "GA1.2.1430116544.1765516797"
+  },
+  {
+    "domain": ".queenalba.net",
+    "expiry": 1766726947,
+    "httpOnly": false,
+    "name": "adultname",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": false,
+    "value": "%EA%B6%8C%ED%95%B4%EC%84%B1"
+  },
+  {
+    "domain": ".queenalba.net",
+    "httpOnly": false,
+    "name": "job_level",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": true,
+    "value": "0"
+  },
+  {
+    "domain": ".queenalba.net",
+    "expiry": 1800077348,
+    "httpOnly": false,
+    "name": "_ga",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": false,
+    "value": "GA1.2.328856084.1765516797"
+  },
+  {
+    "domain": ".queenalba.net",
+    "expiry": 1765610549,
+    "httpOnly": false,
+    "name": "cck_count",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": true,
+    "value": "0"
+  },
+  {
+    "domain": ".queenalba.net",
+    "expiry": 1765603197,
+    "httpOnly": false,
+    "name": "tid",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": true,
+    "value": "1765516797251"
+  },
+  {
+    "domain": ".queenalba.net",
+    "expiry": 1766726947,
+    "httpOnly": false,
+    "name": "adulbrith",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": false,
+    "value": "19980521"
+  },
+  {
+    "domain": ".queenalba.net",
+    "httpOnly": false,
+    "name": "job_nick",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": true,
+    "value": "%EB%B0%A9%EC%86%A1%EB%AC%B8%EC%9D%98"
+  },
+  {
+    "domain": ".queenalba.net",
+    "httpOnly": false,
+    "name": "PHPSESSID",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": true,
+    "value": "183d11e43734c4c6fc274ce3d9121093"
+  },
+  {
+    "domain": ".queenalba.net",
+    "expiry": 1766726947,
+    "httpOnly": false,
+    "name": "adulphone",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": false,
+    "value": "01045401855"
+  },
+  {
+    "domain": ".queenalba.net",
+    "httpOnly": false,
+    "name": "happy_mobile",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": true,
+    "value": "off"
+  },
+  {
+    "domain": ".queenalba.net",
+    "expiry": 1800077348,
+    "httpOnly": false,
+    "name": "_ga_BVMGX3YLG6",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": false,
+    "value": "GS2.2.s1765516797$o1$g1$t1765517348$j32$l0$h0"
+  },
+  {
+    "domain": ".queenalba.net",
+    "httpOnly": false,
+    "name": "job_name",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": true,
+    "value": "%EA%B6%8C%ED%95%B4%EC%84%B1"
+  },
+  {
+    "domain": ".queenalba.net",
+    "httpOnly": false,
+    "name": "job_password",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": true,
+    "value": "6a9d036d6e3a765b6926b7e7c984d87b"
+  },
+  {
+    "domain": ".queenalba.net",
+    "expiry": 1765610549,
+    "httpOnly": false,
+    "name": "cck_lasttime",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": true,
+    "value": "1765517237521"
+  },
+  {
+    "domain": "queenalba.net",
+    "httpOnly": false,
+    "name": "PHPSESSID",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": false,
+    "value": "b10c5b98d1a42390085385a74537eed6"
+  }
+]
