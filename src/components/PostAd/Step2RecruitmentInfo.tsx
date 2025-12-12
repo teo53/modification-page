@@ -1,5 +1,5 @@
 import React from 'react';
-import { FileText, MapPin, Clock, Users, Briefcase, Tag, Phone, Image, Edit3 } from 'lucide-react';
+import { FileText, MapPin, Clock, Users, Briefcase, Tag, Phone, Image, Edit3, Palette, Check } from 'lucide-react';
 import RichTextEditor from '../ui/RichTextEditor';
 
 interface Step2Props {
@@ -8,6 +8,8 @@ interface Step2Props {
     onNext: () => void;
     onPrev: () => void;
     getDistrictsForCity: (city: string) => string[];
+    highlightSettings?: { color: string; text: string; range?: { start: number; end: number } };
+    setHighlightSettings?: React.Dispatch<React.SetStateAction<{ color: string; text: string; range?: { start: number; end: number } }>>;
 }
 
 // Section Card wrapper for consistent styling - refined for subtle cohesion
@@ -65,7 +67,9 @@ const Step2RecruitmentInfo: React.FC<Step2Props> = ({
     setFormData,
     onNext,
     onPrev,
-    getDistrictsForCity
+    getDistrictsForCity,
+    highlightSettings,
+    setHighlightSettings
 }) => {
     const updateFormData = (key: string, value: any) => {
         setFormData((prev: any) => ({ ...prev, [key]: value }));
@@ -140,7 +144,100 @@ const Step2RecruitmentInfo: React.FC<Step2Props> = ({
                     </div>
                 </SectionCard>
 
+                {/* 형광펜 효과 - Title Highlight */}
+                {formData.title && setHighlightSettings && (
+                    <SectionCard icon={Palette} title="형광펜 효과 (선택사항 +50,000원)">
+                        <div className="space-y-4">
+                            <p className="text-xs text-white/50">
+                                제목에서 강조할 부분을 선택하고 색상을 클릭하세요
+                            </p>
+
+                            {/* Title Preview */}
+                            <div className="bg-black/60 rounded-xl p-4 border border-white/10">
+                                <div className="text-lg font-bold text-white select-text cursor-text"
+                                    onMouseUp={() => {
+                                        const selection = window.getSelection();
+                                        if (selection && selection.toString().length > 0) {
+                                            const text = selection.toString();
+                                            const startIndex = formData.title.indexOf(text);
+                                            if (startIndex !== -1) {
+                                                setHighlightSettings(prev => ({
+                                                    ...prev,
+                                                    range: { start: startIndex, end: startIndex + text.length }
+                                                }));
+                                            }
+                                        }
+                                    }}
+                                >
+                                    {highlightSettings?.color && highlightSettings?.range ? (
+                                        <>
+                                            {formData.title.substring(0, highlightSettings.range.start)}
+                                            <span className={`px-0.5 rounded ${highlightSettings.color === 'yellow' ? 'bg-yellow-400 text-black' :
+                                                highlightSettings.color === 'pink' ? 'bg-pink-400 text-black' :
+                                                    highlightSettings.color === 'green' ? 'bg-green-400 text-black' :
+                                                        'bg-cyan-400 text-black'
+                                                }`}>
+                                                {formData.title.substring(highlightSettings.range.start, highlightSettings.range.end)}
+                                            </span>
+                                            {formData.title.substring(highlightSettings.range.end)}
+                                        </>
+                                    ) : (
+                                        formData.title
+                                    )}
+                                </div>
+                                {highlightSettings?.range && !highlightSettings?.color && (
+                                    <p className="text-xs text-primary mt-2">
+                                        "{formData.title.substring(highlightSettings.range.start, highlightSettings.range.end)}" 선택됨 - 아래에서 색상을 선택하세요
+                                    </p>
+                                )}
+                            </div>
+
+                            {/* Color Palette */}
+                            <div className="flex items-center gap-3">
+                                <span className="text-xs text-white/50">색상:</span>
+                                <div className="flex gap-2">
+                                    {[
+                                        { id: 'yellow', color: 'bg-yellow-400' },
+                                        { id: 'pink', color: 'bg-pink-400' },
+                                        { id: 'green', color: 'bg-green-400' },
+                                        { id: 'cyan', color: 'bg-cyan-400' },
+                                    ].map(item => (
+                                        <button
+                                            key={item.id}
+                                            onClick={() => {
+                                                const range = highlightSettings?.range || { start: 0, end: formData.title.length };
+                                                setHighlightSettings({
+                                                    color: item.id,
+                                                    text: formData.title.substring(range.start, range.end),
+                                                    range
+                                                });
+                                            }}
+                                            className={`w-8 h-8 ${item.color} rounded-lg transition-all ${highlightSettings?.color === item.id
+                                                ? 'ring-2 ring-white scale-110'
+                                                : 'opacity-60 hover:opacity-100'
+                                                }`}
+                                        >
+                                            {highlightSettings?.color === item.id && (
+                                                <Check size={16} className="text-black m-auto" />
+                                            )}
+                                        </button>
+                                    ))}
+                                    {highlightSettings?.color && (
+                                        <button
+                                            onClick={() => setHighlightSettings({ color: '', text: '' })}
+                                            className="px-3 py-1 text-xs text-white/50 hover:text-white bg-white/10 rounded-lg"
+                                        >
+                                            해제
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </SectionCard>
+                )}
+
                 {/* 업직종 선택 */}
+
                 <SectionCard icon={Briefcase} title="업직종 선택">
                     <div className="grid grid-cols-4 gap-2">
                         {industries.map((item) => (
@@ -397,13 +494,75 @@ const Step2RecruitmentInfo: React.FC<Step2Props> = ({
 
                         {/* 근무 요일 */}
                         <div className="pt-4 border-t border-white/10">
-                            <label className="text-xs text-white/50 mb-3 block">근무 요일</label>
-                            <div className="grid grid-cols-4 gap-2">
+                            <div className="flex items-center justify-between mb-3">
+                                <label className="text-xs text-white/50">근무 요일</label>
+                                {/* Quick Select Buttons - More Visible */}
+                                <div className="flex gap-1.5">
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            const weekdays = ['월', '화', '수', '목', '금'];
+                                            const current = formData.workDays || [];
+                                            const hasAll = weekdays.every(d => current.includes(d));
+                                            if (hasAll) {
+                                                updateFormData('workDays', current.filter((d: string) => !weekdays.includes(d)));
+                                            } else {
+                                                updateFormData('workDays', [...new Set([...current, ...weekdays])]);
+                                            }
+                                        }}
+                                        className={`px-3 py-1.5 text-xs font-medium rounded-lg border-2 transition-all ${['월', '화', '수', '목', '금'].every(d => formData.workDays?.includes(d))
+                                            ? 'bg-primary text-black border-primary'
+                                            : 'bg-primary/10 border-primary/50 text-primary hover:bg-primary/20'
+                                            }`}
+                                    >
+                                        📅 평일
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            const weekend = ['토', '일'];
+                                            const current = formData.workDays || [];
+                                            const hasAll = weekend.every(d => current.includes(d));
+                                            if (hasAll) {
+                                                updateFormData('workDays', current.filter((d: string) => !weekend.includes(d)));
+                                            } else {
+                                                updateFormData('workDays', [...new Set([...current, ...weekend])]);
+                                            }
+                                        }}
+                                        className={`px-3 py-1.5 text-xs font-medium rounded-lg border-2 transition-all ${['토', '일'].every(d => formData.workDays?.includes(d))
+                                            ? 'bg-cyan-400 text-black border-cyan-400'
+                                            : 'bg-cyan-400/10 border-cyan-400/50 text-cyan-400 hover:bg-cyan-400/20'
+                                            }`}
+                                    >
+                                        🌙 주말
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            const allDays = ['월', '화', '수', '목', '금', '토', '일'];
+                                            const current = formData.workDays || [];
+                                            const hasAll = allDays.every(d => current.includes(d));
+                                            if (hasAll) {
+                                                updateFormData('workDays', current.filter((d: string) => !allDays.includes(d)));
+                                            } else {
+                                                updateFormData('workDays', [...new Set([...current, ...allDays])]);
+                                            }
+                                        }}
+                                        className={`px-3 py-1.5 text-xs font-medium rounded-lg border-2 transition-all ${['월', '화', '수', '목', '금', '토', '일'].every(d => formData.workDays?.includes(d))
+                                            ? 'bg-green-400 text-black border-green-400'
+                                            : 'bg-green-400/10 border-green-400/50 text-green-400 hover:bg-green-400/20'
+                                            }`}
+                                    >
+                                        ✓ 전체
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="flex gap-2">
                                 {['월', '화', '수', '목', '금', '토', '일', '협의'].map((day) => (
                                     <button
                                         key={day}
                                         onClick={() => toggleArrayItem('workDays', day)}
-                                        className={`py-2.5 rounded-lg text-sm font-medium border transition-all ${formData.workDays?.includes(day)
+                                        className={`flex-1 py-2 rounded-lg text-sm font-medium border transition-all ${formData.workDays?.includes(day)
                                             ? 'bg-primary/20 text-primary border-primary/50'
                                             : 'bg-black/30 border-white/10 text-white/50 hover:bg-white/10'
                                             }`}

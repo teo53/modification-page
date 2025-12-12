@@ -80,19 +80,33 @@ const TierSection: React.FC<{ tierKey: TierType }> = ({ tierKey }) => {
                 {tier.name} TIER
                 <span className="h-px bg-white/10 flex-1"></span>
             </h3>
-            <div className={`grid grid-cols-1 xl:grid-cols-2 gap-6`}>
-                {tierAds.map(ad => (
-                    <PremiumModernBanner
-                        key={ad.id}
-                        id={ad.id}
-                        tier={tierKey}
-                        title={ad.title}
-                        location={ad.location}
-                        salary={ad.salary}
-                        workHours={ad.workHours}
-                        businessName={ad.businessName}
-                    />
-                ))}
+            <div className={`grid grid-cols-1 xl:grid-cols-2 gap-6 [&>*:last-child:nth-child(odd)]:xl:col-span-2`}>
+                {tierAds.map((ad, index) => {
+                    const isLastOdd = tierAds.length % 2 === 1 && index === tierAds.length - 1;
+                    return (
+                        <div
+                            key={ad.id}
+                            className={`${isLastOdd ? 'xl:max-w-[calc(50%-0.75rem)] xl:mx-auto relative' : ''}`}
+                        >
+                            {isLastOdd && (
+                                <div className="hidden xl:flex absolute -top-3 left-1/2 -translate-x-1/2 z-10">
+                                    <span className="px-4 py-1 bg-gradient-to-r from-primary/80 to-primary text-black text-xs font-bold rounded-full shadow-lg shadow-primary/30">
+                                        ✦ FEATURED
+                                    </span>
+                                </div>
+                            )}
+                            <PremiumModernBanner
+                                id={ad.id}
+                                tier={tierKey}
+                                title={ad.title}
+                                location={ad.location}
+                                salary={ad.salary}
+                                workHours={ad.workHours}
+                                businessName={ad.businessName}
+                            />
+                        </div>
+                    );
+                })}
             </div>
         </div>
     );
