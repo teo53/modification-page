@@ -1,129 +1,240 @@
+#!/usr/bin/env python3
+"""
+적응형 HTML 생성기 (v12 - 시각적 위계 적용)
+
+개선사항:
+- 키워드: 18px, 굵게, 녹색
+- 강조문구: 16px, 녹색 배경 + 흰색 텍스트
+- 일반본문: 13px, 연한 회색
+"""
 
 import json
-import os
+import re
+from pathlib import Path
 
-def generate_adaptive_html():
-    # JSON 로드
-    with open('vision_layout_result.json', 'r', encoding='utf-8') as f:
+
+def generate_adaptive_html(json_path: str = None, output_path: str = None):
+    """Vision AI 결과 JSON을 읽어 HTML 생성"""
+    base_dir = Path(__file__).parent
+    json_path = json_path or base_dir / 'vision_layout_result.json'
+    output_path = output_path or base_dir / 'detail_page_adaptive.html'
+    
+    with open(json_path, 'r', encoding='utf-8') as f:
         data = json.load(f)
 
     sections = data.get('sections', [])
-    theme = data.get('theme', 'luxury_dark')
+    
+    # 색상 (톤 다운)
+    accent = '#1DB954'  # 세련된 녹색
+    accent_bg = 'rgba(29, 185, 84, 0.15)'  # 배경용 투명 녹색
+    
+    # 워터마크 필터링
+    def filter_watermark(text):
+        if not text:
+            return ''
+        if 'http' in text.lower() or 'queenalba.net' in text.lower():
+            return ''
+        for wm in ['퀸알바', 'queenalba', 'QueenAlba', 'QUEENALBA']:
+            if text.strip() == wm:
+                return ''
+            text = text.replace(wm, '').strip()
+        return text
+    
+    # 업체명 추출
+    raw_company = data.get('company_name', '')
+    company_name = filter_watermark(raw_company)
+    
+    if not company_name:
+        catchphrase = filter_watermark(data.get('catchphrase', ''))
+        if catchphrase:
+            company_name = catchphrase
+    
+    # 키워드 추출
+    keywords = []
+    for section in sections:
+        if section.get('type') == 'keyword':
+            content = filter_watermark(section.get('content', ''))
+            if content:
+                keywords.append(content)
+    
+    # 키워드 없으면 자동 감지
+    if not keywords:
+        keyword_patterns = [
+            r'(\d+대\s*환영)', r'(당일\s*지급)', r'(총\s*차량\s*\d+대\s*운행)',
+            r'(숙소\s*제공)', r'(초보\s*환영)'
+        ]
+        all_text = ' '.join([s.get('content', '') for s in sections])
+        for pattern in keyword_patterns:
+            match = re.search(pattern, all_text)
+            if match:
+                keywords.append(match.group(1))
 
-    # 기본 CSS 스타일
-    css_content = """
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;500;700;900&family=Playfair+Display:ital,wght@1,700&display=swap');
+    # CSS - 시각적 위계 적용 (시스템 폰트 사용으로 빠른 로딩)
+    css_content = f"""
+        * {{ box-sizing: border-box; margin: 0; padding: 0; }}
         
-        body {
-            margin: 0; padding: 0; background-color: #000;
-            font-family: 'Noto Sans KR', sans-serif;
-            display: flex; justify-content: center;
-        }
-        .container {
-            width: 520px;
-            background: radial-gradient(circle at 50% 0%, #4a004a 0%, transparent 50%), linear-gradient(180deg, #050505 0%, #1a0520 100%);
-            min-height: 100vh; padding-bottom: 80px; color: white;
-            box-shadow: 0 0 50px rgba(128, 0, 128, 0.2);
-        }
+        body {{
+            background: #000;
+            display: flex;
+            justify-content: center;
+            padding: 15px 0;
+        }}
         
-        /* 공통 스타일 요소 */
-        .header { text-align: center; padding: 60px 20px 40px; }
-        .header h1 {
-            font-size: 48px; margin: 0;
-            background: linear-gradient(to bottom, #fffbcc 0%, #ffd700 50%, #b8860b 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
+        .container {{
+            width: 420px;
+            background: linear-gradient(180deg, #0a0a0a 0%, #050505 100%);
+            padding: 25px 20px 30px;
+            font-family: 'Malgun Gothic', '맑은 고딕', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }}
         
-        .catchphrase {
-            font-size: 24px; font-weight: 700; color: #ff69b4;
-            text-align: center; margin: 20px 0; white-space: pre-line;
-            text-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
-        }
+        /* 업체명 - 가장 크게 */
+        .company-name {{
+            font-size: 52px;
+            font-weight: 900;
+            text-align: center;
+            color: #fff;
+            margin-bottom: 20px;
+            letter-spacing: -2px;
+        }}
         
-        .text-block {
-            margin: 20px; color: #ddd; font-size: 15px; line-height: 1.6;
-            white-space: pre-line; text-align: center;
-        }
+        /* 키워드 컨테이너 */
+        .keyword-container {{
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }}
         
-        .highlight-box {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid #ff69b4; border-radius: 15px;
-            padding: 20px; margin: 20px; text-align: center;
-            color: #fff; font-weight: 700; white-space: pre-line;
-            box-shadow: 0 0 15px rgba(255, 105, 180, 0.2);
-        }
+        /* 키워드 - 18px, 굵게, 녹색 */
+        .keyword {{
+            font-size: 18px;
+            font-weight: 700;
+            color: {accent};
+            padding: 10px 20px;
+            border: 2px solid {accent};
+            border-radius: 25px;
+            background: transparent;
+        }}
         
-        .key-value-row {
-            display: flex; justify-content: space-between; align-items: center;
-            background: linear-gradient(90deg, rgba(255, 215, 0, 0.1), transparent);
-            border-left: 4px solid #ffd700;
-            padding: 15px 20px; margin: 10px 20px;
-        }
-        .kv-label { font-weight: 700; color: #ffd700; }
-        .kv-value { font-weight: 900; color: #fff; font-size: 18px; }
+        /* 강조문구 - 16px, 녹색 배경 + 흰색 텍스트 */
+        .emphasis-box {{
+            background: {accent_bg};
+            border: 1px solid {accent};
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }}
         
-        .section-title {
-            text-align: center; font-size: 26px; font-weight: 900;
-            margin: 50px 0 20px; color: #fff;
-            border-top: 1px solid rgba(255,255,255,0.2);
-            border-bottom: 1px solid rgba(255,255,255,0.2);
-            padding: 10px 0;
-        }
+        .emphasis-box p {{
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.7;
+            text-align: center;
+            word-break: keep-all;
+        }}
         
-        .contact-box {
-            text-align: center; margin-top: 50px; padding: 30px 20px;
-            background: linear-gradient(to top, #220033, transparent);
-        }
-        .phone { font-size: 32px; font-weight: 900; color: #00bfff; margin-bottom: 10px; }
-        .kakao { font-size: 20px; color: #ffeb3b; }
+        /* 일반본문 - 13px, 연한 회색 */
+        .text-box {{
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 12px;
+        }}
+        
+        .text-box p {{
+            font-size: 13px;
+            font-weight: 400;
+            color: #aaaaaa;
+            line-height: 1.8;
+            text-align: center;
+            word-break: keep-all;
+        }}
+        
+        /* 연락처 */
+        .contact-box {{
+            background: {accent_bg};
+            border: 1px solid {accent};
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            text-align: center;
+        }}
+        
+        .contact-phone {{
+            font-size: 18px;
+            font-weight: 700;
+            color: {accent};
+        }}
+        
+        .contact-sub {{
+            font-size: 13px;
+            color: #ffd700;
+            margin-top: 5px;
+        }}
+        
+        /* 푸터 */
+        .footer {{
+            text-align: center;
+            margin-top: 20px;
+            font-size: 11px;
+            color: rgba(255,255,255,0.3);
+            letter-spacing: 2px;
+        }}
     """
 
+    # HTML 생성
     html_body = '<div class="container">'
     
+    # 업체명
+    if company_name:
+        html_body += f'<div class="company-name">{escape_html(company_name)}</div>'
+    
+    # 키워드 태그
+    if keywords:
+        html_body += '<div class="keyword-container">'
+        for kw in keywords[:3]:
+            html_body += f'<span class="keyword">{escape_html(kw)}</span>'
+        html_body += '</div>'
+    
+    # 섹션들 (타입별 스타일)
     for section in sections:
-        stype = section['type']
-        content = section['content']
+        stype = section.get('type', 'text')
+        content = filter_watermark(section.get('content', ''))
         
-        if stype == "header":
-            html_body += f'<div class="header"><h1>{content}</h1></div>'
+        if not content or stype == 'keyword' or stype == 'contact':
+            continue
         
-        elif stype == "catchphrase":
-            html_body += f'<div class="catchphrase">{content}</div>'
+        content_html = escape_html(content).replace('\n', '<br>')
+        
+        if stype in ('emphasis', 'highlight'):
+            # 강조: 녹색 배경 + 흰색 텍스트
+            html_body += f'<div class="emphasis-box"><p>{content_html}</p></div>'
+        else:
+            # 일반본문: 연한 회색
+            html_body += f'<div class="text-box"><p>{content_html}</p></div>'
+    
+    # 연락처
+    for section in sections:
+        if section.get('type') == 'contact':
+            phone = section.get('phone', '')
+            kakao = section.get('kakao', '')
             
-        elif stype == "text":
-            html_body += f'<div class="text-block">{content}</div>'
-            
-        elif stype == "highlight_box":
-            html_body += f'<div class="highlight-box">{content}</div>'
-            
-        elif stype == "key_value":
-            label = content['label']
-            value = content['value']
-            html_body += f'''
-            <div class="key-value-row">
-                <span class="kv-label">{label}</span>
-                <span class="kv-value">{value}</span>
-            </div>
-            '''
-            
-        elif stype == "section_title":
-            html_body += f'<div class="section-title">{content}</div>'
-            
-        elif stype == "contact":
-            phone = content.get('phone', '')
-            kakao = content.get('kakao', '')
-            html_body += f'''
-            <div class="contact-box">
-                <div class="phone">{phone}</div>
-                <div class="kakao">KATALK : {kakao}</div>
-            </div>
-            '''
+            has_valid = (phone and '미제공' not in phone) or (kakao and '미제공' not in kakao)
+            if has_valid:
+                html_body += '<div class="contact-box">'
+                if phone and '미제공' not in phone:
+                    html_body += f'<div class="contact-phone">{escape_html(phone)}</div>'
+                if kakao and '미제공' not in kakao:
+                    html_body += f'<div class="contact-sub">카카오톡: {escape_html(kakao)}</div>'
+                html_body += '</div>'
+            break
+    
+    html_body += '<div class="footer">AI REGENERATED</div>'
+    html_body += '</div>'
 
-    html_body += '<div style="text-align:center; color:#555; font-size:10px; margin:20px 0;">DESIGNED BY ADAPTIVE AI</div>'
-    html_body += '</div>' # container end
-
-    full_html = f"""
-<!DOCTYPE html>
+    full_html = f"""<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
@@ -133,12 +244,25 @@ def generate_adaptive_html():
 <body>
     {html_body}
 </body>
-</html>
-    """
+</html>"""
 
-    with open('detail_page_adaptive.html', 'w', encoding='utf-8') as f:
+    with open(output_path, 'w', encoding='utf-8') as f:
         f.write(full_html)
-    print("Generated detail_page_adaptive.html")
+    
+    print(f"Generated {output_path}")
+    return str(output_path)
+
+
+def escape_html(text):
+    if not isinstance(text, str):
+        text = str(text)
+    return (text
+        .replace('&', '&amp;')
+        .replace('<', '&lt;')
+        .replace('>', '&gt;')
+        .replace('"', '&quot;')
+        .replace("'", '&#39;'))
+
 
 if __name__ == "__main__":
     generate_adaptive_html()
