@@ -3,9 +3,15 @@ import { Link } from 'react-router-dom';
 import { MessageSquare, ThumbsUp, Eye } from 'lucide-react';
 
 import communityData from '../data/community_data.json';
+import { sampleCommunityPosts } from '../data/sampleCommunity';
+import { useDataMode } from '../contexts/DataModeContext';
 
 const CommunityPage: React.FC = () => {
+    const { useSampleData } = useDataMode();
     const [selectedCategory, setSelectedCategory] = useState('전체');
+
+    // Use sample or real data based on admin toggle
+    const sourceData = useSampleData ? sampleCommunityPosts : communityData;
 
     const categories = [
         { id: '전체', label: '전체' },
@@ -17,8 +23,8 @@ const CommunityPage: React.FC = () => {
     ];
 
     const filteredPosts = selectedCategory === '전체'
-        ? communityData
-        : communityData.filter(p => p.category === selectedCategory);
+        ? sourceData
+        : sourceData.filter(p => p.category === selectedCategory);
 
     const displayPosts = filteredPosts.slice(0, 50);
 
@@ -26,9 +32,12 @@ const CommunityPage: React.FC = () => {
         <div className="container mx-auto px-4 py-8">
             <div className="flex items-center justify-between mb-8">
                 <h1 className="text-2xl font-bold text-white">커뮤니티</h1>
-                <button className="bg-primary text-black font-bold px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors">
+                <Link
+                    to="/community/write"
+                    className="bg-primary text-black font-bold px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
+                >
                     글쓰기
-                </button>
+                </Link>
             </div>
 
             {/* Category Tabs */}

@@ -1,6 +1,8 @@
 import React from 'react';
 import PremiumModernBanner from './PremiumModernBanner';
 import scrapedAdsData from '../../data/scraped_ads.json';
+import { sampleHeroAds } from '../../data/sampleAds';
+import { useDataMode } from '../../contexts/DataModeContext';
 
 // Tier configuration
 const tierConfig = {
@@ -111,11 +113,11 @@ const generateTierAds = (): TierAd[] => {
     return tierAds;
 };
 
-const allAds = generateTierAds();
+const realAds = generateTierAds();
 
-const TierSection: React.FC<{ tierKey: TierType }> = ({ tierKey }) => {
+const TierSection: React.FC<{ tierKey: TierType; ads: TierAd[] }> = ({ tierKey, ads }) => {
     const tier = tierConfig[tierKey];
-    const tierAds = allAds.filter(ad => ad.tier === tierKey);
+    const tierAds = ads.filter(ad => ad.tier === tierKey);
 
     if (tierAds.length === 0) return null;
 
@@ -146,6 +148,11 @@ const TierSection: React.FC<{ tierKey: TierType }> = ({ tierKey }) => {
 };
 
 const PremiumHeroAds: React.FC = () => {
+    const { useSampleData } = useDataMode();
+
+    // Use sample or real data based on toggle
+    const allAds = useSampleData ? sampleHeroAds : realAds;
+
     if (allAds.length === 0) return null;
 
     return (
@@ -155,17 +162,19 @@ const PremiumHeroAds: React.FC = () => {
                     <h1 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-200 to-gray-500 mb-4">
                         Premium Recruitment
                     </h1>
-                    <p className="text-white/40 tracking-widest text-sm">최상위 1%를 위한 프리미엄 채용관</p>
+                    <p className="text-white/40 tracking-widest text-sm">
+                        최상위 1%를 위한 프리미엄 채용관
+                        {useSampleData && <span className="ml-2 text-yellow-400">(샘플)</span>}
+                    </p>
                 </div>
 
-                <TierSection tierKey="diamond" />
-                <TierSection tierKey="sapphire" />
-                <TierSection tierKey="ruby" />
-                <TierSection tierKey="gold" />
+                <TierSection tierKey="diamond" ads={allAds} />
+                <TierSection tierKey="sapphire" ads={allAds} />
+                <TierSection tierKey="ruby" ads={allAds} />
+                <TierSection tierKey="gold" ads={allAds} />
             </div>
         </section>
     );
 };
 
 export default PremiumHeroAds;
-

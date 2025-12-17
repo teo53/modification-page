@@ -45,8 +45,16 @@ except ImportError:
 BASE_URL = "https://queenalba.net"
 CREDENTIALS_FILE = "credentials.py"
 COOKIES_FILE = "cookies_queenalba.json"
-OUTPUT_FILE = "../src/data/scraped_ads.json"
-COLLECTED_URLS_FILE = "collected_urls.json"
+
+# 경로 정책에 따른 파일 경로 설정
+try:
+    from utils.paths import PATHS, get_dated_filename
+    OUTPUT_FILE = str(PATHS["reports_daily"] / "scraped_ads.json")
+    COLLECTED_URLS_FILE = str(PATHS["base"] / "collected_urls.json")
+except ImportError:
+    # 폴백: 기존 경로 사용
+    OUTPUT_FILE = "../src/data/scraped_ads.json"
+    COLLECTED_URLS_FILE = "collected_urls.json"
 
 
 def load_credentials():

@@ -43,36 +43,58 @@ def extract_text_from_image(image_path, model="gpt-4o-mini"):
 
     base64_image = encode_image(image_path)
 
-    client = OpenAI(api_key=api_key)
+    client = OpenAI(api_key=api_key, timeout=60.0)  # 60초 타임아웃
 
     try:
+        print("   ⏳ API 호출 중... (최대 60초)")
         response = client.chat.completions.create(
             model=model,
             messages=[
                 {
                     "role": "system",
-                    "content": """
-                    당신은 유흥 구인구직 광고 이미지를 분석하여 '원본의 레이아웃 순서대로' 콘텐츠를 추출하는 AI입니다.
-                    고정된 형식이 아니라, 위에서 아래로 보이는 시각적 흐름(Flow)을 그대로 따라가며 데이터를 추출하세요.
+                    "content": """당신은 광고 이미지를 분석하여 구조화된 JSON으로 변환하는 전문가입니다.
 
-                    다음 JSON 형식으로 출력하세요:
-                    {
-                        "theme": "luxury_dark", // 분위기에 따라 recommended theme (luxury_dark, bright_modern, pink_neon)
-                        "sections": [
-                            { "type": "header", "content": "제목 내용" },
-                            { "type": "image_text", "content": "이미지 속 텍스트 내용" },
-                            { "type": "text", "content": "일반 본문 내용" },
-                            { "type": "highlight_box", "content": "강조된 박스 내용" },
-                            { "type": "key_value", "content": {"label": "급여", "value": "500만원"} },
-                            { "type": "contact", "content": {"phone": "...", "kakao": "..."} }
-                        ]
-                    }
-                    
-                    규칙:
-                    1. 원본 이미지의 섹션 순서를 절대 바꾸지 마세요.
-                    2. 오타는 문맥에 맞게 수정하세요.
-                    3. 응답은 오직 JSON만 출력하세요.
-                    """
+## 분석 기준
+
+### 키워드 (type: "keyword")
+- 15자 이하의 짧고 임팩트 있는 문구
+- 예: "40대 환영", "총 차량 4대 운행", "당일지급", "숙소제공"
+
+### 강조 문구 (type: "emphasis")  
+- 색상이나 크기가 다른 강조된 문장
+- 느낌표(!!)로 끝나는 경우 많음
+
+### 일반 본문 (type: "text")
+- 설명적인 긴 문장
+
+## 출력 형식
+```json
+{
+    "colors": {
+        "background": "#배경색",
+        "accent": "#강조색"
+    },
+    "company_name": "업체명",
+    "sections": [
+        {"type": "keyword", "content": "40대 환영"},
+        {"type": "keyword", "content": "총 차량 4대 운행"},
+        {"type": "emphasis", "content": "저희는 24시간 운영해요!!"},
+        {"type": "text", "content": "일반 설명 본문입니다."},
+        {"type": "contact", "phone": "010-XXXX-XXXX", "kakao": "아이디"}
+    ]
+}
+```
+
+## OCR 오류 수정
+- 속늦쎈치고 → 속는셈치고
+- 빼릿해요 → 빠릿해요
+- 콜라서 → 골라서
+
+## 중요 규칙
+1. 키워드는 짧은 문구만 (15자 이하)
+2. "퀸알바", "queenalba" → 절대 포함 금지
+3. 연락처 없으면 contact 생략
+4. JSON만 출력"""
                 },
                 {
                     "role": "user",

@@ -4,6 +4,8 @@ import type { LucideIcon } from 'lucide-react';
 import AdCard from '../components/ad/AdCard';
 import SelectionGroup from '../components/ui/SelectionGroup';
 import { allAds } from '../data/mockAds';
+import { allSampleAds } from '../data/sampleAds';
+import { useDataMode } from '../contexts/DataModeContext';
 
 // 숫자 카운트업 애니메이션 훅
 const useCountUp = (end: number, duration: number = 2000) => {
@@ -92,13 +94,16 @@ const SORT_OPTIONS = [
 ];
 
 const ThemePage: React.FC = () => {
+    const { useSampleData } = useDataMode();
+    const adsData = useSampleData ? allSampleAds : allAds;
+
     const [activeTheme, setActiveTheme] = useState('high-pay');
     const [sortOrder, setSortOrder] = useState('latest');
     const [displayCount, setDisplayCount] = useState(24);
 
     // 필터링된 광고 목록
     const filteredAds = useMemo(() => {
-        let results = [...allAds];
+        let results = [...adsData];
 
         // 테마 필터
         const theme = themes.find(t => t.id === activeTheme);
@@ -124,8 +129,8 @@ const ThemePage: React.FC = () => {
         }
 
         // 결과가 없으면 기본 데이터 반환
-        return results.length > 0 ? results : allAds.slice(0, 12);
-    }, [activeTheme, sortOrder]);
+        return results.length > 0 ? results : adsData.slice(0, 12);
+    }, [activeTheme, sortOrder, adsData]);
 
     const activeThemeData = themes.find(t => t.id === activeTheme);
 
@@ -133,7 +138,12 @@ const ThemePage: React.FC = () => {
         <div className="container mx-auto px-4 py-8">
             {/* 헤더 */}
             <div className="mb-12 text-center">
-                <h1 className="text-3xl font-bold text-white mb-4">테마별 알바</h1>
+                <div className="flex items-center justify-center gap-2 mb-4">
+                    <h1 className="text-3xl font-bold text-white">테마별 알바</h1>
+                    {useSampleData && (
+                        <span className="text-xs bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded-full">샘플</span>
+                    )}
+                </div>
                 <p className="text-text-muted">원하는 조건의 일자리를 테마별로 쉽고 빠르게 찾아보세요.</p>
             </div>
 
@@ -148,7 +158,7 @@ const ThemePage: React.FC = () => {
                 <StatCard
                     icon={Gift}
                     iconColor="text-green-400"
-                    value={allAds.length}
+                    value={adsData.length}
                     suffix="+"
                     label="등록업소"
                     textColor="text-green-400"

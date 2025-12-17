@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, User, Eye, EyeOff, AlertCircle, CheckCircle, Shield, FileCheck, ChevronRight, ChevronDown, Building2 } from 'lucide-react';
+import { Mail, Lock, User, Eye, EyeOff, AlertCircle, CheckCircle, Shield, FileCheck, ChevronRight, ChevronDown, Building2, MapPin } from 'lucide-react';
 import { signup } from '../utils/auth';
 import PhoneVerification from '../components/auth/PhoneVerification';
 import BusinessVerification from '../components/auth/BusinessVerification';
@@ -15,6 +15,17 @@ const Signup: React.FC = () => {
     const [isPhoneVerified, setIsPhoneVerified] = useState(false);
     const [isBusinessVerified, setIsBusinessVerified] = useState(false);
     const [businessCertificate, setBusinessCertificate] = useState<File | null>(null);
+
+    // Field refs for focus management
+    const emailRef = useRef<HTMLInputElement>(null);
+    const passwordRef = useRef<HTMLInputElement>(null);
+    const confirmPasswordRef = useRef<HTMLInputElement>(null);
+    const nameRef = useRef<HTMLInputElement>(null);
+    const nicknameRef = useRef<HTMLInputElement>(null);
+    const addressRef = useRef<HTMLInputElement>(null);
+
+    // Field-level error states
+    const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
     // Agreement states
     const [allAgreed, setAllAgreed] = useState(false);
@@ -34,7 +45,9 @@ const Signup: React.FC = () => {
         type: 'worker' as 'worker' | 'advertiser',
         businessNumber: '',
         businessName: '',
-        nickname: ''
+        nickname: '',
+        address: '',
+        addressDetail: ''
     });
 
     // Password strength calculation
@@ -56,7 +69,12 @@ const Signup: React.FC = () => {
     const passwordStrength = getPasswordStrength(formData.password);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+        // Clear field error when user starts typing
+        if (fieldErrors[name]) {
+            setFieldErrors(prev => ({ ...prev, [name]: '' }));
+        }
     };
 
     const handleAllAgreedChange = (checked: boolean) => {
@@ -78,60 +96,97 @@ const Signup: React.FC = () => {
         e.preventDefault();
         setError('');
         setSuccess('');
+        setFieldErrors({});
         setLoading(true);
 
-        // Validation
-        if (!formData.email || !formData.password || !formData.name || !formData.nickname) {
-            setError('필수 항목을 모두 입력해주세요.');
-            setLoading(false);
-            return;
+        const errors: Record<string, string> = {};
+
+        // Email validation
+        if (!formData.email) {
+            errors.email = '이메일을 입력해주세요.';
+        } else if (!formData.email.includes('@') || !formData.email.includes('.')) {
+            errors.email = '올바른 이메일 형식을 입력해주세요. (예: example@email.com)';
         }
 
-        if (!formData.email.includes('@')) {
-            setError('올바른 이메일 형식을 입력해주세요.');
-            setLoading(false);
-            return;
+        // Password validation
+        if (!formData.password) {
+            errors.password = '비밀번호를 입력해주세요.';
+        } else if (formData.password.length < 6) {
+            errors.password = '비밀번호는 6자 이상이어야 합니다.';
         }
 
+        // Confirm password validation
+        if (!formData.confirmPassword) {
+            errors.confirmPassword = '비밀번호 확인을 입력해주세요.';
+        } else if (formData.password !== formData.confirmPassword) {
+            errors.confirmPassword = '비밀번호가 일치하지 않습니다.';
+        }
+
+        // Name validation
+        if (!formData.name) {
+            errors.name = '이름을 입력해주세요.';
+        } else if (formData.name.length < 2) {
+            errors.name = '이름은 2자 이상이어야 합니다.';
+        }
+
+        // Nickname validation
+        if (!formData.nickname) {
+            errors.nickname = '닉네임을 입력해주세요.';
+        } else if (formData.nickname.length < 2) {
+            errors.nickname = '닉네임은 2자 이상이어야 합니다.';
+        }
+
+        // Address validation (optional but recommended)
+        // No strict validation - just check format if provided
+
+        // Phone verification
+        if (!isPhoneVerified) {
+            errors.phone = '휴대폰 본인인증을 완료해주세요.';
+        }
+
+        // Business validation for advertisers
         if (formData.type === 'advertiser') {
-            if (!formData.businessNumber || !formData.businessName) {
-                setError('사업자 정보를 모두 입력해주세요.');
-                setLoading(false);
-                return;
+            if (!formData.businessNumber) {
+                errors.businessNumber = '사업자등록번호를 입력해주세요.';
+            }
+            if (!formData.businessName) {
+                errors.businessName = '상호명을 입력해주세요.';
             }
             if (!isBusinessVerified) {
-                setError('사업자등록번호 확인을 완료해주세요.');
-                setLoading(false);
-                return;
+                errors.businessVerified = '사업자등록번호 확인을 완료해주세요.';
             }
             if (!businessCertificate) {
-                setError('사업자등록증 사본을 업로드해주세요.');
-                setLoading(false);
-                return;
+                errors.businessCertificate = '사업자등록증 사본을 업로드해주세요.';
             }
         }
 
-        if (formData.password.length < 6) {
-            setError('비밀번호는 6자 이상이어야 합니다.');
-            setLoading(false);
-            return;
-        }
-
-        if (formData.password !== formData.confirmPassword) {
-            setError('비밀번호가 일치하지 않습니다.');
-            setLoading(false);
-            return;
-        }
-
+        // Terms validation
         if (!agreements.terms || !agreements.privacy) {
-            setError('필수 약관에 동의해주세요.');
-            setLoading(false);
-            return;
+            errors.terms = '필수 약관에 동의해주세요.';
         }
 
-        if (!isPhoneVerified) {
-            setError('휴대폰 본인인증을 완료해주세요.');
+        // If there are errors, set them and focus on first error field
+        if (Object.keys(errors).length > 0) {
+            setFieldErrors(errors);
             setLoading(false);
+
+            // Focus on first error field
+            if (errors.email) {
+                emailRef.current?.focus();
+                emailRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else if (errors.password) {
+                passwordRef.current?.focus();
+                passwordRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else if (errors.confirmPassword) {
+                confirmPasswordRef.current?.focus();
+                confirmPasswordRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else if (errors.name) {
+                nameRef.current?.focus();
+                nameRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else if (errors.nickname) {
+                nicknameRef.current?.focus();
+                nicknameRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
             return;
         }
 
@@ -252,32 +307,39 @@ const Signup: React.FC = () => {
                         </h3>
 
                         {/* Email */}
-                        <div>
+                        <div className="relative">
                             <label className="block text-sm font-medium text-text-muted mb-1.5">이메일 <span className="text-red-400">*</span></label>
                             <div className="relative">
                                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
                                 <input
+                                    ref={emailRef}
                                     name="email"
                                     type="email"
                                     value={formData.email}
                                     onChange={handleChange}
-                                    className="w-full bg-background border border-white/10 rounded-lg py-3 pl-10 pr-4 text-white focus:border-primary outline-none transition-colors"
+                                    className={`w-full bg-background border rounded-lg py-3 pl-10 pr-4 text-white outline-none transition-colors ${fieldErrors.email ? 'border-red-500 focus:border-red-500' : 'border-white/10 focus:border-primary'}`}
                                     placeholder="example@lunaalba.com"
                                 />
                             </div>
+                            {fieldErrors.email && (
+                                <div className="absolute left-0 -bottom-6 bg-red-500 text-white text-xs px-2 py-1 rounded shadow-lg z-10 animate-pulse">
+                                    ⚠ {fieldErrors.email}
+                                </div>
+                            )}
                         </div>
 
                         {/* Password */}
-                        <div>
+                        <div className="relative mt-6">
                             <label className="block text-sm font-medium text-text-muted mb-1.5">비밀번호 <span className="text-red-400">*</span></label>
                             <div className="relative">
                                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
                                 <input
+                                    ref={passwordRef}
                                     name="password"
                                     type={showPassword ? 'text' : 'password'}
                                     value={formData.password}
                                     onChange={handleChange}
-                                    className="w-full bg-background border border-white/10 rounded-lg py-3 pl-10 pr-12 text-white focus:border-primary outline-none transition-colors"
+                                    className={`w-full bg-background border rounded-lg py-3 pl-10 pr-12 text-white outline-none transition-colors ${fieldErrors.password ? 'border-red-500 focus:border-red-500' : 'border-white/10 focus:border-primary'}`}
                                     placeholder="6자 이상 입력"
                                 />
                                 <button
@@ -288,15 +350,19 @@ const Signup: React.FC = () => {
                                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                 </button>
                             </div>
+                            {fieldErrors.password && (
+                                <div className="bg-red-500 text-white text-xs px-2 py-1 rounded mt-1 animate-pulse">
+                                    ⚠ {fieldErrors.password}
+                                </div>
+                            )}
                             {/* Password Strength Indicator */}
-                            {formData.password && (
+                            {formData.password && !fieldErrors.password && (
                                 <div className="mt-2 space-y-1">
                                     <div className="flex gap-1">
                                         {[1, 2, 3, 4].map((level) => (
                                             <div
                                                 key={level}
-                                                className={`h-1 flex-1 rounded-full transition-colors ${level <= passwordStrength.level ? passwordStrength.color : 'bg-white/10'
-                                                    }`}
+                                                className={`h-1 flex-1 rounded-full transition-colors ${level <= passwordStrength.level ? passwordStrength.color : 'bg-white/10'}`}
                                             />
                                         ))}
                                     </div>
@@ -306,21 +372,17 @@ const Signup: React.FC = () => {
                         </div>
 
                         {/* Confirm Password */}
-                        <div>
+                        <div className="relative">
                             <label className="block text-sm font-medium text-text-muted mb-1.5">비밀번호 확인 <span className="text-red-400">*</span></label>
                             <div className="relative">
                                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
                                 <input
+                                    ref={confirmPasswordRef}
                                     name="confirmPassword"
                                     type={showConfirmPassword ? 'text' : 'password'}
                                     value={formData.confirmPassword}
                                     onChange={handleChange}
-                                    className={`w-full bg-background border rounded-lg py-3 pl-10 pr-12 text-white outline-none transition-colors ${formData.confirmPassword
-                                        ? formData.password === formData.confirmPassword
-                                            ? 'border-green-500/50 focus:border-green-500'
-                                            : 'border-red-500/50 focus:border-red-500'
-                                        : 'border-white/10 focus:border-primary'
-                                        }`}
+                                    className={`w-full bg-background border rounded-lg py-3 pl-10 pr-12 text-white outline-none transition-colors ${fieldErrors.confirmPassword ? 'border-red-500 focus:border-red-500' : formData.confirmPassword ? (formData.password === formData.confirmPassword ? 'border-green-500/50 focus:border-green-500' : 'border-red-500/50 focus:border-red-500') : 'border-white/10 focus:border-primary'}`}
                                     placeholder="비밀번호 다시 입력"
                                 />
                                 <button
@@ -331,7 +393,11 @@ const Signup: React.FC = () => {
                                     {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                 </button>
                             </div>
-                            {formData.confirmPassword && (
+                            {fieldErrors.confirmPassword ? (
+                                <div className="bg-red-500 text-white text-xs px-2 py-1 rounded mt-1 animate-pulse">
+                                    ⚠ {fieldErrors.confirmPassword}
+                                </div>
+                            ) : formData.confirmPassword && (
                                 <div className={`text-xs mt-1 ${formData.password === formData.confirmPassword ? 'text-green-400' : 'text-red-400'}`}>
                                     {formData.password === formData.confirmPassword ? '✓ 비밀번호가 일치합니다' : '✗ 비밀번호가 일치하지 않습니다'}
                                 </div>
@@ -340,31 +406,72 @@ const Signup: React.FC = () => {
 
                         {/* Name & Nickname */}
                         <div className="grid grid-cols-2 gap-3">
-                            <div>
+                            <div className="relative">
                                 <label className="block text-sm font-medium text-text-muted mb-1.5">이름 <span className="text-red-400">*</span></label>
                                 <div className="relative">
                                     <User className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
                                     <input
+                                        ref={nameRef}
                                         name="name"
                                         type="text"
                                         value={formData.name}
                                         onChange={handleChange}
-                                        className="w-full bg-background border border-white/10 rounded-lg py-3 pl-10 pr-4 text-white focus:border-primary outline-none transition-colors"
+                                        className={`w-full bg-background border rounded-lg py-3 pl-10 pr-4 text-white outline-none transition-colors ${fieldErrors.name ? 'border-red-500 focus:border-red-500' : 'border-white/10 focus:border-primary'}`}
                                         placeholder="이름"
                                     />
                                 </div>
+                                {fieldErrors.name && (
+                                    <div className="bg-red-500 text-white text-xs px-2 py-1 rounded mt-1 animate-pulse">
+                                        ⚠ {fieldErrors.name}
+                                    </div>
+                                )}
                             </div>
-                            <div>
+                            <div className="relative">
                                 <label className="block text-sm font-medium text-text-muted mb-1.5">닉네임 <span className="text-red-400">*</span></label>
                                 <input
+                                    ref={nicknameRef}
                                     name="nickname"
                                     type="text"
                                     value={formData.nickname}
                                     onChange={handleChange}
-                                    className="w-full bg-background border border-white/10 rounded-lg py-3 px-4 text-white focus:border-primary outline-none transition-colors"
+                                    className={`w-full bg-background border rounded-lg py-3 px-4 text-white outline-none transition-colors ${fieldErrors.nickname ? 'border-red-500 focus:border-red-500' : 'border-white/10 focus:border-primary'}`}
                                     placeholder="닉네임"
                                 />
+                                {fieldErrors.nickname && (
+                                    <div className="bg-red-500 text-white text-xs px-2 py-1 rounded mt-1 animate-pulse">
+                                        ⚠ {fieldErrors.nickname}
+                                    </div>
+                                )}
                             </div>
+                        </div>
+
+                        {/* Address (Optional but Recommended) */}
+                        <div className="space-y-2">
+                            <label className="block text-sm font-medium text-text-muted mb-1.5">
+                                <MapPin size={14} className="inline mr-1" />
+                                주소 <span className="text-text-muted/50">(선택)</span>
+                            </label>
+                            <div className="relative">
+                                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
+                                <input
+                                    ref={addressRef}
+                                    name="address"
+                                    type="text"
+                                    value={formData.address}
+                                    onChange={handleChange}
+                                    className="w-full bg-background border border-white/10 rounded-lg py-3 pl-10 pr-4 text-white focus:border-primary outline-none transition-colors"
+                                    placeholder="주소 (시/도, 구/군)"
+                                />
+                            </div>
+                            <input
+                                name="addressDetail"
+                                type="text"
+                                value={formData.addressDetail}
+                                onChange={handleChange}
+                                className="w-full bg-background border border-white/10 rounded-lg py-3 px-4 text-white focus:border-primary outline-none transition-colors"
+                                placeholder="상세주소 (선택)"
+                            />
+                            <p className="text-xs text-text-muted">※ 주소 정보는 맞춤 구인정보 제공에 활용됩니다.</p>
                         </div>
 
                         {/* Phone Verification */}
@@ -374,6 +481,11 @@ const Signup: React.FC = () => {
                             onVerified={setIsPhoneVerified}
                             isVerified={isPhoneVerified}
                         />
+                        {fieldErrors.phone && (
+                            <div className="bg-red-500 text-white text-xs px-2 py-1 rounded animate-pulse -mt-2">
+                                ⚠ {fieldErrors.phone}
+                            </div>
+                        )}
                     </div>
 
                     {/* Business Fields - Conditional Render */}

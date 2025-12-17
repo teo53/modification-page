@@ -57,7 +57,7 @@ const AdvertiserInfoSection: React.FC<{
     company?: CompanyInfo;
     primaryPhone: string;
     isCompact?: boolean;
-}> = ({ ad, advertiser, company, primaryPhone, isCompact }) => (
+}> = ({ ad, advertiser, company, primaryPhone, isCompact: _isCompact }) => (
     <div className="bg-accent rounded-xl border border-white/10 overflow-hidden">
         <div className="bg-gradient-to-r from-purple-600/20 to-pink-600/20 px-6 py-3 border-b border-white/10">
             <h2 className="text-lg font-bold text-white flex items-center gap-2">

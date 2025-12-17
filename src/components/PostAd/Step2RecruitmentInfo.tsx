@@ -130,18 +130,78 @@ const Step2RecruitmentInfo: React.FC<Step2Props> = ({
             <div className="space-y-4">
                 {/* 공고 제목 */}
                 <SectionCard icon={Edit3} title="공고 제목">
-                    <input
-                        type="text"
-                        value={formData.title}
-                        onChange={(e) => updateFormData('title', e.target.value)}
-                        className="w-full bg-black/40 border-2 border-white/10 rounded-xl p-4 text-lg font-bold text-white placeholder-white/30 focus:border-primary focus:outline-none transition-colors"
-                        placeholder="눈에 띄는 제목을 입력해주세요"
-                        maxLength={40}
-                    />
-                    <div className="flex justify-between mt-2">
-                        <span className="text-xs text-white/40">매력적인 제목으로 지원자의 관심을 끌어보세요</span>
-                        <span className="text-xs text-white/40">{formData.title?.length || 0}/40</span>
-                    </div>
+                    {(() => {
+                        // Calculate visual width: Korean=2, English/number=1, space=0.5
+                        const calcWidth = (text: string = '') => {
+                            let width = 0;
+                            for (const char of text) {
+                                if (/[\u3131-\uD79D]/.test(char)) width += 2; // Korean
+                                else if (/[a-zA-Z0-9]/.test(char)) width += 1; // English/number
+                                else if (char === ' ') width += 0.5; // Space
+                                else width += 1.2; // Special chars
+                            }
+                            return width;
+                        };
+                        const currentWidth = calcWidth(formData.title);
+                        const isOverflow = currentWidth > 18;
+
+                        return (
+                            <>
+                                <input
+                                    type="text"
+                                    value={formData.title}
+                                    onChange={(e) => updateFormData('title', e.target.value)}
+                                    className={`w-full bg-black/40 border-2 rounded-xl p-4 text-lg font-bold text-white placeholder-white/30 focus:outline-none transition-colors ${isOverflow
+                                        ? 'border-yellow-500/50 focus:border-yellow-500'
+                                        : 'border-white/10 focus:border-primary'
+                                        }`}
+                                    placeholder="눈에 띄는 제목을 입력해주세요"
+                                    maxLength={40}
+                                />
+                                <div className="mt-3 space-y-2">
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-xs text-white/40">매력적인 제목으로 지원자의 관심을 끌어보세요</span>
+                                        <div className="flex gap-3 items-center">
+                                            <span className={`text-xs ${isOverflow ? 'text-yellow-400' : 'text-white/40'}`}>
+                                                폭: {currentWidth.toFixed(1)}/18
+                                            </span>
+                                            <span className="text-xs text-white/40">
+                                                {formData.title?.length || 0}/40자
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    {/* Title Length Info Box */}
+                                    <div className={`p-3 rounded-lg text-xs ${isOverflow
+                                        ? 'bg-yellow-500/10 border border-yellow-500/30'
+                                        : 'bg-white/5 border border-white/10'
+                                        }`}>
+                                        <div className="flex items-start gap-2">
+                                            <span className="text-lg">💡</span>
+                                            <div>
+                                                {isOverflow ? (
+                                                    <>
+                                                        <p className="text-yellow-400 font-medium mb-1">제목이 카드 너비를 초과했습니다</p>
+                                                        <p className="text-white/60">
+                                                            카드에서 제목이 잘려 보입니다. 마우스를 올리면 <strong className="text-yellow-400">스크롤 애니메이션</strong>으로
+                                                            전체 제목이 표시됩니다.
+                                                        </p>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <p className="text-green-400 font-medium mb-1">✓ 제목이 카드 내에 완전히 표시됩니다</p>
+                                                        <p className="text-white/50">
+                                                            한글=2 | 영어/숫자=1 | 공백=0.5 | 특수문자=1.2 (기준: 18)
+                                                        </p>
+                                                    </>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </>
+                        );
+                    })()}
                 </SectionCard>
 
                 {/* 형광펜 효과 - Title Highlight */}

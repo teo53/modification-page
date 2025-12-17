@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { MapPin, DollarSign, Heart } from 'lucide-react';
 import { cn } from '../../utils/cn';
 import { Link } from 'react-router-dom';
+import { trackAdInteraction } from '../../utils/analytics';
 
 interface AdCardProps {
     id?: number | string;
@@ -39,18 +40,34 @@ const AdCard: React.FC<AdCardProps> = ({
     const isVip = variant === 'vip' || productType === 'vip';
     const isSpecial = variant === 'special' || productType === 'special';
     const isPremium = variant === 'premium' || productType === 'premium';
+    // Track ad view on mount
+    const adTypeForTracking = (productType || variant) as 'vip' | 'special' | 'premium' | 'general';
+    useEffect(() => {
+        const normalizedType = ['diamond', 'sapphire', 'ruby', 'gold', 'vip'].includes(adTypeForTracking) ? 'vip'
+            : adTypeForTracking === 'special' ? 'special'
+                : adTypeForTracking === 'premium' ? 'premium' : 'general';
+        trackAdInteraction(Number(id), title, normalizedType, 'view');
+    }, [id, title, adTypeForTracking]);
+
+    const handleClick = () => {
+        const normalizedType = ['diamond', 'sapphire', 'ruby', 'gold', 'vip'].includes(adTypeForTracking) ? 'vip'
+            : adTypeForTracking === 'special' ? 'special'
+                : adTypeForTracking === 'premium' ? 'premium' : 'general';
+        trackAdInteraction(Number(id), title, normalizedType, 'click');
+    };
 
     return (
         <Link
             to={`/ad/${id}`}
+            onClick={handleClick}
             className={cn(
                 "block group relative overflow-hidden rounded-xl bg-accent transition-all duration-300 hover:-translate-y-1",
-                isDiamond && "border-2 border-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.3)]",
+                isDiamond && "border-2 border-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.3)] ad-card-diamond",
                 isSapphire && "border-2 border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.3)]",
                 isRuby && "border-2 border-red-500 shadow-[0_0_15px_rgba(239,68,68,0.3)]",
                 isGold && "border-2 border-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.3)]",
-                isVip && "border-2 border-primary shadow-[0_0_15px_rgba(212,175,55,0.3)]",
-                isSpecial && "border-2 border-secondary shadow-[0_0_15px_rgba(255,0,127,0.3)]",
+                isVip && "border-2 border-primary shadow-[0_0_15px_rgba(212,175,55,0.3)] ad-card-vip",
+                isSpecial && "border-2 border-secondary shadow-[0_0_15px_rgba(255,0,127,0.3)] ad-card-special",
                 isPremium && "border border-white/20",
                 variant === 'regular' && "border border-white/5 hover:border-white/20"
             )}
@@ -92,18 +109,32 @@ const AdCard: React.FC<AdCardProps> = ({
 
             {/* Content Section */}
             <div className="p-3">
-                <h3 className={cn(
-                    "font-bold truncate mb-1",
-                    isDiamond ? "text-lg text-cyan-400" :
-                        isSapphire ? "text-lg text-blue-400" :
-                            isRuby ? "text-lg text-red-400" :
-                                isGold ? "text-lg text-yellow-400" :
-                                    isVip ? "text-lg text-primary" :
-                                        isSpecial ? "text-base text-secondary" :
-                                            "text-sm text-white"
-                )}>
-                    {title}
-                </h3>
+                <div className="overflow-hidden">
+                    <h3 className={cn(
+                        "font-bold mb-1 whitespace-nowrap",
+                        "hover:animate-marquee",
+                        // Calculate visual width: Korean=2, English/number=1, space=0.5
+                        (() => {
+                            let width = 0;
+                            for (const char of title) {
+                                if (/[\u3131-\uD79D]/.test(char)) width += 2; // Korean
+                                else if (/[a-zA-Z0-9]/.test(char)) width += 1; // English/number
+                                else if (char === ' ') width += 0.5; // Space
+                                else width += 1.2; // Special chars
+                            }
+                            return width > 18;
+                        })() && "animate-marquee-hover",
+                        isDiamond ? "text-lg text-cyan-400" :
+                            isSapphire ? "text-lg text-blue-400" :
+                                isRuby ? "text-lg text-red-400" :
+                                    isGold ? "text-lg text-yellow-400" :
+                                        isVip ? "text-lg text-primary" :
+                                            isSpecial ? "text-base text-secondary" :
+                                                "text-sm text-white"
+                    )}>
+                        {title}
+                    </h3>
+                </div>
 
                 <div className="flex items-center gap-1 text-xs text-text-muted mb-2">
                     <MapPin size={12} />

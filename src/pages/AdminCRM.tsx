@@ -1,6 +1,23 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
-import { Users, DollarSign, AlertTriangle, CheckCircle, XCircle, Clock, MessageSquare } from 'lucide-react';
+import { Users, DollarSign, AlertTriangle, CheckCircle, XCircle, Clock, MessageSquare, Database, Shield, LayoutGrid, Table, Eye, MousePointer, TrendingUp, Activity, Target } from 'lucide-react';
+import { getCurrentUser } from '../utils/auth';
+import { useDataMode } from '../contexts/DataModeContext';
+import { getAnalyticsSummary } from '../utils/analytics';
+
+// User type from localStorage
+interface StoredUser {
+    id: string;
+    email: string;
+    name: string;
+    nickname: string;
+    phone: string;
+    type: 'worker' | 'advertiser';
+    businessNumber?: string;
+    businessName?: string;
+    createdAt: string;
+}
 
 const pieData = [
     { name: 'VIP', value: 400 },
@@ -19,11 +36,173 @@ const revenueData = [
 ];
 
 const AdminCRM: React.FC = () => {
-    const [heatmapPoints, setHeatmapPoints] = React.useState<{ x: number, y: number, value: number }[]>([]);
+    const navigate = useNavigate();
+
+    const { useSampleData, setUseSampleData } = useDataMode();
+    const [isAuthorized, setIsAuthorized] = useState(false);
+    const [isChecking, setIsChecking] = useState(true);
+    const [users, setUsers] = useState<StoredUser[]>([]);
+    const [userViewMode, setUserViewMode] = useState<'table' | 'card'>('table');
+    const [userFilter, setUserFilter] = useState<'all' | 'worker' | 'advertiser'>('all');
+    const [analyticsData, setAnalyticsData] = useState<ReturnType<typeof getAnalyticsSummary> | null>(null);
+
+    // Admin auth check - re-check on auth state changes
+    useEffect(() => {
+        const checkAuth = () => {
+            const user = getCurrentUser();
+            const adminEmails = ['admin@lunaalba.com', 'admin@example.com'];
+            if (user && adminEmails.includes(user.email)) {
+                setIsAuthorized(true);
+            } else {
+                setIsAuthorized(false);
+            }
+            setIsChecking(false);
+        };
+
+        checkAuth();
+
+        // Listen for auth state changes
+        window.addEventListener('authStateChange', checkAuth);
+
+        // Load users from localStorage
+        const loadUsers = () => {
+            const storedUsers = JSON.parse(localStorage.getItem('lunaalba_users') || '[]');
+            setUsers(storedUsers);
+        };
+        loadUsers();
+
+        // Load analytics data
+        const loadAnalytics = () => {
+            const data = getAnalyticsSummary();
+            setAnalyticsData(data);
+
+        };
+        loadAnalytics();
+
+        // Refresh analytics every 5 seconds
+        const analyticsInterval = setInterval(loadAnalytics, 5000);
+
+        return () => {
+            window.removeEventListener('authStateChange', checkAuth);
+            clearInterval(analyticsInterval);
+        };
+    }, []);
+
+    // Show loading while checking
+    if (isChecking) return null;
+
+    // Redirect if not authorized
+    if (!isAuthorized) {
+        return (
+            <div className="container mx-auto px-4 py-16 text-center">
+                <div className="max-w-md mx-auto bg-accent rounded-xl border border-white/10 p-8">
+                    <Shield className="mx-auto text-red-500 mb-4" size={48} />
+                    <h2 className="text-xl font-bold text-white mb-2">관리자 권한 필요</h2>
+                    <p className="text-text-muted mb-4">이 페이지는 관리자만 접근할 수 있습니다.</p>
+                    <button
+                        onClick={() => navigate('/')}
+                        className="px-6 py-2 bg-primary text-black font-bold rounded-lg"
+                    >
+                        홈으로 돌아가기
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="container mx-auto px-4 py-8">
-            <h1 className="text-2xl font-bold text-white mb-8">관리자 대시보드</h1>
+            {/* Header with Sample Data Toggle */}
+            <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center">
+                        <Shield className="text-primary" size={20} />
+                    </div>
+                    <div>
+                        <h1 className="text-2xl font-bold text-white">관리자 CRM</h1>
+                        <p className="text-xs text-text-muted">Admin Dashboard</p>
+                    </div>
+                </div>
+
+                {/* Sample Data Toggle */}
+                <div className="flex items-center gap-4">
+                    <div className={`flex items-center gap-3 px-4 py-2 rounded-xl border ${useSampleData
+                        ? 'bg-yellow-500/10 border-yellow-500/50'
+                        : 'bg-white/5 border-white/10'
+                        }`}>
+                        <Database size={18} className={useSampleData ? 'text-yellow-400' : 'text-white/50'} />
+                        <div className="text-sm">
+                            <span className={useSampleData ? 'text-yellow-400 font-bold' : 'text-white/70'}>
+                                {useSampleData ? '샘플 데이터 모드' : '실제 데이터 모드'}
+                            </span>
+                            <p className="text-[10px] text-white/40">
+                                {useSampleData ? '외부 시연용 - 모든 데이터가 샘플로 표시됩니다' : '실제 운영 데이터 표시 중'}
+                            </p>
+                        </div>
+                        <button
+                            onClick={() => setUseSampleData(!useSampleData)}
+                            className={`relative w-12 h-6 rounded-full transition-colors ${useSampleData ? 'bg-yellow-500' : 'bg-white/20'
+                                }`}
+                        >
+                            <span className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${useSampleData ? 'translate-x-6' : ''
+                                }`} />
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Security & Deployment Status Panel */}
+            <div className="mb-8 bg-accent rounded-xl border border-white/5 overflow-hidden">
+                <div className="p-4 border-b border-white/5">
+                    <h3 className="font-bold text-white flex items-center gap-2">
+                        <Shield size={18} className="text-green-400" />
+                        보안 및 배포 상태
+                    </h3>
+                </div>
+                <div className="p-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {/* Security Status */}
+                    <div className="bg-black/30 rounded-lg p-3">
+                        <div className="flex items-center gap-2 mb-2">
+                            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                            <span className="text-xs text-text-muted">비밀번호 암호화</span>
+                        </div>
+                        <p className="text-sm font-bold text-green-400">SHA-256 해시</p>
+                    </div>
+                    <div className="bg-black/30 rounded-lg p-3">
+                        <div className="flex items-center gap-2 mb-2">
+                            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                            <span className="text-xs text-text-muted">크롤링 차단</span>
+                        </div>
+                        <p className="text-sm font-bold text-green-400">robots.txt 활성</p>
+                    </div>
+                    <div className="bg-black/30 rounded-lg p-3">
+                        <div className="flex items-center gap-2 mb-2">
+                            <div className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse" />
+                            <span className="text-xs text-text-muted">개발자도구 차단</span>
+                        </div>
+                        <p className="text-sm font-bold text-yellow-400">프로덕션 전용</p>
+                    </div>
+                    <div className="bg-black/30 rounded-lg p-3">
+                        <div className="flex items-center gap-2 mb-2">
+                            <div className={`w-2 h-2 rounded-full ${useSampleData ? 'bg-yellow-500' : 'bg-blue-500'} animate-pulse`} />
+                            <span className="text-xs text-text-muted">배포 모드</span>
+                        </div>
+                        <p className={`text-sm font-bold ${useSampleData ? 'text-yellow-400' : 'text-blue-400'}`}>
+                            {useSampleData ? '홍보/시연용' : '실제 운영'}
+                        </p>
+                    </div>
+                </div>
+                {useSampleData && (
+                    <div className="px-4 pb-4">
+                        <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3">
+                            <p className="text-sm text-yellow-400">
+                                <strong>🎨 홍보 모드 활성화됨</strong> - 모든 광고, 사용자 정보가 샘플 데이터로 대체됩니다.
+                                이 상태로 배포하면 실제 데이터가 외부에 노출되지 않습니다.
+                            </p>
+                        </div>
+                    </div>
+                )}
+            </div>
 
             {/* Global Stats */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
@@ -129,176 +308,410 @@ const AdminCRM: React.FC = () => {
                         </div>
                     </div>
 
-                    {/* Interactive Heatmap */}
-                    <div className="bg-accent p-6 rounded-xl border border-white/5">
-                        <div className="flex items-center justify-between mb-6">
-                            <div>
-                                <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                                    광고 효율 히트맵 (Interactive Simulation)
-                                    <span className="text-xs bg-primary/20 text-primary px-2 py-1 rounded-full">Live Demo</span>
-                                </h3>
-                                <p className="text-xs text-text-muted mt-1">
-                                    아래 영역을 클릭하여 히트맵이 어떻게 생성되는지 확인해보세요.
-                                </p>
+                    {/* Side Column: Activity & Tasks */}
+                    <div className="space-y-8">
+                        {/* Pending Approvals */}
+                        <div className="bg-accent rounded-xl border border-white/5 overflow-hidden">
+                            <div className="p-4 border-b border-white/5 flex justify-between items-center">
+                                <h3 className="font-bold text-white">승인 대기 목록</h3>
+                                <span className="bg-yellow-500/20 text-yellow-500 text-xs px-2 py-1 rounded-full">12건</span>
                             </div>
-                            <button
-                                onClick={() => setHeatmapPoints([])}
-                                className="text-xs text-text-muted hover:text-white underline"
-                            >
-                                초기화
-                            </button>
-                        </div>
-
-                        <div
-                            className="relative w-full aspect-[16/9] bg-[#111] rounded-lg border border-white/10 overflow-hidden p-4 cursor-crosshair select-none"
-                            onClick={(e) => {
-                                const rect = e.currentTarget.getBoundingClientRect();
-                                const x = e.clientX - rect.left;
-                                const y = e.clientY - rect.top;
-                                setHeatmapPoints(prev => [...prev, { x, y, value: 1 }]);
-                            }}
-                        >
-                            {/* Website Wireframe Background */}
-                            <div className="w-full h-full flex flex-col gap-4 opacity-50 pointer-events-none">
-                                <div className="h-12 w-full bg-white/5 rounded flex items-center px-4 justify-between">
-                                    <div className="w-24 h-4 bg-white/10 rounded"></div>
-                                    <div className="w-64 h-8 bg-white/10 rounded-full"></div>
-                                    <div className="w-32 h-8 bg-white/10 rounded"></div>
-                                </div>
-                                <div className="h-48 w-full bg-white/5 rounded flex items-center justify-center">
-                                    <div className="w-1/2 h-8 bg-white/10 rounded"></div>
-                                </div>
-                                <div className="grid grid-cols-4 gap-4 flex-1">
-                                    {Array(8).fill(0).map((_, i) => (
-                                        <div key={i} className="bg-white/5 rounded h-full relative overflow-hidden">
-                                            <div className="w-full h-2/3 bg-white/5"></div>
-                                            <div className="p-2 space-y-2">
-                                                <div className="w-3/4 h-3 bg-white/10 rounded"></div>
-                                                <div className="w-1/2 h-3 bg-white/10 rounded"></div>
-                                            </div>
+                            <div className="divide-y divide-white/5">
+                                {[1, 2, 3].map((i) => (
+                                    <div key={i} className="p-4 hover:bg-white/5 transition-colors">
+                                        <div className="flex justify-between items-start mb-2">
+                                            <span className="text-sm font-medium text-white">강남 룸살롱 신규 오픈</span>
+                                            <span className="text-xs text-text-muted">10분 전</span>
                                         </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Heatmap Points Rendering */}
-                            <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                                {heatmapPoints.map((point, i) => (
-                                    <div
-                                        key={i}
-                                        className="absolute rounded-full mix-blend-screen animate-pulse"
-                                        style={{
-                                            left: point.x - 40,
-                                            top: point.y - 40,
-                                            width: '80px',
-                                            height: '80px',
-                                            background: 'radial-gradient(circle, rgba(255,0,0,0.8) 0%, rgba(255,255,0,0.4) 50%, rgba(0,0,0,0) 70%)',
-                                            filter: 'blur(10px)',
-                                            opacity: 0.7
-                                        }}
-                                    />
-                                ))}
-                                {heatmapPoints.length === 0 && (
-                                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                        <div className="bg-black/80 backdrop-blur px-4 py-2 rounded-full text-sm text-white border border-white/10 animate-bounce">
-                                            👆 화면을 클릭해보세요!
+                                        <div className="flex items-center gap-2 mb-3">
+                                            <span className="text-xs bg-primary/20 text-primary px-1.5 py-0.5 rounded">VIP</span>
+                                            <span className="text-xs text-text-muted">김사장님</span>
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <button className="flex-1 bg-green-500/20 text-green-500 text-xs py-1.5 rounded hover:bg-green-500/30 flex items-center justify-center gap-1">
+                                                <CheckCircle size={12} /> 승인
+                                            </button>
+                                            <button className="flex-1 bg-red-500/20 text-red-500 text-xs py-1.5 rounded hover:bg-red-500/30 flex items-center justify-center gap-1">
+                                                <XCircle size={12} /> 반려
+                                            </button>
                                         </div>
                                     </div>
-                                )}
+                                ))}
                             </div>
+                            <div className="p-3 text-center border-t border-white/5">
+                                <button className="text-xs text-text-muted hover:text-white">전체보기</button>
+                            </div>
+                        </div>
 
-                            <div className="absolute top-4 right-4 bg-black/80 backdrop-blur px-3 py-1.5 rounded text-xs text-white border border-white/10 pointer-events-none">
-                                클릭 수: {heatmapPoints.length}
+                        {/* Recent Activity Log */}
+                        <div className="bg-accent rounded-xl border border-white/5 overflow-hidden">
+                            <div className="p-4 border-b border-white/5">
+                                <h3 className="font-bold text-white">실시간 활동 로그</h3>
+                            </div>
+                            <div className="p-4 space-y-4">
+                                {[
+                                    { type: 'join', text: '신규 회원 가입 (user123)', time: '방금 전' },
+                                    { type: 'ad', text: '새로운 광고 등록 요청', time: '5분 전' },
+                                    { type: 'report', text: '게시글 신고 접수', time: '12분 전' },
+                                    { type: 'payment', text: 'VIP 상품 결제 완료', time: '25분 전' },
+                                ].map((log, i) => (
+                                    <div key={i} className="flex items-start gap-3">
+                                        <div className={`mt-1 w-2 h-2 rounded-full ${log.type === 'join' ? 'bg-blue-500' :
+                                            log.type === 'ad' ? 'bg-yellow-500' :
+                                                log.type === 'report' ? 'bg-red-500' : 'bg-green-500'
+                                            }`} />
+                                        <div>
+                                            <p className="text-sm text-white">{log.text}</p>
+                                            <span className="text-xs text-text-muted">{log.time}</span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Reported Content */}
+                        <div className="bg-accent rounded-xl border border-white/5 overflow-hidden">
+                            <div className="p-4 border-b border-white/5 flex justify-between items-center">
+                                <h3 className="font-bold text-white">신고 관리</h3>
+                                <AlertTriangle size={16} className="text-red-500" />
+                            </div>
+                            <div className="p-4">
+                                <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 mb-3">
+                                    <div className="flex items-center gap-2 mb-1">
+                                        <MessageSquare size={14} className="text-red-500" />
+                                        <span className="text-sm font-bold text-red-500">부적절한 게시글</span>
+                                    </div>
+                                    <p className="text-xs text-white mb-2">"여기 가지마세요 사장님이..."</p>
+                                    <div className="flex justify-end gap-2">
+                                        <button className="text-xs text-text-muted hover:text-white underline">상세보기</button>
+                                        <button className="text-xs bg-red-500 text-white px-2 py-1 rounded">삭제</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Side Column: Activity & Tasks */}
-                <div className="space-y-8">
-                    {/* Pending Approvals */}
-                    <div className="bg-accent rounded-xl border border-white/5 overflow-hidden">
-                        <div className="p-4 border-b border-white/5 flex justify-between items-center">
-                            <h3 className="font-bold text-white">승인 대기 목록</h3>
-                            <span className="bg-yellow-500/20 text-yellow-500 text-xs px-2 py-1 rounded-full">12건</span>
+                {/* User Management Section */}
+                <div className="mt-8 bg-accent rounded-xl border border-white/5 overflow-hidden">
+                    <div className="p-4 border-b border-white/5 flex justify-between items-center">
+                        <div className="flex items-center gap-3">
+                            <Users size={20} className="text-blue-400" />
+                            <h3 className="font-bold text-white">회원 관리</h3>
+                            <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-1 rounded-full">
+                                {users.length}명
+                            </span>
                         </div>
-                        <div className="divide-y divide-white/5">
-                            {[1, 2, 3].map((i) => (
-                                <div key={i} className="p-4 hover:bg-white/5 transition-colors">
-                                    <div className="flex justify-between items-start mb-2">
-                                        <span className="text-sm font-medium text-white">강남 룸살롱 신규 오픈</span>
-                                        <span className="text-xs text-text-muted">10분 전</span>
-                                    </div>
-                                    <div className="flex items-center gap-2 mb-3">
-                                        <span className="text-xs bg-primary/20 text-primary px-1.5 py-0.5 rounded">VIP</span>
-                                        <span className="text-xs text-text-muted">김사장님</span>
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <button className="flex-1 bg-green-500/20 text-green-500 text-xs py-1.5 rounded hover:bg-green-500/30 flex items-center justify-center gap-1">
-                                            <CheckCircle size={12} /> 승인
-                                        </button>
-                                        <button className="flex-1 bg-red-500/20 text-red-500 text-xs py-1.5 rounded hover:bg-red-500/30 flex items-center justify-center gap-1">
-                                            <XCircle size={12} /> 반려
-                                        </button>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                        <div className="p-3 text-center border-t border-white/5">
-                            <button className="text-xs text-text-muted hover:text-white">전체보기</button>
-                        </div>
-                    </div>
-
-                    {/* Recent Activity Log */}
-                    <div className="bg-accent rounded-xl border border-white/5 overflow-hidden">
-                        <div className="p-4 border-b border-white/5">
-                            <h3 className="font-bold text-white">실시간 활동 로그</h3>
-                        </div>
-                        <div className="p-4 space-y-4">
-                            {[
-                                { type: 'join', text: '신규 회원 가입 (user123)', time: '방금 전' },
-                                { type: 'ad', text: '새로운 광고 등록 요청', time: '5분 전' },
-                                { type: 'report', text: '게시글 신고 접수', time: '12분 전' },
-                                { type: 'payment', text: 'VIP 상품 결제 완료', time: '25분 전' },
-                            ].map((log, i) => (
-                                <div key={i} className="flex items-start gap-3">
-                                    <div className={`mt-1 w-2 h-2 rounded-full ${log.type === 'join' ? 'bg-blue-500' :
-                                        log.type === 'ad' ? 'bg-yellow-500' :
-                                            log.type === 'report' ? 'bg-red-500' : 'bg-green-500'
-                                        }`} />
-                                    <div>
-                                        <p className="text-sm text-white">{log.text}</p>
-                                        <span className="text-xs text-text-muted">{log.time}</span>
-                                    </div>
-                                </div>
-                            ))}
+                        <div className="flex items-center gap-2">
+                            {/* Filter */}
+                            <select
+                                value={userFilter}
+                                onChange={(e) => setUserFilter(e.target.value as 'all' | 'worker' | 'advertiser')}
+                                className="bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:border-primary"
+                            >
+                                <option value="all">전체</option>
+                                <option value="worker">일반회원</option>
+                                <option value="advertiser">광고주</option>
+                            </select>
+                            {/* View Mode Toggle */}
+                            <div className="flex bg-black/40 rounded-lg p-1">
+                                <button
+                                    onClick={() => setUserViewMode('table')}
+                                    className={`p-1.5 rounded ${userViewMode === 'table' ? 'bg-primary text-black' : 'text-white/50'}`}
+                                >
+                                    <Table size={16} />
+                                </button>
+                                <button
+                                    onClick={() => setUserViewMode('card')}
+                                    className={`p-1.5 rounded ${userViewMode === 'card' ? 'bg-primary text-black' : 'text-white/50'}`}
+                                >
+                                    <LayoutGrid size={16} />
+                                </button>
+                            </div>
                         </div>
                     </div>
 
-                    {/* Reported Content */}
-                    <div className="bg-accent rounded-xl border border-white/5 overflow-hidden">
+                    {/* User List */}
+                    <div className="p-4">
+                        {users.filter(u => userFilter === 'all' || u.type === userFilter).length === 0 ? (
+                            <p className="text-center text-text-muted py-8">등록된 회원이 없습니다.</p>
+                        ) : userViewMode === 'table' ? (
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-sm">
+                                    <thead>
+                                        <tr className="border-b border-white/10 text-left">
+                                            <th className="pb-2 text-text-muted font-medium">이메일</th>
+                                            <th className="pb-2 text-text-muted font-medium">이름</th>
+                                            <th className="pb-2 text-text-muted font-medium">닉네임</th>
+                                            <th className="pb-2 text-text-muted font-medium">유형</th>
+                                            <th className="pb-2 text-text-muted font-medium">가입일</th>
+                                            <th className="pb-2 text-text-muted font-medium">관리</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {users.filter(u => userFilter === 'all' || u.type === userFilter).map((user) => (
+                                            <tr key={user.id} className="border-b border-white/5 hover:bg-white/5">
+                                                <td className="py-3 text-white">{user.email}</td>
+                                                <td className="py-3 text-white">{user.name}</td>
+                                                <td className="py-3 text-text-muted">{user.nickname}</td>
+                                                <td className="py-3">
+                                                    <span className={`text-xs px-2 py-1 rounded-full ${user.type === 'advertiser' ? 'bg-primary/20 text-primary' : 'bg-blue-500/20 text-blue-400'}`}>
+                                                        {user.type === 'advertiser' ? '광고주' : '일반'}
+                                                    </span>
+                                                </td>
+                                                <td className="py-3 text-text-muted text-xs">
+                                                    {new Date(user.createdAt).toLocaleDateString('ko-KR')}
+                                                </td>
+                                                <td className="py-3">
+                                                    <button className="text-text-muted hover:text-white">
+                                                        <Eye size={16} />
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        ) : (
+                            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                {users.filter(u => userFilter === 'all' || u.type === userFilter).map((user) => (
+                                    <div key={user.id} className="bg-black/30 rounded-lg border border-white/5 p-4">
+                                        <div className="flex items-center justify-between mb-3">
+                                            <span className={`text-xs px-2 py-1 rounded-full ${user.type === 'advertiser' ? 'bg-primary/20 text-primary' : 'bg-blue-500/20 text-blue-400'}`}>
+                                                {user.type === 'advertiser' ? '🏢 광고주' : '👤 일반'}
+                                            </span>
+                                            <span className="text-xs text-text-muted">
+                                                {new Date(user.createdAt).toLocaleDateString('ko-KR')}
+                                            </span>
+                                        </div>
+                                        <h4 className="font-bold text-white mb-1">{user.name}</h4>
+                                        <p className="text-sm text-text-muted mb-2">{user.email}</p>
+                                        {user.type === 'advertiser' && user.businessName && (
+                                            <p className="text-xs text-primary/80">📋 {user.businessName}</p>
+                                        )}
+                                        <div className="flex gap-2 mt-3 pt-3 border-t border-white/5">
+                                            <button className="text-xs text-text-muted hover:text-white flex items-center gap-1">
+                                                <Eye size={12} /> 상세보기
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                {/* Real-time Analytics Section */}
+                {analyticsData && (
+                    <div className="mt-8 bg-accent rounded-xl border border-white/5 overflow-hidden">
                         <div className="p-4 border-b border-white/5 flex justify-between items-center">
-                            <h3 className="font-bold text-white">신고 관리</h3>
-                            <AlertTriangle size={16} className="text-red-500" />
+                            <div className="flex items-center gap-3">
+                                <Activity size={20} className="text-green-400" />
+                                <h3 className="font-bold text-white">실시간 사용자 분석</h3>
+                                <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full animate-pulse">
+                                    LIVE
+                                </span>
+                            </div>
                         </div>
                         <div className="p-4">
-                            <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 mb-3">
-                                <div className="flex items-center gap-2 mb-1">
-                                    <MessageSquare size={14} className="text-red-500" />
-                                    <span className="text-sm font-bold text-red-500">부적절한 게시글</span>
+                            {/* Quick Stats */}
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                                <div className="bg-black/30 rounded-lg p-4">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <MousePointer size={16} className="text-blue-400" />
+                                        <span className="text-xs text-text-muted">클릭 (24h)</span>
+                                    </div>
+                                    <p className="text-2xl font-bold text-white">{analyticsData.summary.totalClicks24h}</p>
                                 </div>
-                                <p className="text-xs text-white mb-2">"여기 가지마세요 사장님이..."</p>
-                                <div className="flex justify-end gap-2">
-                                    <button className="text-xs text-text-muted hover:text-white underline">상세보기</button>
-                                    <button className="text-xs bg-red-500 text-white px-2 py-1 rounded">삭제</button>
+                                <div className="bg-black/30 rounded-lg p-4">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <Eye size={16} className="text-purple-400" />
+                                        <span className="text-xs text-text-muted">페이지뷰 (24h)</span>
+                                    </div>
+                                    <p className="text-2xl font-bold text-white">{analyticsData.summary.pageViews24h}</p>
+                                </div>
+                                <div className="bg-black/30 rounded-lg p-4">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <Users size={16} className="text-green-400" />
+                                        <span className="text-xs text-text-muted">방문자 (24h)</span>
+                                    </div>
+                                    <p className="text-2xl font-bold text-white">{analyticsData.summary.uniqueVisitors24h}</p>
+                                </div>
+                                <div className="bg-black/30 rounded-lg p-4">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <Target size={16} className="text-primary" />
+                                        <span className="text-xs text-text-muted">광고 상호작용</span>
+                                    </div>
+                                    <p className="text-2xl font-bold text-white">{analyticsData.summary.adInteractions24h}</p>
                                 </div>
                             </div>
+
+                            {/* Page Popularity */}
+                            {analyticsData.pageStats.length > 0 && (
+                                <div className="mb-6">
+                                    <h4 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
+                                        <TrendingUp size={16} className="text-primary" />
+                                        인기 페이지
+                                    </h4>
+                                    <div className="space-y-2">
+                                        {analyticsData.pageStats.map((stat, i) => (
+                                            <div key={i} className="flex items-center gap-3">
+                                                <span className="text-xs text-text-muted w-24 truncate">{stat.page}</span>
+                                                <div className="flex-1 h-2 bg-black/30 rounded-full overflow-hidden">
+                                                    <div
+                                                        className="h-full bg-primary rounded-full"
+                                                        style={{ width: `${Math.min(100, (stat.count / Math.max(...analyticsData.pageStats.map(s => s.count))) * 100)}%` }}
+                                                    />
+                                                </div>
+                                                <span className="text-xs text-white font-bold">{stat.count}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
+
+                {/* Ad Performance Analytics */}
+                {analyticsData && analyticsData.adStats.length > 0 && (
+                    <div className="mt-8 bg-accent rounded-xl border border-white/5 overflow-hidden">
+                        <div className="p-4 border-b border-white/5 flex justify-between items-center">
+                            <div className="flex items-center gap-3">
+                                <Target size={20} className="text-primary" />
+                                <h3 className="font-bold text-white">광고 효율 분석</h3>
+                            </div>
+                        </div>
+                        <div className="p-4">
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-sm">
+                                    <thead>
+                                        <tr className="border-b border-white/10 text-left">
+                                            <th className="pb-2 text-text-muted font-medium">광고 제목</th>
+                                            <th className="pb-2 text-text-muted font-medium">유형</th>
+                                            <th className="pb-2 text-text-muted font-medium text-center">노출수</th>
+                                            <th className="pb-2 text-text-muted font-medium text-center">클릭수</th>
+                                            <th className="pb-2 text-text-muted font-medium text-center">CTR</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {analyticsData.adStats.slice(0, 10).map((ad) => (
+                                            <tr key={ad.adId} className="border-b border-white/5 hover:bg-white/5">
+                                                <td className="py-3 text-white max-w-48 truncate">{ad.title}</td>
+                                                <td className="py-3">
+                                                    <span className={`text-xs px-2 py-1 rounded-full ${ad.type === 'vip' ? 'bg-primary/20 text-primary' :
+                                                        ad.type === 'special' ? 'bg-secondary/20 text-secondary' :
+                                                            'bg-white/10 text-white/70'
+                                                        }`}>
+                                                        {ad.type.toUpperCase()}
+                                                    </span>
+                                                </td>
+                                                <td className="py-3 text-center text-white">{ad.views}</td>
+                                                <td className="py-3 text-center text-white">{ad.clicks}</td>
+                                                <td className="py-3 text-center">
+                                                    <span className={`font-bold ${parseFloat(ad.ctr) >= 5 ? 'text-green-400' :
+                                                        parseFloat(ad.ctr) >= 2 ? 'text-yellow-400' : 'text-red-400'
+                                                        }`}>
+                                                        {ad.ctr}%
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {analyticsData.adStats.length === 0 && (
+                                <p className="text-center text-text-muted py-8">아직 수집된 광고 데이터가 없습니다.</p>
+                            )}
+                        </div>
+                    </div>
+                )}
+
+                {/* External Analytics Tools Guide - Clarity handles heatmaps */}
+                <div className="mt-8 bg-accent rounded-xl border border-white/5 overflow-hidden">
+                    <div className="p-4 border-b border-white/5 flex justify-between items-center">
+                        <div className="flex items-center gap-3">
+                            <Activity size={20} className="text-blue-400" />
+                            <h3 className="font-bold text-white">외부 분석 도구 연동</h3>
+                        </div>
+                    </div>
+                    <div className="p-4 space-y-4">
+                        {/* Microsoft Clarity */}
+                        <div className="bg-black/30 rounded-lg p-4 border border-blue-500/20">
+                            <div className="flex items-center gap-3 mb-3">
+                                <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                                    <span className="text-blue-400 font-bold text-lg">C</span>
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-white">Microsoft Clarity</h4>
+                                    <p className="text-xs text-text-muted">무료 세션 녹화 + 히트맵</p>
+                                </div>
+                                <span className="ml-auto text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full">무료</span>
+                            </div>
+                            <ul className="text-sm text-text-muted space-y-1 mb-3">
+                                <li>✓ 실시간 세션 녹화 (사용자 마우스 움직임)</li>
+                                <li>✓ 클릭/스크롤 히트맵</li>
+                                <li>✓ 분노 클릭(Rage Click) 감지</li>
+                                <li>✓ 무제한 무료</li>
+                            </ul>
+                            <a
+                                href="https://clarity.microsoft.com/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-block text-sm text-blue-400 hover:text-blue-300 underline"
+                            >
+                                clarity.microsoft.com에서 프로젝트 생성 →
+                            </a>
+                        </div>
+
+                        {/* Hotjar */}
+                        <div className="bg-black/30 rounded-lg p-4 border border-orange-500/20">
+                            <div className="flex items-center gap-3 mb-3">
+                                <div className="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                                    <span className="text-orange-400 font-bold text-lg">H</span>
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-white">Hotjar</h4>
+                                    <p className="text-xs text-text-muted">프리미엄 사용자 분석</p>
+                                </div>
+                                <span className="ml-auto text-xs bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded-full">유료 (무료 플랜 있음)</span>
+                            </div>
+                            <ul className="text-sm text-text-muted space-y-1">
+                                <li>✓ 고급 세션 녹화</li>
+                                <li>✓ 설문조사 및 피드백</li>
+                                <li>✓ 퍼널 분석</li>
+                            </ul>
+                        </div>
+
+                        {/* Google Analytics */}
+                        <div className="bg-black/30 rounded-lg p-4 border border-green-500/20">
+                            <div className="flex items-center gap-3 mb-3">
+                                <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                                    <span className="text-green-400 font-bold text-lg">G</span>
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-white">Google Analytics 4</h4>
+                                    <p className="text-xs text-text-muted">종합 웹 분석</p>
+                                </div>
+                                <span className="ml-auto text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full">무료</span>
+                            </div>
+                            <ul className="text-sm text-text-muted space-y-1">
+                                <li>✓ 페이지뷰, 세션, 사용자 분석</li>
+                                <li>✓ 전환 추적</li>
+                                <li>✓ 실시간 리포트</li>
+                            </ul>
+                        </div>
+
+                        <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3">
+                            <p className="text-sm text-yellow-400">
+                                💡 <strong>설정 방법:</strong> index.html에 Clarity 스크립트가 이미 추가되어 있습니다.
+                                clarity.microsoft.com에서 프로젝트를 생성하고 'YOUR_CLARITY_PROJECT_ID'를 실제 ID로 교체하세요.
+                            </p>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    );
+            );
 };
 
-export default AdminCRM;
+            export default AdminCRM;

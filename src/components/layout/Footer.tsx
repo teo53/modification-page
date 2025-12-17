@@ -1,8 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, Phone, MapPin, Facebook, Instagram, Youtube } from 'lucide-react';
+import { getCurrentUser } from '../../utils/auth';
 
 const Footer: React.FC = () => {
+    const user = getCurrentUser();
+    const isAdmin = user?.email === 'admin@lunaalba.com' || user?.email === 'admin@example.com';
+
     return (
         <footer className="bg-accent/50 border-t border-white/10 mt-auto">
             <div className="container mx-auto px-4 py-12">
@@ -78,7 +82,11 @@ const Footer: React.FC = () => {
                         <a href="#" className="text-white font-bold hover:text-primary transition-colors">개인정보처리방침</a>
                         <a href="#" className="text-text-muted hover:text-white transition-colors">청소년보호정책</a>
                         <Link to="/advertiser/dashboard" className="text-text-muted hover:text-white transition-colors">광고주센터</Link>
-                        <Link to="/admin/dashboard" className="text-text-muted/50 hover:text-text-muted transition-colors">관리자</Link>
+                        {isAdmin && (
+                            <Link to="/admin/crm" className="text-primary/70 hover:text-primary transition-colors font-medium">
+                                🔐 관리자 CRM
+                            </Link>
+                        )}
                     </div>
 
                     {/* Company Info */}
@@ -102,3 +110,4 @@ const Footer: React.FC = () => {
 };
 
 export default Footer;
+

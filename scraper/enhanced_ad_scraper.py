@@ -34,8 +34,17 @@ except ImportError:
 BASE_URL = "https://queenalba.net"
 LOGIN_URL = f"{BASE_URL}/member/login_ok.php"
 ADULT_CHECK_URL = f"{BASE_URL}/adult_index.php"
-OUTPUT_DIR = os.path.dirname(os.path.abspath(__file__))
-OUTPUT_FILE = os.path.join(OUTPUT_DIR, "..", "src", "data", "scraped_ads.json")
+
+# 경로 정책에 따른 파일 경로 설정
+try:
+    from utils.paths import PATHS, get_dated_filename
+    OUTPUT_DIR = str(PATHS["reports_daily"])
+    OUTPUT_FILE = str(PATHS["reports_daily"] / "scraped_ads.json")
+except ImportError:
+    # 폴백: 기존 경로 사용
+    OUTPUT_DIR = os.path.dirname(os.path.abspath(__file__))
+    OUTPUT_FILE = os.path.join(OUTPUT_DIR, "..", "src", "data", "scraped_ads.json")
+
 DELAY_BETWEEN_REQUESTS = 1.5  # seconds
 
 # Headers to mimic browser

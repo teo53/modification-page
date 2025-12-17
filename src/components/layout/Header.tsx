@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Menu, User, LogIn, PenSquare, LogOut, LayoutDashboard, X } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getCurrentUser, logout, isAdvertiser } from '../../utils/auth';
+import { getCurrentUser, logout, isAdvertiser, login } from '../../utils/auth';
 
 const Header: React.FC = () => {
     const navigate = useNavigate();
@@ -16,7 +16,13 @@ const Header: React.FC = () => {
 
         // Listen for storage changes (for multi-tab sync)
         window.addEventListener('storage', checkUser);
-        return () => window.removeEventListener('storage', checkUser);
+        // Listen for custom auth state change event (for same-tab sync)
+        window.addEventListener('authStateChange', checkUser);
+
+        return () => {
+            window.removeEventListener('storage', checkUser);
+            window.removeEventListener('authStateChange', checkUser);
+        };
     }, []);
 
     const handleLogout = () => {
@@ -43,6 +49,36 @@ const Header: React.FC = () => {
                         type="text"
                         placeholder="지역 또는 업종을 검색해보세요"
                         className="w-full h-10 pl-4 pr-10 rounded-full bg-accent border border-white/10 focus:border-primary focus:outline-none text-white placeholder-text-muted transition-colors"
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                const input = e.currentTarget;
+                                const searchTerm = input.value.trim();
+
+                                // Secret admin entry keyword - auto login as admin
+                                if (searchTerm === '관리자모드얍얍') {
+                                    input.value = '';
+                                    // Auto login as admin
+                                    const result = login('admin@lunaalba.com', 'admin1234');
+                                    if (result.success) {
+                                        setUser(result.user || null);
+                                        // Small delay to allow state propagation before navigation
+                                        setTimeout(() => {
+                                            navigate('/admin/crm');
+                                        }, 100);
+                                    } else {
+                                        // If login fails, try to seed accounts and retry
+                                        console.log('Admin login failed, attempting to reseed...');
+                                        navigate('/admin/crm');
+                                    }
+                                    return;
+                                }
+
+                                // Normal search
+                                if (searchTerm) {
+                                    navigate(`/search?q=${encodeURIComponent(searchTerm)}`);
+                                }
+                            }
+                        }}
                     />
                     <button className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-primary">
                         <Search size={20} />
@@ -161,7 +197,7 @@ const Header: React.FC = () => {
                         <nav className="space-y-1">
                             {[
                                 { name: '홈', path: '/' },
-                                { name: '지역별', path: '/search' },
+                                { name: '지역별', path: '/region' },
                                 { name: '업종별', path: '/industry' },
                                 { name: '테마별', path: '/theme' },
                                 { name: '급구', path: '/urgent' },
@@ -196,7 +232,7 @@ const Header: React.FC = () => {
                     <ul className="flex items-center justify-center gap-8 h-12 text-sm font-medium text-text-muted">
                         {[
                             { name: '홈', path: '/' },
-                            { name: '지역별', path: '/search' },
+                            { name: '지역별', path: '/region' },
                             { name: '업종별', path: '/industry' },
                             { name: '테마별', path: '/theme' },
                             { name: '급구', path: '/urgent' },

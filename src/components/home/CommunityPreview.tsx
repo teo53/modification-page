@@ -3,10 +3,15 @@ import { Link } from 'react-router-dom';
 import { MessageSquare, Eye, ThumbsUp, Sparkles } from 'lucide-react';
 
 import communityData from '../../data/community_data.json';
-
-const communityPosts = communityData.slice(0, 5);
+import { sampleCommunityPosts } from '../../data/sampleCommunity';
+import { useDataMode } from '../../contexts/DataModeContext';
 
 const CommunityPreview: React.FC = () => {
+    const { useSampleData } = useDataMode();
+
+    // Use sample data or real data based on admin toggle
+    const sourcePosts = useSampleData ? sampleCommunityPosts : communityData;
+    const communityPosts = sourcePosts.slice(0, 5);
     return (
         <section className="py-8 container mx-auto px-4">
             <div className="flex items-center justify-between mb-6">

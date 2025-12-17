@@ -46,21 +46,35 @@ export const testAccounts: TestAccount[] = [
     }
 ];
 
-// 테스트 계정 시드 함수
+// Use shared hash function
+import { hashSync } from './hash';
+const hashPasswordSync = hashSync;
+
+// 테스트 계정 시드 함수 - 해시된 비밀번호 사용
 export const seedTestAccounts = () => {
     const USERS_KEY = 'lunaalba_users';
-    const PASSWORDS_KEY = 'lunaalba_passwords';
+    const PASSWORDS_KEY = 'lunaalba_passwords_hashed';
+    const OLD_PASSWORDS_KEY = 'lunaalba_passwords';
 
     // 기존 사용자 가져오기
     const existingUsers = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
     const existingPasswords = JSON.parse(localStorage.getItem(PASSWORDS_KEY) || '{}');
 
+    // Remove old plain text passwords
+    localStorage.removeItem(OLD_PASSWORDS_KEY);
+
     let addedCount = 0;
+    let updatedCount = 0;
 
     testAccounts.forEach((account) => {
         // 이미 존재하는 이메일인지 확인
-        if (existingUsers.find((u: { email: string }) => u.email === account.email)) {
-            console.log(`[TestSeed] 이미 존재: ${account.email}`);
+        const existingUser = existingUsers.find((u: { email: string }) => u.email === account.email);
+
+        if (existingUser) {
+            // 기존 계정 비밀번호 업데이트 (해시)
+            existingPasswords[existingUser.id] = hashPasswordSync(account.password);
+            updatedCount++;
+            console.log(`[TestSeed] 비밀번호 업데이트: ${account.email}`);
             return;
         }
 
@@ -79,7 +93,7 @@ export const seedTestAccounts = () => {
         };
 
         existingUsers.push(newUser);
-        existingPasswords[userId] = account.password;
+        existingPasswords[userId] = hashPasswordSync(account.password);
         addedCount++;
 
         console.log(`[TestSeed] 계정 추가: ${account.email} (${account.type})`);
@@ -89,9 +103,9 @@ export const seedTestAccounts = () => {
     localStorage.setItem(USERS_KEY, JSON.stringify(existingUsers));
     localStorage.setItem(PASSWORDS_KEY, JSON.stringify(existingPasswords));
 
-    console.log(`[TestSeed] 완료! ${addedCount}개 계정 추가됨.`);
+    console.log(`[TestSeed] 완료! ${addedCount}개 추가, ${updatedCount}개 업데이트.`);
 
-    return addedCount;
+    return addedCount + updatedCount;
 };
 
 // 테스트 계정 정보 출력
