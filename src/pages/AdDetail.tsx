@@ -120,17 +120,21 @@ const RecruitmentInfoSection: React.FC<{
             <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
                     <span className="text-xs text-text-muted">업무내용</span>
-                    <p className="text-white">{recruitment.job_type || '정보 없음'}</p>
+                    <p className={`${recruitment.job_type ? 'text-white' : 'text-text-muted italic'}`}>
+                        {recruitment.job_type || '상세내용 참고'}
+                    </p>
                 </div>
                 <div className="space-y-1">
                     <span className="text-xs text-text-muted">고용형태</span>
-                    <p className="text-white">{recruitment.employment_type || '협의'}</p>
+                    <p className={`${recruitment.employment_type ? 'text-white' : 'text-text-muted italic'}`}>
+                        {recruitment.employment_type || '협의 가능'}
+                    </p>
                 </div>
                 <div className="space-y-1">
                     <span className="text-xs text-text-muted flex items-center gap-1">
                         <DollarSign size={12} /> 급여
                     </span>
-                    <p className="text-lg font-bold text-primary">{recruitment.salary || ad.pay || '협의'}</p>
+                    <p className="text-lg font-bold text-primary">{recruitment.salary || ad.pay || '면접 후 결정'}</p>
                 </div>
                 <div className="space-y-1">
                     <span className="text-xs text-text-muted flex items-center gap-1">

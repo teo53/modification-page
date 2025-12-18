@@ -94,11 +94,18 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, placeh
     const restoreSelection = useCallback(() => {
         if (savedSelection && editorRef.current) {
             editorRef.current.focus();
-            const selection = window.getSelection();
-            if (selection) {
-                selection.removeAllRanges();
-                selection.addRange(savedSelection);
-            }
+            // Small delay to ensure focus is established
+            setTimeout(() => {
+                const selection = window.getSelection();
+                if (selection) {
+                    selection.removeAllRanges();
+                    try {
+                        selection.addRange(savedSelection.cloneRange());
+                    } catch (e) {
+                        // Range may be invalid, ignore
+                    }
+                }
+            }, 10);
         }
     }, [savedSelection]);
 
@@ -111,12 +118,20 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, placeh
 
     useEffect(() => {
         if (editorRef.current && editorRef.current.innerHTML !== value) {
+            // Check if editor is focused - if so, don't overwrite to preserve cursor
+            const selection = window.getSelection();
+            const isEditorFocused = document.activeElement === editorRef.current ||
+                (selection && selection.rangeCount > 0 && editorRef.current.contains(selection.anchorNode));
+
+            if (isEditorFocused) {
+                // Editor is focused, skip innerHTML update to preserve cursor position
+                return;
+            }
+
             if (value === '' && editorRef.current.innerHTML !== '') {
                 editorRef.current.innerHTML = '';
             } else if (value !== '') {
-                if (Math.abs(editorRef.current.innerHTML.length - value.length) > 5) {
-                    editorRef.current.innerHTML = value;
-                }
+                editorRef.current.innerHTML = value;
             }
         }
     }, [value]);
@@ -128,9 +143,34 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, placeh
     };
 
     const execCommand = (command: string, value: string | undefined = undefined) => {
-        editorRef.current?.focus();
-        document.execCommand(command, false, value);
-        handleInput();
+        if (!editorRef.current) return;
+
+        // Ensure editor is focused before executing command
+        editorRef.current.focus();
+
+        // Use setTimeout to ensure selection is properly restored
+        setTimeout(() => {
+            try {
+                document.execCommand(command, false, value);
+                handleInput();
+            } catch (e) {
+                console.warn('execCommand failed:', e);
+            }
+        }, 0);
+    };
+
+    // Apply color/highlight with proper selection handling
+    const applyColorCommand = (command: string, color: string) => {
+        restoreSelection();
+        setTimeout(() => {
+            try {
+                document.execCommand(command, false, color);
+                handleInput();
+            } catch (e) {
+                console.warn('Color command failed:', e);
+            }
+            setShowColorPicker(null);
+        }, 50);
     };
 
     // Handle link insertion
@@ -412,9 +452,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, placeh
                                         onMouseDown={(e) => {
                                             e.preventDefault();
                                             e.stopPropagation();
-                                            restoreSelection();
-                                            execCommand('foreColor', color);
-                                            setShowColorPicker(null);
+                                            applyColorCommand('foreColor', color);
                                         }}
                                         className="w-5 h-5 rounded border border-white/20 hover:scale-110 transition-transform"
                                         style={{ backgroundColor: color }}
@@ -441,9 +479,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, placeh
                                         onMouseDown={(e) => {
                                             e.preventDefault();
                                             e.stopPropagation();
-                                            restoreSelection();
-                                            execCommand('hiliteColor', color);
-                                            setShowColorPicker(null);
+                                            applyColorCommand('hiliteColor', color);
                                         }}
                                         className="w-5 h-5 rounded border border-white/20 hover:scale-110 transition-transform"
                                         style={{ backgroundColor: color }}

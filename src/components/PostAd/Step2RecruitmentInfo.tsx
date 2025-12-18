@@ -204,94 +204,149 @@ const Step2RecruitmentInfo: React.FC<Step2Props> = ({
                     })()}
                 </SectionCard>
 
-                {/* 형광펜 효과 - Title Highlight */}
+                {/* 형광펜 효과 - Title Highlight - 개선된 UX */}
                 {formData.title && setHighlightSettings && (
                     <SectionCard icon={Palette} title="형광펜 효과 (선택사항 +50,000원)">
                         <div className="space-y-4">
                             <p className="text-xs text-white/50">
-                                제목에서 강조할 부분을 선택하고 색상을 클릭하세요
+                                📌 <strong>클릭 방식:</strong> 아래 글자를 클릭하여 강조 범위를 선택하세요
                             </p>
 
-                            {/* Title Preview */}
+                            {/* Character Selection UI */}
                             <div className="bg-black/60 rounded-xl p-4 border border-white/10">
-                                <div className="text-lg font-bold text-white select-text cursor-text"
-                                    onMouseUp={() => {
-                                        const selection = window.getSelection();
-                                        if (selection && selection.toString().length > 0) {
-                                            const text = selection.toString();
-                                            const startIndex = formData.title.indexOf(text);
-                                            if (startIndex !== -1) {
-                                                setHighlightSettings(prev => ({
-                                                    ...prev,
-                                                    range: { start: startIndex, end: startIndex + text.length }
-                                                }));
-                                            }
-                                        }
-                                    }}
-                                >
-                                    {highlightSettings?.color && highlightSettings?.range ? (
-                                        <>
-                                            {formData.title.substring(0, highlightSettings.range.start)}
-                                            <span className={`px-0.5 rounded ${highlightSettings.color === 'yellow' ? 'bg-yellow-400 text-black' :
-                                                highlightSettings.color === 'pink' ? 'bg-pink-400 text-black' :
-                                                    highlightSettings.color === 'green' ? 'bg-green-400 text-black' :
-                                                        'bg-cyan-400 text-black'
-                                                }`}>
-                                                {formData.title.substring(highlightSettings.range.start, highlightSettings.range.end)}
-                                            </span>
-                                            {formData.title.substring(highlightSettings.range.end)}
-                                        </>
-                                    ) : (
-                                        formData.title
-                                    )}
+                                <div className="flex flex-wrap gap-0.5">
+                                    {formData.title.split('').map((char: string, idx: number) => {
+                                        const isInRange = highlightSettings?.range &&
+                                            idx >= highlightSettings.range.start &&
+                                            idx < highlightSettings.range.end;
+                                        const bgColorClass = highlightSettings?.color
+                                            ? highlightSettings.color === 'yellow' ? 'bg-yellow-400' :
+                                                highlightSettings.color === 'pink' ? 'bg-pink-400' :
+                                                    highlightSettings.color === 'green' ? 'bg-green-400' :
+                                                        'bg-cyan-400'
+                                            : 'bg-primary';
+
+                                        return (
+                                            <button
+                                                key={idx}
+                                                type="button"
+                                                onClick={() => {
+                                                    const currentRange = highlightSettings?.range;
+                                                    if (!currentRange) {
+                                                        // First selection - start range
+                                                        setHighlightSettings(prev => ({
+                                                            ...prev,
+                                                            range: { start: idx, end: idx + 1 }
+                                                        }));
+                                                    } else if (idx < currentRange.start) {
+                                                        // Extend left
+                                                        setHighlightSettings(prev => ({
+                                                            ...prev,
+                                                            range: { start: idx, end: currentRange.end }
+                                                        }));
+                                                    } else if (idx >= currentRange.end) {
+                                                        // Extend right
+                                                        setHighlightSettings(prev => ({
+                                                            ...prev,
+                                                            range: { start: currentRange.start, end: idx + 1 }
+                                                        }));
+                                                    } else {
+                                                        // Click inside - set new range
+                                                        setHighlightSettings(prev => ({
+                                                            ...prev,
+                                                            range: { start: idx, end: idx + 1 }
+                                                        }));
+                                                    }
+                                                }}
+                                                className={`min-w-[1.5rem] h-8 px-1 rounded text-lg font-bold transition-all ${isInRange
+                                                        ? `${bgColorClass} text-black scale-105`
+                                                        : 'bg-white/10 text-white hover:bg-white/20'
+                                                    }`}
+                                            >
+                                                {char === ' ' ? '\u00A0' : char}
+                                            </button>
+                                        );
+                                    })}
                                 </div>
-                                {highlightSettings?.range && !highlightSettings?.color && (
-                                    <p className="text-xs text-primary mt-2">
-                                        "{formData.title.substring(highlightSettings.range.start, highlightSettings.range.end)}" 선택됨 - 아래에서 색상을 선택하세요
-                                    </p>
-                                )}
+
+                                {/* Instructions */}
+                                <div className="mt-3 text-xs text-white/40 flex flex-wrap gap-2">
+                                    <span className="px-2 py-1 bg-white/5 rounded">클릭 = 선택 시작</span>
+                                    <span className="px-2 py-1 bg-white/5 rounded">추가 클릭 = 범위 확장</span>
+                                    <button
+                                        type="button"
+                                        onClick={() => setHighlightSettings({ color: '', text: '', range: undefined })}
+                                        className="px-2 py-1 text-red-400 bg-red-500/10 rounded hover:bg-red-500/20"
+                                    >
+                                        초기화
+                                    </button>
+                                </div>
                             </div>
 
+                            {/* Selection Status */}
+                            {highlightSettings?.range && (
+                                <div className="bg-primary/10 border border-primary/30 rounded-lg p-3">
+                                    <p className="text-sm text-primary font-medium">
+                                        ✓ 선택됨: "{formData.title.substring(highlightSettings.range.start, highlightSettings.range.end)}"
+                                    </p>
+                                </div>
+                            )}
+
                             {/* Color Palette */}
-                            <div className="flex items-center gap-3">
-                                <span className="text-xs text-white/50">색상:</span>
+                            <div className="flex items-center gap-4">
+                                <span className="text-xs text-white/50">색상 선택:</span>
                                 <div className="flex gap-2">
                                     {[
-                                        { id: 'yellow', color: 'bg-yellow-400' },
-                                        { id: 'pink', color: 'bg-pink-400' },
-                                        { id: 'green', color: 'bg-green-400' },
-                                        { id: 'cyan', color: 'bg-cyan-400' },
+                                        { id: 'yellow', color: 'bg-yellow-400', name: '옐로우' },
+                                        { id: 'pink', color: 'bg-pink-400', name: '핑크' },
+                                        { id: 'green', color: 'bg-green-400', name: '그린' },
+                                        { id: 'cyan', color: 'bg-cyan-400', name: '시안' },
                                     ].map(item => (
                                         <button
                                             key={item.id}
+                                            type="button"
                                             onClick={() => {
                                                 const range = highlightSettings?.range || { start: 0, end: formData.title.length };
                                                 setHighlightSettings({
-                                                    color: item.id,
+                                                    color: highlightSettings?.color === item.id ? '' : item.id,
                                                     text: formData.title.substring(range.start, range.end),
                                                     range
                                                 });
                                             }}
-                                            className={`w-8 h-8 ${item.color} rounded-lg transition-all ${highlightSettings?.color === item.id
-                                                ? 'ring-2 ring-white scale-110'
-                                                : 'opacity-60 hover:opacity-100'
+                                            className={`flex flex-col items-center gap-1 p-2 rounded-lg transition-all ${highlightSettings?.color === item.id
+                                                    ? 'ring-2 ring-white bg-white/10 scale-105'
+                                                    : 'hover:bg-white/5'
                                                 }`}
                                         >
-                                            {highlightSettings?.color === item.id && (
-                                                <Check size={16} className="text-black m-auto" />
-                                            )}
+                                            <div className={`w-8 h-8 ${item.color} rounded-lg flex items-center justify-center ${highlightSettings?.color === item.id ? 'ring-2 ring-white' : ''
+                                                }`}>
+                                                {highlightSettings?.color === item.id && (
+                                                    <Check size={16} className="text-black" />
+                                                )}
+                                            </div>
+                                            <span className="text-[10px] text-white/50">{item.name}</span>
                                         </button>
                                     ))}
-                                    {highlightSettings?.color && (
-                                        <button
-                                            onClick={() => setHighlightSettings({ color: '', text: '' })}
-                                            className="px-3 py-1 text-xs text-white/50 hover:text-white bg-white/10 rounded-lg"
-                                        >
-                                            해제
-                                        </button>
-                                    )}
                                 </div>
                             </div>
+
+                            {/* Preview */}
+                            {highlightSettings?.color && highlightSettings?.range && (
+                                <div className="bg-gradient-to-r from-white/5 to-white/10 rounded-xl p-4 border border-white/10">
+                                    <p className="text-[10px] text-white/40 mb-2">미리보기</p>
+                                    <div className="text-lg font-bold text-white">
+                                        {formData.title.substring(0, highlightSettings.range.start)}
+                                        <span className={`px-0.5 rounded ${highlightSettings.color === 'yellow' ? 'bg-yellow-400 text-black' :
+                                                highlightSettings.color === 'pink' ? 'bg-pink-400 text-black' :
+                                                    highlightSettings.color === 'green' ? 'bg-green-400 text-black' :
+                                                        'bg-cyan-400 text-black'
+                                            }`}>
+                                            {formData.title.substring(highlightSettings.range.start, highlightSettings.range.end)}
+                                        </span>
+                                        {formData.title.substring(highlightSettings.range.end)}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </SectionCard>
                 )}

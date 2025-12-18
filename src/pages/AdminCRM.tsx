@@ -711,7 +711,8 @@ const AdminCRM: React.FC = () => {
                     </div>
                 </div>
             </div>
-            );
+        </div>
+    );
 };
 
-            export default AdminCRM;
+export default AdminCRM;

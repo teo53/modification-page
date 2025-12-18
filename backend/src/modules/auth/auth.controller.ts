@@ -1,0 +1,209 @@
+// =============================================================================
+// 📁 src/modules/auth/auth.controller.ts
+// 🏷️  인증 API 컨트롤러
+// =============================================================================
+
+import {
+    Controller,
+    Post,
+    Body,
+    HttpCode,
+    HttpStatus,
+    Req,
+    Res,
+    UseGuards,
+    Get,
+} from '@nestjs/common';
+import { Request, Response } from 'express';
+import { AuthService } from './auth.service';
+import { SignupDto } from './dto/signup.dto';
+import { LoginDto } from './dto/login.dto';
+import { Public } from '../../common/decorators/public.decorator';
+import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { ConfigService } from '@nestjs/config';
+
+@Controller('auth')
+export class AuthController {
+    constructor(
+        private authService: AuthService,
+        private configService: ConfigService,
+    ) { }
+
+    // ============================================
+    // 회원가입
+    // ============================================
+    @Public()
+    @Post('signup')
+    async signup(
+        @Body() dto: SignupDto,
+        @Req() req: Request,
+        @Res({ passthrough: true }) res: Response,
+    ) {
+        // 테넌트 ID (헤더 또는 기본값)
+        const tenantId = (req.headers['x-tenant-id'] as string) ||
+            this.configService.get('defaultTenantId') ||
+            'default';
+
+        const result = await this.authService.signup(dto, tenantId);
+
+        // Refresh Token을 HttpOnly 쿠키로 설정
+        this.setRefreshTokenCookie(res, result.tokens.refreshToken);
+
+        return {
+            success: true,
+            message: '회원가입이 완료되었습니다.',
+            data: {
+                user: result.user,
+                accessToken: result.tokens.accessToken,
+                expiresIn: result.tokens.expiresIn,
+            },
+        };
+    }
+
+    // ============================================
+    // 로그인
+    // ============================================
+    @Public()
+    @Post('login')
+    @HttpCode(HttpStatus.OK)
+    async login(
+        @Body() dto: LoginDto,
+        @Req() req: Request,
+        @Res({ passthrough: true }) res: Response,
+    ) {
+        const tenantId = (req.headers['x-tenant-id'] as string) ||
+            this.configService.get('defaultTenantId') ||
+            'default';
+
+        const ipAddress = req.ip || req.headers['x-forwarded-for'] as string;
+
+        const result = await this.authService.login(dto, tenantId, ipAddress);
+
+        // Refresh Token을 HttpOnly 쿠키로 설정
+        this.setRefreshTokenCookie(res, result.tokens.refreshToken);
+
+        return {
+            success: true,
+            message: '로그인되었습니다.',
+            data: {
+                user: result.user,
+                accessToken: result.tokens.accessToken,
+                expiresIn: result.tokens.expiresIn,
+            },
+        };
+    }
+
+    // ============================================
+    // 토큰 갱신
+    // ============================================
+    @Public()
+    @Post('refresh')
+    @HttpCode(HttpStatus.OK)
+    async refresh(
+        @Req() req: Request,
+        @Res({ passthrough: true }) res: Response,
+    ) {
+        const refreshToken = req.cookies?.refreshToken;
+
+        if (!refreshToken) {
+            return {
+                success: false,
+                message: '리프레시 토큰이 없습니다.',
+            };
+        }
+
+        const tenantId = (req.headers['x-tenant-id'] as string) ||
+            this.configService.get('defaultTenantId') ||
+            'default';
+
+        const tokens = await this.authService.refreshTokens(refreshToken, tenantId);
+
+        // 새 Refresh Token 설정
+        this.setRefreshTokenCookie(res, tokens.refreshToken);
+
+        return {
+            success: true,
+            message: '토큰이 갱신되었습니다.',
+            data: {
+                accessToken: tokens.accessToken,
+                expiresIn: tokens.expiresIn,
+            },
+        };
+    }
+
+    // ============================================
+    // 로그아웃
+    // ============================================
+    @Post('logout')
+    @HttpCode(HttpStatus.OK)
+    async logout(
+        @Req() req: Request,
+        @Res({ passthrough: true }) res: Response,
+    ) {
+        const refreshToken = req.cookies?.refreshToken;
+
+        await this.authService.logout(refreshToken);
+
+        // 쿠키 삭제
+        res.clearCookie('refreshToken', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+        });
+
+        return {
+            success: true,
+            message: '로그아웃되었습니다.',
+        };
+    }
+
+    // ============================================
+    // 모든 기기에서 로그아웃
+    // ============================================
+    @Post('logout-all')
+    @HttpCode(HttpStatus.OK)
+    async logoutAll(
+        @CurrentUser('id') userId: string,
+        @Res({ passthrough: true }) res: Response,
+    ) {
+        await this.authService.logoutAll(userId);
+
+        res.clearCookie('refreshToken', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+        });
+
+        return {
+            success: true,
+            message: '모든 기기에서 로그아웃되었습니다.',
+        };
+    }
+
+    // ============================================
+    // 현재 사용자 정보
+    // ============================================
+    @Get('me')
+    async getMe(@CurrentUser() user: any) {
+        return {
+            success: true,
+            data: user,
+        };
+    }
+
+    // ============================================
+    // 헬퍼 메서드
+    // ============================================
+    private setRefreshTokenCookie(res: Response, token: string) {
+        const maxAge = 7 * 24 * 60 * 60 * 1000; // 7일
+
+        res.cookie('refreshToken', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge,
+            path: '/',
+        });
+    }
+}

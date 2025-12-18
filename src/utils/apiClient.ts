@@ -56,7 +56,8 @@ export class SecureApiClient {
 
     constructor(config: Partial<ApiConfig> = {}) {
         this.config = {
-            baseUrl: config.baseUrl || '/api',
+            // 우선순위: config.baseUrl > VITE_API_URL > 로컬 (8080)
+            baseUrl: config.baseUrl || import.meta.env.VITE_API_URL || 'http://localhost:8080/api/v1',
             timeout: config.timeout || 30000
         };
     }
@@ -157,11 +158,16 @@ export class SecureApiClient {
         try {
             const response = await fetch(`${this.config.baseUrl}/auth/refresh`, {
                 method: 'POST',
-                credentials: 'include'
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             });
 
             if (response.ok) {
-                const { accessToken: newToken, expiresIn } = await response.json();
+                const result = await response.json();
+                // 백엔드 응답: { success: true, data: { accessToken, expiresIn } }
+                const { accessToken: newToken, expiresIn } = result.data || result;
                 setAccessToken(newToken, expiresIn);
                 return true;
             }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CreditCard, Clock, RefreshCw, Palette, Smartphone } from 'lucide-react';
+import { CreditCard, Clock, RefreshCw, Palette, Smartphone, Monitor } from 'lucide-react';
 
 interface Step3Props {
     formData: any;
@@ -53,6 +53,7 @@ const Step3ProductSelection: React.FC<Step3Props> = ({
     const today = new Date().toISOString().split('T')[0];
     const [hoveredProduct, setHoveredProduct] = useState<string | null>(null);
     const [glowingZone, setGlowingZone] = useState<string | null>(null);
+    const [viewMode, setViewMode] = useState<'mobile' | 'web'>('web');
 
     // Trigger glow animation when product is added
     const triggerGlow = (productId: string) => {
@@ -122,76 +123,214 @@ const Step3ProductSelection: React.FC<Step3Props> = ({
                 <div className="lg:col-span-3">
                     <div className="sticky top-4">
                         <div className="bg-gradient-to-b from-white/5 to-white/[0.02] rounded-xl border border-white/10 p-3">
-                            <div className="flex items-center gap-2 mb-3">
-                                <Smartphone size={14} className="text-white/60" />
-                                <span className="text-xs text-white/60 font-medium">페이지 노출 위치</span>
+                            {/* View Mode Tabs */}
+                            <div className="flex items-center gap-1 mb-3 p-1 bg-black/30 rounded-lg">
+                                <button
+                                    onClick={() => setViewMode('web')}
+                                    className={`flex-1 flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-md text-xs font-medium transition-all ${viewMode === 'web'
+                                            ? 'bg-primary text-black'
+                                            : 'text-white/50 hover:text-white/80'
+                                        }`}
+                                >
+                                    <Monitor size={12} />
+                                    웹
+                                </button>
+                                <button
+                                    onClick={() => setViewMode('mobile')}
+                                    className={`flex-1 flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-md text-xs font-medium transition-all ${viewMode === 'mobile'
+                                            ? 'bg-primary text-black'
+                                            : 'text-white/50 hover:text-white/80'
+                                        }`}
+                                >
+                                    <Smartphone size={12} />
+                                    모바일
+                                </button>
                             </div>
 
-                            {/* Phone Mockup */}
-                            <div className="relative bg-black rounded-2xl border-2 border-white/20 overflow-hidden" style={{ aspectRatio: '9/16' }}>
-                                {/* Screen content */}
-                                <div className="absolute inset-1 bg-gradient-to-b from-gray-900 to-gray-950 rounded-xl overflow-hidden">
-                                    {/* Header bar */}
-                                    <div className="h-[6%] bg-white/5 flex items-center justify-center">
-                                        <span className="text-[8px] text-white/40">LUNA ALBA</span>
+                            {/* Web View - Realistic Ad Cards */}
+                            {viewMode === 'web' && (
+                                <div className="bg-gradient-to-b from-gray-900 to-gray-950 rounded-lg p-2 border border-white/10">
+                                    <div className="text-center mb-2">
+                                        <span className="text-[10px] text-white/40">LUNA ALBA 메인페이지</span>
                                     </div>
 
-                                    {/* Product Zones */}
-                                    {Object.entries(PRODUCT_ZONES).map(([id, zone]) => {
-                                        const isHovered = hoveredProduct === id;
-                                        const isGlowing = glowingZone === id;
-                                        const isSelected = !!selectedProducts[id];
-
-                                        return (
-                                            <div
-                                                key={id}
-                                                className={`absolute left-1 right-1 transition-all duration-300 rounded-sm overflow-hidden
-                                                    ${isHovered ? `bg-gradient-to-r ${zone.color} border-l-2 ${zone.border}` : ''}
-                                                    ${isGlowing ? 'animate-pulse ring-2 ring-white/50' : ''}
-                                                    ${isSelected && !isHovered ? `bg-gradient-to-r ${zone.color} opacity-60` : ''}
-                                                `}
-                                                style={{
-                                                    top: `${6 + zone.top * 0.94}%`,
-                                                    height: `${zone.height * 0.94}%`,
-                                                }}
-                                            >
-                                                {/* Zone label */}
-                                                <div className={`h-full flex items-center justify-center transition-opacity duration-300
-                                                    ${isHovered || isGlowing || isSelected ? 'opacity-100' : 'opacity-0'}
-                                                `}>
-                                                    <span className="text-[8px] font-bold text-white/90 drop-shadow-lg">
-                                                        {zone.label}
-                                                    </span>
+                                    {/* Premium Tiers - Actual Card Layout */}
+                                    <div className="space-y-1.5">
+                                        {/* Diamond */}
+                                        <div
+                                            className={`relative p-1.5 rounded-lg border-2 transition-all ${hoveredProduct === 'diamond' || selectedProducts['diamond']
+                                                    ? 'border-cyan-400 bg-gradient-to-r from-cyan-400/20 to-cyan-600/20'
+                                                    : 'border-transparent bg-white/5'
+                                                }`}
+                                        >
+                                            <div className="flex items-center gap-1">
+                                                <div className="w-4 h-4 bg-cyan-400/30 rounded" />
+                                                <div className="flex-1">
+                                                    <div className="h-1 bg-cyan-400/50 rounded w-3/4" />
+                                                    <div className="h-0.5 bg-white/20 rounded w-1/2 mt-0.5" />
                                                 </div>
-
-                                                {/* Glow effect overlay */}
-                                                {isGlowing && (
-                                                    <div className="absolute inset-0 bg-white/30 animate-ping rounded" />
-                                                )}
                                             </div>
-                                        );
-                                    })}
+                                            <span className="absolute right-1 top-1 text-[7px] text-cyan-400 font-bold">💎 다이아 2슬롯</span>
+                                        </div>
 
-                                    {/* Grid lines for reference */}
-                                    <div className="absolute inset-0 pointer-events-none">
-                                        {[...Array(8)].map((_, i) => (
+                                        {/* Sapphire */}
+                                        <div
+                                            className={`relative p-1.5 rounded-lg border-2 transition-all ${hoveredProduct === 'sapphire' || selectedProducts['sapphire']
+                                                    ? 'border-blue-400 bg-gradient-to-r from-blue-400/20 to-blue-600/20'
+                                                    : 'border-transparent bg-white/5'
+                                                }`}
+                                        >
+                                            <div className="flex items-center gap-1">
+                                                <div className="w-3 h-3 bg-blue-400/30 rounded" />
+                                                <div className="flex-1">
+                                                    <div className="h-0.5 bg-blue-400/50 rounded w-2/3" />
+                                                </div>
+                                            </div>
+                                            <span className="absolute right-1 top-1 text-[6px] text-blue-400 font-bold">💙 사파이어 3슬롯</span>
+                                        </div>
+
+                                        {/* Ruby */}
+                                        <div
+                                            className={`relative p-1.5 rounded-lg border-2 transition-all ${hoveredProduct === 'ruby' || selectedProducts['ruby']
+                                                    ? 'border-red-400 bg-gradient-to-r from-red-400/20 to-rose-600/20'
+                                                    : 'border-transparent bg-white/5'
+                                                }`}
+                                        >
+                                            <div className="flex items-center gap-1">
+                                                <div className="w-3 h-3 bg-red-400/30 rounded" />
+                                                <div className="flex-1">
+                                                    <div className="h-0.5 bg-red-400/50 rounded w-2/3" />
+                                                </div>
+                                            </div>
+                                            <span className="absolute right-1 top-1 text-[6px] text-red-400 font-bold">❤️ 루비 4슬롯</span>
+                                        </div>
+
+                                        {/* Gold */}
+                                        <div
+                                            className={`relative p-1.5 rounded-lg border-2 transition-all ${hoveredProduct === 'gold' || selectedProducts['gold']
+                                                    ? 'border-yellow-400 bg-gradient-to-r from-yellow-400/20 to-amber-600/20'
+                                                    : 'border-transparent bg-white/5'
+                                                }`}
+                                        >
+                                            <div className="flex items-center gap-1">
+                                                <div className="w-3 h-3 bg-yellow-400/30 rounded" />
+                                                <div className="flex-1">
+                                                    <div className="h-0.5 bg-yellow-400/50 rounded w-1/2" />
+                                                </div>
+                                            </div>
+                                            <span className="absolute right-1 top-1 text-[6px] text-yellow-400 font-bold">🏆 골드 5슬롯</span>
+                                        </div>
+
+                                        {/* Divider */}
+                                        <div className="border-t border-dashed border-white/10 my-1" />
+
+                                        {/* Premium/Special/Text Ads */}
+                                        <div className="grid grid-cols-2 gap-1">
                                             <div
-                                                key={i}
-                                                className="absolute left-1 right-1 border-t border-dashed border-white/5"
-                                                style={{ top: `${6 + (i + 1) * 11.75}%` }}
-                                            />
-                                        ))}
+                                                className={`p-1 rounded text-center transition-all ${hoveredProduct === 'premium' || selectedProducts['premium']
+                                                        ? 'bg-purple-500/30 border border-purple-400'
+                                                        : 'bg-white/5'
+                                                    }`}
+                                            >
+                                                <span className="text-[6px] text-purple-400">프리미엄</span>
+                                            </div>
+                                            <div
+                                                className={`p-1 rounded text-center transition-all ${hoveredProduct === 'special' || selectedProducts['special']
+                                                        ? 'bg-indigo-500/30 border border-indigo-400'
+                                                        : 'bg-white/5'
+                                                    }`}
+                                            >
+                                                <span className="text-[6px] text-indigo-400">스페셜</span>
+                                            </div>
+                                        </div>
+
+                                        <div
+                                            className={`p-1 rounded text-center transition-all ${hoveredProduct === 'highlight' || selectedProducts['highlight']
+                                                    ? 'bg-yellow-500/30 border border-yellow-500'
+                                                    : 'bg-white/5'
+                                                }`}
+                                        >
+                                            <span className="text-[6px] text-yellow-500">✨ 형광펜 텍스트</span>
+                                        </div>
+                                        <div
+                                            className={`p-1 rounded text-center transition-all ${hoveredProduct === 'general' || selectedProducts['general']
+                                                    ? 'bg-gray-500/30 border border-gray-400'
+                                                    : 'bg-white/5'
+                                                }`}
+                                        >
+                                            <span className="text-[6px] text-gray-400">일반 텍스트</span>
+                                        </div>
                                     </div>
                                 </div>
+                            )}
 
-                                {/* Home indicator */}
-                                <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-12 h-1 bg-white/30 rounded-full" />
-                            </div>
+                            {/* Mobile View - Phone Mockup */}
+                            {viewMode === 'mobile' && (
+                                <div className="relative bg-black rounded-2xl border-2 border-white/20 overflow-hidden" style={{ aspectRatio: '9/16' }}>
+                                    {/* Screen content */}
+                                    <div className="absolute inset-1 bg-gradient-to-b from-gray-900 to-gray-950 rounded-xl overflow-hidden">
+                                        {/* Header bar */}
+                                        <div className="h-[6%] bg-white/5 flex items-center justify-center">
+                                            <span className="text-[8px] text-white/40">LUNA ALBA</span>
+                                        </div>
+
+                                        {/* Product Zones */}
+                                        {Object.entries(PRODUCT_ZONES).map(([id, zone]) => {
+                                            const isHovered = hoveredProduct === id;
+                                            const isGlowing = glowingZone === id;
+                                            const isSelected = !!selectedProducts[id];
+
+                                            return (
+                                                <div
+                                                    key={id}
+                                                    className={`absolute left-1 right-1 transition-all duration-300 rounded-sm overflow-hidden
+                                                        ${isHovered ? `bg-gradient-to-r ${zone.color} border-l-2 ${zone.border}` : ''}
+                                                        ${isGlowing ? 'animate-pulse ring-2 ring-white/50' : ''}
+                                                        ${isSelected && !isHovered ? `bg-gradient-to-r ${zone.color} opacity-60` : ''}
+                                                    `}
+                                                    style={{
+                                                        top: `${6 + zone.top * 0.94}%`,
+                                                        height: `${zone.height * 0.94}%`,
+                                                    }}
+                                                >
+                                                    {/* Zone label */}
+                                                    <div className={`h-full flex items-center justify-center transition-opacity duration-300
+                                                        ${isHovered || isGlowing || isSelected ? 'opacity-100' : 'opacity-0'}
+                                                    `}>
+                                                        <span className="text-[8px] font-bold text-white/90 drop-shadow-lg">
+                                                            {zone.label}
+                                                        </span>
+                                                    </div>
+
+                                                    {/* Glow effect overlay */}
+                                                    {isGlowing && (
+                                                        <div className="absolute inset-0 bg-white/30 animate-ping rounded" />
+                                                    )}
+                                                </div>
+                                            );
+                                        })}
+
+                                        {/* Grid lines for reference */}
+                                        <div className="absolute inset-0 pointer-events-none">
+                                            {[...Array(8)].map((_, i) => (
+                                                <div
+                                                    key={i}
+                                                    className="absolute left-1 right-1 border-t border-dashed border-white/5"
+                                                    style={{ top: `${6 + (i + 1) * 11.75}%` }}
+                                                />
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Home indicator */}
+                                    <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-12 h-1 bg-white/30 rounded-full" />
+                                </div>
+                            )}
 
                             {/* Legend */}
                             <div className="mt-3 text-[10px] text-white/40 space-y-1">
-                                <p>• 마우스 호버 = 노출 영역 표시</p>
-                                <p>• 수량 추가 = 빛나는 효과</p>
+                                <p>• 상품 호버 시 위치 표시</p>
+                                <p>• 상단일수록 노출 효과 ↑</p>
                             </div>
                         </div>
                     </div>
@@ -289,7 +428,8 @@ const Step3ProductSelection: React.FC<Step3Props> = ({
                                                 <span className="text-white/50">시작일</span>
                                                 <input
                                                     type="date"
-                                                    className="bg-black/40 border border-white/10 rounded px-2 py-1 text-white text-xs focus:border-primary outline-none"
+                                                    className="bg-black/60 border-2 border-primary/40 rounded-lg px-3 py-1.5 text-white text-xs focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none cursor-pointer hover:border-primary/60 transition-colors"
+                                                    style={{ colorScheme: 'dark' }}
                                                     min={today}
                                                     value={selectedProducts[product.id]?.startDate || today}
                                                     onChange={(e) => {

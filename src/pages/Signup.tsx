@@ -67,6 +67,7 @@ const Signup: React.FC = () => {
     };
 
     const passwordStrength = getPasswordStrength(formData.password);
+    const isPasswordMatch = formData.password && formData.confirmPassword && formData.password === formData.confirmPassword;
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -341,6 +342,7 @@ const Signup: React.FC = () => {
                                     onChange={handleChange}
                                     className={`w-full bg-background border rounded-lg py-3 pl-10 pr-12 text-white outline-none transition-colors ${fieldErrors.password ? 'border-red-500 focus:border-red-500' : 'border-white/10 focus:border-primary'}`}
                                     placeholder="6자 이상 입력"
+                                    autoComplete="new-password"
                                 />
                                 <button
                                     type="button"
@@ -382,8 +384,16 @@ const Signup: React.FC = () => {
                                     type={showConfirmPassword ? 'text' : 'password'}
                                     value={formData.confirmPassword}
                                     onChange={handleChange}
-                                    className={`w-full bg-background border rounded-lg py-3 pl-10 pr-12 text-white outline-none transition-colors ${fieldErrors.confirmPassword ? 'border-red-500 focus:border-red-500' : formData.confirmPassword ? (formData.password === formData.confirmPassword ? 'border-green-500/50 focus:border-green-500' : 'border-red-500/50 focus:border-red-500') : 'border-white/10 focus:border-primary'}`}
+                                    className={`w-full bg-background border rounded-lg py-3 pl-10 pr-12 text-white outline-none transition-colors ${fieldErrors.confirmPassword
+                                            ? 'border-red-500 focus:border-red-500'
+                                            : !formData.confirmPassword
+                                                ? 'border-white/10 focus:border-primary'
+                                                : isPasswordMatch
+                                                    ? 'border-green-500/50 focus:border-green-500'
+                                                    : 'border-red-500/50 focus:border-red-500'
+                                        }`}
                                     placeholder="비밀번호 다시 입력"
+                                    autoComplete="new-password"
                                 />
                                 <button
                                     type="button"
@@ -398,8 +408,8 @@ const Signup: React.FC = () => {
                                     ⚠ {fieldErrors.confirmPassword}
                                 </div>
                             ) : formData.confirmPassword && (
-                                <div className={`text-xs mt-1 ${formData.password === formData.confirmPassword ? 'text-green-400' : 'text-red-400'}`}>
-                                    {formData.password === formData.confirmPassword ? '✓ 비밀번호가 일치합니다' : '✗ 비밀번호가 일치하지 않습니다'}
+                                <div className={`text-xs mt-1 ${isPasswordMatch ? 'text-green-400' : 'text-red-400'}`}>
+                                    {isPasswordMatch ? '✓ 비밀번호가 일치합니다' : '✗ 비밀번호가 일치하지 않습니다'}
                                 </div>
                             )}
                         </div>

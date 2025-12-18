@@ -64,7 +64,7 @@ const CommunityWrite: React.FC = () => {
         setImages(prev => prev.filter((_, i) => i !== index));
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
 
@@ -80,12 +80,23 @@ const CommunityWrite: React.FC = () => {
 
         setLoading(true);
 
-        // Simulate posting (in real app, this would be an API call)
-        setTimeout(() => {
-            setLoading(false);
+        try {
+            const { api } = await import('../utils/apiClient');
+
+            await api.post('/community/posts', {
+                category: formData.category,
+                title: formData.title,
+                content: formData.content
+            });
+
             alert('게시글이 등록되었습니다.');
             navigate('/community');
-        }, 1000);
+        } catch (err: any) {
+            console.error('Failed to create post:', err);
+            setError(err.message || '게시글 등록 중 오류가 발생했습니다.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -125,8 +136,8 @@ const CommunityWrite: React.FC = () => {
                                     type="button"
                                     onClick={() => setFormData(prev => ({ ...prev, category: cat }))}
                                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${formData.category === cat
-                                            ? 'bg-primary text-black'
-                                            : 'bg-accent text-text-muted hover:bg-white/10'
+                                        ? 'bg-primary text-black'
+                                        : 'bg-accent text-text-muted hover:bg-white/10'
                                         }`}
                                 >
                                     {cat}
