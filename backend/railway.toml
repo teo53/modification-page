@@ -1,0 +1,13 @@
+# Railway Configuration for DalbitAlba Backend
+# https://docs.railway.app/reference/railway-toml
+
+[build]
+builder = "dockerfile"
+dockerfilePath = "./Dockerfile"
+
+[deploy]
+startCommand = "node dist/src/main.js"
+healthcheckPath = "/api/v1/health"
+healthcheckTimeout = 300
+restartPolicyType = "on-failure"
+restartPolicyMaxRetries = 3
