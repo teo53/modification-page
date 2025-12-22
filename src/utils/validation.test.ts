@@ -3,7 +3,7 @@
 // 🧪 입력 유효성 검사 테스트
 // =============================================================================
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 
 // Mock the hash module to avoid actual hashing during tests
 vi.mock('./hash', () => ({
