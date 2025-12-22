@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CreditCard, Clock, RefreshCw, Palette, Smartphone, Monitor } from 'lucide-react';
+import { CreditCard, Clock, RefreshCw, Palette } from 'lucide-react';
 
 interface Step3Props {
     formData: any;
@@ -21,17 +21,7 @@ interface Step3Props {
     onPrev: () => void;
 }
 
-// Product zone configuration for page preview
-const PRODUCT_ZONES = {
-    diamond: { top: 0, height: 12, label: '다이아', color: 'from-cyan-400/40 to-cyan-600/40', border: 'border-cyan-400' },
-    sapphire: { top: 12, height: 10, label: '사파이어', color: 'from-blue-400/40 to-blue-600/40', border: 'border-blue-400' },
-    ruby: { top: 22, height: 10, label: '루비', color: 'from-red-400/40 to-rose-600/40', border: 'border-red-400' },
-    gold: { top: 32, height: 10, label: '골드', color: 'from-yellow-400/40 to-amber-600/40', border: 'border-yellow-400' },
-    premium: { top: 42, height: 14, label: '프리미엄', color: 'from-purple-400/40 to-purple-600/40', border: 'border-purple-400' },
-    special: { top: 56, height: 14, label: '스페셜', color: 'from-indigo-400/40 to-indigo-600/40', border: 'border-indigo-400' },
-    highlight: { top: 70, height: 10, label: '형광펜', color: 'from-yellow-500/40 to-orange-500/40', border: 'border-yellow-500' },
-    general: { top: 80, height: 20, label: '일반', color: 'from-gray-400/30 to-gray-600/30', border: 'border-gray-500' },
-};
+
 
 const Step3ProductSelection: React.FC<Step3Props> = ({
     formData: _formData,
@@ -52,30 +42,33 @@ const Step3ProductSelection: React.FC<Step3Props> = ({
 }) => {
     const today = new Date().toISOString().split('T')[0];
     const [hoveredProduct, setHoveredProduct] = useState<string | null>(null);
-    const [glowingZone, setGlowingZone] = useState<string | null>(null);
-    const [viewMode, setViewMode] = useState<'mobile' | 'web'>('web');
 
-    // Trigger glow animation when product is added
-    const triggerGlow = (productId: string) => {
-        setGlowingZone(productId);
-        setTimeout(() => setGlowingZone(null), 800);
-    };
 
-    // Highlight colors
+    // Highlight colors - 8가지 색상 (레퍼런스 이미지 기준)
     const highlightColors = [
-        { id: 'yellow', color: 'bg-yellow-500', name: '옐로우' },
-        { id: 'pink', color: 'bg-pink-500', name: '핑크' },
-        { id: 'green', color: 'bg-green-500', name: '그린' },
-        { id: 'cyan', color: 'bg-cyan-400', name: '시안' },
+        { id: '1', color: 'bg-yellow-400', name: '1번' },
+        { id: '2', color: 'bg-green-400', name: '2번' },
+        { id: '3', color: 'bg-cyan-400', name: '3번' },
+        { id: '4', color: 'bg-blue-400', name: '4번' },
+        { id: '5', color: 'bg-pink-400', name: '5번' },
+        { id: '6', color: 'bg-purple-400', name: '6번' },
+        { id: '7', color: 'bg-orange-400', name: '7번' },
+        { id: '8', color: 'bg-rose-400', name: '8번' },
     ];
 
-    // Agreements text
-    const agreementTexts = [
-        '최저임금을 준수하지 않는 경우, 공고 강제 마감 및 행정처분을 받을 수 있습니다.',
-        '모집 채용에서 허위 및 과장으로 작성된 내용이 확인될 경우, 공고 강제 마감 및 행정처분을 받을 수 있습니다.',
-        '모집 채용에서 보이스피싱, 불법 성매매, 구인사기 등으로 추정되는 내용이 확인될 경우, 공고 게재가 불가합니다.',
-        '소정 근로 시간 기준의 급여 외 수당이 발생했을 경우, 공고에 입력한 급여 외 추가 지급되어야 합니다.',
+    // 형광펜 기간 옵션
+    const highlightPeriods = [
+        { days: 30, price: 30000, label: '30일' },
+        { days: 60, price: 55000, label: '60일' },
+        { days: 90, price: 70000, label: '90일' },
     ];
+
+    // 형광펜 기간 상태
+    const [highlightPeriod, setHighlightPeriod] = useState<number>(30);
+    // 형광펜 적용할 텍스트 상태
+    const [highlightText, setHighlightText] = useState<string>('');
+
+
 
     // Calculate totals
     const productTotal = Object.keys(selectedProducts).reduce((sum, productId) => {
@@ -117,216 +110,139 @@ const Step3ProductSelection: React.FC<Step3Props> = ({
                 </span>
             </div>
 
-            {/* Main Layout: Preview + Products */}
+            {/* Main Layout: Products + Preview Sidebar */}
             <div className="grid lg:grid-cols-12 gap-6">
-                {/* Left: Page Preview Simulation */}
-                <div className="lg:col-span-3">
+                {/* Right Sidebar: Page Preview Simulation - order-last로 오른쪽 배치 */}
+                <div className="lg:col-span-4 lg:order-last">
                     <div className="sticky top-4">
                         <div className="bg-gradient-to-b from-white/5 to-white/[0.02] rounded-xl border border-white/10 p-3">
-                            {/* View Mode Tabs */}
-                            <div className="flex items-center gap-1 mb-3 p-1 bg-black/30 rounded-lg">
-                                <button
-                                    onClick={() => setViewMode('web')}
-                                    className={`flex-1 flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-md text-xs font-medium transition-all ${viewMode === 'web'
-                                            ? 'bg-primary text-black'
-                                            : 'text-white/50 hover:text-white/80'
-                                        }`}
-                                >
-                                    <Monitor size={12} />
-                                    웹
-                                </button>
-                                <button
-                                    onClick={() => setViewMode('mobile')}
-                                    className={`flex-1 flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-md text-xs font-medium transition-all ${viewMode === 'mobile'
-                                            ? 'bg-primary text-black'
-                                            : 'text-white/50 hover:text-white/80'
-                                        }`}
-                                >
-                                    <Smartphone size={12} />
-                                    모바일
-                                </button>
-                            </div>
-
-                            {/* Web View - Realistic Ad Cards */}
-                            {viewMode === 'web' && (
-                                <div className="bg-gradient-to-b from-gray-900 to-gray-950 rounded-lg p-2 border border-white/10">
+                            {/* Web View - 실제 레이아웃 구조 반영 */}
+                            {true && (
+                                <div className="bg-gradient-to-b from-gray-900 to-gray-950 rounded-lg p-3 border border-white/10">
                                     <div className="text-center mb-2">
-                                        <span className="text-[10px] text-white/40">LUNA ALBA 메인페이지</span>
+                                        <span className="text-[9px] text-white/50 font-medium">메인 페이지 광고 위치</span>
                                     </div>
 
-                                    {/* Premium Tiers - Actual Card Layout */}
-                                    <div className="space-y-1.5">
-                                        {/* Diamond */}
-                                        <div
-                                            className={`relative p-1.5 rounded-lg border-2 transition-all ${hoveredProduct === 'diamond' || selectedProducts['diamond']
-                                                    ? 'border-cyan-400 bg-gradient-to-r from-cyan-400/20 to-cyan-600/20'
-                                                    : 'border-transparent bg-white/5'
-                                                }`}
-                                        >
-                                            <div className="flex items-center gap-1">
-                                                <div className="w-4 h-4 bg-cyan-400/30 rounded" />
-                                                <div className="flex-1">
-                                                    <div className="h-1 bg-cyan-400/50 rounded w-3/4" />
-                                                    <div className="h-0.5 bg-white/20 rounded w-1/2 mt-0.5" />
-                                                </div>
-                                            </div>
-                                            <span className="absolute right-1 top-1 text-[7px] text-cyan-400 font-bold">💎 다이아 2슬롯</span>
+                                    <div className="space-y-2">
+                                        {/* Premium Recruitment 헤더 */}
+                                        <div className="text-center mb-2">
+                                            <div className="text-[8px] text-purple-300 font-bold">Premium Recruitment</div>
+                                            <div className="text-[5px] text-white/40">최상위 구인을 위한 프리미엄 광고</div>
                                         </div>
 
-                                        {/* Sapphire */}
-                                        <div
-                                            className={`relative p-1.5 rounded-lg border-2 transition-all ${hoveredProduct === 'sapphire' || selectedProducts['sapphire']
-                                                    ? 'border-blue-400 bg-gradient-to-r from-blue-400/20 to-blue-600/20'
-                                                    : 'border-transparent bg-white/5'
-                                                }`}
-                                        >
-                                            <div className="flex items-center gap-1">
-                                                <div className="w-3 h-3 bg-blue-400/30 rounded" />
-                                                <div className="flex-1">
-                                                    <div className="h-0.5 bg-blue-400/50 rounded w-2/3" />
-                                                </div>
-                                            </div>
-                                            <span className="absolute right-1 top-1 text-[6px] text-blue-400 font-bold">💙 사파이어 3슬롯</span>
-                                        </div>
-
-                                        {/* Ruby */}
-                                        <div
-                                            className={`relative p-1.5 rounded-lg border-2 transition-all ${hoveredProduct === 'ruby' || selectedProducts['ruby']
-                                                    ? 'border-red-400 bg-gradient-to-r from-red-400/20 to-rose-600/20'
-                                                    : 'border-transparent bg-white/5'
-                                                }`}
-                                        >
-                                            <div className="flex items-center gap-1">
-                                                <div className="w-3 h-3 bg-red-400/30 rounded" />
-                                                <div className="flex-1">
-                                                    <div className="h-0.5 bg-red-400/50 rounded w-2/3" />
-                                                </div>
-                                            </div>
-                                            <span className="absolute right-1 top-1 text-[6px] text-red-400 font-bold">❤️ 루비 4슬롯</span>
-                                        </div>
-
-                                        {/* Gold */}
-                                        <div
-                                            className={`relative p-1.5 rounded-lg border-2 transition-all ${hoveredProduct === 'gold' || selectedProducts['gold']
-                                                    ? 'border-yellow-400 bg-gradient-to-r from-yellow-400/20 to-amber-600/20'
-                                                    : 'border-transparent bg-white/5'
-                                                }`}
-                                        >
-                                            <div className="flex items-center gap-1">
-                                                <div className="w-3 h-3 bg-yellow-400/30 rounded" />
-                                                <div className="flex-1">
-                                                    <div className="h-0.5 bg-yellow-400/50 rounded w-1/2" />
-                                                </div>
-                                            </div>
-                                            <span className="absolute right-1 top-1 text-[6px] text-yellow-400 font-bold">🏆 골드 5슬롯</span>
-                                        </div>
-
-                                        {/* Divider */}
-                                        <div className="border-t border-dashed border-white/10 my-1" />
-
-                                        {/* Premium/Special/Text Ads */}
-                                        <div className="grid grid-cols-2 gap-1">
-                                            <div
-                                                className={`p-1 rounded text-center transition-all ${hoveredProduct === 'premium' || selectedProducts['premium']
-                                                        ? 'bg-purple-500/30 border border-purple-400'
-                                                        : 'bg-white/5'
-                                                    }`}
-                                            >
-                                                <span className="text-[6px] text-purple-400">프리미엄</span>
-                                            </div>
-                                            <div
-                                                className={`p-1 rounded text-center transition-all ${hoveredProduct === 'special' || selectedProducts['special']
-                                                        ? 'bg-indigo-500/30 border border-indigo-400'
-                                                        : 'bg-white/5'
-                                                    }`}
-                                            >
-                                                <span className="text-[6px] text-indigo-400">스페셜</span>
-                                            </div>
-                                        </div>
-
-                                        <div
-                                            className={`p-1 rounded text-center transition-all ${hoveredProduct === 'highlight' || selectedProducts['highlight']
-                                                    ? 'bg-yellow-500/30 border border-yellow-500'
-                                                    : 'bg-white/5'
-                                                }`}
-                                        >
-                                            <span className="text-[6px] text-yellow-500">✨ 형광펜 텍스트</span>
-                                        </div>
-                                        <div
-                                            className={`p-1 rounded text-center transition-all ${hoveredProduct === 'general' || selectedProducts['general']
-                                                    ? 'bg-gray-500/30 border border-gray-400'
-                                                    : 'bg-white/5'
-                                                }`}
-                                        >
-                                            <span className="text-[6px] text-gray-400">일반 텍스트</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Mobile View - Phone Mockup */}
-                            {viewMode === 'mobile' && (
-                                <div className="relative bg-black rounded-2xl border-2 border-white/20 overflow-hidden" style={{ aspectRatio: '9/16' }}>
-                                    {/* Screen content */}
-                                    <div className="absolute inset-1 bg-gradient-to-b from-gray-900 to-gray-950 rounded-xl overflow-hidden">
-                                        {/* Header bar */}
-                                        <div className="h-[6%] bg-white/5 flex items-center justify-center">
-                                            <span className="text-[8px] text-white/40">LUNA ALBA</span>
-                                        </div>
-
-                                        {/* Product Zones */}
-                                        {Object.entries(PRODUCT_ZONES).map(([id, zone]) => {
-                                            const isHovered = hoveredProduct === id;
-                                            const isGlowing = glowingZone === id;
-                                            const isSelected = !!selectedProducts[id];
-
-                                            return (
-                                                <div
-                                                    key={id}
-                                                    className={`absolute left-1 right-1 transition-all duration-300 rounded-sm overflow-hidden
-                                                        ${isHovered ? `bg-gradient-to-r ${zone.color} border-l-2 ${zone.border}` : ''}
-                                                        ${isGlowing ? 'animate-pulse ring-2 ring-white/50' : ''}
-                                                        ${isSelected && !isHovered ? `bg-gradient-to-r ${zone.color} opacity-60` : ''}
-                                                    `}
-                                                    style={{
-                                                        top: `${6 + zone.top * 0.94}%`,
-                                                        height: `${zone.height * 0.94}%`,
-                                                    }}
-                                                >
-                                                    {/* Zone label */}
-                                                    <div className={`h-full flex items-center justify-center transition-opacity duration-300
-                                                        ${isHovered || isGlowing || isSelected ? 'opacity-100' : 'opacity-0'}
-                                                    `}>
-                                                        <span className="text-[8px] font-bold text-white/90 drop-shadow-lg">
-                                                            {zone.label}
-                                                        </span>
+                                        {/* === DIAMOND TIER (2개 - 1행 2열) === */}
+                                        <div className={`transition-all ${hoveredProduct === 'diamond' || selectedProducts['diamond'] ? 'ring-1 ring-cyan-400' : ''}`}>
+                                            <div className="text-[6px] text-cyan-400 font-bold mb-1 border-b border-cyan-400/30 pb-0.5">DIAMOND TIER</div>
+                                            <div className="grid grid-cols-2 gap-1">
+                                                {[1, 2].map(i => (
+                                                    <div key={i} className="border border-cyan-500/50 bg-black p-1">
+                                                        <div className="flex items-center gap-1 mb-0.5">
+                                                            <div className="w-4 h-4 bg-gray-800 rounded"></div>
+                                                            <div className="flex-1">
+                                                                <div className="text-[5px] text-white font-bold truncate">다이아 업체{i}</div>
+                                                                <div className="text-[4px] text-white/50">서울 · 협의</div>
+                                                            </div>
+                                                        </div>
                                                     </div>
+                                                ))}
+                                            </div>
+                                        </div>
 
-                                                    {/* Glow effect overlay */}
-                                                    {isGlowing && (
-                                                        <div className="absolute inset-0 bg-white/30 animate-ping rounded" />
-                                                    )}
-                                                </div>
-                                            );
-                                        })}
+                                        {/* === SAPPHIRE TIER (4개 - 2행 2열) === */}
+                                        <div className={`transition-all ${hoveredProduct === 'sapphire' || selectedProducts['sapphire'] ? 'ring-1 ring-blue-400' : ''}`}>
+                                            <div className="text-[6px] text-blue-400 font-bold mb-1 border-b border-blue-400/30 pb-0.5">SAPPHIRE TIER</div>
+                                            <div className="grid grid-cols-2 gap-1">
+                                                {[1, 2, 3, 4].map(i => (
+                                                    <div key={i} className="border border-blue-500/50 bg-black p-1">
+                                                        <div className="flex items-center gap-1">
+                                                            <div className="w-4 h-4 bg-gray-800 rounded"></div>
+                                                            <div className="text-[5px] text-white font-bold truncate">사파이어{i}</div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
 
-                                        {/* Grid lines for reference */}
-                                        <div className="absolute inset-0 pointer-events-none">
-                                            {[...Array(8)].map((_, i) => (
-                                                <div
-                                                    key={i}
-                                                    className="absolute left-1 right-1 border-t border-dashed border-white/5"
-                                                    style={{ top: `${6 + (i + 1) * 11.75}%` }}
-                                                />
-                                            ))}
+                                        {/* === RUBY TIER (6개 - 가로형 카드) === */}
+                                        <div className={`transition-all ${hoveredProduct === 'ruby' || selectedProducts['ruby'] ? 'ring-1 ring-red-400' : ''}`}>
+                                            <div className="text-[6px] text-red-400 font-bold mb-1 border-b border-red-400/30 pb-0.5">RUBY TIER</div>
+                                            <div className="grid grid-cols-2 gap-0.5">
+                                                {[1, 2, 3, 4, 5, 6].map(i => (
+                                                    <div key={i} className="border border-red-500/30 bg-black/50 p-0.5 flex items-center gap-0.5">
+                                                        <span className="text-[4px] text-red-500 bg-red-500/20 px-0.5">VIP</span>
+                                                        <span className="text-[4px] text-white truncate">루비{i}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {/* === GOLD TIER (8개 - 가로형 카드) === */}
+                                        <div className={`transition-all ${hoveredProduct === 'gold' || selectedProducts['gold'] ? 'ring-1 ring-yellow-400' : ''}`}>
+                                            <div className="text-[6px] text-yellow-400 font-bold mb-1 border-b border-yellow-400/30 pb-0.5">GOLD TIER</div>
+                                            <div className="grid grid-cols-2 gap-0.5">
+                                                {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
+                                                    <div key={i} className="border border-yellow-500/30 bg-black/50 p-0.5 flex items-center gap-0.5">
+                                                        <span className="text-[4px] text-yellow-500 bg-yellow-500/20 px-0.5">★</span>
+                                                        <span className="text-[4px] text-white truncate">골드{i}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {/* 빠른 메뉴 */}
+                                        <div className="p-1 rounded border border-white/10 bg-gradient-to-r from-purple-500/10 to-pink-500/10">
+                                            <div className="flex justify-center gap-0.5">
+                                                {['🔍', '📍', '🏢', '⚡'].map((icon, i) => (
+                                                    <div key={i} className="w-3 h-3 bg-white/10 rounded flex items-center justify-center text-[5px]">{icon}</div>
+                                                ))}
+                                            </div>
+                                            <div className="text-[5px] text-purple-300 text-center">빠른 메뉴</div>
+                                        </div>
+
+                                        {/* === VIP 프리미엄 광고 (6개/줄) === */}
+                                        <div className={`transition-all ${hoveredProduct === 'premium' || selectedProducts['premium'] ? 'ring-1 ring-purple-400' : ''}`}>
+                                            <div className="text-[6px] text-purple-400 font-bold mb-1">VIP 프리미엄 광고</div>
+                                            <div className="grid grid-cols-6 gap-0.5">
+                                                {[1, 2, 3, 4, 5, 6].map(i => (
+                                                    <div key={i} className="border border-yellow-500/50 rounded bg-black p-0.5">
+                                                        <div className="bg-gray-800 h-3 rounded mb-0.5"></div>
+                                                        <div className="text-[3px] text-white truncate">업체</div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {/* === SPECIAL 스페셜 광고 (6개/줄) === */}
+                                        <div className={`transition-all ${hoveredProduct === 'special' || selectedProducts['special'] ? 'ring-1 ring-pink-400' : ''}`}>
+                                            <div className="text-[6px] text-pink-400 font-bold mb-1">SPECIAL 스페셜 광고</div>
+                                            <div className="grid grid-cols-6 gap-0.5">
+                                                {[1, 2, 3, 4, 5, 6].map(i => (
+                                                    <div key={i} className="border border-pink-500/30 rounded bg-black p-0.5">
+                                                        <div className="bg-gray-800 h-3 rounded mb-0.5"></div>
+                                                        <div className="text-[3px] text-white truncate">업체</div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {/* 텍스트 광고 - 형광펜 + 일반 */}
+                                        <div className="grid grid-cols-2 gap-1">
+                                            <div className={`p-1 rounded border transition-all ${hoveredProduct === 'highlight' || selectedProducts['highlight'] ? 'border-yellow-500 bg-yellow-500/10 ring-1 ring-yellow-500' : 'border-white/10 bg-white/5'}`}>
+                                                <div className="text-[5px] text-yellow-500 font-medium">✨ 형광펜 효과</div>
+                                                <div className="text-[4px] text-white/40 mt-0.5">제목 강조 표시</div>
+                                            </div>
+                                            <div className={`p-1 rounded border transition-all ${hoveredProduct === 'general' || selectedProducts['general'] ? 'border-gray-400 bg-gray-500/10 ring-1 ring-gray-400' : 'border-white/10 bg-white/5'}`}>
+                                                <div className="text-[5px] text-gray-400 font-medium">📝 일반 텍스트</div>
+                                                <div className="text-[4px] text-white/40 mt-0.5">기본 광고</div>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    {/* Home indicator */}
-                                    <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-12 h-1 bg-white/30 rounded-full" />
+                                    <div className="mt-2 pt-1.5 border-t border-white/10">
+                                        <p className="text-[6px] text-white/40 text-center">• 상품 호버 시 위치 표시 • 상단일수록 노출 ↑</p>
+                                    </div>
                                 </div>
                             )}
-
                             {/* Legend */}
                             <div className="mt-3 text-[10px] text-white/40 space-y-1">
                                 <p>• 상품 호버 시 위치 표시</p>
@@ -336,8 +252,8 @@ const Step3ProductSelection: React.FC<Step3Props> = ({
                     </div>
                 </div>
 
-                {/* Center: Product List - Compact */}
-                <div className="lg:col-span-5 space-y-3">
+                {/* Main Content: Product List */}
+                <div className="lg:col-span-8 space-y-3">
                     <h3 className="text-sm font-bold text-white/80 flex items-center gap-2">
                         <CreditCard size={14} className="text-primary" />
                         광고 상품
@@ -405,7 +321,6 @@ const Step3ProductSelection: React.FC<Step3Props> = ({
                                             <button
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    triggerGlow(product.id);
                                                     setSelectedProducts(prev => {
                                                         if (prev[product.id]) {
                                                             return { ...prev, [product.id]: { ...prev[product.id], qty: prev[product.id].qty + 1 } };
@@ -452,186 +367,468 @@ const Step3ProductSelection: React.FC<Step3Props> = ({
 
                     {/* Add-ons - Compact */}
                     <div className="space-y-3 pt-4">
-                        {/* Auto Jump Up */}
-                        <div className={`rounded-lg border p-3 transition-all ${jumpUpSettings.enabled
+                        {/* Jump Up Add-on - 패키지/직접선택 탭 */}
+                        <div className={`rounded-lg border p-4 transition-all ${jumpUpSettings.enabled
                             ? 'bg-green-500/10 border-green-500/50'
                             : 'bg-white/[0.03] border-white/10'
                             }`}>
-                            <div className="flex items-center justify-between">
+                            {/* 헤더 */}
+                            <div className="flex items-center justify-between mb-3">
                                 <div className="flex items-center gap-2">
-                                    <RefreshCw size={16} className={jumpUpSettings.enabled ? 'text-green-400' : 'text-white/50'} />
-                                    <div>
-                                        <span className={`text-sm font-bold ${jumpUpSettings.enabled ? 'text-green-400' : 'text-white'}`}>
-                                            자동 상위업
-                                        </span>
-                                        <span className="text-[10px] text-white/40 ml-2">1,000원/회</span>
-                                    </div>
+                                    <RefreshCw size={18} className={jumpUpSettings.enabled ? 'text-green-400' : 'text-white/50'} />
+                                    <span className={`text-sm font-bold ${jumpUpSettings.enabled ? 'text-green-400' : 'text-white'}`}>
+                                        자동 상위업
+                                    </span>
                                 </div>
                                 <button
                                     onClick={() => setJumpUpSettings(prev => ({ ...prev, enabled: !prev.enabled }))}
-                                    className={`relative w-11 h-6 rounded-full transition-colors ${jumpUpSettings.enabled ? 'bg-green-500' : 'bg-white/20'}`}
+                                    className={`relative w-12 h-6 rounded-full transition-colors ${jumpUpSettings.enabled ? 'bg-green-500' : 'bg-white/20'}`}
                                 >
-                                    <span className={`absolute top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform ${jumpUpSettings.enabled ? 'translate-x-5' : ''}`} />
+                                    <span className={`absolute top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform ${jumpUpSettings.enabled ? 'translate-x-6' : ''}`} />
                                 </button>
                             </div>
 
                             {jumpUpSettings.enabled && (
-                                <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-green-500/30">
-                                    <div className="flex gap-1">
-                                        {[1, 3, 7].map(days => (
-                                            <button
-                                                key={days}
-                                                onClick={() => setJumpUpSettings(prev => ({ ...prev, interval: days }))}
-                                                className={`flex-1 py-1.5 rounded text-xs font-medium transition-all ${jumpUpSettings.interval === days
-                                                    ? 'bg-green-500 text-black'
-                                                    : 'bg-black/30 text-white/60'
-                                                    }`}
-                                            >
-                                                {days}일
-                                            </button>
-                                        ))}
+                                <div className="space-y-4 pt-3 border-t border-green-500/30">
+                                    {/* 탭 선택 */}
+                                    <div className="flex gap-2 mb-4">
+                                        <button
+                                            onClick={() => setJumpUpSettings(prev => ({ ...prev, type: 'package' }))}
+                                            className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all border ${(jumpUpSettings as any).type !== 'custom'
+                                                ? 'bg-green-500 text-black border-green-400'
+                                                : 'bg-black/50 text-white/70 border-white/20 hover:border-green-400/50'
+                                                }`}
+                                        >
+                                            기간 패키지
+                                            <span className="ml-1 text-xs text-red-500 font-bold">20% 할인</span>
+                                        </button>
+                                        <button
+                                            onClick={() => setJumpUpSettings(prev => ({ ...prev, type: 'custom' }))}
+                                            className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all border ${(jumpUpSettings as any).type === 'custom'
+                                                ? 'bg-green-500 text-black border-green-400'
+                                                : 'bg-black/50 text-white/70 border-white/20 hover:border-green-400/50'
+                                                }`}
+                                        >
+                                            직접 선택
+                                        </button>
                                     </div>
-                                    <div className="flex gap-1">
-                                        {[10, 30, 60].map(cnt => (
-                                            <button
-                                                key={cnt}
-                                                onClick={() => setJumpUpSettings(prev => ({ ...prev, count: cnt }))}
-                                                className={`flex-1 py-1.5 rounded text-xs font-medium transition-all ${jumpUpSettings.count === cnt
-                                                    ? 'bg-green-500 text-black'
-                                                    : 'bg-black/30 text-white/60'
-                                                    }`}
-                                            >
-                                                {cnt}회
-                                            </button>
-                                        ))}
+
+                                    {/* 패키지 상품 (20% 할인) */}
+                                    {(jumpUpSettings as any).type !== 'custom' && (
+                                        <div>
+                                            <div className="text-xs text-white/60 font-medium mb-2 flex items-center gap-2">
+                                                기간 패키지 상품
+                                                <span className="px-2 py-0.5 bg-red-500/20 text-red-400 rounded text-[10px] font-bold">20% 할인 적용</span>
+                                            </div>
+                                            <div className="space-y-2">
+                                                {[
+                                                    { days: 30, count: 300, original: 15000, price: 12000, discount: 20 },
+                                                    { days: 60, count: 700, original: 35000, price: 28000, discount: 20 },
+                                                    { days: 90, count: 1200, original: 60000, price: 48000, discount: 20 }
+                                                ].map(opt => (
+                                                    <label key={opt.days} className={`flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-all ${jumpUpSettings.count === opt.count
+                                                        ? 'border-green-400 bg-green-500/10'
+                                                        : 'border-white/10 hover:border-white/30'
+                                                        }`}>
+                                                        <div className="flex items-center gap-3">
+                                                            <input
+                                                                type="radio"
+                                                                name="jumpPackage"
+                                                                checked={jumpUpSettings.count === opt.count}
+                                                                onChange={() => setJumpUpSettings(prev => ({ ...prev, count: opt.count, interval: 1 }))}
+                                                                className="w-4 h-4 accent-green-500"
+                                                            />
+                                                            <div>
+                                                                <span className="text-white font-bold">{opt.days}일</span>
+                                                                <span className="text-white/60 text-sm ml-2">({opt.count}회)</span>
+                                                            </div>
+                                                        </div>
+                                                        <div className="text-right">
+                                                            <span className="text-white/40 text-xs line-through mr-2">{opt.original.toLocaleString()}원</span>
+                                                            <span className="text-green-400 font-bold">{opt.price.toLocaleString()}원</span>
+                                                            <span className="text-red-400 text-xs ml-1">-{opt.discount}%</span>
+                                                        </div>
+                                                    </label>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* 직접 선택 (정가) */}
+                                    {(jumpUpSettings as any).type === 'custom' && (
+                                        <div className="space-y-4">
+                                            {/* 주기 선택 */}
+                                            <div>
+                                                <div className="text-xs text-white/60 font-medium mb-2 flex items-center gap-1">
+                                                    <Clock size={12} />
+                                                    점프 주기 (며칠마다 실행)
+                                                </div>
+                                                <div className="flex gap-2">
+                                                    {[
+                                                        { days: 1, label: '1일', desc: '매일' },
+                                                        { days: 3, label: '3일', desc: '3일마다' },
+                                                        { days: 7, label: '7일', desc: '주 1회' }
+                                                    ].map(opt => (
+                                                        <button
+                                                            key={opt.days}
+                                                            onClick={() => setJumpUpSettings(prev => ({ ...prev, interval: opt.days }))}
+                                                            className={`flex-1 py-3 rounded-lg text-sm font-medium transition-all border ${jumpUpSettings.interval === opt.days
+                                                                ? 'bg-green-500 text-black border-green-400'
+                                                                : 'bg-black/50 text-white border-white/20 hover:border-green-400/50'
+                                                                }`}
+                                                        >
+                                                            <div className="font-bold text-base">{opt.label}</div>
+                                                            <div className={`text-[10px] mt-0.5 ${jumpUpSettings.interval === opt.days ? 'text-black/70' : 'text-white/50'}`}>{opt.desc}</div>
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </div>
+
+                                            {/* 횟수 선택 (레퍼런스 기준) */}
+                                            <div>
+                                                <div className="text-xs text-white/60 font-medium mb-2">
+                                                    점프 횟수 선택 (클릭별)
+                                                </div>
+                                                <div className="space-y-2">
+                                                    {[
+                                                        { count: 200, price: 10000 },
+                                                        { count: 450, price: 20000 },
+                                                        { count: 700, price: 30000 },
+                                                        { count: 1200, price: 50000 },
+                                                        { count: 2000, price: 80000 }
+                                                    ].map(opt => (
+                                                        <label key={opt.count} className={`flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-all ${jumpUpSettings.count === opt.count
+                                                            ? 'border-green-400 bg-green-500/10'
+                                                            : 'border-white/10 hover:border-white/30'
+                                                            }`}>
+                                                            <div className="flex items-center gap-3">
+                                                                <input
+                                                                    type="radio"
+                                                                    name="jumpCount"
+                                                                    checked={jumpUpSettings.count === opt.count}
+                                                                    onChange={() => setJumpUpSettings(prev => ({ ...prev, count: opt.count }))}
+                                                                    className="w-4 h-4 accent-green-500"
+                                                                />
+                                                                <span className="text-white font-bold">{opt.count}회</span>
+                                                            </div>
+                                                            <span className="text-green-400 font-bold">{opt.price.toLocaleString()}원</span>
+                                                        </label>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* 결과 요약 */}
+                                    <div className="bg-black/50 rounded-lg p-4 text-center border border-green-500/30">
+                                        {(jumpUpSettings as any).type !== 'custom' ? (
+                                            <>
+                                                <p className="text-white text-base">
+                                                    <span className="text-green-400 font-bold">{jumpUpSettings.count}회</span> 점프 ={' '}
+                                                    <span className="text-yellow-400 font-bold text-xl ml-1">
+                                                        +{[12000, 28000, 48000][[300, 700, 1200].indexOf(jumpUpSettings.count)]?.toLocaleString() || '12,000'}원
+                                                    </span>
+                                                    <span className="text-red-400 text-xs ml-2">(20% 할인)</span>
+                                                </p>
+                                                <div className="mt-3 pt-3 border-t border-green-500/20">
+                                                    <p className="text-green-400 font-bold text-lg">
+                                                        약 <span className="text-2xl text-white">{[30, 60, 90][[300, 700, 1200].indexOf(jumpUpSettings.count)] || 30}일</span> 간 자동 상위업 유지
+                                                    </p>
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <p className="text-white text-base">
+                                                    <span className="text-green-400 font-bold">{jumpUpSettings.interval}일</span>마다{' '}
+                                                    <span className="text-green-400 font-bold">{jumpUpSettings.count}회</span> 점프 ={' '}
+                                                    <span className="text-yellow-400 font-bold text-xl ml-1">
+                                                        +{[10000, 20000, 30000, 50000, 80000][[200, 450, 700, 1200, 2000].indexOf(jumpUpSettings.count)]?.toLocaleString() || '10,000'}원
+                                                    </span>
+                                                </p>
+                                                <div className="mt-3 pt-3 border-t border-green-500/20">
+                                                    <p className="text-green-400 font-bold text-lg">
+                                                        약 <span className="text-2xl text-white">{Math.ceil(jumpUpSettings.count * jumpUpSettings.interval / ([200, 450, 700, 1200, 2000].includes(jumpUpSettings.count) ? (jumpUpSettings.count / 30) : 10))}일</span> 간 자동 상위업 유지
+                                                    </p>
+                                                </div>
+                                            </>
+                                        )}
                                     </div>
                                 </div>
                             )}
                         </div>
 
-                        {/* Highlight Add-on */}
-                        <div className={`rounded-lg border p-3 transition-all ${highlightSettings.color
-                            ? 'bg-amber-500/10 border-amber-500/50'
+                        {/* Highlight Add-on - 드래그 선택 방식 */}
+                        <div className={`rounded-lg border p-4 transition-all ${highlightSettings.color
+                            ? 'bg-pink-500/10 border-pink-500/50'
                             : 'bg-white/[0.03] border-white/10'
                             }`}>
-                            <div className="flex items-center justify-between mb-2">
+                            {/* 헤더 */}
+                            <div className="flex items-center justify-between mb-4">
                                 <div className="flex items-center gap-2">
-                                    <Palette size={16} className="text-pink-400" />
-                                    <span className="text-sm font-bold text-white">형광펜 효과</span>
+                                    <Palette size={18} className="text-pink-400" />
+                                    <span className="text-sm font-bold text-white">형광펜 선택</span>
                                 </div>
-                                <span className="text-pink-400 text-xs font-bold">+50,000원</span>
+                                <span className="text-white/50 text-xs">사용할 형광펜 색을 설정하세요.</span>
                             </div>
-                            <div className="flex gap-2">
-                                {highlightColors.map(item => (
-                                    <button
-                                        key={item.id}
-                                        onClick={() => setHighlightSettings({
-                                            color: highlightSettings.color === item.id ? '' : item.id,
-                                            text: ''
-                                        })}
-                                        className="flex flex-col items-center gap-1"
-                                    >
-                                        <div className={`w-8 h-8 ${item.color} rounded-lg transition-all ${highlightSettings.color === item.id
-                                            ? 'ring-2 ring-white scale-110'
-                                            : 'opacity-50 hover:opacity-100'
-                                            }`} />
-                                        <span className="text-[9px] text-white/40">{item.name}</span>
-                                    </button>
-                                ))}
+
+                            <div className="grid grid-cols-2 gap-6">
+                                {/* 왼쪽: 기간별 가격표 */}
+                                <div>
+                                    <div className="text-xs text-white/60 font-medium mb-3">형광펜 채용정보</div>
+                                    <div className="space-y-2">
+                                        {highlightPeriods.map(period => (
+                                            <label key={period.days} className={`flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-all ${highlightPeriod === period.days
+                                                ? 'border-pink-400 bg-pink-500/10'
+                                                : 'border-white/10 hover:border-white/30'}`}>
+                                                <div className="flex items-center gap-3">
+                                                    <input
+                                                        type="radio"
+                                                        name="highlightPeriod"
+                                                        checked={highlightPeriod === period.days}
+                                                        onChange={() => setHighlightPeriod(period.days)}
+                                                        className="w-4 h-4 accent-pink-500"
+                                                    />
+                                                    <span className="text-white/60 text-sm">기간별</span>
+                                                    <span className="text-white font-bold">{period.label}</span>
+                                                </div>
+                                                <span className="text-green-400 font-bold">{period.price.toLocaleString()}원</span>
+                                            </label>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* 오른쪽: 색상 선택 */}
+                                <div>
+                                    <div className="text-xs text-white/60 font-medium mb-3">색상 선택 (8가지)</div>
+                                    <div className="grid grid-cols-4 gap-3">
+                                        {highlightColors.map(item => (
+                                            <button
+                                                key={item.id}
+                                                onClick={() => {
+                                                    // 드래그로 선택된 텍스트가 있으면 형광펜 적용
+                                                    const selection = window.getSelection();
+                                                    const selectedText = selection?.toString().trim();
+                                                    if (selectedText && _formData.title.includes(selectedText)) {
+                                                        setHighlightText(selectedText);
+                                                        setHighlightSettings({
+                                                            color: item.id,
+                                                            text: selectedText
+                                                        });
+                                                    } else if (highlightText) {
+                                                        // 이미 선택된 텍스트가 있으면 색상만 변경
+                                                        setHighlightSettings({
+                                                            color: item.id,
+                                                            text: highlightText
+                                                        });
+                                                    } else {
+                                                        // 선택된 텍스트가 없으면 색상만 설정
+                                                        setHighlightSettings({
+                                                            color: item.id,
+                                                            text: ''
+                                                        });
+                                                    }
+                                                }}
+                                                className="flex flex-col items-center gap-1 group"
+                                            >
+                                                <div className={`w-10 h-10 ${item.color} rounded-lg transition-all flex items-center justify-center ${highlightSettings.color === item.id
+                                                    ? 'ring-2 ring-white ring-offset-2 ring-offset-black scale-105'
+                                                    : 'opacity-70 hover:opacity-100 hover:scale-105'
+                                                    }`}>
+                                                    {highlightSettings.color === item.id && <span className="text-black font-bold text-xs">V</span>}
+                                                </div>
+                                                <span className={`text-[10px] ${highlightSettings.color === item.id ? 'text-white font-bold' : 'text-white/50'}`}>
+                                                    {item.name} 형광펜
+                                                </span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* 형광펜 적용 - 제목에서 드래그 선택 방식 */}
+                            <div className="mt-4 pt-4 border-t border-white/10">
+                                <div className="text-xs text-white/60 font-medium mb-2">
+                                    형광펜 적용 텍스트 (제목에서 강조할 부분 입력)
+                                </div>
+
+                                {/* 사용자가 입력한 공고 제목 표시 - 드래그 선택 가능 */}
+                                <div
+                                    className="w-full p-4 rounded-lg bg-black/50 border border-white/20 text-white text-lg select-text cursor-text"
+                                    onMouseUp={() => {
+                                        const selection = window.getSelection();
+                                        const selectedText = selection?.toString().trim();
+                                        if (selectedText && _formData.title.includes(selectedText)) {
+                                            setHighlightText(selectedText);
+                                        }
+                                    }}
+                                >
+                                    {/* 형광펜이 적용된 제목 미리보기 */}
+                                    {_formData.title ? (
+                                        highlightText && highlightSettings.color ? (
+                                            <span>
+                                                {_formData.title.split(highlightText).map((part: string, idx: number, arr: string[]) => (
+                                                    <span key={idx}>
+                                                        {part}
+                                                        {idx < arr.length - 1 && (
+                                                            <span className={`${highlightColors.find(c => c.id === highlightSettings.color)?.color} text-black px-1 rounded font-bold`}>
+                                                                {highlightText}
+                                                            </span>
+                                                        )}
+                                                    </span>
+                                                ))}
+                                            </span>
+                                        ) : (
+                                            <span className="text-white/70">{_formData.title}</span>
+                                        )
+                                    ) : (
+                                        <span className="text-white/40">공고 제목을 먼저 입력해주세요</span>
+                                    )}
+                                </div>
+
+                                {/* 안내 문구 */}
+                                <div className="mt-2 text-xs text-white/50 flex items-center justify-between">
+                                    <span>
+                                        {highlightText
+                                            ? `선택된 텍스트: "${highlightText}"`
+                                            : '위 제목에서 강조할 부분을 드래그로 선택하세요'}
+                                    </span>
+                                    {highlightText && (
+                                        <button
+                                            onClick={() => {
+                                                setHighlightText('');
+                                                setHighlightSettings({ color: '', text: '' });
+                                            }}
+                                            className="text-red-400 hover:text-red-300 text-xs"
+                                        >
+                                            선택 해제
+                                        </button>
+                                    )}
+                                </div>
+
+                                {/* 가격 표시 */}
+                                {highlightSettings.color && highlightText && (
+                                    <div className="mt-3 flex justify-end">
+                                        <span className="text-pink-400 font-bold text-lg">
+                                            +{highlightPeriods.find(p => p.days === highlightPeriod)?.price.toLocaleString()}원
+                                        </span>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                {/* Right: Summary Sidebar - Compact */}
-                <div className="lg:col-span-4 space-y-4">
-                    {/* Order Summary */}
-                    <div className="bg-gradient-to-br from-white/[0.06] to-white/[0.02] rounded-xl border border-white/10 p-4">
-                        <h4 className="font-bold text-white mb-3 pb-2 border-b border-white/10 text-sm">
-                            주문 내역
-                        </h4>
+            {/* Bottom Section: Order Summary */}
+            <div className="mt-8 space-y-6">
+                {/* 주문 내역 섹션 */}
+                <div className="bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-xl border border-white/10 p-6">
+                    <h4 className="font-bold text-white mb-4 pb-3 border-b border-white/10 text-lg">
+                        주문 내역
+                    </h4>
 
-                        {Object.keys(selectedProducts).length === 0 && !jumpUpSettings.enabled && !highlightSettings.color ? (
-                            <p className="text-white/40 text-xs text-center py-4">상품을 선택해주세요</p>
-                        ) : (
-                            <div className="space-y-2 text-xs">
-                                {Object.keys(selectedProducts).map((productId) => {
-                                    const product = products.find(p => p.id === productId);
-                                    if (!product) return null;
-                                    const qty = selectedProducts[productId].qty;
-                                    const priceNum = parseInt(product.price.replace(/[^0-9]/g, ''));
-
-                                    return (
-                                        <div key={productId} className="flex justify-between">
-                                            <span className="text-white/70">{product.name} x{qty}</span>
-                                            <span className="text-white font-medium">{(priceNum * qty).toLocaleString()}원</span>
+                    {Object.keys(selectedProducts).length === 0 && !jumpUpSettings.enabled && !highlightSettings.color ? (
+                        <p className="text-white/40 text-center py-8">상품을 선택해주세요</p>
+                    ) : (
+                        <div className="space-y-3">
+                            {/* 선택한 상품 목록 */}
+                            {Object.keys(selectedProducts).map((productId) => {
+                                const product = products.find(p => p.id === productId);
+                                if (!product) return null;
+                                const qty = selectedProducts[productId].qty;
+                                const startDate = selectedProducts[productId].startDate;
+                                const priceNum = parseInt(product.price.replace(/[^0-9]/g, ''));
+                                return (
+                                    <div key={productId} className="flex justify-between items-center p-3 rounded-lg bg-black/30 border border-white/10">
+                                        <div>
+                                            <span className="text-white font-bold text-base">{product.name}</span>
+                                            <span className="text-primary ml-2 font-bold">x{qty}</span>
+                                            <div className="text-white/50 text-xs mt-1">
+                                                시작일: <span className="text-white">{startDate || today}</span>
+                                            </div>
                                         </div>
-                                    );
-                                })}
-
-                                {jumpUpSettings.enabled && (
-                                    <div className="flex justify-between">
-                                        <span className="text-green-400">상위업 {jumpUpSettings.count}회</span>
-                                        <span className="text-white font-medium">{jumpUpTotal.toLocaleString()}원</span>
+                                        <span className="text-white font-bold text-lg">{(priceNum * qty).toLocaleString()}원</span>
                                     </div>
-                                )}
+                                );
+                            })}
 
-                                {highlightSettings.color && (
-                                    <div className="flex justify-between">
-                                        <span className="text-pink-400">형광펜</span>
-                                        <span className="text-white font-medium">50,000원</span>
+                            {/* 상위업 */}
+                            {jumpUpSettings.enabled && (
+                                <div className="flex justify-between items-center p-3 rounded-lg bg-green-500/10 border border-green-500/30">
+                                    <div>
+                                        <span className="text-green-400 font-bold text-base">자동 상위업</span>
+                                        <div className="text-white/50 text-xs mt-1">
+                                            {jumpUpSettings.interval}일마다 × {jumpUpSettings.count}회
+                                        </div>
                                     </div>
-                                )}
-
-                                <div className="border-t border-white/10 pt-2 mt-2">
-                                    <div className="flex justify-between items-center">
-                                        <span className="font-bold text-white">총 결제금액</span>
-                                        <span className="text-xl font-bold text-primary">{grandTotal.toLocaleString()}원</span>
-                                    </div>
+                                    <span className="text-green-400 font-bold text-lg">{jumpUpTotal.toLocaleString()}원</span>
                                 </div>
+                            )}
+
+                            {/* 형광펜 */}
+                            {highlightSettings.color && (
+                                <div className="flex justify-between items-center p-3 rounded-lg bg-pink-500/10 border border-pink-500/30">
+                                    <div>
+                                        <span className="text-pink-400 font-bold text-base">형광펜 효과</span>
+                                        <div className="text-white/50 text-xs mt-1">
+                                            {highlightPeriod}일 / {highlightText || '미설정'}
+                                        </div>
+                                    </div>
+                                    <span className="text-pink-400 font-bold text-lg">{highlightPeriods.find(p => p.days === highlightPeriod)?.price.toLocaleString()}원</span>
+                                </div>
+                            )}
+
+                            {/* 총 금액 */}
+                            <div className="flex justify-between items-center pt-4 border-t border-white/20 mt-4">
+                                <span className="text-white font-bold text-xl">총 결제금액</span>
+                                <span className="text-3xl font-bold text-primary">{grandTotal.toLocaleString()}원</span>
                             </div>
-                        )}
-                    </div>
-
-                    {/* Agreements - Compact */}
-                    <div className="bg-white/[0.03] rounded-xl border border-white/10 p-4">
-                        <label className="flex items-center gap-2 cursor-pointer mb-3">
-                            <input
-                                type="checkbox"
-                                className="w-4 h-4 rounded accent-primary"
-                                checked={allAgreed}
-                                onChange={(e) => handleAllAgreedChange(e.target.checked)}
-                            />
-                            <span className="text-white font-bold text-sm">전체 동의</span>
-                        </label>
-                        <div className="space-y-1.5 max-h-28 overflow-y-auto custom-scrollbar">
-                            {agreementTexts.map((text, idx) => (
-                                <label key={idx} className="flex gap-2 text-[10px] text-white/50 cursor-pointer leading-tight">
-                                    <input
-                                        type="checkbox"
-                                        className="w-3 h-3 rounded mt-0.5 accent-primary shrink-0"
-                                        checked={individualAgreements[idx] || false}
-                                        onChange={(e) => {
-                                            const newAgreements = [...individualAgreements];
-                                            newAgreements[idx] = e.target.checked;
-                                            setIndividualAgreements(newAgreements);
-                                        }}
-                                    />
-                                    <span>{text}</span>
-                                </label>
-                            ))}
                         </div>
-                    </div>
-
-                    {/* Submit Button */}
-                    <button
-                        onClick={onSubmit}
-                        disabled={loading || Object.keys(selectedProducts).length === 0 || !allAgreed}
-                        className="w-full py-3 rounded-xl bg-gradient-to-r from-primary to-primary/80 text-black font-bold shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        {loading ? '등록 중...' : `${grandTotal.toLocaleString()}원 결제하기`}
-                    </button>
+                    )}
                 </div>
+
+                {/* 동의 항목 섹션 */}
+                <div className="bg-gradient-to-br from-white/[0.06] to-white/[0.02] rounded-xl border border-white/10 p-6">
+                    {/* 전체 동의 */}
+                    <label className="flex items-center gap-3 cursor-pointer mb-4 pb-4 border-b border-white/10" onClick={() => handleAllAgreedChange(!allAgreed)}>
+                        <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${allAgreed ? 'bg-primary border-primary' : 'border-white/30 bg-transparent hover:border-white/50'}`}>
+                            {allAgreed && <span className="text-black text-sm font-bold">✓</span>}
+                        </div>
+                        <span className="text-white font-bold text-lg">전체 동의</span>
+                    </label>
+
+                    {/* 개별 동의 항목 */}
+                    <div className="space-y-4">
+                        {[
+                            '최저임금을 준수하지 않는 경우, 광고 강제 마감 및 행정처분을 받을 수 있습니다.',
+                            '모집 채용에서 허위 및 과장으로 작성된 내용이 확인될 경우, 광고 강제 마감 및 행정처분을 받을 수 있습니다.',
+                            '모집 채용에서 보이스피싱, 불법 성매매, 구인사기 등으로 추정되는 내용이 확인될 경우, 광고 게재가 불가합니다.',
+                            '소정 근로 시간 기준의 급여 외 수당이 발생했을 경우, 광고에 입력한 급여 외 추가 지급되어야 합니다.'
+                        ].map((text, idx) => (
+                            <label key={idx} className="flex items-start gap-3 cursor-pointer group p-3 rounded-lg hover:bg-white/5 transition-colors" onClick={() => {
+                                const newAgreements = [...individualAgreements];
+                                newAgreements[idx] = !newAgreements[idx];
+                                setIndividualAgreements(newAgreements);
+                            }}>
+                                <div className={`w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 mt-0.5 transition-all ${individualAgreements[idx] ? 'bg-primary/20 border-primary' : 'border-white/30 bg-transparent group-hover:border-white/50'}`}>
+                                    {individualAgreements[idx] && <span className="text-primary text-xs font-bold">✓</span>}
+                                </div>
+                                <span className="text-sm text-white/70 leading-relaxed group-hover:text-white transition-colors">
+                                    {text}
+                                </span>
+                            </label>
+                        ))}
+                    </div>
+                </div>
+
+                {/* 결제 버튼 */}
+                <button
+                    onClick={onSubmit}
+                    disabled={loading || Object.keys(selectedProducts).length === 0 || !allAgreed}
+                    className="w-full py-4 rounded-xl bg-gradient-to-r from-primary to-primary/80 text-black font-bold text-xl shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    {loading ? '등록 중...' : `${grandTotal.toLocaleString()}원 결제하기`}
+                </button>
             </div>
 
             {/* Navigation - Compact */}
@@ -643,7 +840,7 @@ const Step3ProductSelection: React.FC<Step3Props> = ({
                     ← 이전
                 </button>
             </div>
-        </div>
+        </div >
     );
 };
 

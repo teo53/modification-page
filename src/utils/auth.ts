@@ -9,6 +9,8 @@ export interface User {
     name: string;
     nickname?: string;
     phone: string;
+    phoneVerified: boolean;  // 핸드폰 실명인증 완료 여부
+    gender: 'male' | 'female';  // 성별 (커뮤니티 접근 제한용)
     type: 'worker' | 'advertiser';
     businessNumber?: string;
     businessName?: string;
@@ -55,6 +57,8 @@ export const signupAsync = async (
         name: userData.name,
         nickname: userData.nickname,
         phone: userData.phone,
+        phoneVerified: userData.phoneVerified,
+        gender: userData.gender,
         type: userData.type,
         businessNumber: userData.businessNumber,
         businessName: userData.businessName,
@@ -92,6 +96,8 @@ export const signup = (
         name: userData.name,
         nickname: userData.nickname,
         phone: userData.phone,
+        phoneVerified: userData.phoneVerified,
+        gender: userData.gender,
         type: userData.type,
         businessNumber: userData.businessNumber,
         businessName: userData.businessName,

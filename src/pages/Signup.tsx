@@ -42,6 +42,7 @@ const Signup: React.FC = () => {
         confirmPassword: '',
         name: '',
         phone: '',
+        gender: '' as '' | 'male' | 'female',
         type: 'worker' as 'worker' | 'advertiser',
         businessNumber: '',
         businessName: '',
@@ -145,6 +146,11 @@ const Signup: React.FC = () => {
             errors.phone = '휴대폰 본인인증을 완료해주세요.';
         }
 
+        // Gender validation
+        if (!formData.gender) {
+            errors.gender = '성별을 선택해주세요.';
+        }
+
         // Business validation for advertisers
         if (formData.type === 'advertiser') {
             if (!formData.businessNumber) {
@@ -197,6 +203,8 @@ const Signup: React.FC = () => {
             password: formData.password,
             name: formData.name,
             phone: formData.phone,
+            phoneVerified: isPhoneVerified,
+            gender: formData.gender as 'male' | 'female',
             type: formData.type,
             businessNumber: formData.businessNumber,
             businessName: formData.businessName,
@@ -385,12 +393,12 @@ const Signup: React.FC = () => {
                                     value={formData.confirmPassword}
                                     onChange={handleChange}
                                     className={`w-full bg-background border rounded-lg py-3 pl-10 pr-12 text-white outline-none transition-colors ${fieldErrors.confirmPassword
-                                            ? 'border-red-500 focus:border-red-500'
-                                            : !formData.confirmPassword
-                                                ? 'border-white/10 focus:border-primary'
-                                                : isPasswordMatch
-                                                    ? 'border-green-500/50 focus:border-green-500'
-                                                    : 'border-red-500/50 focus:border-red-500'
+                                        ? 'border-red-500 focus:border-red-500'
+                                        : !formData.confirmPassword
+                                            ? 'border-white/10 focus:border-primary'
+                                            : isPasswordMatch
+                                                ? 'border-green-500/50 focus:border-green-500'
+                                                : 'border-red-500/50 focus:border-red-500'
                                         }`}
                                     placeholder="비밀번호 다시 입력"
                                     autoComplete="new-password"
@@ -453,6 +461,40 @@ const Signup: React.FC = () => {
                                     </div>
                                 )}
                             </div>
+                        </div>
+
+                        {/* Gender Selection (Required) */}
+                        <div className="space-y-2">
+                            <label className="block text-sm font-medium text-text-muted mb-1.5">
+                                성별 선택 <span className="text-red-400">*</span>
+                            </label>
+                            <div className="grid grid-cols-2 gap-3">
+                                <button
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, gender: 'female' })}
+                                    className={`p-4 rounded-xl border-2 transition-all font-bold ${formData.gender === 'female'
+                                        ? 'border-primary bg-primary/10 text-primary'
+                                        : 'border-white/10 text-text-muted hover:border-white/20 hover:bg-white/5'
+                                        }`}
+                                >
+                                    여성
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, gender: 'male' })}
+                                    className={`p-4 rounded-xl border-2 transition-all font-bold ${formData.gender === 'male'
+                                        ? 'border-primary bg-primary/10 text-primary'
+                                        : 'border-white/10 text-text-muted hover:border-white/20 hover:bg-white/5'
+                                        }`}
+                                >
+                                    남성
+                                </button>
+                            </div>
+                            {fieldErrors.gender && (
+                                <div className="bg-red-500 text-white text-xs px-2 py-1 rounded animate-pulse">
+                                    ⚠ {fieldErrors.gender}
+                                </div>
+                            )}
                         </div>
 
                         {/* Address (Optional but Recommended) */}

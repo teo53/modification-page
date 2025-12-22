@@ -39,7 +39,7 @@ const PostAd = () => {
         businessName: '',
         managerName: '',
         managerPhone: '',
-        messengers: { kakao: '', line: '', telegram: '' },
+        messengers: { kakao: '', line: '', telegram: '', wechat: '' },
         address: {
             zonecode: '',
             roadAddress: '',
@@ -150,7 +150,7 @@ const PostAd = () => {
             textColor: 'text-cyan-200',
             features: ['최상단 2슬롯', '다이아몬드 보더', '연기 효과', '최대 노출'],
             description: '최상위 프리미엄 광고. 보라색 벨벳 배경 위 최상단에 2개만 노출됩니다.',
-            tips: '💎 하루 평균 조회수 3,000~5,000회 예상. 신규 오픈/대형 업소에 추천.',
+            tips: '하루 평균 조회수 3,000~5,000회 예상. 신규 오픈/대형 업소에 추천.',
             recommended: '대형 업소, 신규 오픈, 최대 노출 필요 시',
             warning: '⚠️ 2슬롯 한정: 선착순 마감될 수 있습니다'
         },
@@ -167,7 +167,7 @@ const PostAd = () => {
             textColor: 'text-blue-400',
             features: ['상단 3슬롯', '사파이어 보더', '프리미엄 배치'],
             description: '다이아몬드 바로 아래, 3개 슬롯에 노출됩니다.',
-            tips: '💙 하루 평균 조회수 2,000~3,500회 예상. 가성비 좋은 프리미엄 옵션.',
+            tips: '하루 평균 조회수 2,000~3,500회 예상. 가성비 좋은 프리미엄 옵션.',
             recommended: '중대형 업소, 안정적 노출 원할 때',
             warning: '⚠️ 3슬롯 한정: 조기 마감 가능'
         },
@@ -184,7 +184,7 @@ const PostAd = () => {
             textColor: 'text-rose-400',
             features: ['중상단 4슬롯', '루비 보더', '우선 배치'],
             description: '사파이어 아래, 4개 슬롯에 노출됩니다.',
-            tips: '❤️ 하루 평균 조회수 1,500~2,500회 예상. 인기 영역 중 합리적 가격.',
+            tips: '하루 평균 조회수 1,500~2,500회 예상. 인기 영역 중 합리적 가격.',
             recommended: '중형 업소, 지속적 노출 원할 때',
             warning: ''
         },
@@ -201,7 +201,7 @@ const PostAd = () => {
             textColor: 'text-amber-400',
             features: ['중단 5슬롯', '골드 보더', '형광펜 강조'],
             description: '루비 아래, 5개 슬롯에 노출됩니다.',
-            tips: '🏆 하루 평균 조회수 1,000~1,800회 예상. VIP 입문 상품으로 인기.',
+            tips: '하루 평균 조회수 1,000~1,800회 예상. VIP 입문 상품으로 인기.',
             recommended: '중소형 업소, 첫 광고 테스트 시',
             warning: ''
         },
@@ -235,26 +235,9 @@ const PostAd = () => {
             textColor: 'text-indigo-400',
             features: ['스페셜 섹션', '리스트 형태'],
             description: '스페셜 섹션에 리스트 형태로 노출됩니다.',
-            tips: '✨ 7일 단위의 빠른 테스트 가능. 급구/이벤트에 적합.',
+            tips: '7일 단위의 빠른 테스트 가능. 급구/이벤트에 적합.',
             recommended: '급구 채용, 주말 이벤트, 단기 테스트',
             warning: '💡 7일 단위: 빠른 노출 후 효과 측정 용이'
-        },
-        {
-            id: 'highlight',
-            name: '형광펜 텍스트',
-            price: '300,000원',
-            priceNum: 300000,
-            duration: '30일',
-            durationDays: 30,
-            color: 'border-yellow-500',
-            bg: 'bg-yellow-500/10',
-            bgFill: 'bg-yellow-500',
-            textColor: 'text-yellow-500',
-            features: ['형광펜 효과 적용', '상단 섹션 우선 노출', '주목도 상승'],
-            description: '일반 텍스트 상단에 형광펜 효과로 강조되어 노출됩니다.',
-            tips: '📝 텍스트 광고 중 눈에 띄는 색상으로 클릭률 2배 이상 상승.',
-            recommended: '텍스트 광고로 주목받고 싶을 때',
-            warning: '💡 제목을 짧고 임팩트있게 작성하세요 (10자 이하 권장)'
         },
         {
             id: 'general',
@@ -328,6 +311,10 @@ const PostAd = () => {
             workHours: formData.workHours.type || '주간',
             description: formData.description || '',
             contact: formData.managerPhone || '',
+            industry: formData.industry.level2 || formData.industry.level1 || '',
+            themes: formData.themes || [],
+            region: formData.location.city || '',
+            district: formData.location.district || '',
             productType: productType,
             highlightConfig: selectedProducts['highlight'] ? {
                 color: highlightSettings.color as 'yellow' | 'pink' | 'green' | 'cyan',
@@ -452,40 +439,74 @@ const PostAd = () => {
                                 </div>
                             </div>
 
-                            {/* Messenger IDs */}
                             <div className="space-y-2">
-                                <label className="text-sm text-text-muted">메신저 ID</label>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                <label className="text-sm text-text-muted">SNS 연락처</label>
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                                     <div className="flex items-center gap-2 bg-background p-3 rounded-lg border border-white/10">
-                                        <span className="text-yellow-400 font-bold text-xs uppercase w-14 shrink-0">카카오톡</span>
+                                        <span className="text-yellow-400 font-bold text-xs uppercase shrink-0">카카오톡</span>
                                         <input
                                             type="text"
                                             value={formData.messengers.kakao}
                                             onChange={(e) => setFormData(prev => ({ ...prev, messengers: { ...prev.messengers, kakao: e.target.value } }))}
                                             className="bg-transparent border-none outline-none text-sm text-white w-full placeholder-white/30"
-                                            placeholder="ID 입력"
+                                            placeholder="ID"
                                         />
                                     </div>
                                     <div className="flex items-center gap-2 bg-background p-3 rounded-lg border border-white/10">
-                                        <span className="text-green-500 font-bold text-xs uppercase w-14 shrink-0">라인</span>
+                                        <span className="text-green-500 font-bold text-xs uppercase shrink-0">라인</span>
                                         <input
                                             type="text"
                                             value={formData.messengers.line}
                                             onChange={(e) => setFormData(prev => ({ ...prev, messengers: { ...prev.messengers, line: e.target.value } }))}
                                             className="bg-transparent border-none outline-none text-sm text-white w-full placeholder-white/30"
-                                            placeholder="ID 입력"
+                                            placeholder="ID"
                                         />
                                     </div>
                                     <div className="flex items-center gap-2 bg-background p-3 rounded-lg border border-white/10">
-                                        <span className="text-blue-400 font-bold text-xs uppercase w-14 shrink-0">텔레그램</span>
+                                        <span className="text-blue-400 font-bold text-xs uppercase shrink-0">텔레그램</span>
                                         <input
                                             type="text"
                                             value={formData.messengers.telegram}
                                             onChange={(e) => setFormData(prev => ({ ...prev, messengers: { ...prev.messengers, telegram: e.target.value } }))}
                                             className="bg-transparent border-none outline-none text-sm text-white w-full placeholder-white/30"
-                                            placeholder="ID 입력"
+                                            placeholder="ID"
                                         />
                                     </div>
+                                    <div className="flex items-center gap-2 bg-background p-3 rounded-lg border border-white/10">
+                                        <span className="text-emerald-400 font-bold text-xs uppercase shrink-0">위챗</span>
+                                        <input
+                                            type="text"
+                                            value={formData.messengers.wechat || ''}
+                                            onChange={(e) => setFormData(prev => ({ ...prev, messengers: { ...prev.messengers, wechat: e.target.value } }))}
+                                            className="bg-transparent border-none outline-none text-sm text-white w-full placeholder-white/30"
+                                            placeholder="ID"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* 고용형태 선택 */}
+                            <div className="space-y-2">
+                                <label className="text-sm text-text-muted">고용형태 <span className="text-red-500">*</span></label>
+                                <div className="grid grid-cols-4 gap-2">
+                                    {[
+                                        { id: 'hire', label: '고용' },
+                                        { id: 'dispatch', label: '파견' },
+                                        { id: 'contract', label: '도급' },
+                                        { id: 'mandate', label: '위임' }
+                                    ].map((type) => (
+                                        <button
+                                            key={type.id}
+                                            type="button"
+                                            onClick={() => handleInputChange('recruitmentType', type.id)}
+                                            className={`p-3 rounded-lg border text-sm font-medium transition-all ${formData.recruitmentType === type.id
+                                                ? 'bg-primary/20 border-primary text-primary'
+                                                : 'bg-background border-white/10 text-white/60 hover:bg-white/5'
+                                                }`}
+                                        >
+                                            {type.label}
+                                        </button>
+                                    ))}
                                 </div>
                             </div>
 

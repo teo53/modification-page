@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
-import { Users, DollarSign, AlertTriangle, CheckCircle, XCircle, Clock, MessageSquare, Database, Shield, LayoutGrid, Table, Eye, MousePointer, TrendingUp, Activity, Target } from 'lucide-react';
+import { Users, DollarSign, AlertTriangle, CheckCircle, XCircle, Clock, MessageSquare, Database, Shield, LayoutGrid, Table, Eye, MousePointer, TrendingUp, Activity, Target, X } from 'lucide-react';
 import { getCurrentUser } from '../utils/auth';
-import { useDataMode } from '../contexts/DataModeContext';
 import { getAnalyticsSummary } from '../utils/analytics';
 
 // User type from localStorage
@@ -38,13 +37,25 @@ const revenueData = [
 const AdminCRM: React.FC = () => {
     const navigate = useNavigate();
 
-    const { useSampleData, setUseSampleData } = useDataMode();
+    // CRM 전용 운영모드 (홈페이지 샘플모드와 독립적)
+    const [crmOperationalMode, setCrmOperationalMode] = useState(() => {
+        const saved = localStorage.getItem('lunaalba_crm_mode');
+        return saved === 'operational';
+    });
+
+    const toggleCrmMode = () => {
+        const newMode = !crmOperationalMode;
+        setCrmOperationalMode(newMode);
+        localStorage.setItem('lunaalba_crm_mode', newMode ? 'operational' : 'demo');
+    };
+
     const [isAuthorized, setIsAuthorized] = useState(false);
     const [isChecking, setIsChecking] = useState(true);
     const [users, setUsers] = useState<StoredUser[]>([]);
     const [userViewMode, setUserViewMode] = useState<'table' | 'card'>('table');
     const [userFilter, setUserFilter] = useState<'all' | 'worker' | 'advertiser'>('all');
     const [analyticsData, setAnalyticsData] = useState<ReturnType<typeof getAnalyticsSummary> | null>(null);
+    const [selectedUser, setSelectedUser] = useState<StoredUser | null>(null);
 
     // Admin auth check - re-check on auth state changes
     useEffect(() => {
@@ -112,7 +123,7 @@ const AdminCRM: React.FC = () => {
 
     return (
         <div className="container mx-auto px-4 py-8">
-            {/* Header with Sample Data Toggle */}
+            {/* Header */}
             <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center">
@@ -124,84 +135,93 @@ const AdminCRM: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Sample Data Toggle */}
-                <div className="flex items-center gap-4">
-                    <div className={`flex items-center gap-3 px-4 py-2 rounded-xl border ${useSampleData
-                        ? 'bg-yellow-500/10 border-yellow-500/50'
-                        : 'bg-white/5 border-white/10'
-                        }`}>
-                        <Database size={18} className={useSampleData ? 'text-yellow-400' : 'text-white/50'} />
-                        <div className="text-sm">
-                            <span className={useSampleData ? 'text-yellow-400 font-bold' : 'text-white/70'}>
-                                {useSampleData ? '샘플 데이터 모드' : '실제 데이터 모드'}
-                            </span>
-                            <p className="text-[10px] text-white/40">
-                                {useSampleData ? '외부 시연용 - 모든 데이터가 샘플로 표시됩니다' : '실제 운영 데이터 표시 중'}
-                            </p>
-                        </div>
-                        <button
-                            onClick={() => setUseSampleData(!useSampleData)}
-                            className={`relative w-12 h-6 rounded-full transition-colors ${useSampleData ? 'bg-yellow-500' : 'bg-white/20'
-                                }`}
-                        >
-                            <span className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${useSampleData ? 'translate-x-6' : ''
-                                }`} />
-                        </button>
-                    </div>
+                {/* CRM 모드 표시 */}
+                <div className={`flex items-center gap-3 px-4 py-2 rounded-xl border ${crmOperationalMode
+                    ? 'bg-green-500/10 border-green-500/50'
+                    : 'bg-yellow-500/10 border-yellow-500/50'
+                    }`}>
+                    <div className={`w-2 h-2 rounded-full animate-pulse ${crmOperationalMode ? 'bg-green-500' : 'bg-yellow-500'}`} />
+                    <span className={`text-sm font-bold ${crmOperationalMode ? 'text-green-400' : 'text-yellow-400'}`}>
+                        {crmOperationalMode ? '실제 운영 모드' : '홍보 시연 모드'}
+                    </span>
                 </div>
             </div>
 
-            {/* Security & Deployment Status Panel */}
+            {/* CRM 모드 관리 패널 */}
             <div className="mb-8 bg-accent rounded-xl border border-white/5 overflow-hidden">
-                <div className="p-4 border-b border-white/5">
-                    <h3 className="font-bold text-white flex items-center gap-2">
-                        <Shield size={18} className="text-green-400" />
-                        보안 및 배포 상태
-                    </h3>
-                </div>
-                <div className="p-4 grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {/* Security Status */}
-                    <div className="bg-black/30 rounded-lg p-3">
-                        <div className="flex items-center gap-2 mb-2">
-                            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                            <span className="text-xs text-text-muted">비밀번호 암호화</span>
-                        </div>
-                        <p className="text-sm font-bold text-green-400">SHA-256 해시</p>
+                <div className="p-4 border-b border-white/5 flex items-center justify-between">
+                    <div>
+                        <h3 className="font-bold text-white flex items-center gap-2">
+                            <Database size={18} className="text-primary" />
+                            CRM 운영 모드
+                        </h3>
+                        <p className="text-xs text-text-muted mt-1">CRM 전용 설정입니다. 홈페이지 샘플 모드와는 별개로 작동합니다.</p>
                     </div>
-                    <div className="bg-black/30 rounded-lg p-3">
-                        <div className="flex items-center gap-2 mb-2">
-                            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                            <span className="text-xs text-text-muted">크롤링 차단</span>
-                        </div>
-                        <p className="text-sm font-bold text-green-400">robots.txt 활성</p>
-                    </div>
-                    <div className="bg-black/30 rounded-lg p-3">
-                        <div className="flex items-center gap-2 mb-2">
-                            <div className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse" />
-                            <span className="text-xs text-text-muted">개발자도구 차단</span>
-                        </div>
-                        <p className="text-sm font-bold text-yellow-400">프로덕션 전용</p>
-                    </div>
-                    <div className="bg-black/30 rounded-lg p-3">
-                        <div className="flex items-center gap-2 mb-2">
-                            <div className={`w-2 h-2 rounded-full ${useSampleData ? 'bg-yellow-500' : 'bg-blue-500'} animate-pulse`} />
-                            <span className="text-xs text-text-muted">배포 모드</span>
-                        </div>
-                        <p className={`text-sm font-bold ${useSampleData ? 'text-yellow-400' : 'text-blue-400'}`}>
-                            {useSampleData ? '홍보/시연용' : '실제 운영'}
-                        </p>
+
+                    {/* 모드 토글 */}
+                    <div className="flex items-center gap-4">
+                        <span className={`text-sm font-medium ${!crmOperationalMode ? 'text-yellow-400' : 'text-text-muted'}`}>
+                            홍보 시연
+                        </span>
+                        <button
+                            onClick={toggleCrmMode}
+                            className={`relative w-14 h-7 rounded-full transition-colors ${crmOperationalMode ? 'bg-green-500' : 'bg-yellow-500'}`}
+                        >
+                            <span className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow transition-all ${crmOperationalMode ? 'left-8' : 'left-1'}`} />
+                        </button>
+                        <span className={`text-sm font-medium ${crmOperationalMode ? 'text-green-400' : 'text-text-muted'}`}>
+                            실제 운영
+                        </span>
                     </div>
                 </div>
-                {useSampleData && (
-                    <div className="px-4 pb-4">
-                        <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3">
-                            <p className="text-sm text-yellow-400">
-                                <strong>🎨 홍보 모드 활성화됨</strong> - 모든 광고, 사용자 정보가 샘플 데이터로 대체됩니다.
-                                이 상태로 배포하면 실제 데이터가 외부에 노출되지 않습니다.
+
+                {/* 현재 모드 상태 표시 */}
+                <div className={`px-4 py-3 ${crmOperationalMode ? 'bg-green-500/10' : 'bg-yellow-500/10'}`}>
+                    <div className="flex items-center gap-3">
+                        <div className={`w-3 h-3 rounded-full animate-pulse ${crmOperationalMode ? 'bg-green-500' : 'bg-yellow-500'}`} />
+                        <div>
+                            <p className={`text-sm font-bold ${crmOperationalMode ? 'text-green-400' : 'text-yellow-400'}`}>
+                                {crmOperationalMode ? '실제 운영 모드' : '홍보/시연 모드'}
+                            </p>
+                            <p className="text-xs text-white/60">
+                                {crmOperationalMode
+                                    ? '백엔드 API와 연동된 실제 데이터를 표시합니다. 실제 사이트 관리 시 사용.'
+                                    : '샘플 데이터로 CRM 기능을 시연합니다. 외부 발표/영업 시 권장.'}
                             </p>
                         </div>
                     </div>
-                )}
+                </div>
+
+                {/* 데이터 소스 상태 */}
+                <div className="p-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div className={`bg-black/30 rounded-lg p-3 border ${crmOperationalMode ? 'border-green-500/30' : 'border-yellow-500/30'}`}>
+                        <div className="flex items-center gap-2 mb-1">
+                            <div className={`w-2 h-2 rounded-full ${crmOperationalMode ? 'bg-green-500' : 'bg-yellow-500'}`} />
+                            <span className="text-xs text-text-muted">통계 데이터</span>
+                        </div>
+                        <p className={`text-sm font-bold ${crmOperationalMode ? 'text-green-400' : 'text-yellow-400'}`}>
+                            {crmOperationalMode ? 'Backend API' : '샘플 (5,432명, 45.2M)'}
+                        </p>
+                    </div>
+                    <div className={`bg-black/30 rounded-lg p-3 border ${crmOperationalMode ? 'border-green-500/30' : 'border-yellow-500/30'}`}>
+                        <div className="flex items-center gap-2 mb-1">
+                            <div className={`w-2 h-2 rounded-full ${crmOperationalMode ? 'bg-green-500' : 'bg-yellow-500'}`} />
+                            <span className="text-xs text-text-muted">광고 관리</span>
+                        </div>
+                        <p className={`text-sm font-bold ${crmOperationalMode ? 'text-green-400' : 'text-yellow-400'}`}>
+                            {crmOperationalMode ? 'Supabase DB' : '샘플 (12건 대기)'}
+                        </p>
+                    </div>
+                    <div className={`bg-black/30 rounded-lg p-3 border ${crmOperationalMode ? 'border-green-500/30' : 'border-yellow-500/30'}`}>
+                        <div className="flex items-center gap-2 mb-1">
+                            <div className={`w-2 h-2 rounded-full ${crmOperationalMode ? 'bg-green-500' : 'bg-yellow-500'}`} />
+                            <span className="text-xs text-text-muted">회원 관리</span>
+                        </div>
+                        <p className={`text-sm font-bold ${crmOperationalMode ? 'text-green-400' : 'text-yellow-400'}`}>
+                            {crmOperationalMode ? 'localStorage + API' : '샘플 목록'}
+                        </p>
+                    </div>
+                </div>
             </div>
 
             {/* Global Stats */}
@@ -437,33 +457,37 @@ const AdminCRM: React.FC = () => {
                             <p className="text-center text-text-muted py-8">등록된 회원이 없습니다.</p>
                         ) : userViewMode === 'table' ? (
                             <div className="overflow-x-auto">
-                                <table className="w-full text-sm">
+                                <table className="w-full text-sm" style={{ minWidth: '700px' }}>
                                     <thead>
                                         <tr className="border-b border-white/10 text-left">
-                                            <th className="pb-2 text-text-muted font-medium">이메일</th>
-                                            <th className="pb-2 text-text-muted font-medium">이름</th>
-                                            <th className="pb-2 text-text-muted font-medium">닉네임</th>
-                                            <th className="pb-2 text-text-muted font-medium">유형</th>
-                                            <th className="pb-2 text-text-muted font-medium">가입일</th>
-                                            <th className="pb-2 text-text-muted font-medium">관리</th>
+                                            <th className="pb-2 text-text-muted font-medium whitespace-nowrap pr-4" style={{ width: '25%' }}>이메일</th>
+                                            <th className="pb-2 text-text-muted font-medium whitespace-nowrap pr-4" style={{ width: '15%' }}>이름</th>
+                                            <th className="pb-2 text-text-muted font-medium whitespace-nowrap pr-4" style={{ width: '15%' }}>닉네임</th>
+                                            <th className="pb-2 text-text-muted font-medium whitespace-nowrap pr-4" style={{ width: '15%' }}>유형</th>
+                                            <th className="pb-2 text-text-muted font-medium whitespace-nowrap pr-4" style={{ width: '15%' }}>가입일</th>
+                                            <th className="pb-2 text-text-muted font-medium whitespace-nowrap text-center" style={{ width: '15%' }}>관리</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {users.filter(u => userFilter === 'all' || u.type === userFilter).map((user) => (
                                             <tr key={user.id} className="border-b border-white/5 hover:bg-white/5">
-                                                <td className="py-3 text-white">{user.email}</td>
-                                                <td className="py-3 text-white">{user.name}</td>
-                                                <td className="py-3 text-text-muted">{user.nickname}</td>
-                                                <td className="py-3">
-                                                    <span className={`text-xs px-2 py-1 rounded-full ${user.type === 'advertiser' ? 'bg-primary/20 text-primary' : 'bg-blue-500/20 text-blue-400'}`}>
+                                                <td className="py-3 text-white whitespace-nowrap pr-4 max-w-[200px] truncate" title={user.email}>{user.email}</td>
+                                                <td className="py-3 text-white whitespace-nowrap pr-4">{user.name}</td>
+                                                <td className="py-3 text-text-muted whitespace-nowrap pr-4">{user.nickname}</td>
+                                                <td className="py-3 whitespace-nowrap pr-4">
+                                                    <span className={`text-xs px-2 py-1 rounded-full whitespace-nowrap ${user.type === 'advertiser' ? 'bg-primary/20 text-primary' : 'bg-blue-500/20 text-blue-400'}`}>
                                                         {user.type === 'advertiser' ? '광고주' : '일반'}
                                                     </span>
                                                 </td>
-                                                <td className="py-3 text-text-muted text-xs">
+                                                <td className="py-3 text-text-muted text-xs whitespace-nowrap pr-4">
                                                     {new Date(user.createdAt).toLocaleDateString('ko-KR')}
                                                 </td>
-                                                <td className="py-3">
-                                                    <button className="text-text-muted hover:text-white">
+                                                <td className="py-3 text-center">
+                                                    <button
+                                                        onClick={() => setSelectedUser(user)}
+                                                        className="text-text-muted hover:text-white p-1.5 rounded hover:bg-white/10 transition-colors"
+                                                        title="회원 상세보기"
+                                                    >
                                                         <Eye size={16} />
                                                     </button>
                                                 </td>
@@ -711,6 +735,88 @@ const AdminCRM: React.FC = () => {
                     </div>
                 </div>
             </div>
+
+            {/* User Detail Modal */}
+            {selectedUser && (
+                <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+                    <div className="bg-accent rounded-xl border border-white/10 max-w-lg w-full max-h-[90vh] overflow-y-auto">
+                        <div className="p-4 border-b border-white/10 flex justify-between items-center sticky top-0 bg-accent">
+                            <h3 className="font-bold text-white text-lg">회원 상세 정보</h3>
+                            <button
+                                onClick={() => setSelectedUser(null)}
+                                className="text-text-muted hover:text-white p-1 rounded hover:bg-white/10"
+                            >
+                                <X size={20} />
+                            </button>
+                        </div>
+                        <div className="p-6 space-y-4">
+                            {/* User Type Badge */}
+                            <div className="flex justify-center mb-4">
+                                <span className={`text-sm px-4 py-2 rounded-full ${selectedUser.type === 'advertiser'
+                                    ? 'bg-primary/20 text-primary'
+                                    : 'bg-blue-500/20 text-blue-400'
+                                    }`}>
+                                    {selectedUser.type === 'advertiser' ? '🏢 광고주 회원' : '👤 일반 회원'}
+                                </span>
+                            </div>
+
+                            {/* User Info Grid */}
+                            <div className="space-y-3">
+                                <div className="bg-black/30 rounded-lg p-3">
+                                    <span className="text-xs text-text-muted block mb-1">이메일</span>
+                                    <span className="text-white font-medium">{selectedUser.email}</span>
+                                </div>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="bg-black/30 rounded-lg p-3">
+                                        <span className="text-xs text-text-muted block mb-1">이름</span>
+                                        <span className="text-white font-medium">{selectedUser.name}</span>
+                                    </div>
+                                    <div className="bg-black/30 rounded-lg p-3">
+                                        <span className="text-xs text-text-muted block mb-1">닉네임</span>
+                                        <span className="text-white font-medium">{selectedUser.nickname}</span>
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="bg-black/30 rounded-lg p-3">
+                                        <span className="text-xs text-text-muted block mb-1">연락처</span>
+                                        <span className="text-white font-medium">{selectedUser.phone || '미입력'}</span>
+                                    </div>
+                                    <div className="bg-black/30 rounded-lg p-3">
+                                        <span className="text-xs text-text-muted block mb-1">가입일</span>
+                                        <span className="text-white font-medium">
+                                            {new Date(selectedUser.createdAt).toLocaleDateString('ko-KR')}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                {/* Advertiser specific info */}
+                                {selectedUser.type === 'advertiser' && (
+                                    <>
+                                        <div className="bg-black/30 rounded-lg p-3">
+                                            <span className="text-xs text-text-muted block mb-1">사업자명</span>
+                                            <span className="text-white font-medium">{selectedUser.businessName || '미입력'}</span>
+                                        </div>
+                                        <div className="bg-black/30 rounded-lg p-3">
+                                            <span className="text-xs text-text-muted block mb-1">사업자등록번호</span>
+                                            <span className="text-white font-medium">{selectedUser.businessNumber || '미입력'}</span>
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+
+                            {/* Action Buttons */}
+                            <div className="flex gap-2 pt-4 border-t border-white/10">
+                                <button className="flex-1 bg-blue-500/20 text-blue-400 py-2 rounded-lg hover:bg-blue-500/30 transition-colors text-sm font-medium">
+                                    메시지 보내기
+                                </button>
+                                <button className="flex-1 bg-red-500/20 text-red-400 py-2 rounded-lg hover:bg-red-500/30 transition-colors text-sm font-medium">
+                                    회원 정지
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

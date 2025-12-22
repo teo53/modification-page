@@ -56,8 +56,8 @@ export class SecureApiClient {
 
     constructor(config: Partial<ApiConfig> = {}) {
         this.config = {
-            // 우선순위: config.baseUrl > VITE_API_URL > 로컬 (8080)
-            baseUrl: config.baseUrl || import.meta.env.VITE_API_URL || 'http://localhost:8080/api/v1',
+            // 우선순위: config.baseUrl > VITE_API_URL > 로컬 (4000)
+            baseUrl: config.baseUrl || import.meta.env.VITE_API_URL || 'http://localhost:4000/api/v1',
             timeout: config.timeout || 30000
         };
     }

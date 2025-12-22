@@ -9,9 +9,38 @@ import { useDataMode } from '../../contexts/DataModeContext';
 const CommunityPreview: React.FC = () => {
     const { useSampleData } = useDataMode();
 
-    // Use sample data or real data based on admin toggle
+    // Use sample data or real data based on admin toggle, but also checking localStorage fallback
     const sourcePosts = useSampleData ? sampleCommunityPosts : communityData;
-    const communityPosts = sourcePosts.slice(0, 5);
+    
+    // Merge localStorage posts (fallback/demo)
+    const localPostsRaw = JSON.parse(localStorage.getItem('lunaalba_community_posts') || '[]');
+    // Map local posts to compatible format if needed (though they should be saved in compatible format)
+    const localPosts = localPostsRaw.map((post: any) => ({
+        ...post,
+        // Ensure required fields for display
+        category: post.category || '자유',
+        date: post.date || new Date().toLocaleDateString(),
+        views: post.views || 0,
+        likes: post.likes || 0,
+        comments: post.comments || 0,
+        title: post.title || '제목 없음'
+    }));
+
+    // Merge: Local posts take precedence (newest first usually)
+    // We combine sourcePosts (json/ts) + localPosts
+    const combinedPosts = [...localPosts, ...sourcePosts];
+
+    // Deduplicate by ID if needed (though sample IDs are string/number mixed usually)
+    // Filter out duplicates based on ID
+    const uniquePosts = Array.from(new Map(combinedPosts.map(item => [item.id, item])).values());
+
+    // Sort by date (descending) - simple string comparison might work but date parsing is safer.
+    // Assuming format "YYYY-MM-DD" or similar. 
+    // If mixed formats, we might need a robust parser. For now, put local posts (newly created) at top.
+    // Actually, localPosts are already added at the front of the array in CommunityWrite.
+    // So if we just prepend them, they appear first.
+
+    const communityPosts = uniquePosts.slice(0, 5);
     return (
         <section className="py-8 container mx-auto px-4">
             <div className="flex items-center justify-between mb-6">

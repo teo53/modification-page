@@ -1,52 +1,5 @@
-# Block all crawlers and bots
 User-agent: *
-Disallow: /
+Allow: /
 
-# Block specific bots
-User-agent: Googlebot
-Disallow: /
-
-User-agent: Bingbot
-Disallow: /
-
-User-agent: Slurp
-Disallow: /
-
-User-agent: DuckDuckBot
-Disallow: /
-
-User-agent: Baiduspider
-Disallow: /
-
-User-agent: YandexBot
-Disallow: /
-
-User-agent: Sogou
-Disallow: /
-
-User-agent: Exabot
-Disallow: /
-
-User-agent: facebot
-Disallow: /
-
-User-agent: ia_archiver
-Disallow: /
-
-# Block web scraping tools
-User-agent: wget
-Disallow: /
-
-User-agent: curl
-Disallow: /
-
-User-agent: python-requests
-Disallow: /
-
-User-agent: scrapy
-Disallow: /
-
-User-agent: axios
-Disallow: /
-
-# No sitemap
+# Sitemap
+Sitemap: https://www.dalbitalba.co.kr/sitemap.xml

@@ -37,10 +37,8 @@ const Header: React.FC = () => {
             {/* Top Bar */}
             <div className="container mx-auto px-4 h-16 flex items-center justify-between">
                 {/* Logo */}
-                <Link to="/" className="flex items-center gap-2">
-                    <span className="text-2xl font-bold text-white">
-                        Queen<span className="text-secondary">Alba</span>
-                    </span>
+                <Link to="/" className="flex items-center">
+                    <img src="/logo.png" alt="루나알바" className="h-12 object-contain" />
                 </Link>
 
                 {/* Search Bar (Desktop) */}

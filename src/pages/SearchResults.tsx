@@ -22,9 +22,29 @@ const SearchResults: React.FC = () => {
         { label: '인기순', value: 'popular' },
     ];
 
+    // 광고주 등록 데이터 가져오기 (useMemo 밖으로 이동)
+    const userAdsRaw = JSON.parse(localStorage.getItem('lunaalba_user_ads') || '[]');
+    const userAds = useMemo(() => userAdsRaw
+        .filter((ad: any) => ad.status === 'active')
+        .map((ad: any) => ({
+            id: parseInt(ad.id),
+            title: ad.title,
+            location: ad.location,
+            pay: ad.salary,
+            thumbnail: '',
+            images: [],
+            badges: ad.themes || ['채용중'],
+            isNew: true,
+            isHot: false,
+            productType: ad.productType || 'general',
+            price: '협의',
+            duration: '30일',
+            industry: ad.industry || ''
+        })), [userAdsRaw]); // userAdsRaw는 렌더링마다 바뀌므로 useMemo로 감싸는게 좋음 (다만 localStorage.getItem은 사이드이펙트라 컴포넌트 내부 변수로 선언 시 매번 실행됨. 여기선 간단히 처리)
+
     // 필터링 및 정렬된 광고 목록
     const filteredAds = useMemo(() => {
-        let results = [...allAds];
+        let results = [...userAds, ...allAds];
 
         // 검색어 필터
         if (searchQuery) {
@@ -107,17 +127,17 @@ const SearchResults: React.FC = () => {
 
         // 정렬
         if (sortOrder === 'pay') {
-            results.sort((a, b) => {
+            results.sort((a: any, b: any) => {
                 const aPay = parseInt(a.pay.replace(/[^0-9]/g, '')) || 0;
                 const bPay = parseInt(b.pay.replace(/[^0-9]/g, '')) || 0;
                 return bPay - aPay;
             });
         } else if (sortOrder === 'popular') {
-            results.sort((a, b) => (b.isHot ? 1 : 0) - (a.isHot ? 1 : 0));
+            results.sort((a: any, b: any) => (b.isHot ? 1 : 0) - (a.isHot ? 1 : 0));
         }
 
         return results.length > 0 ? results : allAds.slice(0, 12);
-    }, [searchQuery, filters, sortOrder]);
+    }, [searchQuery, filters, sortOrder, userAds]);
 
     const handleFilterChange = (newFilters: typeof filters) => {
         setFilters(newFilters);

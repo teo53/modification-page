@@ -14,8 +14,10 @@ interface AdCardProps {
     badges?: string[];
     isNew?: boolean;
     isHot?: boolean;
-    price?: string;
-    duration?: string;
+    highlightConfig?: {
+        color: 'yellow' | 'pink' | 'green' | 'cyan';
+        text: string;
+    };
     productType?: 'diamond' | 'sapphire' | 'ruby' | 'gold' | 'vip' | 'special' | 'premium' | 'general' | 'regular' | 'highlight' | 'jumpup';
 }
 
@@ -29,8 +31,7 @@ const AdCard: React.FC<AdCardProps> = ({
     badges = [],
     isNew,
     isHot,
-    price,
-    duration,
+    highlightConfig,
     productType,
 }) => {
     const isDiamond = variant === 'diamond' || productType === 'diamond';
@@ -56,24 +57,38 @@ const AdCard: React.FC<AdCardProps> = ({
         trackAdInteraction(Number(id), title, normalizedType, 'click');
     };
 
+    // 형광펜 효과 색상 매핑
+    const highlightColors = {
+        yellow: 'bg-yellow-500/20 border-yellow-500 text-yellow-300',
+        pink: 'bg-pink-500/20 border-pink-500 text-pink-300',
+        green: 'bg-green-500/20 border-green-500 text-green-300',
+        cyan: 'bg-cyan-500/20 border-cyan-500 text-cyan-300',
+    };
+
+    const highlightStyle = highlightConfig ? highlightColors[highlightConfig.color] : '';
+
+    // 형광펜 텍스트 교체 (제목 대신)
+    const displayTitle = highlightConfig?.text || title;
+
     return (
         <Link
             to={`/ad/${id}`}
             onClick={handleClick}
             className={cn(
                 "block group relative overflow-hidden rounded-xl bg-accent transition-all duration-300 hover:-translate-y-1",
-                isDiamond && "border-2 border-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.3)] ad-card-diamond",
-                isSapphire && "border-2 border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.3)]",
-                isRuby && "border-2 border-red-500 shadow-[0_0_15px_rgba(239,68,68,0.3)]",
-                isGold && "border-2 border-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.3)]",
-                isVip && "border-2 border-primary shadow-[0_0_15px_rgba(212,175,55,0.3)] ad-card-vip",
-                isSpecial && "border-2 border-secondary shadow-[0_0_15px_rgba(255,0,127,0.3)] ad-card-special",
-                isPremium && "border border-white/20",
-                variant === 'regular' && "border border-white/5 hover:border-white/20"
+                highlightConfig ? `border-2 ${highlightStyle.split(' ')[1]} shadow-[0_0_15px_rgba(255,255,255,0.2)]` : '', // 형광펜 보더
+                !highlightConfig && isDiamond && "border-2 border-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.3)] ad-card-diamond",
+                !highlightConfig && isSapphire && "border-2 border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.3)]",
+                !highlightConfig && isRuby && "border-2 border-red-500 shadow-[0_0_15px_rgba(239,68,68,0.3)]",
+                !highlightConfig && isGold && "border-2 border-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.3)]",
+                !highlightConfig && isVip && "border-2 border-primary shadow-[0_0_15px_rgba(212,175,55,0.3)] ad-card-vip",
+                !highlightConfig && isSpecial && "border-2 border-secondary shadow-[0_0_15px_rgba(255,0,127,0.3)] ad-card-special",
+                !highlightConfig && isPremium && "border border-white/20",
+                !highlightConfig && variant === 'regular' && "border border-white/5 hover:border-white/20"
             )}
         >
             {/* Image Section */}
-            <div className={cn("relative overflow-hidden", (isDiamond || isSapphire || isRuby || isGold || isVip) ? "h-48" : "h-40")}>
+            <div className="relative overflow-hidden h-40">
                 {image ? (
                     <>
                         <img
@@ -108,12 +123,12 @@ const AdCard: React.FC<AdCardProps> = ({
             </div>
 
             {/* Content Section */}
-            <div className="p-3">
+            <div className={`p-3 ${highlightConfig ? highlightStyle.split(' ')[0] : ''}`}> {/* 형광펜 배경 */}
                 <div className="overflow-hidden">
                     <h3 className={cn(
                         "font-bold mb-1 whitespace-nowrap",
                         "hover:animate-marquee",
-                        // Calculate visual width: Korean=2, English/number=1, space=0.5
+                        // ... width calc omitted ...
                         (() => {
                             let width = 0;
                             for (const char of title) {
@@ -123,16 +138,19 @@ const AdCard: React.FC<AdCardProps> = ({
                                 else width += 1.2; // Special chars
                             }
                             return width > 18;
-                        })() && "animate-marquee-hover",
-                        isDiamond ? "text-lg text-cyan-400" :
-                            isSapphire ? "text-lg text-blue-400" :
-                                isRuby ? "text-lg text-red-400" :
-                                    isGold ? "text-lg text-yellow-400" :
-                                        isVip ? "text-lg text-primary" :
-                                            isSpecial ? "text-base text-secondary" :
-                                                "text-sm text-white"
+                        })() && "animate-marquee-hover", // width logic placeholder
+                        // 텍스트 색상 적용
+                        highlightConfig ? highlightStyle.split(' ')[2] : (
+                            isDiamond ? "text-lg text-cyan-400" :
+                                isSapphire ? "text-lg text-blue-400" :
+                                    isRuby ? "text-lg text-red-400" :
+                                        isGold ? "text-lg text-yellow-400" :
+                                            isVip ? "text-lg text-primary" :
+                                                isSpecial ? "text-base text-secondary" :
+                                                    "text-sm text-white"
+                        )
                     )}>
-                        {title}
+                        {displayTitle}
                     </h3>
                 </div>
 
@@ -146,7 +164,7 @@ const AdCard: React.FC<AdCardProps> = ({
                         <DollarSign size={14} className="text-primary" />
                         <span>{pay}</span>
                     </div>
-                    {(isDiamond || isSapphire || isRuby || isGold || isVip) && (
+                    {!highlightConfig && (isDiamond || isSapphire || isRuby || isGold || isVip) && (
                         <span className={cn(
                             "text-[10px] text-black px-2 py-0.5 rounded-full font-bold",
                             isDiamond && "bg-cyan-400",
@@ -158,36 +176,14 @@ const AdCard: React.FC<AdCardProps> = ({
                             {isDiamond ? 'DIAMOND' : isSapphire ? 'SAPPHIRE' : isRuby ? 'RUBY' : isGold ? 'GOLD' : 'VIP'}
                         </span>
                     )}
+                    {highlightConfig && (
+                        <span className={cn(
+                            "text-[10px] text-black px-2 py-0.5 rounded-full font-bold bg-white/20 text-white"
+                        )}>
+                            HIGHLIGHT
+                        </span>
+                    )}
                 </div>
-
-                {/* Pricing Info Section */}
-                {(price || duration) && (
-                    <div className="mt-2 pt-2 border-t border-white/10">
-                        <div className="flex items-center justify-between">
-                            <div className="flex flex-col">
-                                {duration && <span className="text-[10px] text-text-muted">노출기간: {duration}</span>}
-                                {price && <span className="text-xs text-white font-bold">{price}/월</span>}
-                            </div>
-                            {productType && (
-                                <span className={cn(
-                                    "text-[9px] px-1.5 py-0.5 rounded font-bold",
-                                    productType === 'diamond' && "bg-cyan-400 text-black",
-                                    productType === 'sapphire' && "bg-blue-500 text-white",
-                                    productType === 'ruby' && "bg-red-500 text-white",
-                                    productType === 'gold' && "bg-yellow-400 text-black",
-                                    productType === 'vip' && "bg-yellow-400 text-black",
-                                    productType === 'special' && "bg-blue-400 text-white",
-                                    productType === 'premium' && "bg-purple-400 text-white",
-                                    productType === 'highlight' && "bg-yellow-500 text-black",
-                                    productType === 'jumpup' && "bg-green-500 text-white",
-                                    (productType === 'general' || productType === 'regular') && "bg-gray-400 text-white"
-                                )}>
-                                    {productType === 'highlight' ? 'HIGHLIGHT' : productType === 'jumpup' ? 'JUMP UP' : productType.toUpperCase()}
-                                </span>
-                            )}
-                        </div>
-                    </div>
-                )}
             </div>
         </Link>
     );

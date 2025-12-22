@@ -14,7 +14,7 @@ const Footer: React.FC = () => {
                 <div className="grid md:grid-cols-4 gap-8 mb-8">
                     {/* Company Info */}
                     <div className="space-y-4">
-                        <h3 className="text-lg font-bold text-white mb-4">LunaAlba</h3>
+                        <h3 className="text-lg font-bold text-white mb-4">DalbitAlba</h3>
                         <p className="text-sm text-text-muted leading-relaxed">
                             대한민국 No.1 유흥알바 채용 플랫폼
                         </p>
@@ -78,10 +78,10 @@ const Footer: React.FC = () => {
                 <div className="pt-6 border-t border-white/5">
                     <div className="flex flex-wrap justify-center gap-4 mb-4 text-sm">
                         <a href="#" className="text-text-muted hover:text-white transition-colors">회사소개</a>
-                        <a href="#" className="text-white font-bold hover:text-primary transition-colors">이용약관</a>
-                        <a href="#" className="text-white font-bold hover:text-primary transition-colors">개인정보처리방침</a>
-                        <a href="#" className="text-text-muted hover:text-white transition-colors">청소년보호정책</a>
-                        <Link to="/advertiser/dashboard" className="text-text-muted hover:text-white transition-colors">광고주센터</Link>
+                        <Link to="/terms" className="text-white font-bold hover:text-primary transition-colors">이용약관</Link>
+                        <Link to="/privacy" className="text-white font-bold hover:text-primary transition-colors">개인정보처리방침</Link>
+                        <Link to="/youth-protection" className="text-red-400 font-bold hover:text-red-300 transition-colors">청소년보호정책</Link>
+                        <Link to="/advertiser" className="text-text-muted hover:text-white transition-colors">광고주센터</Link>
                         {isAdmin && (
                             <Link to="/admin/crm" className="text-primary/70 hover:text-primary transition-colors font-medium">
                                 🔐 관리자 CRM
@@ -91,12 +91,35 @@ const Footer: React.FC = () => {
 
                     {/* Company Info */}
                     <div className="text-center text-xs text-text-muted/70 space-y-1">
+                        {/* TODO: 아래 정보를 실제 사업자 정보로 반드시 변경하세요 */}
                         <p>상호명: (주)루나알바 | 대표: 홍길동 | 사업자등록번호: 123-45-67890</p>
                         <p>통신판매업신고번호: 2025-서울강남-00000 | 직업정보제공사업 신고번호: J1234567890123</p>
                         <p className="mt-3 text-text-muted/50">
                             루나알바는 통신판매중개자이며 통신판매의 당사자가 아닙니다.<br />
                             따라서 루나알바는 상품·거래정보 및 거래에 대하여 책임을 지지 않습니다.
                         </p>
+                    </div>
+
+                    {/* Legal Notices - 청소년 보호법 및 직업안정법 */}
+                    <div className="mt-6 p-4 bg-red-900/20 border border-red-500/30 rounded-lg">
+                        <div className="text-center space-y-2">
+                            <p className="text-red-400 font-bold text-sm flex items-center justify-center gap-2">
+                                🔞 청소년유해매체물 (청소년보호법 제9조)
+                            </p>
+                            <p className="text-xs text-red-300/80">
+                                본 사이트는 만 19세 미만 청소년의 이용이 금지된 청소년유해매체물입니다.
+                            </p>
+                            <div className="text-xs text-text-muted/60 space-y-1 mt-3">
+                                <p>• 청소년보호법 제16조(표시의무), 제17조(청소년에 대한 판매금지 등)</p>
+                                <p>• 직업안정법 제34조(허위광고 금지), 제47조의3(불법 직업소개 금지)</p>
+                                <p>• 위반 시 3년 이하의 징역 또는 3천만원 이하의 벌금에 처해질 수 있습니다.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* 청소년보호책임자 */}
+                    <div className="mt-4 text-center text-xs text-text-muted/70">
+                        <p>청소년보호책임자: 홍길동 (contact@lunaalba.com)</p>
                     </div>
 
                     {/* Copyright */}

@@ -28,11 +28,14 @@ export class SignupDto {
     @Transform(({ value }) => value?.toLowerCase().trim())
     email: string;
 
-    // 비밀번호
+    // 비밀번호 (강화된 정책: 8자 이상, 영문+숫자 필수)
     @IsString()
     @IsNotEmpty({ message: '비밀번호를 입력해주세요.' })
-    @MinLength(6, { message: '비밀번호는 6자 이상이어야 합니다.' })
+    @MinLength(8, { message: '비밀번호는 8자 이상이어야 합니다.' })
     @MaxLength(100, { message: '비밀번호는 100자 이하여야 합니다.' })
+    @Matches(/^(?=.*[A-Za-z])(?=.*\d).{8,}$/, {
+        message: '비밀번호는 영문자와 숫자를 모두 포함해야 합니다.',
+    })
     password: string;
 
     // 이름

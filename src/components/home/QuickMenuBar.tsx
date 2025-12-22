@@ -1,7 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Search, MapPin, Briefcase, Zap, MessageSquare, Upload, Users, Clock } from 'lucide-react';
+import { Search, MapPin, Briefcase, Zap, MessageSquare, Upload, FileText, Clock } from 'lucide-react';
+import { getCurrentUser } from '../../utils/auth';
 
+// 메뉴 아이템 정의
 const menuItems = [
     { id: 'region-search', label: '지역검색', icon: Search, to: '/search', color: 'from-blue-600/20 to-blue-400/5 border-blue-500/30' },
     { id: 'region', label: '지역별', icon: MapPin, to: '/region', color: 'from-green-600/20 to-green-400/5 border-green-500/30' },
@@ -9,16 +11,36 @@ const menuItems = [
     { id: 'theme', label: '검색', icon: Zap, to: '/theme', color: 'from-yellow-600/20 to-yellow-400/5 border-yellow-500/30' },
     { id: 'urgent', label: '급구', icon: Clock, to: '/urgent', color: 'from-red-600/20 to-red-400/5 border-red-500/30' },
     { id: 'community', label: '커뮤니티', icon: MessageSquare, to: '/community', color: 'from-cyan-600/20 to-cyan-400/5 border-cyan-500/30' },
-    { id: 'post-ad', label: '광고게시', icon: Upload, to: '/post-ad', color: 'from-pink-600/20 to-pink-400/5 border-pink-500/30' },
-    { id: 'group', label: '공동모집', icon: Users, to: '/support', color: 'from-indigo-600/20 to-indigo-400/5 border-indigo-500/30' },
+    { id: 'job-seek', label: '구직등록', icon: FileText, to: '/job-seeker', color: 'from-emerald-600/20 to-emerald-400/5 border-emerald-500/30' },
 ];
 
+// 광고주/관리자 전용 메뉴
+const advertiserMenuItem = {
+    id: 'post-ad',
+    label: '광고게시',
+    icon: Upload,
+    to: '/post-ad',
+    color: 'from-pink-600/20 to-pink-400/5 border-pink-500/30'
+};
+
 const QuickMenuBar: React.FC = () => {
+    const currentUser = getCurrentUser();
+
+    // 관리자 또는 광고주인 경우 광고게시 메뉴 추가
+    const isAdminOrAdvertiser = currentUser && (
+        currentUser.type === 'advertiser' ||
+        currentUser.email === 'admin@lunaalba.com'
+    );
+
+    const visibleMenuItems = isAdminOrAdvertiser
+        ? [...menuItems, advertiserMenuItem]
+        : menuItems;
+
     return (
         <section className="py-8 container mx-auto px-4">
             <h2 className="text-xl font-bold text-white mb-6 text-center">빠른 메뉴</h2>
-            <div className="grid grid-cols-4 md:grid-cols-8 gap-3 md:gap-4">
-                {menuItems.map((item) => {
+            <div className={`grid grid-cols-4 ${visibleMenuItems.length > 7 ? 'md:grid-cols-8' : 'md:grid-cols-7'} gap-3 md:gap-4`}>
+                {visibleMenuItems.map((item) => {
                     const Icon = item.icon;
                     return (
                         <Link

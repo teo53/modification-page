@@ -8,6 +8,7 @@ import { allSampleAds } from '../data/sampleAds';
 import { useDataMode } from '../contexts/DataModeContext';
 
 // 숫자 카운트업 애니메이션 훅
+// 숫자 카운트업 애니메이션 훅
 const useCountUp = (end: number, duration: number = 2000) => {
     const [count, setCount] = useState(0);
     const countRef = useRef(0);
@@ -20,6 +21,11 @@ const useCountUp = (end: number, duration: number = 2000) => {
         const animate = () => {
             const now = Date.now();
             const progress = Math.min((now - startTime) / duration, 1);
+
+            if (progress === 1) {
+                setCount(end);
+                return;
+            }
 
             // easeOutExpo 이징 함수
             const easeProgress = 1 - Math.pow(2, -10 * progress);
@@ -95,7 +101,28 @@ const SORT_OPTIONS = [
 
 const ThemePage: React.FC = () => {
     const { useSampleData } = useDataMode();
-    const adsData = useSampleData ? allSampleAds : allAds;
+    const baseAdsData = useSampleData ? allSampleAds : allAds;
+
+    // 광고주 등록 데이터도 함께 가져오기
+    const userAdsRaw = JSON.parse(localStorage.getItem('lunaalba_user_ads') || '[]');
+    const userAds = userAdsRaw
+        .filter((ad: any) => ad.status === 'active')
+        .map((ad: any) => ({
+            id: parseInt(ad.id),
+            title: ad.title,
+            location: ad.location,
+            pay: ad.salary,
+            thumbnail: '',
+            images: [],
+            badges: ad.themes || ['채용중'],
+            isNew: true,
+            isHot: false,
+            productType: ad.productType || 'general',
+            price: '협의',
+            duration: '30일'
+        }));
+
+    const adsData = [...userAds, ...baseAdsData];
 
     const [activeTheme, setActiveTheme] = useState('high-pay');
     const [sortOrder, setSortOrder] = useState('latest');
@@ -109,11 +136,16 @@ const ThemePage: React.FC = () => {
         const theme = themes.find(t => t.id === activeTheme);
         if (theme) {
             results = results.filter(ad =>
+                // 키워드 기반 검색 (기존)
                 theme.keywords.some(keyword =>
                     ad.title.toLowerCase().includes(keyword.toLowerCase()) ||
-                    ad.badges.some(badge => badge.toLowerCase().includes(keyword.toLowerCase())) ||
+                    ad.badges.some((badge: string) => badge.toLowerCase().includes(keyword.toLowerCase())) ||
                     ad.pay.includes(keyword)
-                )
+                ) ||
+                // themes 배열 기반 검색 (신규 - UserAd용)
+                (ad.badges && ad.badges.some((badge: string) =>
+                    theme.keywords.some(keyword => badge.includes(keyword))
+                ))
             );
         }
 

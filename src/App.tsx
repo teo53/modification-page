@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/layout/Layout';
 import ErrorBoundary from './components/ErrorBoundary';
+import AdultVerification, { isAdultVerified } from './components/auth/AdultVerification';
 
 import Home from './pages/Home';
 
@@ -8,7 +10,7 @@ import AdDetail from './pages/AdDetail';
 
 import PostAd from './pages/PostAd';
 
-import AdvertiserDashboard from './pages/AdvertiserDashboard';
+import AdvertiserCRM from './pages/AdvertiserCRM';
 import AdminCRM from './pages/AdminCRM';
 
 import CommunityPage from './pages/CommunityPage';
@@ -26,9 +28,22 @@ import UrgentPage from './pages/UrgentPage';
 import IndustryPage from './pages/IndustryPage';
 import RegionPage from './pages/RegionPage';
 import NotFound from './pages/NotFound';
+import TermsOfService from './pages/TermsOfService';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import YouthProtectionPolicy from './pages/YouthProtectionPolicy';
+import JobSeekerPage from './pages/JobSeekerPage';
 
 
 function App() {
+  const [adultVerified, setAdultVerified] = useState(isAdultVerified());
+
+  // 성인인증 필요 시 인증 화면 표시
+  if (!adultVerified) {
+    return (
+      <AdultVerification onVerified={() => setAdultVerified(true)} />
+    );
+  }
+
   return (
     <ErrorBoundary>
       <BrowserRouter>
@@ -47,15 +62,25 @@ function App() {
             <Route path="/community" element={<CommunityPage />} />
             <Route path="/community/write" element={<CommunityWrite />} />
             <Route path="/community/post/:id" element={<CommunityPostDetail />} />
-            <Route path="/advertiser/dashboard" element={<AdvertiserDashboard />} />
+            <Route path="/advertiser" element={<AdvertiserCRM />} />
+            <Route path="/advertiser/dashboard" element={<Navigate to="/advertiser" replace />} />
+            <Route path="/advertiser/crm" element={<Navigate to="/advertiser" replace />} />
 
             {/* Admin Routes */}
+            <Route path="/admin" element={<Navigate to="/admin/crm" replace />} />
             <Route path="/admin/dashboard" element={<Navigate to="/admin/crm" replace />} />
             <Route path="/admin/crm" element={<AdminCRM />} />
             <Route path="urgent" element={<UrgentPage />} />
             <Route path="login" element={<Login />} />
             <Route path="signup" element={<Signup />} />
             <Route path="support" element={<CustomerSupport />} />
+            <Route path="job-seeker" element={<JobSeekerPage />} />
+
+            {/* Legal Pages */}
+            <Route path="terms" element={<TermsOfService />} />
+            <Route path="privacy" element={<PrivacyPolicy />} />
+            <Route path="youth-protection" element={<YouthProtectionPolicy />} />
+
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
@@ -65,3 +90,4 @@ function App() {
 }
 
 export default App;
+

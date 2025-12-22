@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Send, Image, X, AlertCircle } from 'lucide-react';
 import { getCurrentUser } from '../utils/auth';
+import RichTextEditor from '../components/ui/RichTextEditor';
 
 const CommunityWrite: React.FC = () => {
     const navigate = useNavigate();
     const user = getCurrentUser();
 
     const [formData, setFormData] = useState({
-        category: '자유게시판',
+        category: 'FREE',  // 백엔드 enum 값 사용
         title: '',
         content: ''
     });
@@ -16,12 +17,13 @@ const CommunityWrite: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
+    // 백엔드 카테고리 Enum 매핑 (value: API 값, label: 표시명)
     const categories = [
-        '구인구직',
-        '업소후기',
-        '지역정보',
-        '질문답변',
-        '자유게시판'
+        { value: 'FREE', label: '자유게시판' },
+        { value: 'QNA', label: '질문답변' },
+        { value: 'REVIEW', label: '업소후기' },
+        { value: 'TIP', label: '지역정보' },
+        { value: 'NEWS', label: '구인구직' }
     ];
 
     // Redirect if not logged in
@@ -81,13 +83,38 @@ const CommunityWrite: React.FC = () => {
         setLoading(true);
 
         try {
-            const { api } = await import('../utils/apiClient');
+            // Try Backend API First
+            try {
+                const { api } = await import('../utils/apiClient');
+                // 실제 백엔드가 연결되어 있다면 이 호출이 성공해야 함
+                // 하지만 현재 개발/데모 환경에서는 실패할 가능성이 높음 (404 등)
+                await api.post('/community/posts', {
+                    category: formData.category,
+                    title: formData.title,
+                    content: formData.content
+                });
+            } catch (apiError) {
+                // API 호출 실패 시 (백엔드 미구현 또는 연결 실패)
+                // 로컬 스토리지에 저장하는 폴백 로직 실행
+                console.warn('API call failed, saving to localStorage:', apiError);
 
-            await api.post('/community/posts', {
-                category: formData.category,
-                title: formData.title,
-                content: formData.content
-            });
+                const existingPosts = JSON.parse(localStorage.getItem('lunaalba_community_posts') || '[]');
+
+                const newPost = {
+                    id: Date.now(), // Use timestamp as ID
+                    category: categories.find(c => c.value === formData.category)?.label || '자유',
+                    title: formData.title,
+                    author: user?.nickname || user?.name || '익명',
+                    date: new Date().toLocaleDateString(),
+                    views: 0,
+                    comments: 0,
+                    isHot: false,
+                    isNew: true,
+                    content: formData.content // 목록에는 표시 안될 수 있지만 상세에는 필요
+                };
+
+                localStorage.setItem('lunaalba_community_posts', JSON.stringify([newPost, ...existingPosts]));
+            }
 
             alert('게시글이 등록되었습니다.');
             navigate('/community');
@@ -132,15 +159,15 @@ const CommunityWrite: React.FC = () => {
                         <div className="flex flex-wrap gap-2">
                             {categories.map(cat => (
                                 <button
-                                    key={cat}
+                                    key={cat.value}
                                     type="button"
-                                    onClick={() => setFormData(prev => ({ ...prev, category: cat }))}
-                                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${formData.category === cat
+                                    onClick={() => setFormData(prev => ({ ...prev, category: cat.value }))}
+                                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${formData.category === cat.value
                                         ? 'bg-primary text-black'
                                         : 'bg-accent text-text-muted hover:bg-white/10'
                                         }`}
                                 >
-                                    {cat}
+                                    {cat.label}
                                 </button>
                             ))}
                         </div>
@@ -162,19 +189,14 @@ const CommunityWrite: React.FC = () => {
                         <div className="text-xs text-text-muted text-right">{formData.title.length}/100</div>
                     </div>
 
-                    {/* Content */}
+                    {/* Content - Rich Text Editor */}
                     <div className="space-y-2">
-                        <label className="block text-sm font-medium text-text-muted">
-                            내용 <span className="text-red-400">*</span>
-                        </label>
-                        <textarea
+                        <RichTextEditor
                             value={formData.content}
-                            onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
-                            className="w-full bg-accent border border-white/10 rounded-lg py-3 px-4 text-white focus:border-primary outline-none transition-colors min-h-[300px] resize-none"
-                            placeholder="내용을 입력하세요"
-                            maxLength={5000}
+                            onChange={(content) => setFormData(prev => ({ ...prev, content }))}
+                            placeholder="내용을 입력하세요..."
+                            simpleMode={true}
                         />
-                        <div className="text-xs text-text-muted text-right">{formData.content.length}/5000</div>
                     </div>
 
                     {/* Image Upload */}

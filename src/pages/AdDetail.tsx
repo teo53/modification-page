@@ -290,15 +290,15 @@ const AdDetail: React.FC = () => {
                                     </div>
                                 )}
 
-                                {/* Detail Images - 세로로 쌓이는 이미지 갤러리 */}
+                                {/* Detail Images - 중앙 정렬, 최대 폭 제한 */}
                                 {detailImages.length > 0 ? (
-                                    <div className="space-y-4">
+                                    <div className="flex flex-col items-center gap-4">
                                         {detailImages.map((img, idx) => (
-                                            <div key={idx} className="w-full rounded-xl border border-white/10 overflow-hidden bg-black/20">
+                                            <div key={idx} className="w-full max-w-[600px] rounded-xl border border-white/10 overflow-hidden bg-black/20">
                                                 <img
                                                     src={img}
                                                     alt={`상세 이미지 ${idx + 1}`}
-                                                    className="w-full h-auto object-contain"
+                                                    className="w-full h-auto object-contain max-h-[800px]"
                                                     onError={(e) => {
                                                         (e.target as HTMLImageElement).style.display = 'none';
                                                     }}

@@ -8,6 +8,7 @@ import { allSampleAds } from '../data/sampleAds';
 import { useDataMode } from '../contexts/DataModeContext';
 
 // 숫자 카운트업 애니메이션 훅
+// 숫자 카운트업 애니메이션 훅
 const useCountUp = (end: number, duration: number = 2000) => {
     const [count, setCount] = useState(0);
     const countRef = useRef(0);
@@ -20,6 +21,11 @@ const useCountUp = (end: number, duration: number = 2000) => {
         const animate = () => {
             const now = Date.now();
             const progress = Math.min((now - startTime) / duration, 1);
+
+            if (progress === 1) {
+                setCount(end);
+                return;
+            }
 
             // easeOutExpo 이징 함수
             const easeProgress = 1 - Math.pow(2, -10 * progress);
@@ -80,7 +86,7 @@ const regions = [
         icon: Building2,
         color: 'text-blue-500',
         subAreas: ['강남', '강북', '신촌', '홍대', '이태원', '압구정', '청담', '논현'],
-        count: 320,
+        count: 0,
         avgSalary: '90,000원'
     },
     {
@@ -89,7 +95,7 @@ const regions = [
         icon: Navigation,
         color: 'text-green-500',
         subAreas: ['수원', '성남', '용인', '부천', '안양', '고양', '의정부', '평택'],
-        count: 180,
+        count: 0,
         avgSalary: '75,000원'
     },
     {
@@ -98,7 +104,7 @@ const regions = [
         icon: MapPin,
         color: 'text-cyan-500',
         subAreas: ['부평', '구월', '송도', '연수', '남동', '계양'],
-        count: 65,
+        count: 0,
         avgSalary: '68,000원'
     },
     {
@@ -107,7 +113,7 @@ const regions = [
         icon: MapPin,
         color: 'text-purple-500',
         subAreas: ['해운대', '서면', '남포동', '센텀시티', '광안리'],
-        count: 95,
+        count: 0,
         avgSalary: '70,000원'
     },
     {
@@ -116,7 +122,7 @@ const regions = [
         icon: MapPin,
         color: 'text-yellow-500',
         subAreas: ['동성로', '수성구', '달서구', '북구'],
-        count: 45,
+        count: 0,
         avgSalary: '65,000원'
     },
     {
@@ -125,7 +131,7 @@ const regions = [
         icon: MapPin,
         color: 'text-red-500',
         subAreas: ['둔산', '유성', '대덕구', '중구'],
-        count: 35,
+        count: 0,
         avgSalary: '62,000원'
     },
     {
@@ -134,8 +140,62 @@ const regions = [
         icon: MapPin,
         color: 'text-pink-500',
         subAreas: ['상무', '충장로', '광산구', '북구'],
-        count: 30,
+        count: 0,
         avgSalary: '60,000원'
+    },
+    {
+        id: 'ulsan',
+        name: '울산',
+        icon: MapPin,
+        color: 'text-teal-500',
+        subAreas: ['삼산', '성남', '무거'],
+        count: 0,
+        avgSalary: '65,000원'
+    },
+    {
+        id: 'sejong',
+        name: '세종',
+        icon: MapPin,
+        color: 'text-indigo-500',
+        subAreas: ['나성', '도담', '어진'],
+        count: 0,
+        avgSalary: '63,000원'
+    },
+    {
+        id: 'gangwon',
+        name: '강원',
+        icon: MapPin,
+        color: 'text-lime-500',
+        subAreas: ['춘천', '원주', '강릉', '속초'],
+        count: 0,
+        avgSalary: '58,000원'
+    },
+    {
+        id: 'chungcheong',
+        name: '충청',
+        icon: MapPin,
+        color: 'text-amber-500',
+        subAreas: ['청주', '천안', '아산', '충주'],
+        count: 0,
+        avgSalary: '60,000원'
+    },
+    {
+        id: 'jeolla',
+        name: '전라',
+        icon: MapPin,
+        color: 'text-emerald-500',
+        subAreas: ['전주', '목포', '여수', '익산'],
+        count: 0,
+        avgSalary: '58,000원'
+    },
+    {
+        id: 'gyeongsang',
+        name: '경상',
+        icon: MapPin,
+        color: 'text-fuchsia-500',
+        subAreas: ['창원', '포항', '구미', '김해'],
+        count: 0,
+        avgSalary: '62,000원'
     },
     {
         id: 'jeju',
@@ -143,8 +203,17 @@ const regions = [
         icon: MapPin,
         color: 'text-orange-500',
         subAreas: ['제주시', '서귀포', '애월', '중문'],
-        count: 25,
+        count: 0,
         avgSalary: '58,000원'
+    },
+    {
+        id: 'other',
+        name: '기타',
+        icon: MapPin,
+        color: 'text-gray-500',
+        subAreas: [],
+        count: 0,
+        avgSalary: '0원'
     },
 ];
 
@@ -156,7 +225,64 @@ const SORT_OPTIONS = [
 
 const RegionPage: React.FC = () => {
     const { useSampleData } = useDataMode();
-    const adsData = useSampleData ? allSampleAds : allAds;
+    const baseAdsData = useSampleData ? allSampleAds : allAds;
+
+    // 광고주 등록 데이터도 함께 가져오기
+    const userAdsRaw = JSON.parse(localStorage.getItem('lunaalba_user_ads') || '[]');
+    const userAds = userAdsRaw
+        .filter((ad: any) => ad.status === 'active')
+        .map((ad: any) => ({
+            id: parseInt(ad.id),
+            title: ad.title,
+            location: ad.location,
+            pay: ad.salary,
+            thumbnail: '',
+            images: [],
+            badges: ad.themes || ['채용중'],
+            isNew: true,
+            isHot: false,
+            productType: ad.productType || 'general',
+            price: '협의',
+            duration: '30일'
+        }));
+
+    const adsData = [...userAds, ...baseAdsData];
+
+    // 각 지역별 실제 공고 개수 계산 (중복 집계 방지)
+    const regionCounts = useMemo(() => {
+        const counts: { [key: string]: number } = {};
+
+        // 초기화
+        regions.forEach(r => counts[r.id] = 0);
+
+        adsData.forEach(ad => {
+            // Find the FIRST matching region to avoid double counting
+            const matchedRegion = regions.find(region => {
+                if (region.id === 'other') return false; // Skip 'other' in initial check
+
+                // Check main name
+                if (ad.location.includes(region.name)) return true;
+
+                // Check specific province mapping if location string is vague
+                if (region.id === 'chungcheong' && (ad.location.includes('충남') || ad.location.includes('충북') || ad.location.includes('충청'))) return true;
+                if (region.id === 'jeolla' && (ad.location.includes('전남') || ad.location.includes('전북') || ad.location.includes('전라'))) return true;
+                if (region.id === 'gyeongsang' && (ad.location.includes('경남') || ad.location.includes('경북') || ad.location.includes('경상'))) return true;
+
+                // Check subAreas
+                if (region.subAreas.some(area => ad.location.includes(area))) return true;
+
+                return false;
+            });
+
+            if (matchedRegion) {
+                counts[matchedRegion.id] = (counts[matchedRegion.id] || 0) + 1;
+            } else {
+                counts['other'] = (counts['other'] || 0) + 1;
+            }
+        });
+
+        return counts;
+    }, [adsData]);
 
     const [activeRegion, setActiveRegion] = useState('seoul');
     const [activeSubArea, setActiveSubArea] = useState<string | null>(null);
@@ -204,9 +330,13 @@ const RegionPage: React.FC = () => {
             results.sort((a, b) => (b.isHot ? 1 : 0) - (a.isHot ? 1 : 0));
         }
 
-        // 결과가 없으면 전체 광고에서 랜덤하게 표시
-        return results.length > 0 ? results : adsData.slice(0, 12);
-    }, [activeRegion, activeSubArea, sortOrder, searchQuery, currentRegion, adsData]);
+        // 결과가 없으면 기본 데이터 반환 (검색어가 없을 때만)
+        if (results.length === 0 && !searchQuery && !activeSubArea) {
+            return results; // 빈 배열 반환하여 '결과 없음' 표시하도록 수정 (기존 로직이 12개 자르는 거였는데, 필터링 결과가 0이면 0이어야 함)
+        }
+
+        return results;
+    }, [activeRegion, activeSubArea, sortOrder, searchQuery, adsData, currentRegion]);
 
     // 실시간 통계
     const totalAds = adsData.length;
@@ -264,7 +394,7 @@ const RegionPage: React.FC = () => {
                 />
             </div>
 
-            {/* 지역 선택 그리드 */}
+            {/* 지역 선택 카드 */}
             <div className="mb-12">
                 <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
                     <MapPin className="text-primary" size={20} />
@@ -280,6 +410,7 @@ const RegionPage: React.FC = () => {
                                 onClick={() => {
                                     setActiveRegion(region.id);
                                     setActiveSubArea(null);
+                                    setDisplayCount(16);
                                 }}
                                 className={`
                                     p-6 rounded-xl border transition-all duration-300 flex flex-col items-center gap-3 group
@@ -290,23 +421,26 @@ const RegionPage: React.FC = () => {
                                 `}
                             >
                                 <div className={`
-                                    p-4 rounded-full bg-black/30 transition-transform duration-300 group-hover:scale-110
+                                    p-3 rounded-full bg-black/30 transition-transform duration-300 group-hover:scale-110
                                     ${region.color}
                                 `}>
-                                    <Icon size={28} />
+                                    <Icon size={24} />
                                 </div>
-                                <span className={`font-bold text-lg ${isActive ? 'text-primary' : 'text-white'}`}>
-                                    {region.name}
-                                </span>
-                                <div className="text-sm text-text-muted">
-                                    <span className="text-primary">{region.count}개</span> 공고
+                                <div className="text-center">
+                                    <h3 className={`font-bold text-lg mb-1 ${isActive ? 'text-primary' : 'text-white'}`}>
+                                        {region.name}
+                                    </h3>
+                                    <p className="text-sm text-text-muted">
+                                        <span className={isActive ? 'text-primary font-bold' : ''}>
+                                            {regionCounts[region.id] || 0}개
+                                        </span> 공고
+                                    </p>
                                 </div>
                             </button>
                         );
                     })}
                 </div>
             </div>
-
             {/* 세부 지역 선택 */}
             {currentRegion && (
                 <div className="mb-8">

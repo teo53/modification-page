@@ -44,8 +44,6 @@ const SpecialAdGrid: React.FC = () => {
                             image={ad.thumbnail}
                             badges={ad.badges}
                             isNew={ad.isNew}
-                            price={ad.price}
-                            duration={ad.duration}
                             productType={ad.productType}
                         />
                     ))}

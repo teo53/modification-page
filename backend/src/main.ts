@@ -27,7 +27,7 @@ async function bootstrap() {
     origin: true, // 개발 및 테스트를 위해 요청 Origin을 그대로 허용
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Tenant-ID', 'X-Request-ID'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Tenant-ID', 'X-Request-ID', 'X-Requested-With', 'X-CSRF-Token'],
   });
 
   // 보안 미들웨어
@@ -39,7 +39,7 @@ async function bootstrap() {
   app.use(cookieParser());
 
   // 포트 설정
-  const port = process.env.PORT || 4000;
+  const port = process.env.PORT || 4001;
 
   await app.listen(port);
 

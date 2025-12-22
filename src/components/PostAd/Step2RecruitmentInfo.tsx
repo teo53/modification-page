@@ -177,7 +177,7 @@ const Step2RecruitmentInfo: React.FC<Step2Props> = ({
                                         : 'bg-white/5 border border-white/10'
                                         }`}>
                                         <div className="flex items-start gap-2">
-                                            <span className="text-lg">💡</span>
+                                            <span className="text-lg">TIP</span>
                                             <div>
                                                 {isOverflow ? (
                                                     <>
@@ -209,7 +209,7 @@ const Step2RecruitmentInfo: React.FC<Step2Props> = ({
                     <SectionCard icon={Palette} title="형광펜 효과 (선택사항 +50,000원)">
                         <div className="space-y-4">
                             <p className="text-xs text-white/50">
-                                📌 <strong>클릭 방식:</strong> 아래 글자를 클릭하여 강조 범위를 선택하세요
+                                주의: <strong>클릭 방식:</strong> 아래 글자를 클릭하여 강조 범위를 선택하세요
                             </p>
 
                             {/* Character Selection UI */}
@@ -259,8 +259,8 @@ const Step2RecruitmentInfo: React.FC<Step2Props> = ({
                                                     }
                                                 }}
                                                 className={`min-w-[1.5rem] h-8 px-1 rounded text-lg font-bold transition-all ${isInRange
-                                                        ? `${bgColorClass} text-black scale-105`
-                                                        : 'bg-white/10 text-white hover:bg-white/20'
+                                                    ? `${bgColorClass} text-black scale-105`
+                                                    : 'bg-white/10 text-white hover:bg-white/20'
                                                     }`}
                                             >
                                                 {char === ' ' ? '\u00A0' : char}
@@ -314,8 +314,8 @@ const Step2RecruitmentInfo: React.FC<Step2Props> = ({
                                                 });
                                             }}
                                             className={`flex flex-col items-center gap-1 p-2 rounded-lg transition-all ${highlightSettings?.color === item.id
-                                                    ? 'ring-2 ring-white bg-white/10 scale-105'
-                                                    : 'hover:bg-white/5'
+                                                ? 'ring-2 ring-white bg-white/10 scale-105'
+                                                : 'hover:bg-white/5'
                                                 }`}
                                         >
                                             <div className={`w-8 h-8 ${item.color} rounded-lg flex items-center justify-center ${highlightSettings?.color === item.id ? 'ring-2 ring-white' : ''
@@ -337,9 +337,9 @@ const Step2RecruitmentInfo: React.FC<Step2Props> = ({
                                     <div className="text-lg font-bold text-white">
                                         {formData.title.substring(0, highlightSettings.range.start)}
                                         <span className={`px-0.5 rounded ${highlightSettings.color === 'yellow' ? 'bg-yellow-400 text-black' :
-                                                highlightSettings.color === 'pink' ? 'bg-pink-400 text-black' :
-                                                    highlightSettings.color === 'green' ? 'bg-green-400 text-black' :
-                                                        'bg-cyan-400 text-black'
+                                            highlightSettings.color === 'pink' ? 'bg-pink-400 text-black' :
+                                                highlightSettings.color === 'green' ? 'bg-green-400 text-black' :
+                                                    'bg-cyan-400 text-black'
                                             }`}>
                                             {formData.title.substring(highlightSettings.range.start, highlightSettings.range.end)}
                                         </span>
@@ -630,7 +630,7 @@ const Step2RecruitmentInfo: React.FC<Step2Props> = ({
                                             : 'bg-primary/10 border-primary/50 text-primary hover:bg-primary/20'
                                             }`}
                                     >
-                                        📅 평일
+                                        평일
                                     </button>
                                     <button
                                         type="button"
@@ -649,7 +649,7 @@ const Step2RecruitmentInfo: React.FC<Step2Props> = ({
                                             : 'bg-cyan-400/10 border-cyan-400/50 text-cyan-400 hover:bg-cyan-400/20'
                                             }`}
                                     >
-                                        🌙 주말
+                                        주말
                                     </button>
                                     <button
                                         type="button"

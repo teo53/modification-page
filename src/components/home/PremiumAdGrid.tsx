@@ -44,8 +44,6 @@ const PremiumAdGrid: React.FC = () => {
                         badges={ad.badges}
                         isNew={ad.isNew}
                         isHot={ad.isHot}
-                        price={ad.price}
-                        duration={ad.duration}
                         productType={ad.productType}
                     />
                 ))}
