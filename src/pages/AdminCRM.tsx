@@ -357,33 +357,49 @@ const AdminCRM: React.FC = () => {
                         <div className="bg-accent rounded-xl border border-white/5 overflow-hidden">
                             <div className="p-4 border-b border-white/5 flex justify-between items-center">
                                 <h3 className="font-bold text-white">승인 대기 목록</h3>
-                                <span className="bg-yellow-500/20 text-yellow-500 text-xs px-2 py-1 rounded-full">12건</span>
+                                <span className="bg-yellow-500/20 text-yellow-500 text-xs px-2 py-1 rounded-full">
+                                    {crmOperationalMode ? '0건' : '12건'}
+                                </span>
                             </div>
-                            <div className="divide-y divide-white/5">
-                                {[1, 2, 3].map((i) => (
-                                    <div key={i} className="p-4 hover:bg-white/5 transition-colors">
-                                        <div className="flex justify-between items-start mb-2">
-                                            <span className="text-sm font-medium text-white">강남 룸살롱 신규 오픈</span>
-                                            <span className="text-xs text-text-muted">10분 전</span>
-                                        </div>
-                                        <div className="flex items-center gap-2 mb-3">
-                                            <span className="text-xs bg-primary/20 text-primary px-1.5 py-0.5 rounded">VIP</span>
-                                            <span className="text-xs text-text-muted">김사장님</span>
-                                        </div>
-                                        <div className="flex gap-2">
-                                            <button className="flex-1 bg-green-500/20 text-green-500 text-xs py-1.5 rounded hover:bg-green-500/30 flex items-center justify-center gap-1">
-                                                <CheckCircle size={12} /> 승인
-                                            </button>
-                                            <button className="flex-1 bg-red-500/20 text-red-500 text-xs py-1.5 rounded hover:bg-red-500/30 flex items-center justify-center gap-1">
-                                                <XCircle size={12} /> 반려
-                                            </button>
-                                        </div>
+                            {crmOperationalMode ? (
+                                <div className="p-8 text-center">
+                                    <Clock size={32} className="mx-auto text-text-muted mb-2 opacity-50" />
+                                    <p className="text-text-muted text-sm">대기 중인 승인 요청이 없습니다</p>
+                                    <p className="text-xs text-text-muted/50 mt-1">광고 시스템 연동 후 표시됩니다</p>
+                                </div>
+                            ) : (
+                                <>
+                                    <div className="divide-y divide-white/5">
+                                        {[
+                                            { title: '강남 룸살롱 신규 오픈', type: 'VIP', owner: '김사장님', time: '10분 전' },
+                                            { title: '청담 라운지 프리미엄', type: 'Premium', owner: '박대표님', time: '25분 전' },
+                                            { title: '압구정 클럽 리뉴얼', type: 'VIP', owner: '이사장님', time: '1시간 전' },
+                                        ].map((item, i) => (
+                                            <div key={i} className="p-4 hover:bg-white/5 transition-colors">
+                                                <div className="flex justify-between items-start mb-2">
+                                                    <span className="text-sm font-medium text-white">{item.title}</span>
+                                                    <span className="text-xs text-text-muted">{item.time}</span>
+                                                </div>
+                                                <div className="flex items-center gap-2 mb-3">
+                                                    <span className={`text-xs px-1.5 py-0.5 rounded ${item.type === 'VIP' ? 'bg-primary/20 text-primary' : 'bg-secondary/20 text-secondary'}`}>{item.type}</span>
+                                                    <span className="text-xs text-text-muted">{item.owner}</span>
+                                                </div>
+                                                <div className="flex gap-2">
+                                                    <button className="flex-1 bg-green-500/20 text-green-500 text-xs py-1.5 rounded hover:bg-green-500/30 flex items-center justify-center gap-1">
+                                                        <CheckCircle size={12} /> 승인
+                                                    </button>
+                                                    <button className="flex-1 bg-red-500/20 text-red-500 text-xs py-1.5 rounded hover:bg-red-500/30 flex items-center justify-center gap-1">
+                                                        <XCircle size={12} /> 반려
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ))}
                                     </div>
-                                ))}
-                            </div>
-                            <div className="p-3 text-center border-t border-white/5">
-                                <button className="text-xs text-text-muted hover:text-white">전체보기</button>
-                            </div>
+                                    <div className="p-3 text-center border-t border-white/5">
+                                        <button className="text-xs text-text-muted hover:text-white">전체보기</button>
+                                    </div>
+                                </>
+                            )}
                         </div>
 
                         {/* Recent Activity Log */}
@@ -391,25 +407,33 @@ const AdminCRM: React.FC = () => {
                             <div className="p-4 border-b border-white/5">
                                 <h3 className="font-bold text-white">실시간 활동 로그</h3>
                             </div>
-                            <div className="p-4 space-y-4">
-                                {[
-                                    { type: 'join', text: '신규 회원 가입 (user123)', time: '방금 전' },
-                                    { type: 'ad', text: '새로운 광고 등록 요청', time: '5분 전' },
-                                    { type: 'report', text: '게시글 신고 접수', time: '12분 전' },
-                                    { type: 'payment', text: 'VIP 상품 결제 완료', time: '25분 전' },
-                                ].map((log, i) => (
-                                    <div key={i} className="flex items-start gap-3">
-                                        <div className={`mt-1 w-2 h-2 rounded-full ${log.type === 'join' ? 'bg-blue-500' :
-                                            log.type === 'ad' ? 'bg-yellow-500' :
-                                                log.type === 'report' ? 'bg-red-500' : 'bg-green-500'
-                                            }`} />
-                                        <div>
-                                            <p className="text-sm text-white">{log.text}</p>
-                                            <span className="text-xs text-text-muted">{log.time}</span>
+                            {crmOperationalMode ? (
+                                <div className="p-8 text-center">
+                                    <Activity size={32} className="mx-auto text-text-muted mb-2 opacity-50" />
+                                    <p className="text-text-muted text-sm">활동 로그가 없습니다</p>
+                                    <p className="text-xs text-text-muted/50 mt-1">실시간 로깅 시스템 연동 후 표시됩니다</p>
+                                </div>
+                            ) : (
+                                <div className="p-4 space-y-4">
+                                    {[
+                                        { type: 'join', text: '신규 회원 가입 (user123)', time: '방금 전' },
+                                        { type: 'ad', text: '새로운 광고 등록 요청', time: '5분 전' },
+                                        { type: 'report', text: '게시글 신고 접수', time: '12분 전' },
+                                        { type: 'payment', text: 'VIP 상품 결제 완료', time: '25분 전' },
+                                    ].map((log, i) => (
+                                        <div key={i} className="flex items-start gap-3">
+                                            <div className={`mt-1 w-2 h-2 rounded-full ${log.type === 'join' ? 'bg-blue-500' :
+                                                log.type === 'ad' ? 'bg-yellow-500' :
+                                                    log.type === 'report' ? 'bg-red-500' : 'bg-green-500'
+                                                }`} />
+                                            <div>
+                                                <p className="text-sm text-white">{log.text}</p>
+                                                <span className="text-xs text-text-muted">{log.time}</span>
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
-                            </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
 
                         {/* Reported Content */}
@@ -418,19 +442,27 @@ const AdminCRM: React.FC = () => {
                                 <h3 className="font-bold text-white">신고 관리</h3>
                                 <AlertTriangle size={16} className="text-red-500" />
                             </div>
-                            <div className="p-4">
-                                <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 mb-3">
-                                    <div className="flex items-center gap-2 mb-1">
-                                        <MessageSquare size={14} className="text-red-500" />
-                                        <span className="text-sm font-bold text-red-500">부적절한 게시글</span>
-                                    </div>
-                                    <p className="text-xs text-white mb-2">"여기 가지마세요 사장님이..."</p>
-                                    <div className="flex justify-end gap-2">
-                                        <button className="text-xs text-text-muted hover:text-white underline">상세보기</button>
-                                        <button className="text-xs bg-red-500 text-white px-2 py-1 rounded">삭제</button>
+                            {crmOperationalMode ? (
+                                <div className="p-8 text-center">
+                                    <CheckCircle size={32} className="mx-auto text-green-500 mb-2 opacity-50" />
+                                    <p className="text-text-muted text-sm">처리할 신고가 없습니다</p>
+                                    <p className="text-xs text-text-muted/50 mt-1">신고 시스템 연동 후 표시됩니다</p>
+                                </div>
+                            ) : (
+                                <div className="p-4">
+                                    <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 mb-3">
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <MessageSquare size={14} className="text-red-500" />
+                                            <span className="text-sm font-bold text-red-500">부적절한 게시글</span>
+                                        </div>
+                                        <p className="text-xs text-white mb-2">"여기 가지마세요 사장님이..."</p>
+                                        <div className="flex justify-end gap-2">
+                                            <button className="text-xs text-text-muted hover:text-white underline">상세보기</button>
+                                            <button className="text-xs bg-red-500 text-white px-2 py-1 rounded">삭제</button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            )}
                         </div>
                     </div>
                 </div>
