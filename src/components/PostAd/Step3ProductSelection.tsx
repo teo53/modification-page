@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { CreditCard, Clock, RefreshCw, Palette } from 'lucide-react';
+import { PaymentInfo } from '../payment';
 
 interface Step3Props {
     formData: any;
@@ -827,8 +828,19 @@ const Step3ProductSelection: React.FC<Step3Props> = ({
                     disabled={loading || Object.keys(selectedProducts).length === 0 || !allAgreed}
                     className="w-full py-4 rounded-xl bg-gradient-to-r from-primary to-primary/80 text-black font-bold text-xl shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                    {loading ? '등록 중...' : `${grandTotal.toLocaleString()}원 결제하기`}
+                    {loading ? '등록 중...' : `${grandTotal.toLocaleString()}원 결제 신청하기`}
                 </button>
+
+                {/* 결제 안내 섹션 */}
+                {grandTotal > 0 && (
+                    <PaymentInfo
+                        totalAmount={grandTotal}
+                        productName={Object.keys(selectedProducts).map(id => {
+                            const product = products.find(p => p.id === id);
+                            return product ? `${product.name} x${selectedProducts[id].qty}` : '';
+                        }).filter(Boolean).join(', ')}
+                    />
+                )}
             </div>
 
             {/* Navigation - Compact */}
