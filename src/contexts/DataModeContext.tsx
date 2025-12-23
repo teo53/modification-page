@@ -14,12 +14,19 @@ interface DataModeContextType {
 
 const DataModeContext = createContext<DataModeContextType | undefined>(undefined);
 
-const ADMIN_EMAILS = ['admin@lunaalba.com', 'admin@example.com'];
+const ADMIN_EMAILS = ['admin@lunaalba.com', 'admin@example.com', 'admin@dalbitalba.com'];
 const DATA_MODE_KEY = 'lunaalba_data_mode';
+const CRM_MODE_KEY = 'lunaalba_crm_mode';
 
 export const DataModeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [useSampleData, setUseSampleDataState] = useState(() => {
-        // Load from localStorage
+        // Check CRM mode first, then fall back to data mode
+        const crmMode = localStorage.getItem(CRM_MODE_KEY);
+        if (crmMode) {
+            // CRM operational mode = real data, demo mode = sample data
+            return crmMode !== 'operational';
+        }
+        // Fall back to old data mode key
         const saved = localStorage.getItem(DATA_MODE_KEY);
         return saved === 'sample';
     });
@@ -33,14 +40,24 @@ export const DataModeProvider: React.FC<{ children: ReactNode }> = ({ children }
         };
 
         checkAdmin();
-        // Check periodically for login state changes
-        const interval = setInterval(checkAdmin, 1000);
+        // Check periodically for login state changes and CRM mode changes
+        const interval = setInterval(() => {
+            checkAdmin();
+            // Sync with CRM mode
+            const crmMode = localStorage.getItem(CRM_MODE_KEY);
+            if (crmMode) {
+                const shouldUseSample = crmMode !== 'operational';
+                setUseSampleDataState(shouldUseSample);
+            }
+        }, 1000);
         return () => clearInterval(interval);
     }, []);
 
     const setUseSampleData = (value: boolean) => {
         if (!isAdmin) return;
         localStorage.setItem(DATA_MODE_KEY, value ? 'sample' : 'real');
+        // Also sync with CRM mode
+        localStorage.setItem(CRM_MODE_KEY, value ? 'demo' : 'operational');
         setUseSampleDataState(value);
     };
 
