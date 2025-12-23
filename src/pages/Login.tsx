@@ -50,7 +50,7 @@ const Login: React.FC = () => {
             <div className="max-w-md w-full space-y-8">
                 <div className="text-center">
                     <h1 className="text-3xl font-bold text-white mb-2">로그인</h1>
-                    <p className="text-text-muted">LunaAlba에 오신 것을 환영합니다</p>
+                    <p className="text-text-muted">달빛알바에 오신 것을 환영합니다</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="mt-8 space-y-6 bg-accent rounded-xl p-8 border border-white/5">

@@ -38,7 +38,7 @@ const Header: React.FC = () => {
             <div className="container mx-auto px-4 h-16 flex items-center justify-between">
                 {/* Logo */}
                 <Link to="/" className="flex items-center">
-                    <img src="/logo.png" alt="루나알바" className="h-12 object-contain" />
+                    <img src="/logo.png" alt="달빛알바" className="h-12 object-contain" />
                 </Link>
 
                 {/* Search Bar (Desktop) */}
@@ -56,7 +56,7 @@ const Header: React.FC = () => {
                                 if (searchTerm === '관리자모드얍얍') {
                                     input.value = '';
                                     // Auto login as admin
-                                    const result = login('admin@lunaalba.com', 'admin1234');
+                                    const result = login('admin@dalbitalba.com', 'admin1234');
                                     if (result.success) {
                                         setUser(result.user || null);
                                         // Small delay to allow state propagation before navigation

@@ -108,7 +108,7 @@ const SearchResults: React.FC = () => {
                     break;
                 case 'beginner':
                     results = results.filter(ad =>
-                        ad.badges.some(b => b.includes('초보'))
+                        ad.badges.some((b: string) => b.includes('초보'))
                     );
                     break;
                 case 'high-pay':
@@ -119,7 +119,7 @@ const SearchResults: React.FC = () => {
                     break;
                 case 'same-day':
                     results = results.filter(ad =>
-                        ad.badges.some(b => b.includes('당일'))
+                        ad.badges.some((b: string) => b.includes('당일'))
                     );
                     break;
             }

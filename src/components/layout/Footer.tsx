@@ -5,7 +5,7 @@ import { getCurrentUser } from '../../utils/auth';
 
 const Footer: React.FC = () => {
     const user = getCurrentUser();
-    const isAdmin = user?.email === 'admin@lunaalba.com' || user?.email === 'admin@example.com';
+    const isAdmin = user?.email === 'admin@dalbitalba.com' || user?.email === 'admin@example.com';
 
     return (
         <footer className="bg-accent/50 border-t border-white/10 mt-auto">
@@ -64,11 +64,11 @@ const Footer: React.FC = () => {
                             </li>
                             <li className="flex items-center gap-2">
                                 <Mail size={14} />
-                                <span>contact@lunaalba.com</span>
+                                <span>contact@dalbitalba.com</span>
                             </li>
                             <li className="flex items-start gap-2">
                                 <MapPin size={14} className="mt-1 shrink-0" />
-                                <span>서울특별시 강남구 테헤란로<br />123 루나알바빌딩 5층</span>
+                                <span>서울특별시 강남구 테헤란로<br />123 달빛알바빌딩 5층</span>
                             </li>
                         </ul>
                     </div>
@@ -92,11 +92,11 @@ const Footer: React.FC = () => {
                     {/* Company Info */}
                     <div className="text-center text-xs text-text-muted/70 space-y-1">
                         {/* TODO: 아래 정보를 실제 사업자 정보로 반드시 변경하세요 */}
-                        <p>상호명: (주)루나알바 | 대표: 홍길동 | 사업자등록번호: 123-45-67890</p>
+                        <p>상호명: (주)달빛알바 | 대표: 홍길동 | 사업자등록번호: 123-45-67890</p>
                         <p>통신판매업신고번호: 2025-서울강남-00000 | 직업정보제공사업 신고번호: J1234567890123</p>
                         <p className="mt-3 text-text-muted/50">
-                            루나알바는 통신판매중개자이며 통신판매의 당사자가 아닙니다.<br />
-                            따라서 루나알바는 상품·거래정보 및 거래에 대하여 책임을 지지 않습니다.
+                            달빛알바는 통신판매중개자이며 통신판매의 당사자가 아닙니다.<br />
+                            따라서 달빛알바는 상품·거래정보 및 거래에 대하여 책임을 지지 않습니다.
                         </p>
                     </div>
 
@@ -119,12 +119,12 @@ const Footer: React.FC = () => {
 
                     {/* 청소년보호책임자 */}
                     <div className="mt-4 text-center text-xs text-text-muted/70">
-                        <p>청소년보호책임자: 홍길동 (contact@lunaalba.com)</p>
+                        <p>청소년보호책임자: 홍길동 (contact@dalbitalba.com)</p>
                     </div>
 
                     {/* Copyright */}
                     <div className="text-center mt-6 text-sm text-text-muted">
-                        <p>© 2025 LunaAlba. All Rights Reserved.</p>
+                        <p>© 2025 DalbitAlba. All Rights Reserved.</p>
                     </div>
                 </div>
             </div>

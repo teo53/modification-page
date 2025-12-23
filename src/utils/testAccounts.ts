@@ -15,7 +15,7 @@ export interface TestAccount {
 export const testAccounts: TestAccount[] = [
     // 일반 회원 테스트 계정
     {
-        email: 'test@lunaalba.com',
+        email: 'test@dalbitalba.com',
         password: 'test1234',
         name: '테스트유저',
         nickname: '테스터',
@@ -24,7 +24,7 @@ export const testAccounts: TestAccount[] = [
     },
     // 광고주 테스트 계정
     {
-        email: 'advertiser@lunaalba.com',
+        email: 'advertiser@dalbitalba.com',
         password: 'test1234',
         name: '광고주테스트',
         nickname: '광고테스터',
@@ -35,14 +35,14 @@ export const testAccounts: TestAccount[] = [
     },
     // 관리자 테스트 계정 (향후 관리자 기능 추가 시 사용)
     {
-        email: 'admin@lunaalba.com',
+        email: 'admin@dalbitalba.com',
         password: 'admin1234',
         name: '관리자',
         nickname: '어드민',
         phone: '010-0000-0000',
         type: 'advertiser',
         businessNumber: '000-00-00000',
-        businessName: 'LunaAlba Admin'
+        businessName: '달빛알바 Admin'
     }
 ];
 

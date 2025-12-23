@@ -233,7 +233,7 @@ const Signup: React.FC = () => {
                 {/* Header */}
                 <div className="text-center">
                     <h1 className="text-3xl font-bold text-white mb-2">회원가입</h1>
-                    <p className="text-text-muted">LunaAlba의 회원이 되어주세요</p>
+                    <p className="text-text-muted">달빛알바의 회원이 되어주세요</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="mt-8 space-y-6 bg-accent rounded-xl p-8 border border-white/5">
@@ -327,7 +327,7 @@ const Signup: React.FC = () => {
                                     value={formData.email}
                                     onChange={handleChange}
                                     className={`w-full bg-background border rounded-lg py-3 pl-10 pr-4 text-white outline-none transition-colors ${fieldErrors.email ? 'border-red-500 focus:border-red-500' : 'border-white/10 focus:border-primary'}`}
-                                    placeholder="example@lunaalba.com"
+                                    placeholder="example@dalbitalba.com"
                                 />
                             </div>
                             {fieldErrors.email && (
@@ -598,7 +598,7 @@ const Signup: React.FC = () => {
                                 {expandedTerms === 'terms' && (
                                     <div className="px-3 pb-3">
                                         <div className="bg-background rounded p-3 text-xs text-text-muted max-h-32 overflow-y-auto">
-                                            제1조 (목적) 이 약관은 LunaAlba가 제공하는 서비스의 이용조건 및 절차, 회사와 이용자의 권리, 의무 및 책임사항을 규정함을 목적으로 합니다.<br /><br />
+                                            제1조 (목적) 이 약관은 달빛알바가 제공하는 서비스의 이용조건 및 절차, 회사와 이용자의 권리, 의무 및 책임사항을 규정함을 목적으로 합니다.<br /><br />
                                             제2조 (약관의 효력과 변경) 1) 이 약관은 서비스 화면에 게시하거나 기타의 방법으로 공지함으로써 이용자에게 공시하고, 이에 동의한 이용자가 서비스에 가입함으로써 효력이 발생합니다.
                                         </div>
                                     </div>
