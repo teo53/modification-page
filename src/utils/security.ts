@@ -1,8 +1,24 @@
 // Security utilities for anti-debugging and protection
 
+// Admin emails list - users with these emails can access developer tools
+const ADMIN_EMAILS = ['admin@lunaalba.com', 'admin@example.com', 'admin@dalbitalba.com'];
+
+// Check if current user is admin
+export const isCurrentUserAdmin = (): boolean => {
+    try {
+        const userStr = localStorage.getItem('lunaalba_current_user');
+        if (!userStr) return false;
+        const user = JSON.parse(userStr);
+        return ADMIN_EMAILS.includes(user.email);
+    } catch {
+        return false;
+    }
+};
+
 // Disable right-click context menu
 export const disableRightClick = () => {
     document.addEventListener('contextmenu', (e) => {
+        if (isCurrentUserAdmin()) return; // Allow for admins
         e.preventDefault();
         return false;
     });
@@ -11,6 +27,9 @@ export const disableRightClick = () => {
 // Disable keyboard shortcuts for developer tools
 export const disableDevToolsShortcuts = () => {
     document.addEventListener('keydown', (e) => {
+        // Allow all shortcuts for admins
+        if (isCurrentUserAdmin()) return;
+
         // F12
         if (e.key === 'F12') {
             e.preventDefault();
@@ -45,6 +64,9 @@ export const detectDevTools = (callback?: () => void) => {
     const threshold = 160;
 
     const check = () => {
+        // Skip detection for admins
+        if (isCurrentUserAdmin()) return;
+
         const widthThreshold = window.outerWidth - window.innerWidth > threshold;
         const heightThreshold = window.outerHeight - window.innerHeight > threshold;
 
@@ -118,7 +140,12 @@ export const initializeSecurity = (options: {
     if (settings.clearConsole) clearConsolePeriodically();
     if (settings.debuggerTrap) enableDebuggerTrap();
 
-    console.log('%c🛡️ Security measures initialized', 'color: green; font-size: 12px;');
+    // Show different message for admins
+    if (isCurrentUserAdmin()) {
+        console.log('%c🔓 관리자 모드: 개발자 도구 접근이 허용됩니다.', 'color: blue; font-size: 14px; font-weight: bold;');
+    } else {
+        console.log('%c🛡️ Security measures initialized', 'color: green; font-size: 12px;');
+    }
 };
 
 // Rate limiting for API requests (client-side)
