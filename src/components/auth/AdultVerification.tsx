@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Smartphone, CreditCard, User } from 'lucide-react';
-import { login } from '../../utils/auth';
+import { login, getCurrentUser } from '../../utils/auth';
 
-// 성인인증 여부를 세션 스토리지에 저장
+// 성인인증 여부를 로컬 스토리지에 저장 (세션 스토리지에서 변경)
 const ADULT_VERIFIED_KEY = 'lunaalba_adult_verified';
 const ADULT_VERIFIED_TIMESTAMP = 'lunaalba_adult_verified_time';
 
@@ -16,19 +16,28 @@ export const isAdultVerified = (): boolean => {
         return true; // 개발 환경에서는 자동 인증
     }
 
-    const verified = sessionStorage.getItem(ADULT_VERIFIED_KEY);
-    const timestamp = sessionStorage.getItem(ADULT_VERIFIED_TIMESTAMP);
+    // 이미 로그인된 사용자는 자동으로 성인인증 통과
+    const currentUser = getCurrentUser();
+    if (currentUser) {
+        // 로그인된 사용자는 자동으로 성인인증 처리
+        setAdultVerified();
+        return true;
+    }
+
+    // localStorage에서 확인 (브라우저 닫아도 유지)
+    const verified = localStorage.getItem(ADULT_VERIFIED_KEY);
+    const timestamp = localStorage.getItem(ADULT_VERIFIED_TIMESTAMP);
 
     if (!verified || !timestamp) return false;
 
-    // 세션 유효시간: 24시간
+    // 세션 유효시간: 7일 (24시간에서 연장)
     const verifiedTime = parseInt(timestamp);
     const now = Date.now();
-    const twentyFourHours = 24 * 60 * 60 * 1000;
+    const sevenDays = 7 * 24 * 60 * 60 * 1000;
 
-    if (now - verifiedTime > twentyFourHours) {
-        sessionStorage.removeItem(ADULT_VERIFIED_KEY);
-        sessionStorage.removeItem(ADULT_VERIFIED_TIMESTAMP);
+    if (now - verifiedTime > sevenDays) {
+        localStorage.removeItem(ADULT_VERIFIED_KEY);
+        localStorage.removeItem(ADULT_VERIFIED_TIMESTAMP);
         return false;
     }
 
@@ -36,8 +45,8 @@ export const isAdultVerified = (): boolean => {
 };
 
 export const setAdultVerified = () => {
-    sessionStorage.setItem(ADULT_VERIFIED_KEY, 'true');
-    sessionStorage.setItem(ADULT_VERIFIED_TIMESTAMP, Date.now().toString());
+    localStorage.setItem(ADULT_VERIFIED_KEY, 'true');
+    localStorage.setItem(ADULT_VERIFIED_TIMESTAMP, Date.now().toString());
 };
 
 interface AdultVerificationProps {
