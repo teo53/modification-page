@@ -61,7 +61,7 @@ const AdminCRM: React.FC = () => {
     useEffect(() => {
         const checkAuth = () => {
             const user = getCurrentUser();
-            const adminEmails = ['admin@lunaalba.com', 'admin@example.com'];
+            const adminEmails = ['admin@lunaalba.com', 'admin@example.com', 'admin@dalbitalba.com'];
             if (user && adminEmails.includes(user.email)) {
                 setIsAuthorized(true);
             } else {
