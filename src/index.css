@@ -17,6 +17,21 @@
   --font-sans: "Noto Sans KR", "Roboto", sans-serif;
 }
 
+/* ===== Global Button & Interactive Element Styles ===== */
+button,
+[role="button"],
+a,
+input[type="submit"],
+input[type="button"],
+.cursor-pointer {
+  cursor: pointer;
+}
+
+button:disabled,
+button[disabled] {
+  cursor: not-allowed;
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;

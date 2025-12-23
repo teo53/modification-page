@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/layout/Layout';
 import ErrorBoundary from './components/ErrorBoundary';
 import AdultVerification, { isAdultVerified } from './components/auth/AdultVerification';
+import { seedTestAccounts } from './utils/testAccounts';
 
 import Home from './pages/Home';
 
@@ -36,6 +37,11 @@ import JobSeekerPage from './pages/JobSeekerPage';
 
 function App() {
   const [adultVerified, setAdultVerified] = useState(isAdultVerified());
+
+  // 앱 시작 시 테스트 계정 자동 시드 (한 번만 실행)
+  useEffect(() => {
+    seedTestAccounts();
+  }, []);
 
   // 성인인증 필요 시 인증 화면 표시
   if (!adultVerified) {
