@@ -16,8 +16,10 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
+import { SmsService } from './sms.service';
 import { SignupDto } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
+import { SendVerificationCodeDto, VerifyCodeDto } from './dto/phone-verification.dto';
 import { Public } from '../../common/decorators/public.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
@@ -27,6 +29,7 @@ import { ConfigService } from '@nestjs/config';
 export class AuthController {
     constructor(
         private authService: AuthService,
+        private smsService: SmsService,
         private configService: ConfigService,
     ) { }
 
@@ -189,6 +192,36 @@ export class AuthController {
         return {
             success: true,
             data: user,
+        };
+    }
+
+    // ============================================
+    // 휴대폰 인증번호 발송
+    // ============================================
+    @Public()
+    @Post('phone/send-code')
+    @HttpCode(HttpStatus.OK)
+    async sendVerificationCode(@Body() dto: SendVerificationCodeDto) {
+        const result = await this.smsService.sendVerificationCode(dto.phone);
+        return {
+            success: result.success,
+            message: result.message,
+            // 데모 모드에서만 코드 반환
+            ...(result.code && { demoCode: result.code }),
+        };
+    }
+
+    // ============================================
+    // 휴대폰 인증번호 확인
+    // ============================================
+    @Public()
+    @Post('phone/verify-code')
+    @HttpCode(HttpStatus.OK)
+    async verifyCode(@Body() dto: VerifyCodeDto) {
+        const result = await this.smsService.verifyCode(dto.phone, dto.code);
+        return {
+            success: result.success,
+            message: result.message,
         };
     }
 

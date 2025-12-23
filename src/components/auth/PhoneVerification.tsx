@@ -61,20 +61,53 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
         setLoading(true);
         setError('');
 
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        const apiUrl = import.meta.env.VITE_API_URL;
 
-        const code = generateCode();
-        setSentCode(code);
-        setTimer(180); // 3 minutes
-        setStep('code');
+        // 백엔드 API가 설정된 경우 API 호출
+        if (apiUrl) {
+            try {
+                const response = await fetch(`${apiUrl}/auth/phone/send-code`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone: phone.replace(/\D/g, '') }),
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    setTimer(180); // 3 minutes
+                    setStep('code');
+
+                    // 데모 모드인 경우 코드 표시
+                    if (data.demoCode) {
+                        setSentCode(data.demoCode);
+                        console.log(`[DEMO] 인증번호: ${data.demoCode}`);
+                        // 클립보드에 복사
+                        navigator.clipboard?.writeText(data.demoCode);
+                        alert(`[테스트 모드] 인증번호: ${data.demoCode}\n\n클립보드에 복사되었습니다.`);
+                    }
+                } else {
+                    setError(data.message || '인증번호 발송에 실패했습니다.');
+                }
+            } catch (err) {
+                console.error('SMS API Error:', err);
+                setError('서버 연결에 실패했습니다. 잠시 후 다시 시도해주세요.');
+            }
+        } else {
+            // 프론트엔드 데모 모드 (백엔드 없음)
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            const code = generateCode();
+            setSentCode(code);
+            setTimer(180);
+            setStep('code');
+
+            console.log(`[DEMO] 인증번호: ${code}`);
+            navigator.clipboard?.writeText(code);
+            alert(`[데모 모드] 인증번호: ${code}\n\n클립보드에 복사되었습니다.\n실제 서비스에서는 SMS로 전송됩니다.`);
+        }
+
         setLoading(false);
-
-        // In demo mode, show the code in console
-        console.log(`[DEMO] 인증번호: ${code}`);
-
-        // For demo purposes, show an alert with the code
-        alert(`[데모 모드] 인증번호: ${code}\n\n실제 서비스에서는 SMS로 전송됩니다.`);
     };
 
     // Handle code input
@@ -110,14 +143,42 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
         setLoading(true);
         setError('');
 
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 800));
+        const apiUrl = import.meta.env.VITE_API_URL;
 
-        if (enteredCode === sentCode) {
-            setStep('verified');
-            onVerified(true);
+        // 백엔드 API가 설정된 경우 API 호출
+        if (apiUrl) {
+            try {
+                const response = await fetch(`${apiUrl}/auth/phone/verify-code`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        phone: phone.replace(/\D/g, ''),
+                        code: enteredCode
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    setStep('verified');
+                    onVerified(true);
+                } else {
+                    setError(data.message || '인증번호가 일치하지 않습니다.');
+                }
+            } catch (err) {
+                console.error('Verify API Error:', err);
+                setError('서버 연결에 실패했습니다. 잠시 후 다시 시도해주세요.');
+            }
         } else {
-            setError('인증번호가 일치하지 않습니다.');
+            // 프론트엔드 데모 모드 (백엔드 없음)
+            await new Promise(resolve => setTimeout(resolve, 800));
+
+            if (enteredCode === sentCode) {
+                setStep('verified');
+                onVerified(true);
+            } else {
+                setError('인증번호가 일치하지 않습니다.');
+            }
         }
 
         setLoading(false);
