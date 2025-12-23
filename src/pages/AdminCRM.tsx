@@ -49,6 +49,18 @@ const AdminCRM: React.FC = () => {
         localStorage.setItem('lunaalba_crm_mode', newMode ? 'operational' : 'demo');
     };
 
+    // 샘플 회원 데이터 (홍보 시연용)
+    const sampleUsers: StoredUser[] = [
+        { id: 'sample_1', email: 'kim.minjun@example.com', name: '김민준', nickname: '민준이', phone: '010-1234-5678', type: 'worker', createdAt: '2024-12-01T09:00:00Z' },
+        { id: 'sample_2', email: 'lee.sooyoung@example.com', name: '이수영', nickname: '수영맘', phone: '010-2345-6789', type: 'worker', createdAt: '2024-12-05T14:30:00Z' },
+        { id: 'sample_3', email: 'gangnam.lounge@business.com', name: '박대표', nickname: '강남라운지', phone: '010-9999-8888', type: 'advertiser', businessNumber: '123-45-67890', businessName: '강남 프리미엄 라운지', createdAt: '2024-11-15T10:00:00Z' },
+        { id: 'sample_4', email: 'cheongdam.club@business.com', name: '최사장', nickname: '청담클럽', phone: '010-7777-6666', type: 'advertiser', businessNumber: '234-56-78901', businessName: '청담 VIP 클럽', createdAt: '2024-11-20T11:30:00Z' },
+        { id: 'sample_5', email: 'hong.jisoo@example.com', name: '홍지수', nickname: '지수언니', phone: '010-3456-7890', type: 'worker', createdAt: '2024-12-10T16:45:00Z' },
+        { id: 'sample_6', email: 'apgujeong.bar@business.com', name: '정매니저', nickname: '압구정바', phone: '010-5555-4444', type: 'advertiser', businessNumber: '345-67-89012', businessName: '압구정 칵테일 바', createdAt: '2024-12-08T09:15:00Z' },
+        { id: 'sample_7', email: 'shin.yuna@example.com', name: '신유나', nickname: '유나짱', phone: '010-4567-8901', type: 'worker', createdAt: '2024-12-12T13:20:00Z' },
+        { id: 'sample_8', email: 'itaewon.club@business.com', name: '김대표', nickname: '이태원클럽', phone: '010-3333-2222', type: 'advertiser', businessNumber: '456-78-90123', businessName: '이태원 나이트클럽', createdAt: '2024-12-03T18:00:00Z' },
+    ];
+
     const [isAuthorized, setIsAuthorized] = useState(false);
     const [isChecking, setIsChecking] = useState(true);
     const [users, setUsers] = useState<StoredUser[]>([]);
@@ -56,6 +68,9 @@ const AdminCRM: React.FC = () => {
     const [userFilter, setUserFilter] = useState<'all' | 'worker' | 'advertiser'>('all');
     const [analyticsData, setAnalyticsData] = useState<ReturnType<typeof getAnalyticsSummary> | null>(null);
     const [selectedUser, setSelectedUser] = useState<StoredUser | null>(null);
+
+    // 현재 모드에 따른 표시 데이터
+    const displayUsers = crmOperationalMode ? users : sampleUsers;
 
     // Admin auth check - re-check on auth state changes
     useEffect(() => {
@@ -231,9 +246,11 @@ const AdminCRM: React.FC = () => {
                         <span className="text-text-muted">총 회원수</span>
                         <Users className="text-blue-500" size={20} />
                     </div>
-                    <p className="text-3xl font-bold text-white">5,432</p>
+                    <p className="text-3xl font-bold text-white">
+                        {crmOperationalMode ? displayUsers.length.toLocaleString() : '5,432'}
+                    </p>
                     <span className="text-xs text-green-500 flex items-center gap-1 mt-2">
-                        +125명 (오늘)
+                        {crmOperationalMode ? `실제 데이터` : '+125명 (오늘)'}
                     </span>
                 </div>
                 <div className="bg-accent p-6 rounded-xl border border-white/5">
@@ -241,9 +258,11 @@ const AdminCRM: React.FC = () => {
                         <span className="text-text-muted">월 매출</span>
                         <DollarSign className="text-primary" size={20} />
                     </div>
-                    <p className="text-3xl font-bold text-white">₩45.2M</p>
+                    <p className="text-3xl font-bold text-white">
+                        {crmOperationalMode ? '₩0' : '₩45.2M'}
+                    </p>
                     <span className="text-xs text-green-500 flex items-center gap-1 mt-2">
-                        +12.5% (전월 대비)
+                        {crmOperationalMode ? '결제 시스템 연동 필요' : '+12.5% (전월 대비)'}
                     </span>
                 </div>
                 <div className="bg-accent p-6 rounded-xl border border-white/5">
@@ -251,9 +270,11 @@ const AdminCRM: React.FC = () => {
                         <span className="text-text-muted">승인 대기 광고</span>
                         <Clock className="text-yellow-500" size={20} />
                     </div>
-                    <p className="text-3xl font-bold text-white">12</p>
+                    <p className="text-3xl font-bold text-white">
+                        {crmOperationalMode ? '0' : '12'}
+                    </p>
                     <span className="text-xs text-text-muted mt-2">
-                        평균 처리 시간: 1.2시간
+                        {crmOperationalMode ? '광고 시스템 연동 필요' : '평균 처리 시간: 1.2시간'}
                     </span>
                 </div>
                 <div className="bg-accent p-6 rounded-xl border border-white/5">
@@ -261,9 +282,11 @@ const AdminCRM: React.FC = () => {
                         <span className="text-text-muted">신고 접수</span>
                         <AlertTriangle className="text-red-500" size={20} />
                     </div>
-                    <p className="text-3xl font-bold text-white">3</p>
+                    <p className="text-3xl font-bold text-white">
+                        {crmOperationalMode ? '0' : '3'}
+                    </p>
                     <span className="text-xs text-red-500 mt-2">
-                        미처리 건수
+                        {crmOperationalMode ? '신고 시스템 연동 필요' : '미처리 건수'}
                     </span>
                 </div>
             </div>
@@ -419,7 +442,7 @@ const AdminCRM: React.FC = () => {
                             <Users size={20} className="text-blue-400" />
                             <h3 className="font-bold text-white">회원 관리</h3>
                             <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-1 rounded-full">
-                                {users.length}명
+                                {displayUsers.length}명
                             </span>
                         </div>
                         <div className="flex items-center gap-2">
@@ -453,7 +476,7 @@ const AdminCRM: React.FC = () => {
 
                     {/* User List */}
                     <div className="p-4">
-                        {users.filter(u => userFilter === 'all' || u.type === userFilter).length === 0 ? (
+                        {displayUsers.filter(u => userFilter === 'all' || u.type === userFilter).length === 0 ? (
                             <p className="text-center text-text-muted py-8">등록된 회원이 없습니다.</p>
                         ) : userViewMode === 'table' ? (
                             <div className="overflow-x-auto">
@@ -469,7 +492,7 @@ const AdminCRM: React.FC = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {users.filter(u => userFilter === 'all' || u.type === userFilter).map((user) => (
+                                        {displayUsers.filter(u => userFilter === 'all' || u.type === userFilter).map((user) => (
                                             <tr key={user.id} className="border-b border-white/5 hover:bg-white/5">
                                                 <td className="py-3 text-white whitespace-nowrap pr-4 max-w-[200px] truncate" title={user.email}>{user.email}</td>
                                                 <td className="py-3 text-white whitespace-nowrap pr-4">{user.name}</td>
@@ -498,7 +521,7 @@ const AdminCRM: React.FC = () => {
                             </div>
                         ) : (
                             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                {users.filter(u => userFilter === 'all' || u.type === userFilter).map((user) => (
+                                {displayUsers.filter(u => userFilter === 'all' || u.type === userFilter).map((user) => (
                                     <div key={user.id} className="bg-black/30 rounded-lg border border-white/5 p-4">
                                         <div className="flex items-center justify-between mb-3">
                                             <span className={`text-xs px-2 py-1 rounded-full ${user.type === 'advertiser' ? 'bg-primary/20 text-primary' : 'bg-blue-500/20 text-blue-400'}`}>
