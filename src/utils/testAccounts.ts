@@ -16,7 +16,7 @@ export const testAccounts: TestAccount[] = [
     // 일반 회원 테스트 계정
     {
         email: 'test@dalbitalba.com',
-        password: 'test1234',
+        password: 'TestUser2024!',  // 강화된 비밀번호
         name: '테스트유저',
         nickname: '테스터',
         phone: '010-1234-5678',
@@ -25,7 +25,7 @@ export const testAccounts: TestAccount[] = [
     // 광고주 테스트 계정
     {
         email: 'advertiser@dalbitalba.com',
-        password: 'test1234',
+        password: 'Advertiser2024!',  // 강화된 비밀번호
         name: '광고주테스트',
         nickname: '광고테스터',
         phone: '010-9876-5432',
@@ -36,7 +36,7 @@ export const testAccounts: TestAccount[] = [
     // 관리자 테스트 계정 (향후 관리자 기능 추가 시 사용)
     {
         email: 'admin@dalbitalba.com',
-        password: 'admin1234',
+        password: 'DalbitAdmin2024!',  // 강화된 비밀번호
         name: '관리자',
         nickname: '어드민',
         phone: '010-0000-0000',

@@ -110,11 +110,17 @@ const Signup: React.FC = () => {
             errors.email = '올바른 이메일 형식을 입력해주세요. (예: example@email.com)';
         }
 
-        // Password validation
+        // Password validation - 강화된 규칙
         if (!formData.password) {
             errors.password = '비밀번호를 입력해주세요.';
-        } else if (formData.password.length < 6) {
-            errors.password = '비밀번호는 6자 이상이어야 합니다.';
+        } else if (formData.password.length < 8) {
+            errors.password = '비밀번호는 8자 이상이어야 합니다.';
+        } else if (!/[A-Z]/.test(formData.password)) {
+            errors.password = '비밀번호에 대문자를 1개 이상 포함해주세요.';
+        } else if (!/[a-z]/.test(formData.password)) {
+            errors.password = '비밀번호에 소문자를 1개 이상 포함해주세요.';
+        } else if (!/[0-9]/.test(formData.password)) {
+            errors.password = '비밀번호에 숫자를 1개 이상 포함해주세요.';
         }
 
         // Confirm password validation
