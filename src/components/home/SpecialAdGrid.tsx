@@ -1,15 +1,39 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import AdCard from '../ad/AdCard';
 import { specialAds } from '../../data/mockAds';
 import { sampleSpecialAds } from '../../data/sampleAds';
 import { useDataMode } from '../../contexts/DataModeContext';
+import { USE_API_ADS, fetchAdsFromApi } from '../../utils/adStorage';
 
 const SpecialAdGrid: React.FC = () => {
     const { useSampleData } = useDataMode();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const [apiAds, setApiAds] = useState<any[]>([]);
 
-    // Use sample data or real data based on admin toggle
-    const sourceAds = useSampleData ? sampleSpecialAds : specialAds;
+    useEffect(() => {
+        const loadAds = async () => {
+            if (USE_API_ADS && !useSampleData) {
+                try {
+                    const { ads } = await fetchAdsFromApi({
+                        status: 'active',
+                        productType: 'special',
+                        limit: 12
+                    });
+                    setApiAds(ads);
+                } catch (error) {
+                    console.error('Failed to load ads from API:', error);
+                }
+            }
+        };
+        loadAds();
+    }, [useSampleData]);
+
+    // Determine data source: API > Sample > Mock
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const sourceAds: any[] = USE_API_ADS && !useSampleData && apiAds.length > 0
+        ? apiAds
+        : (useSampleData ? sampleSpecialAds : specialAds);
 
     // Filter ads that have valid thumbnails (not empty)
     const adsWithThumbnails = sourceAds.filter(ad =>
@@ -36,11 +60,11 @@ const SpecialAdGrid: React.FC = () => {
                     {adsWithThumbnails.slice(0, 12).map((ad) => (
                         <AdCard
                             key={ad.id}
-                            id={ad.id}
+                            id={String(ad.id)}
                             variant="special"
                             title={ad.title}
                             location={ad.location}
-                            pay={ad.pay}
+                            pay={ad.pay || ad.salary}
                             image={ad.thumbnail}
                             badges={ad.badges}
                             isNew={ad.isNew}
@@ -54,3 +78,4 @@ const SpecialAdGrid: React.FC = () => {
 };
 
 export default SpecialAdGrid;
+

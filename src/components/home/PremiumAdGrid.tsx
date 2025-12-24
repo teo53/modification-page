@@ -1,15 +1,53 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import AdCard from '../ad/AdCard';
 import { vipAds } from '../../data/mockAds';
 import { sampleVipAds } from '../../data/sampleAds';
 import { useDataMode } from '../../contexts/DataModeContext';
+import { USE_API_ADS, fetchAdsFromApi } from '../../utils/adStorage';
+
+interface AdData {
+    id: string;
+    title: string;
+    location: string;
+    pay?: string;
+    salary?: string;
+    thumbnail?: string;
+    badges?: string[];
+    isNew?: boolean;
+    isHot?: boolean;
+    productType?: string;
+}
 
 const PremiumAdGrid: React.FC = () => {
     const { useSampleData } = useDataMode();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const [apiAds, setApiAds] = useState<AdData[]>([]);
 
-    // Use sample data or real data based on admin toggle
-    const sourceAds = useSampleData ? sampleVipAds : vipAds;
+    useEffect(() => {
+        const loadAds = async () => {
+            if (USE_API_ADS && !useSampleData) {
+                try {
+                    const { ads } = await fetchAdsFromApi({
+                        status: 'active',
+                        productType: 'vip',
+                        limit: 12
+                    });
+                    setApiAds(ads as unknown as AdData[]);
+                } catch (error) {
+                    console.error('Failed to load ads from API:', error);
+                }
+            }
+        };
+        loadAds();
+    }, [useSampleData]);
+
+
+    // Determine data source: API > Sample > Mock
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const sourceAds: any[] = USE_API_ADS && !useSampleData && apiAds.length > 0
+        ? apiAds
+        : (useSampleData ? sampleVipAds : vipAds);
 
     // Filter ads that have valid thumbnails (not empty)
     const adsWithThumbnails = sourceAds.filter(ad =>
@@ -39,7 +77,7 @@ const PremiumAdGrid: React.FC = () => {
                         variant="vip"
                         title={ad.title}
                         location={ad.location}
-                        pay={ad.pay}
+                        pay={ad.pay || ad.salary}
                         image={ad.thumbnail}
                         badges={ad.badges}
                         isNew={ad.isNew}
@@ -53,3 +91,4 @@ const PremiumAdGrid: React.FC = () => {
 };
 
 export default PremiumAdGrid;
+

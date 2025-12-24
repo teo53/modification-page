@@ -4,7 +4,10 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis
 import { Users, DollarSign, AlertTriangle, CheckCircle, XCircle, Clock, MessageSquare, Database, Shield, LayoutGrid, Table, Eye, MousePointer, TrendingUp, Activity, Target, X } from 'lucide-react';
 import { getCurrentUser } from '../utils/auth';
 import { getAnalyticsSummary } from '../utils/analytics';
-import { getPendingAds, approveAd, rejectAd, type UserAd } from '../utils/adStorage';
+import {
+    getPendingAds, approveAd, rejectAd, type UserAd,
+    USE_API_ADS, fetchPendingAdsFromApi, approveAdWithApi, rejectAdWithApi
+} from '../utils/adStorage';
 
 // User type from localStorage
 interface StoredUser {
@@ -83,15 +86,32 @@ const AdminCRM: React.FC = () => {
 
     const displayPendingAds = crmOperationalMode ? pendingAds : samplePendingAds;
 
+    // Helper to reload pending ads
+    const reloadPendingAds = async () => {
+        if (USE_API_ADS) {
+            const apiAds = await fetchPendingAdsFromApi();
+            setPendingAds(apiAds);
+        } else {
+            setPendingAds(getPendingAds());
+        }
+    };
+
     // 광고 승인 처리
-    const handleApproveAd = (adId: string) => {
+    const handleApproveAd = async (adId: string) => {
         if (!crmOperationalMode) {
             alert('시연 모드에서는 승인 기능이 비활성화됩니다.');
             return;
         }
-        const result = approveAd(adId);
+
+        let result;
+        if (USE_API_ADS) {
+            result = await approveAdWithApi(adId);
+        } else {
+            result = approveAd(adId);
+        }
+
         if (result.success) {
-            setPendingAds(getPendingAds());
+            await reloadPendingAds();
             alert(result.message);
         } else {
             alert(result.message);
@@ -99,16 +119,22 @@ const AdminCRM: React.FC = () => {
     };
 
     // 광고 반려 처리
-    const handleRejectAd = (adId: string) => {
+    const handleRejectAd = async (adId: string) => {
         if (!crmOperationalMode) {
             alert('시연 모드에서는 반려 기능이 비활성화됩니다.');
             return;
         }
         const reason = prompt('반려 사유를 입력하세요:', '광고 정책 위반');
         if (reason !== null) {
-            const result = rejectAd(adId, reason);
+            let result;
+            if (USE_API_ADS) {
+                result = await rejectAdWithApi(adId, reason);
+            } else {
+                result = rejectAd(adId, reason);
+            }
+
             if (result.success) {
-                setPendingAds(getPendingAds());
+                await reloadPendingAds();
                 alert(result.message);
             } else {
                 alert(result.message);
@@ -141,9 +167,14 @@ const AdminCRM: React.FC = () => {
         };
         loadUsers();
 
-        // Load pending ads
-        const loadPendingAds = () => {
-            setPendingAds(getPendingAds());
+        // Load pending ads (API or localStorage)
+        const loadPendingAds = async () => {
+            if (USE_API_ADS) {
+                const apiAds = await fetchPendingAdsFromApi();
+                setPendingAds(apiAds);
+            } else {
+                setPendingAds(getPendingAds());
+            }
         };
         loadPendingAds();
 
