@@ -16,7 +16,9 @@ export {
 
 // Use API mode when VITE_API_URL is set and not localhost
 const API_URL = import.meta.env.VITE_API_URL || '';
-export const USE_API_AUTH = API_URL.length > 0 && !API_URL.includes('localhost');
+// TODO: API 연결 문제 해결 후 다시 활성화
+// export const USE_API_AUTH = API_URL.length > 0 && !API_URL.includes('localhost');
+export const USE_API_AUTH = false; // 임시로 localStorage 인증 사용
 
 export interface User {
     id: string;
