@@ -11,7 +11,7 @@ const CommunityPreview: React.FC = () => {
 
     // Use sample data or real data based on admin toggle, but also checking localStorage fallback
     const sourcePosts = useSampleData ? sampleCommunityPosts : communityData;
-    
+
     // Merge localStorage posts (fallback/demo)
     const localPostsRaw = JSON.parse(localStorage.getItem('lunaalba_community_posts') || '[]');
     // Map local posts to compatible format if needed (though they should be saved in compatible format)
@@ -56,10 +56,18 @@ const CommunityPreview: React.FC = () => {
             <div className="grid md:grid-cols-2 gap-6">
                 {/* Popular Posts */}
                 <div className="bg-accent/30 rounded-xl border border-white/5 p-6">
-                    <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                        <Sparkles className="text-yellow-400" size={20} />
-                        인기 게시글
-                    </h3>
+                    <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                            <Sparkles className="text-yellow-400" size={20} />
+                            인기 게시글
+                        </h3>
+                        <Link
+                            to="/community"
+                            className="text-sm text-primary hover:text-primary/80 font-medium flex items-center gap-1"
+                        >
+                            더보기 →
+                        </Link>
+                    </div>
                     <div className="space-y-3">
                         {communityPosts.slice(0, 5).map((post) => (
                             <Link
