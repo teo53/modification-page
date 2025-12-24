@@ -53,7 +53,7 @@ export class AdsService {
         const where: any = {
             tenantId,
             deletedAt: null,
-            status: status || AdStatus.ACTIVE,
+            status: status ? (status.toUpperCase() as AdStatus) : AdStatus.ACTIVE,
         };
 
         if (search) {

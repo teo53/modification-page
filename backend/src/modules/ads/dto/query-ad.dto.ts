@@ -25,8 +25,8 @@ export class QueryAdDto {
     industry?: string;
 
     @IsOptional()
-    @IsEnum(AdStatus)
-    status?: AdStatus;
+    @IsString()
+    status?: string;
 
     @IsOptional()
     @IsString()
