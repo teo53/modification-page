@@ -32,5 +32,5 @@ ENV PORT=8080
 
 EXPOSE 8080
 
-# 시작
-CMD ["node", "dist/src/main.js"]
+# 시작 - prisma migrate deploy 실행 후 서버 시작
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/src/main.js"]
