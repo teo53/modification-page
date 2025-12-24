@@ -38,7 +38,7 @@ const Header: React.FC = () => {
             <div className="container mx-auto px-4 h-16 flex items-center justify-between">
                 {/* Logo */}
                 <Link to="/" className="flex items-center">
-                    <img src="/logo.png" alt="달빛알바" className="h-12 object-contain" />
+                    <img src="/logo-horizontal-white.png" alt="달빛알바" className="h-10 object-contain" />
                 </Link>
 
                 {/* Search Bar (Desktop) */}

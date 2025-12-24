@@ -30,6 +30,7 @@ export interface UserAd {
     };
     productType: 'diamond' | 'sapphire' | 'ruby' | 'gold' | 'vip' | 'premium' | 'special' | 'regular' | 'highlight' | 'jumpup';
     status: 'pending' | 'active' | 'expired' | 'rejected' | 'closed';
+    rejectionReason?: string;  // 반려 사유 (rejected 상태일 때)
     views: number;
     inquiries: number;
     createdAt: string;
@@ -67,17 +68,17 @@ export const createAd = (adData: Omit<UserAd, 'id' | 'userId' | 'status' | 'view
         id: Date.now().toString(),
         userId: user.id,
         ...adData,
-        status: 'active', // Auto approve for demo
-        views: Math.floor(Math.random() * 500) + 100,
-        inquiries: Math.floor(Math.random() * 20) + 5,
+        status: 'pending', // Requires admin approval
+        views: 0,
+        inquiries: 0,
         createdAt: new Date().toISOString(),
-        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days
+        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days from approval
     };
 
     ads.push(newAd);
     saveAds(ads);
 
-    return { success: true, message: '광고가 성공적으로 등록되었습니다!', ad: newAd };
+    return { success: true, message: '광고가 등록되었습니다. 관리자 승인 후 노출됩니다.', ad: newAd };
 };
 
 // Get ads by current user
@@ -192,3 +193,49 @@ export const closeAd = (id: string): { success: boolean; message: string } => {
     return { success: true, message: '광고가 마감되었습니다.' };
 };
 
+// Get all pending ads (for admin)
+export const getPendingAds = (): UserAd[] => {
+    const ads = getAllAds();
+    return ads.filter(ad => ad.status === 'pending');
+};
+
+// Approve ad (admin only)
+export const approveAd = (id: string): { success: boolean; message: string } => {
+    const ads = getAllAds();
+    const index = ads.findIndex(ad => ad.id === id);
+
+    if (index === -1) {
+        return { success: false, message: '광고를 찾을 수 없습니다.' };
+    }
+
+    // Set expiration from today (approval date)
+    const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+
+    ads[index] = {
+        ...ads[index],
+        status: 'active',
+        expiresAt: expiresAt.toISOString(),
+    };
+
+    saveAds(ads);
+    return { success: true, message: '광고가 승인되었습니다.' };
+};
+
+// Reject ad (admin only)
+export const rejectAd = (id: string, reason?: string): { success: boolean; message: string } => {
+    const ads = getAllAds();
+    const index = ads.findIndex(ad => ad.id === id);
+
+    if (index === -1) {
+        return { success: false, message: '광고를 찾을 수 없습니다.' };
+    }
+
+    ads[index] = {
+        ...ads[index],
+        status: 'rejected',
+        rejectionReason: reason || '광고 정책 위반',
+    };
+
+    saveAds(ads);
+    return { success: true, message: '광고가 반려되었습니다.' };
+};

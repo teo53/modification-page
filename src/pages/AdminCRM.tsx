@@ -4,6 +4,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis
 import { Users, DollarSign, AlertTriangle, CheckCircle, XCircle, Clock, MessageSquare, Database, Shield, LayoutGrid, Table, Eye, MousePointer, TrendingUp, Activity, Target, X } from 'lucide-react';
 import { getCurrentUser } from '../utils/auth';
 import { getAnalyticsSummary } from '../utils/analytics';
+import { getPendingAds, approveAd, rejectAd, type UserAd } from '../utils/adStorage';
 
 // User type from localStorage
 interface StoredUser {
@@ -68,9 +69,52 @@ const AdminCRM: React.FC = () => {
     const [userFilter, setUserFilter] = useState<'all' | 'worker' | 'advertiser'>('all');
     const [analyticsData, setAnalyticsData] = useState<ReturnType<typeof getAnalyticsSummary> | null>(null);
     const [selectedUser, setSelectedUser] = useState<StoredUser | null>(null);
+    const [pendingAds, setPendingAds] = useState<UserAd[]>([]);
 
     // 현재 모드에 따른 표시 데이터
     const displayUsers = crmOperationalMode ? users : sampleUsers;
+
+    // 샘플 대기 광고 (홍보 시연용)
+    const samplePendingAds = [
+        { id: 'sample_ad_1', title: '강남 룸살롱 신규 오픈', businessName: '강남 프리미엄 라운지', productType: 'diamond' as const, createdAt: new Date(Date.now() - 10 * 60 * 1000).toISOString() },
+        { id: 'sample_ad_2', title: '청담 라운지 프리미엄', businessName: '청담 VIP 클럽', productType: 'sapphire' as const, createdAt: new Date(Date.now() - 25 * 60 * 1000).toISOString() },
+        { id: 'sample_ad_3', title: '압구정 클럽 리뉴얼', businessName: '압구정 칵테일 바', productType: 'gold' as const, createdAt: new Date(Date.now() - 60 * 60 * 1000).toISOString() },
+    ];
+
+    const displayPendingAds = crmOperationalMode ? pendingAds : samplePendingAds;
+
+    // 광고 승인 처리
+    const handleApproveAd = (adId: string) => {
+        if (!crmOperationalMode) {
+            alert('시연 모드에서는 승인 기능이 비활성화됩니다.');
+            return;
+        }
+        const result = approveAd(adId);
+        if (result.success) {
+            setPendingAds(getPendingAds());
+            alert(result.message);
+        } else {
+            alert(result.message);
+        }
+    };
+
+    // 광고 반려 처리
+    const handleRejectAd = (adId: string) => {
+        if (!crmOperationalMode) {
+            alert('시연 모드에서는 반려 기능이 비활성화됩니다.');
+            return;
+        }
+        const reason = prompt('반려 사유를 입력하세요:', '광고 정책 위반');
+        if (reason !== null) {
+            const result = rejectAd(adId, reason);
+            if (result.success) {
+                setPendingAds(getPendingAds());
+                alert(result.message);
+            } else {
+                alert(result.message);
+            }
+        }
+    };
 
     // Admin auth check - re-check on auth state changes
     useEffect(() => {
@@ -97,6 +141,12 @@ const AdminCRM: React.FC = () => {
         };
         loadUsers();
 
+        // Load pending ads
+        const loadPendingAds = () => {
+            setPendingAds(getPendingAds());
+        };
+        loadPendingAds();
+
         // Load analytics data
         const loadAnalytics = () => {
             const data = getAnalyticsSummary();
@@ -105,8 +155,11 @@ const AdminCRM: React.FC = () => {
         };
         loadAnalytics();
 
-        // Refresh analytics every 5 seconds
-        const analyticsInterval = setInterval(loadAnalytics, 5000);
+        // Refresh analytics and pending ads every 5 seconds
+        const analyticsInterval = setInterval(() => {
+            loadAnalytics();
+            loadPendingAds();
+        }, 5000);
 
         return () => {
             window.removeEventListener('authStateChange', checkAuth);
@@ -358,46 +411,65 @@ const AdminCRM: React.FC = () => {
                             <div className="p-4 border-b border-white/5 flex justify-between items-center">
                                 <h3 className="font-bold text-white">승인 대기 목록</h3>
                                 <span className="bg-yellow-500/20 text-yellow-500 text-xs px-2 py-1 rounded-full">
-                                    {crmOperationalMode ? '0건' : '12건'}
+                                    {displayPendingAds.length}건
                                 </span>
                             </div>
-                            {crmOperationalMode ? (
+                            {displayPendingAds.length === 0 ? (
                                 <div className="p-8 text-center">
                                     <Clock size={32} className="mx-auto text-text-muted mb-2 opacity-50" />
                                     <p className="text-text-muted text-sm">대기 중인 승인 요청이 없습니다</p>
-                                    <p className="text-xs text-text-muted/50 mt-1">광고 시스템 연동 후 표시됩니다</p>
+                                    <p className="text-xs text-text-muted/50 mt-1">광고 등록 시 여기에 표시됩니다</p>
                                 </div>
                             ) : (
                                 <>
                                     <div className="divide-y divide-white/5">
-                                        {[
-                                            { title: '강남 룸살롱 신규 오픈', type: 'VIP', owner: '김사장님', time: '10분 전' },
-                                            { title: '청담 라운지 프리미엄', type: 'Premium', owner: '박대표님', time: '25분 전' },
-                                            { title: '압구정 클럽 리뉴얼', type: 'VIP', owner: '이사장님', time: '1시간 전' },
-                                        ].map((item, i) => (
-                                            <div key={i} className="p-4 hover:bg-white/5 transition-colors">
-                                                <div className="flex justify-between items-start mb-2">
-                                                    <span className="text-sm font-medium text-white">{item.title}</span>
-                                                    <span className="text-xs text-text-muted">{item.time}</span>
+                                        {displayPendingAds.slice(0, 5).map((ad) => {
+                                            const timeAgo = Math.floor((Date.now() - new Date(ad.createdAt).getTime()) / 60000);
+                                            const timeText = timeAgo < 60 ? `${timeAgo}분 전` : `${Math.floor(timeAgo / 60)}시간 전`;
+                                            const productLabel = ad.productType === 'diamond' ? 'Diamond' :
+                                                ad.productType === 'sapphire' ? 'Sapphire' :
+                                                    ad.productType === 'ruby' ? 'Ruby' :
+                                                        ad.productType === 'gold' ? 'Gold' :
+                                                            ad.productType === 'premium' ? 'Premium' :
+                                                                ad.productType === 'special' ? 'Special' : 'Regular';
+                                            return (
+                                                <div key={ad.id} className="p-4 hover:bg-white/5 transition-colors">
+                                                    <div className="flex justify-between items-start mb-2">
+                                                        <span className="text-sm font-medium text-white">{ad.title}</span>
+                                                        <span className="text-xs text-text-muted">{timeText}</span>
+                                                    </div>
+                                                    <div className="flex items-center gap-2 mb-3">
+                                                        <span className={`text-xs px-1.5 py-0.5 rounded ${['diamond', 'sapphire', 'ruby', 'gold'].includes(ad.productType)
+                                                            ? 'bg-primary/20 text-primary'
+                                                            : 'bg-secondary/20 text-secondary'
+                                                            }`}>{productLabel}</span>
+                                                        <span className="text-xs text-text-muted">{ad.businessName}</span>
+                                                    </div>
+                                                    <div className="flex gap-2">
+                                                        <button
+                                                            onClick={() => handleApproveAd(ad.id)}
+                                                            className="flex-1 bg-green-500/20 text-green-500 text-xs py-1.5 rounded hover:bg-green-500/30 flex items-center justify-center gap-1"
+                                                        >
+                                                            <CheckCircle size={12} /> 승인
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleRejectAd(ad.id)}
+                                                            className="flex-1 bg-red-500/20 text-red-500 text-xs py-1.5 rounded hover:bg-red-500/30 flex items-center justify-center gap-1"
+                                                        >
+                                                            <XCircle size={12} /> 반려
+                                                        </button>
+                                                    </div>
                                                 </div>
-                                                <div className="flex items-center gap-2 mb-3">
-                                                    <span className={`text-xs px-1.5 py-0.5 rounded ${item.type === 'VIP' ? 'bg-primary/20 text-primary' : 'bg-secondary/20 text-secondary'}`}>{item.type}</span>
-                                                    <span className="text-xs text-text-muted">{item.owner}</span>
-                                                </div>
-                                                <div className="flex gap-2">
-                                                    <button className="flex-1 bg-green-500/20 text-green-500 text-xs py-1.5 rounded hover:bg-green-500/30 flex items-center justify-center gap-1">
-                                                        <CheckCircle size={12} /> 승인
-                                                    </button>
-                                                    <button className="flex-1 bg-red-500/20 text-red-500 text-xs py-1.5 rounded hover:bg-red-500/30 flex items-center justify-center gap-1">
-                                                        <XCircle size={12} /> 반려
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        ))}
+                                            );
+                                        })}
                                     </div>
-                                    <div className="p-3 text-center border-t border-white/5">
-                                        <button className="text-xs text-text-muted hover:text-white">전체보기</button>
-                                    </div>
+                                    {displayPendingAds.length > 5 && (
+                                        <div className="p-3 text-center border-t border-white/5">
+                                            <button className="text-xs text-text-muted hover:text-white">
+                                                +{displayPendingAds.length - 5}건 더보기
+                                            </button>
+                                        </div>
+                                    )}
                                 </>
                             )}
                         </div>
@@ -407,68 +479,72 @@ const AdminCRM: React.FC = () => {
                             <div className="p-4 border-b border-white/5">
                                 <h3 className="font-bold text-white">실시간 활동 로그</h3>
                             </div>
-                            {crmOperationalMode ? (
-                                <div className="p-8 text-center">
-                                    <Activity size={32} className="mx-auto text-text-muted mb-2 opacity-50" />
-                                    <p className="text-text-muted text-sm">활동 로그가 없습니다</p>
-                                    <p className="text-xs text-text-muted/50 mt-1">실시간 로깅 시스템 연동 후 표시됩니다</p>
-                                </div>
-                            ) : (
-                                <div className="p-4 space-y-4">
-                                    {[
-                                        { type: 'join', text: '신규 회원 가입 (user123)', time: '방금 전' },
-                                        { type: 'ad', text: '새로운 광고 등록 요청', time: '5분 전' },
-                                        { type: 'report', text: '게시글 신고 접수', time: '12분 전' },
-                                        { type: 'payment', text: 'VIP 상품 결제 완료', time: '25분 전' },
-                                    ].map((log, i) => (
-                                        <div key={i} className="flex items-start gap-3">
-                                            <div className={`mt-1 w-2 h-2 rounded-full ${log.type === 'join' ? 'bg-blue-500' :
-                                                log.type === 'ad' ? 'bg-yellow-500' :
-                                                    log.type === 'report' ? 'bg-red-500' : 'bg-green-500'
-                                                }`} />
-                                            <div>
-                                                <p className="text-sm text-white">{log.text}</p>
-                                                <span className="text-xs text-text-muted">{log.time}</span>
+                            {
+                                crmOperationalMode ? (
+                                    <div className="p-8 text-center">
+                                        <Activity size={32} className="mx-auto text-text-muted mb-2 opacity-50" />
+                                        <p className="text-text-muted text-sm">활동 로그가 없습니다</p>
+                                        <p className="text-xs text-text-muted/50 mt-1">실시간 로깅 시스템 연동 후 표시됩니다</p>
+                                    </div>
+                                ) : (
+                                    <div className="p-4 space-y-4">
+                                        {[
+                                            { type: 'join', text: '신규 회원 가입 (user123)', time: '방금 전' },
+                                            { type: 'ad', text: '새로운 광고 등록 요청', time: '5분 전' },
+                                            { type: 'report', text: '게시글 신고 접수', time: '12분 전' },
+                                            { type: 'payment', text: 'VIP 상품 결제 완료', time: '25분 전' },
+                                        ].map((log, i) => (
+                                            <div key={i} className="flex items-start gap-3">
+                                                <div className={`mt-1 w-2 h-2 rounded-full ${log.type === 'join' ? 'bg-blue-500' :
+                                                    log.type === 'ad' ? 'bg-yellow-500' :
+                                                        log.type === 'report' ? 'bg-red-500' : 'bg-green-500'
+                                                    }`} />
+                                                <div>
+                                                    <p className="text-sm text-white">{log.text}</p>
+                                                    <span className="text-xs text-text-muted">{log.time}</span>
+                                                </div>
                                             </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
+                                        ))}
+                                    </div>
+                                )
+                            }
                         </div>
 
                         {/* Reported Content */}
-                        <div className="bg-accent rounded-xl border border-white/5 overflow-hidden">
+                        <div className="bg-accent rounded-xl border border-white/5 overflow-hidden" >
                             <div className="p-4 border-b border-white/5 flex justify-between items-center">
                                 <h3 className="font-bold text-white">신고 관리</h3>
                                 <AlertTriangle size={16} className="text-red-500" />
                             </div>
-                            {crmOperationalMode ? (
-                                <div className="p-8 text-center">
-                                    <CheckCircle size={32} className="mx-auto text-green-500 mb-2 opacity-50" />
-                                    <p className="text-text-muted text-sm">처리할 신고가 없습니다</p>
-                                    <p className="text-xs text-text-muted/50 mt-1">신고 시스템 연동 후 표시됩니다</p>
-                                </div>
-                            ) : (
-                                <div className="p-4">
-                                    <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 mb-3">
-                                        <div className="flex items-center gap-2 mb-1">
-                                            <MessageSquare size={14} className="text-red-500" />
-                                            <span className="text-sm font-bold text-red-500">부적절한 게시글</span>
-                                        </div>
-                                        <p className="text-xs text-white mb-2">"여기 가지마세요 사장님이..."</p>
-                                        <div className="flex justify-end gap-2">
-                                            <button className="text-xs text-text-muted hover:text-white underline">상세보기</button>
-                                            <button className="text-xs bg-red-500 text-white px-2 py-1 rounded">삭제</button>
+                            {
+                                crmOperationalMode ? (
+                                    <div className="p-8 text-center">
+                                        <CheckCircle size={32} className="mx-auto text-green-500 mb-2 opacity-50" />
+                                        <p className="text-text-muted text-sm">처리할 신고가 없습니다</p>
+                                        <p className="text-xs text-text-muted/50 mt-1">신고 시스템 연동 후 표시됩니다</p>
+                                    </div>
+                                ) : (
+                                    <div className="p-4">
+                                        <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 mb-3">
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <MessageSquare size={14} className="text-red-500" />
+                                                <span className="text-sm font-bold text-red-500">부적절한 게시글</span>
+                                            </div>
+                                            <p className="text-xs text-white mb-2">"여기 가지마세요 사장님이..."</p>
+                                            <div className="flex justify-end gap-2">
+                                                <button className="text-xs text-text-muted hover:text-white underline">상세보기</button>
+                                                <button className="text-xs bg-red-500 text-white px-2 py-1 rounded">삭제</button>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            )}
+                                )
+                            }
                         </div>
                     </div>
                 </div>
 
                 {/* User Management Section */}
-                <div className="mt-8 bg-accent rounded-xl border border-white/5 overflow-hidden">
+                <div className="mt-8 bg-accent rounded-xl border border-white/5 overflow-hidden" >
                     <div className="p-4 border-b border-white/5 flex justify-between items-center">
                         <div className="flex items-center gap-3">
                             <Users size={20} className="text-blue-400" />
@@ -581,130 +657,134 @@ const AdminCRM: React.FC = () => {
                 </div>
 
                 {/* Real-time Analytics Section */}
-                {analyticsData && (
-                    <div className="mt-8 bg-accent rounded-xl border border-white/5 overflow-hidden">
-                        <div className="p-4 border-b border-white/5 flex justify-between items-center">
-                            <div className="flex items-center gap-3">
-                                <Activity size={20} className="text-green-400" />
-                                <h3 className="font-bold text-white">실시간 사용자 분석</h3>
-                                <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full animate-pulse">
-                                    LIVE
-                                </span>
-                            </div>
-                        </div>
-                        <div className="p-4">
-                            {/* Quick Stats */}
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                                <div className="bg-black/30 rounded-lg p-4">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <MousePointer size={16} className="text-blue-400" />
-                                        <span className="text-xs text-text-muted">클릭 (24h)</span>
-                                    </div>
-                                    <p className="text-2xl font-bold text-white">{analyticsData.summary.totalClicks24h}</p>
-                                </div>
-                                <div className="bg-black/30 rounded-lg p-4">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <Eye size={16} className="text-purple-400" />
-                                        <span className="text-xs text-text-muted">페이지뷰 (24h)</span>
-                                    </div>
-                                    <p className="text-2xl font-bold text-white">{analyticsData.summary.pageViews24h}</p>
-                                </div>
-                                <div className="bg-black/30 rounded-lg p-4">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <Users size={16} className="text-green-400" />
-                                        <span className="text-xs text-text-muted">방문자 (24h)</span>
-                                    </div>
-                                    <p className="text-2xl font-bold text-white">{analyticsData.summary.uniqueVisitors24h}</p>
-                                </div>
-                                <div className="bg-black/30 rounded-lg p-4">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <Target size={16} className="text-primary" />
-                                        <span className="text-xs text-text-muted">광고 상호작용</span>
-                                    </div>
-                                    <p className="text-2xl font-bold text-white">{analyticsData.summary.adInteractions24h}</p>
+                {
+                    analyticsData && (
+                        <div className="mt-8 bg-accent rounded-xl border border-white/5 overflow-hidden">
+                            <div className="p-4 border-b border-white/5 flex justify-between items-center">
+                                <div className="flex items-center gap-3">
+                                    <Activity size={20} className="text-green-400" />
+                                    <h3 className="font-bold text-white">실시간 사용자 분석</h3>
+                                    <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full animate-pulse">
+                                        LIVE
+                                    </span>
                                 </div>
                             </div>
+                            <div className="p-4">
+                                {/* Quick Stats */}
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                                    <div className="bg-black/30 rounded-lg p-4">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <MousePointer size={16} className="text-blue-400" />
+                                            <span className="text-xs text-text-muted">클릭 (24h)</span>
+                                        </div>
+                                        <p className="text-2xl font-bold text-white">{analyticsData.summary.totalClicks24h}</p>
+                                    </div>
+                                    <div className="bg-black/30 rounded-lg p-4">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <Eye size={16} className="text-purple-400" />
+                                            <span className="text-xs text-text-muted">페이지뷰 (24h)</span>
+                                        </div>
+                                        <p className="text-2xl font-bold text-white">{analyticsData.summary.pageViews24h}</p>
+                                    </div>
+                                    <div className="bg-black/30 rounded-lg p-4">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <Users size={16} className="text-green-400" />
+                                            <span className="text-xs text-text-muted">방문자 (24h)</span>
+                                        </div>
+                                        <p className="text-2xl font-bold text-white">{analyticsData.summary.uniqueVisitors24h}</p>
+                                    </div>
+                                    <div className="bg-black/30 rounded-lg p-4">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <Target size={16} className="text-primary" />
+                                            <span className="text-xs text-text-muted">광고 상호작용</span>
+                                        </div>
+                                        <p className="text-2xl font-bold text-white">{analyticsData.summary.adInteractions24h}</p>
+                                    </div>
+                                </div>
 
-                            {/* Page Popularity */}
-                            {analyticsData.pageStats.length > 0 && (
-                                <div className="mb-6">
-                                    <h4 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
-                                        <TrendingUp size={16} className="text-primary" />
-                                        인기 페이지
-                                    </h4>
-                                    <div className="space-y-2">
-                                        {analyticsData.pageStats.map((stat, i) => (
-                                            <div key={i} className="flex items-center gap-3">
-                                                <span className="text-xs text-text-muted w-24 truncate">{stat.page}</span>
-                                                <div className="flex-1 h-2 bg-black/30 rounded-full overflow-hidden">
-                                                    <div
-                                                        className="h-full bg-primary rounded-full"
-                                                        style={{ width: `${Math.min(100, (stat.count / Math.max(...analyticsData.pageStats.map(s => s.count))) * 100)}%` }}
-                                                    />
+                                {/* Page Popularity */}
+                                {analyticsData.pageStats.length > 0 && (
+                                    <div className="mb-6">
+                                        <h4 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
+                                            <TrendingUp size={16} className="text-primary" />
+                                            인기 페이지
+                                        </h4>
+                                        <div className="space-y-2">
+                                            {analyticsData.pageStats.map((stat, i) => (
+                                                <div key={i} className="flex items-center gap-3">
+                                                    <span className="text-xs text-text-muted w-24 truncate">{stat.page}</span>
+                                                    <div className="flex-1 h-2 bg-black/30 rounded-full overflow-hidden">
+                                                        <div
+                                                            className="h-full bg-primary rounded-full"
+                                                            style={{ width: `${Math.min(100, (stat.count / Math.max(...analyticsData.pageStats.map(s => s.count))) * 100)}%` }}
+                                                        />
+                                                    </div>
+                                                    <span className="text-xs text-white font-bold">{stat.count}</span>
                                                 </div>
-                                                <span className="text-xs text-white font-bold">{stat.count}</span>
-                                            </div>
-                                        ))}
+                                            ))}
+                                        </div>
                                     </div>
-                                </div>
-                            )}
+                                )}
+                            </div>
                         </div>
-                    </div>
-                )}
+                    )
+                }
 
                 {/* Ad Performance Analytics */}
-                {analyticsData && analyticsData.adStats.length > 0 && (
-                    <div className="mt-8 bg-accent rounded-xl border border-white/5 overflow-hidden">
-                        <div className="p-4 border-b border-white/5 flex justify-between items-center">
-                            <div className="flex items-center gap-3">
-                                <Target size={20} className="text-primary" />
-                                <h3 className="font-bold text-white">광고 효율 분석</h3>
+                {
+                    analyticsData && analyticsData.adStats.length > 0 && (
+                        <div className="mt-8 bg-accent rounded-xl border border-white/5 overflow-hidden">
+                            <div className="p-4 border-b border-white/5 flex justify-between items-center">
+                                <div className="flex items-center gap-3">
+                                    <Target size={20} className="text-primary" />
+                                    <h3 className="font-bold text-white">광고 효율 분석</h3>
+                                </div>
                             </div>
-                        </div>
-                        <div className="p-4">
-                            <div className="overflow-x-auto">
-                                <table className="w-full text-sm">
-                                    <thead>
-                                        <tr className="border-b border-white/10 text-left">
-                                            <th className="pb-2 text-text-muted font-medium">광고 제목</th>
-                                            <th className="pb-2 text-text-muted font-medium">유형</th>
-                                            <th className="pb-2 text-text-muted font-medium text-center">노출수</th>
-                                            <th className="pb-2 text-text-muted font-medium text-center">클릭수</th>
-                                            <th className="pb-2 text-text-muted font-medium text-center">CTR</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {analyticsData.adStats.slice(0, 10).map((ad) => (
-                                            <tr key={ad.adId} className="border-b border-white/5 hover:bg-white/5">
-                                                <td className="py-3 text-white max-w-48 truncate">{ad.title}</td>
-                                                <td className="py-3">
-                                                    <span className={`text-xs px-2 py-1 rounded-full ${ad.type === 'vip' ? 'bg-primary/20 text-primary' :
-                                                        ad.type === 'special' ? 'bg-secondary/20 text-secondary' :
-                                                            'bg-white/10 text-white/70'
-                                                        }`}>
-                                                        {ad.type.toUpperCase()}
-                                                    </span>
-                                                </td>
-                                                <td className="py-3 text-center text-white">{ad.views}</td>
-                                                <td className="py-3 text-center text-white">{ad.clicks}</td>
-                                                <td className="py-3 text-center">
-                                                    <span className={`font-bold ${parseFloat(ad.ctr) >= 5 ? 'text-green-400' :
-                                                        parseFloat(ad.ctr) >= 2 ? 'text-yellow-400' : 'text-red-400'
-                                                        }`}>
-                                                        {ad.ctr}%
-                                                    </span>
-                                                </td>
+                            <div className="p-4">
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-sm">
+                                        <thead>
+                                            <tr className="border-b border-white/10 text-left">
+                                                <th className="pb-2 text-text-muted font-medium">광고 제목</th>
+                                                <th className="pb-2 text-text-muted font-medium">유형</th>
+                                                <th className="pb-2 text-text-muted font-medium text-center">노출수</th>
+                                                <th className="pb-2 text-text-muted font-medium text-center">클릭수</th>
+                                                <th className="pb-2 text-text-muted font-medium text-center">CTR</th>
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            {analyticsData.adStats.slice(0, 10).map((ad) => (
+                                                <tr key={ad.adId} className="border-b border-white/5 hover:bg-white/5">
+                                                    <td className="py-3 text-white max-w-48 truncate">{ad.title}</td>
+                                                    <td className="py-3">
+                                                        <span className={`text-xs px-2 py-1 rounded-full ${ad.type === 'vip' ? 'bg-primary/20 text-primary' :
+                                                            ad.type === 'special' ? 'bg-secondary/20 text-secondary' :
+                                                                'bg-white/10 text-white/70'
+                                                            }`}>
+                                                            {ad.type.toUpperCase()}
+                                                        </span>
+                                                    </td>
+                                                    <td className="py-3 text-center text-white">{ad.views}</td>
+                                                    <td className="py-3 text-center text-white">{ad.clicks}</td>
+                                                    <td className="py-3 text-center">
+                                                        <span className={`font-bold ${parseFloat(ad.ctr) >= 5 ? 'text-green-400' :
+                                                            parseFloat(ad.ctr) >= 2 ? 'text-yellow-400' : 'text-red-400'
+                                                            }`}>
+                                                            {ad.ctr}%
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                {analyticsData.adStats.length === 0 && (
+                                    <p className="text-center text-text-muted py-8">아직 수집된 광고 데이터가 없습니다.</p>
+                                )}
                             </div>
-                            {analyticsData.adStats.length === 0 && (
-                                <p className="text-center text-text-muted py-8">아직 수집된 광고 데이터가 없습니다.</p>
-                            )}
                         </div>
-                    </div>
-                )}
+                    )
+                }
 
                 {/* External Analytics Tools Guide - Clarity handles heatmaps */}
                 <div className="mt-8 bg-accent rounded-xl border border-white/5 overflow-hidden">
@@ -792,86 +872,88 @@ const AdminCRM: React.FC = () => {
             </div>
 
             {/* User Detail Modal */}
-            {selectedUser && (
-                <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-                    <div className="bg-accent rounded-xl border border-white/10 max-w-lg w-full max-h-[90vh] overflow-y-auto">
-                        <div className="p-4 border-b border-white/10 flex justify-between items-center sticky top-0 bg-accent">
-                            <h3 className="font-bold text-white text-lg">회원 상세 정보</h3>
-                            <button
-                                onClick={() => setSelectedUser(null)}
-                                className="text-text-muted hover:text-white p-1 rounded hover:bg-white/10"
-                            >
-                                <X size={20} />
-                            </button>
-                        </div>
-                        <div className="p-6 space-y-4">
-                            {/* User Type Badge */}
-                            <div className="flex justify-center mb-4">
-                                <span className={`text-sm px-4 py-2 rounded-full ${selectedUser.type === 'advertiser'
-                                    ? 'bg-primary/20 text-primary'
-                                    : 'bg-blue-500/20 text-blue-400'
-                                    }`}>
-                                    {selectedUser.type === 'advertiser' ? '🏢 광고주 회원' : '👤 일반 회원'}
-                                </span>
+            {
+                selectedUser && (
+                    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+                        <div className="bg-accent rounded-xl border border-white/10 max-w-lg w-full max-h-[90vh] overflow-y-auto">
+                            <div className="p-4 border-b border-white/10 flex justify-between items-center sticky top-0 bg-accent">
+                                <h3 className="font-bold text-white text-lg">회원 상세 정보</h3>
+                                <button
+                                    onClick={() => setSelectedUser(null)}
+                                    className="text-text-muted hover:text-white p-1 rounded hover:bg-white/10"
+                                >
+                                    <X size={20} />
+                                </button>
                             </div>
-
-                            {/* User Info Grid */}
-                            <div className="space-y-3">
-                                <div className="bg-black/30 rounded-lg p-3">
-                                    <span className="text-xs text-text-muted block mb-1">이메일</span>
-                                    <span className="text-white font-medium">{selectedUser.email}</span>
-                                </div>
-                                <div className="grid grid-cols-2 gap-3">
-                                    <div className="bg-black/30 rounded-lg p-3">
-                                        <span className="text-xs text-text-muted block mb-1">이름</span>
-                                        <span className="text-white font-medium">{selectedUser.name}</span>
-                                    </div>
-                                    <div className="bg-black/30 rounded-lg p-3">
-                                        <span className="text-xs text-text-muted block mb-1">닉네임</span>
-                                        <span className="text-white font-medium">{selectedUser.nickname}</span>
-                                    </div>
-                                </div>
-                                <div className="grid grid-cols-2 gap-3">
-                                    <div className="bg-black/30 rounded-lg p-3">
-                                        <span className="text-xs text-text-muted block mb-1">연락처</span>
-                                        <span className="text-white font-medium">{selectedUser.phone || '미입력'}</span>
-                                    </div>
-                                    <div className="bg-black/30 rounded-lg p-3">
-                                        <span className="text-xs text-text-muted block mb-1">가입일</span>
-                                        <span className="text-white font-medium">
-                                            {new Date(selectedUser.createdAt).toLocaleDateString('ko-KR')}
-                                        </span>
-                                    </div>
+                            <div className="p-6 space-y-4">
+                                {/* User Type Badge */}
+                                <div className="flex justify-center mb-4">
+                                    <span className={`text-sm px-4 py-2 rounded-full ${selectedUser.type === 'advertiser'
+                                        ? 'bg-primary/20 text-primary'
+                                        : 'bg-blue-500/20 text-blue-400'
+                                        }`}>
+                                        {selectedUser.type === 'advertiser' ? '🏢 광고주 회원' : '👤 일반 회원'}
+                                    </span>
                                 </div>
 
-                                {/* Advertiser specific info */}
-                                {selectedUser.type === 'advertiser' && (
-                                    <>
+                                {/* User Info Grid */}
+                                <div className="space-y-3">
+                                    <div className="bg-black/30 rounded-lg p-3">
+                                        <span className="text-xs text-text-muted block mb-1">이메일</span>
+                                        <span className="text-white font-medium">{selectedUser.email}</span>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-3">
                                         <div className="bg-black/30 rounded-lg p-3">
-                                            <span className="text-xs text-text-muted block mb-1">사업자명</span>
-                                            <span className="text-white font-medium">{selectedUser.businessName || '미입력'}</span>
+                                            <span className="text-xs text-text-muted block mb-1">이름</span>
+                                            <span className="text-white font-medium">{selectedUser.name}</span>
                                         </div>
                                         <div className="bg-black/30 rounded-lg p-3">
-                                            <span className="text-xs text-text-muted block mb-1">사업자등록번호</span>
-                                            <span className="text-white font-medium">{selectedUser.businessNumber || '미입력'}</span>
+                                            <span className="text-xs text-text-muted block mb-1">닉네임</span>
+                                            <span className="text-white font-medium">{selectedUser.nickname}</span>
                                         </div>
-                                    </>
-                                )}
-                            </div>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div className="bg-black/30 rounded-lg p-3">
+                                            <span className="text-xs text-text-muted block mb-1">연락처</span>
+                                            <span className="text-white font-medium">{selectedUser.phone || '미입력'}</span>
+                                        </div>
+                                        <div className="bg-black/30 rounded-lg p-3">
+                                            <span className="text-xs text-text-muted block mb-1">가입일</span>
+                                            <span className="text-white font-medium">
+                                                {new Date(selectedUser.createdAt).toLocaleDateString('ko-KR')}
+                                            </span>
+                                        </div>
+                                    </div>
 
-                            {/* Action Buttons */}
-                            <div className="flex gap-2 pt-4 border-t border-white/10">
-                                <button className="flex-1 bg-blue-500/20 text-blue-400 py-2 rounded-lg hover:bg-blue-500/30 transition-colors text-sm font-medium">
-                                    메시지 보내기
-                                </button>
-                                <button className="flex-1 bg-red-500/20 text-red-400 py-2 rounded-lg hover:bg-red-500/30 transition-colors text-sm font-medium">
-                                    회원 정지
-                                </button>
+                                    {/* Advertiser specific info */}
+                                    {selectedUser.type === 'advertiser' && (
+                                        <>
+                                            <div className="bg-black/30 rounded-lg p-3">
+                                                <span className="text-xs text-text-muted block mb-1">사업자명</span>
+                                                <span className="text-white font-medium">{selectedUser.businessName || '미입력'}</span>
+                                            </div>
+                                            <div className="bg-black/30 rounded-lg p-3">
+                                                <span className="text-xs text-text-muted block mb-1">사업자등록번호</span>
+                                                <span className="text-white font-medium">{selectedUser.businessNumber || '미입력'}</span>
+                                            </div>
+                                        </>
+                                    )}
+                                </div>
+
+                                {/* Action Buttons */}
+                                <div className="flex gap-2 pt-4 border-t border-white/10">
+                                    <button className="flex-1 bg-blue-500/20 text-blue-400 py-2 rounded-lg hover:bg-blue-500/30 transition-colors text-sm font-medium">
+                                        메시지 보내기
+                                    </button>
+                                    <button className="flex-1 bg-red-500/20 text-red-400 py-2 rounded-lg hover:bg-red-500/30 transition-colors text-sm font-medium">
+                                        회원 정지
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            )}
+                )
+            }
         </div>
     );
 };
