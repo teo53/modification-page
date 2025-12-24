@@ -139,11 +139,22 @@ export class SecureApiClient {
                 };
             }
 
-            // Parse response
-            const data = response.ok ? await response.json() : null;
-            const error = !response.ok
-                ? (await response.json().catch(() => ({ message: '오류가 발생했습니다' }))).message
-                : null;
+            // Parse response - body는 한 번만 읽을 수 있음
+            let data = null;
+            let error = null;
+
+            try {
+                const jsonBody = await response.json();
+                if (response.ok) {
+                    data = jsonBody;
+                } else {
+                    error = jsonBody.message || '오류가 발생했습니다';
+                }
+            } catch {
+                if (!response.ok) {
+                    error = '오류가 발생했습니다';
+                }
+            }
 
             return { data, error, status: response.status };
 
