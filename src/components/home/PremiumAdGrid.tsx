@@ -42,12 +42,24 @@ const PremiumAdGrid: React.FC = () => {
         loadAds();
     }, [useSampleData]);
 
-
-    // Determine data source: API > Sample > Mock
+    // Determine data source based on mode
+    // 시연 모드 (useSampleData=true): 항상 샘플 데이터 사용
+    // 운영 모드 (useSampleData=false): API 데이터 > 빈 화면
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const sourceAds: any[] = USE_API_ADS && !useSampleData && apiAds.length > 0
-        ? apiAds
-        : (useSampleData ? sampleVipAds : vipAds);
+    let sourceAds: any[];
+    if (useSampleData) {
+        // 시연 모드: 샘플 데이터 표시
+        sourceAds = sampleVipAds;
+    } else if (USE_API_ADS && apiAds.length > 0) {
+        // 운영 모드 + API 데이터 있음
+        sourceAds = apiAds;
+    } else if (USE_API_ADS) {
+        // 운영 모드 + API 연결됨 but 데이터 없음 -> 빈 배열
+        sourceAds = apiAds;
+    } else {
+        // API 연결 안됨 -> mock 데이터 (개발환경용)
+        sourceAds = vipAds;
+    }
 
     // Filter ads that have valid thumbnails (not empty)
     const adsWithThumbnails = sourceAds.filter(ad =>

@@ -29,11 +29,20 @@ const SpecialAdGrid: React.FC = () => {
         loadAds();
     }, [useSampleData]);
 
-    // Determine data source: API > Sample > Mock
+    // Determine data source based on mode
+    // 시연 모드 (useSampleData=true): 항상 샘플 데이터 사용
+    // 운영 모드 (useSampleData=false): API 데이터 > 빈 화면
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const sourceAds: any[] = USE_API_ADS && !useSampleData && apiAds.length > 0
-        ? apiAds
-        : (useSampleData ? sampleSpecialAds : specialAds);
+    let sourceAds: any[];
+    if (useSampleData) {
+        sourceAds = sampleSpecialAds;
+    } else if (USE_API_ADS && apiAds.length > 0) {
+        sourceAds = apiAds;
+    } else if (USE_API_ADS) {
+        sourceAds = apiAds;
+    } else {
+        sourceAds = specialAds;
+    }
 
     // Filter ads that have valid thumbnails (not empty)
     const adsWithThumbnails = sourceAds.filter(ad =>
