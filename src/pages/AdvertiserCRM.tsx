@@ -3,17 +3,20 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { Eye, MousePointer, Phone, TrendingUp, FileText, MapPin, Plus, AlertCircle, Image, Trash2, Edit, XCircle, RotateCcw, ArrowUp } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getCurrentUser } from '../utils/auth';
-import { getMyAds, getAdStats, deleteAd, extendAd, closeAd, type UserAd } from '../utils/adStorage';
+import {
+    getMyAds, getAdStats, deleteAd, extendAd, closeAd, type UserAd,
+    USE_API_ADS, fetchMyAdsFromApi
+} from '../utils/adStorage';
 
-// Sample chart data
-const chartData = [
-    { name: '월', views: 4000, clicks: 2400, calls: 240 },
-    { name: '화', views: 3000, clicks: 1398, calls: 210 },
-    { name: '수', views: 2000, clicks: 9800, calls: 290 },
-    { name: '목', views: 2780, clicks: 3908, calls: 200 },
-    { name: '금', views: 1890, clicks: 4800, calls: 181 },
-    { name: '토', views: 2390, clicks: 3800, calls: 250 },
-    { name: '일', views: 3490, clicks: 4300, calls: 210 },
+// Sample chart data - will be replaced by real API data when backend returns analytics
+const defaultChartData = [
+    { name: '월', views: 0, clicks: 0, calls: 0 },
+    { name: '화', views: 0, clicks: 0, calls: 0 },
+    { name: '수', views: 0, clicks: 0, calls: 0 },
+    { name: '목', views: 0, clicks: 0, calls: 0 },
+    { name: '금', views: 0, clicks: 0, calls: 0 },
+    { name: '토', views: 0, clicks: 0, calls: 0 },
+    { name: '일', views: 0, clicks: 0, calls: 0 },
 ];
 
 const AdvertiserCRM: React.FC = () => {
@@ -27,6 +30,8 @@ const AdvertiserCRM: React.FC = () => {
     const [showLogoModal, setShowLogoModal] = useState(false);
     const [logoUrl, setLogoUrl] = useState('');
     const [bannerUrl, setBannerUrl] = useState('');
+    const [chartData, _setChartData] = useState(defaultChartData);
+    const [_isLoading, setLoading] = useState(true);
 
     useEffect(() => {
         const currentUser = getCurrentUser();
@@ -39,8 +44,40 @@ const AdvertiserCRM: React.FC = () => {
             return;
         }
         setUser(currentUser);
-        setMyAds(getMyAds());
-        setStats(getAdStats());
+
+        // Load ads: Use API if available, fallback to localStorage
+        const loadAds = async () => {
+            setLoading(true);
+            try {
+                if (USE_API_ADS) {
+                    const apiAds = await fetchMyAdsFromApi();
+                    setMyAds(apiAds);
+                    // Calculate stats from API ads
+                    const apiStats = {
+                        total: apiAds.length,
+                        active: apiAds.filter(a => a.status === 'active').length,
+                        pending: apiAds.filter(a => a.status === 'pending').length,
+                        expired: apiAds.filter(a => a.status === 'expired' || a.status === 'closed').length,
+                        totalViews: apiAds.reduce((sum, a) => sum + (a.views || 0), 0),
+                        totalInquiries: apiAds.reduce((sum, a) => sum + (a.inquiries || 0), 0)
+                    };
+                    setStats(apiStats);
+                } else {
+                    // Fallback to localStorage
+                    setMyAds(getMyAds());
+                    setStats(getAdStats());
+                }
+            } catch (error) {
+                console.error('Failed to load ads:', error);
+                // Fallback to localStorage on error
+                setMyAds(getMyAds());
+                setStats(getAdStats());
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadAds();
     }, [navigate]);
 
     const handleDeleteAd = (adId: string) => {
