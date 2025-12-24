@@ -1,10 +1,10 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import {
-    MapPin, Phone, MessageCircle, Star, Heart, Share2, AlertCircle,
-    Info, Monitor, Coffee, Clock, Calendar, CheckCircle, ChevronRight, Siren
+    Phone, MessageCircle, Heart, Share2, AlertCircle, Calendar,
+    User, Eye, Briefcase, DollarSign, Tag, Building2, ChevronUp, ChevronDown, ChevronLeft, MessageSquare
 } from 'lucide-react';
-import { fetchAdByIdFromApi, type UserAd } from '../utils/adStorage';
+import { fetchAdByIdFromApi } from '../utils/adStorage';
 import scrapedAds from '../data/scraped_ads.json';
 import ReportButton from '../components/common/ReportButton';
 
@@ -97,10 +97,10 @@ const AdvertiserInfoSection: React.FC<{
                         {advertiser.call_number && <InfoRow label="콜번호" value={advertiser.call_number} />}
                         {advertiser.telegram_id && <InfoRow label="텔레그램" value={advertiser.telegram_id} icon="telegram" />}
                     </div>
-                    {advertiser.views > 0 && (
+                    {advertiser.views && advertiser.views > 0 && (
                         <div className="pt-2 flex items-center gap-1 text-text-muted">
                             <Eye size={14} />
-                            <span>조회 <span className="text-white font-medium">{advertiser.views.toLocaleString()}</span></span>
+                            <span>조회 <span className="text-white font-medium">{advertiser.views?.toLocaleString()}</span></span>
                         </div>
                     )}
                 </div>
@@ -340,11 +340,11 @@ const AdDetail: React.FC = () => {
     // Extract data with fallbacks (Keep existing view logic)
 
     // Extract data with fallbacks
-    const advertiser = ad.advertiser;
-    const recruitment = ad.recruitment;
-    const company = ad.company;
-    const detailImages = ad.detail.images || ad.detail_images || [];
-    const primaryPhone = advertiser.phone || ad.phones?.[0] || '';
+    const advertiser = ad.advertiser || {} as AdvertiserInfo;
+    const recruitment = ad.recruitment || {} as RecruitmentInfo;
+    const company = ad.company || {} as CompanyInfo;
+    const detailImages = ad.detail?.images || ad.detail_images || [];
+    const primaryPhone = advertiser?.phone || ad.phones?.[0] || '';
 
     return (
         <div className="pb-24 md:pb-12">
