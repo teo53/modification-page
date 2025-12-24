@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Phone, Shield, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { useToast } from '../common/Toast';
 
 interface PhoneVerificationProps {
     phone: string;
@@ -21,6 +22,14 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+    // Toast hook (graceful fallback if not available)
+    let toast: { showDemoCode: (code: string) => void; showToast: (toast: any) => void } | null = null;
+    try {
+        toast = useToast();
+    } catch {
+        // Toast not available, will use alert fallback
+    }
 
     // Timer countdown
     useEffect(() => {
@@ -62,8 +71,9 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
         setError('');
 
         const apiUrl = import.meta.env.VITE_API_URL;
+        let useDemoMode = !apiUrl;
 
-        // 백엔드 API가 설정된 경우 API 호출
+        // 백엔드 API가 설정된 경우 API 호출 시도
         if (apiUrl) {
             try {
                 const response = await fetch(`${apiUrl}/auth/phone/send-code`, {
@@ -82,20 +92,30 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                     if (data.demoCode) {
                         setSentCode(data.demoCode);
                         console.log(`[DEMO] 인증번호: ${data.demoCode}`);
-                        // 클립보드에 복사
-                        navigator.clipboard?.writeText(data.demoCode);
-                        alert(`[테스트 모드] 인증번호: ${data.demoCode}\n\n클립보드에 복사되었습니다.`);
+                        // Toast로 인증번호 표시
+                        if (toast) {
+                            toast.showDemoCode(data.demoCode);
+                        } else {
+                            navigator.clipboard?.writeText(data.demoCode);
+                            alert(`[테스트 모드] 인증번호: ${data.demoCode}\n\n클립보드에 복사되었습니다.`);
+                        }
                     }
+                    setLoading(false);
+                    return; // API 성공 시 여기서 종료
                 } else {
                     setError(data.message || '인증번호 발송에 실패했습니다.');
+                    setLoading(false);
+                    return;
                 }
             } catch (err) {
-                console.error('SMS API Error:', err);
-                setError('서버 연결에 실패했습니다. 잠시 후 다시 시도해주세요.');
+                console.warn('SMS API 연결 실패, 데모 모드로 전환:', err);
+                useDemoMode = true; // API 실패 시 데모 모드로 폴백
             }
-        } else {
-            // 프론트엔드 데모 모드 (백엔드 없음)
-            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+
+        // 프론트엔드 데모 모드 (백엔드 없거나 연결 실패 시)
+        if (useDemoMode) {
+            await new Promise(resolve => setTimeout(resolve, 800));
 
             const code = generateCode();
             setSentCode(code);
@@ -103,8 +123,13 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
             setStep('code');
 
             console.log(`[DEMO] 인증번호: ${code}`);
-            navigator.clipboard?.writeText(code);
-            alert(`[데모 모드] 인증번호: ${code}\n\n클립보드에 복사되었습니다.\n실제 서비스에서는 SMS로 전송됩니다.`);
+            // Toast로 인증번호 표시
+            if (toast) {
+                toast.showDemoCode(code);
+            } else {
+                navigator.clipboard?.writeText(code);
+                alert(`[데모 모드] 인증번호: ${code}\n\n클립보드에 복사되었습니다.\n실제 서비스에서는 SMS로 전송됩니다.`);
+            }
         }
 
         setLoading(false);

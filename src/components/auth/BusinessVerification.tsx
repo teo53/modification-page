@@ -70,32 +70,52 @@ const BusinessVerification: React.FC<BusinessVerificationProps> = ({
         setError('');
 
         try {
-            // 공공데이터포털 사업자 상태 조회 API
-            // 실제 서비스에서는 백엔드 프록시를 통해 호출해야 함
             const cleanNumber = businessNumber.replace(/\D/g, '');
+            const apiUrl = import.meta.env.VITE_API_URL;
 
-            // Demo mode: Simulate API response
-            // 실제 연동 시 아래 주석 해제하고 API 호출
-            /*
-            const response = await fetch('/api/business/verify', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ businessNumber: cleanNumber }),
-            });
-            const data = await response.json();
-            */
+            // 백엔드 API가 설정된 경우 API 호출
+            if (apiUrl) {
+                try {
+                    const response = await fetch(`${apiUrl}/business/validate`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ businessNumber: cleanNumber }),
+                    });
 
-            // Demo simulation
-            await new Promise(resolve => setTimeout(resolve, 1500));
+                    const data = await response.json();
 
-            // Demo: Validate based on checksum algorithm (간이 검증)
+                    if (data.success) {
+                        setVerificationResult({
+                            valid: true,
+                            status: data.data.status,
+                            taxType: data.data.taxType
+                        });
+                        onVerified(true);
+                    } else {
+                        setVerificationResult({
+                            valid: false,
+                            status: '확인불가',
+                            taxType: '-'
+                        });
+                        setError(data.message || '유효하지 않은 사업자등록번호입니다.');
+                        onVerified(false);
+                    }
+                    return;
+                } catch (err) {
+                    console.log('API 호출 실패, 로컬 검증으로 대체:', err);
+                    // API 실패 시 로컬 검증으로 폴백
+                }
+            }
+
+            // 로컬 검증 (API 없거나 실패 시)
+            await new Promise(resolve => setTimeout(resolve, 500));
             const isValidChecksum = validateBusinessNumberChecksum(cleanNumber);
 
             if (isValidChecksum) {
                 setVerificationResult({
                     valid: true,
-                    status: '계속사업자',
-                    taxType: '일반과세자'
+                    status: '형식 검증 완료',
+                    taxType: '확인 필요'
                 });
                 onVerified(true);
             } else {
@@ -233,8 +253,8 @@ const BusinessVerification: React.FC<BusinessVerificationProps> = ({
             {/* Verification Result */}
             {verificationResult && (
                 <div className={`p-4 rounded-lg border ${verificationResult.valid
-                        ? 'bg-green-500/10 border-green-500/30'
-                        : 'bg-red-500/10 border-red-500/30'
+                    ? 'bg-green-500/10 border-green-500/30'
+                    : 'bg-red-500/10 border-red-500/30'
                     }`}>
                     <div className="flex items-center gap-3">
                         {verificationResult.valid ? (

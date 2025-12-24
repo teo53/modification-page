@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/layout/Layout';
 import ErrorBoundary from './components/ErrorBoundary';
 import AdultVerification, { isAdultVerified } from './components/auth/AdultVerification';
+import { ToastProvider } from './components/common/Toast';
 import { seedTestAccounts } from './utils/testAccounts';
 
 import Home from './pages/Home';
@@ -51,47 +52,49 @@ function App() {
   }
 
   return (
-    <ErrorBoundary>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Home />} />
-            <Route path="/ad/:id" element={<AdDetail />} />
-            <Route path="/post-ad" element={<PostAd />} />
-            <Route path="/theme" element={<ThemePage />} />
-            <Route path="/theme/:category" element={<ThemePage />} />
-            <Route path="/industry" element={<IndustryPage />} />
-            <Route path="/industry/:type" element={<IndustryPage />} />
-            <Route path="/region" element={<RegionPage />} />
-            <Route path="/region/:location" element={<RegionPage />} />
-            <Route path="/search" element={<SearchResults />} />
-            <Route path="/community" element={<CommunityPage />} />
-            <Route path="/community/write" element={<CommunityWrite />} />
-            <Route path="/community/post/:id" element={<CommunityPostDetail />} />
-            <Route path="/advertiser" element={<AdvertiserCRM />} />
-            <Route path="/advertiser/dashboard" element={<Navigate to="/advertiser" replace />} />
-            <Route path="/advertiser/crm" element={<Navigate to="/advertiser" replace />} />
+    <ToastProvider>
+      <ErrorBoundary>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Home />} />
+              <Route path="/ad/:id" element={<AdDetail />} />
+              <Route path="/post-ad" element={<PostAd />} />
+              <Route path="/theme" element={<ThemePage />} />
+              <Route path="/theme/:category" element={<ThemePage />} />
+              <Route path="/industry" element={<IndustryPage />} />
+              <Route path="/industry/:type" element={<IndustryPage />} />
+              <Route path="/region" element={<RegionPage />} />
+              <Route path="/region/:location" element={<RegionPage />} />
+              <Route path="/search" element={<SearchResults />} />
+              <Route path="/community" element={<CommunityPage />} />
+              <Route path="/community/write" element={<CommunityWrite />} />
+              <Route path="/community/post/:id" element={<CommunityPostDetail />} />
+              <Route path="/advertiser" element={<AdvertiserCRM />} />
+              <Route path="/advertiser/dashboard" element={<Navigate to="/advertiser" replace />} />
+              <Route path="/advertiser/crm" element={<Navigate to="/advertiser" replace />} />
 
-            {/* Admin Routes */}
-            <Route path="/admin" element={<Navigate to="/admin/crm" replace />} />
-            <Route path="/admin/dashboard" element={<Navigate to="/admin/crm" replace />} />
-            <Route path="/admin/crm" element={<AdminCRM />} />
-            <Route path="urgent" element={<UrgentPage />} />
-            <Route path="login" element={<Login />} />
-            <Route path="signup" element={<Signup />} />
-            <Route path="support" element={<CustomerSupport />} />
-            <Route path="job-seeker" element={<JobSeekerPage />} />
+              {/* Admin Routes */}
+              <Route path="/admin" element={<Navigate to="/admin/crm" replace />} />
+              <Route path="/admin/dashboard" element={<Navigate to="/admin/crm" replace />} />
+              <Route path="/admin/crm" element={<AdminCRM />} />
+              <Route path="urgent" element={<UrgentPage />} />
+              <Route path="login" element={<Login />} />
+              <Route path="signup" element={<Signup />} />
+              <Route path="support" element={<CustomerSupport />} />
+              <Route path="job-seeker" element={<JobSeekerPage />} />
 
-            {/* Legal Pages */}
-            <Route path="terms" element={<TermsOfService />} />
-            <Route path="privacy" element={<PrivacyPolicy />} />
-            <Route path="youth-protection" element={<YouthProtectionPolicy />} />
+              {/* Legal Pages */}
+              <Route path="terms" element={<TermsOfService />} />
+              <Route path="privacy" element={<PrivacyPolicy />} />
+              <Route path="youth-protection" element={<YouthProtectionPolicy />} />
 
-            <Route path="*" element={<NotFound />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </ErrorBoundary>
+              <Route path="*" element={<NotFound />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </ErrorBoundary>
+    </ToastProvider>
   );
 }
 

@@ -22,6 +22,8 @@ import { CommunityModule } from './modules/community/community.module';
 import { FilesModule } from './modules/files/files.module';
 import { HealthModule } from './modules/health/health.module';
 import { AdminModule } from './modules/admin/admin.module';
+import { BusinessModule } from './modules/business/business.module';
+
 
 // Guards & Filters
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
@@ -53,6 +55,7 @@ import { AllExceptionsFilter } from './common/filters/http-exception.filter';
     FilesModule,
     HealthModule,
     AdminModule,
+    BusinessModule,
   ],
   providers: [
     // 글로벌 Validation Pipe

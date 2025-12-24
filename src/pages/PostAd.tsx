@@ -4,7 +4,7 @@ import { Check, Building2, AlertCircle, CheckCircle } from 'lucide-react';
 import { Step2RecruitmentInfo, Step3ProductSelection } from '../components/PostAd';
 import type { AdFormState } from '../types/ad';
 import { getCurrentUser } from '../utils/auth';
-import { createAd } from '../utils/adStorage';
+// import { createAd } from '../utils/adStorage';
 import PaymentModal from '../components/payment/PaymentModal';
 
 
@@ -351,15 +351,47 @@ const PostAd = () => {
         setLoading(true);
 
         try {
-            // Create ad with pending payment status
-            const result = createAd({
+            // 1. Upload Images
+            const uploadedImageUrls: string[] = [];
+            const filesToUpload = formData.images
+                .filter(img => img.file)
+                .map(img => img.file as File);
+
+            if (filesToUpload.length > 0) {
+                // Import locally or at top level. Since we are in the function body, we use the imported function
+                const results = await import('../utils/fileService').then(m => m.uploadImages(filesToUpload));
+                if (results.length > 0) {
+                    results.forEach(res => uploadedImageUrls.push(res.url));
+                }
+            }
+
+            // Handle Business Logo Upload
+            let businessLogoUrl = '';
+            if (formData.businessLogo) {
+                const logoResult = await import('../utils/fileService').then(m => m.uploadImage(formData.businessLogo as File, 'logos'));
+                if (logoResult) businessLogoUrl = logoResult.url;
+            }
+
+            // 2. Prepare Final Ad Data
+            // Map the form data to the API expected format
+            // API expects `images` as array of strings
+            const finalAdData = {
                 ...pendingAdData,
-                paymentStatus: 'pending',
                 depositorName,
-            });
+                paymentStatus: 'pending',
+                images: uploadedImageUrls,
+                businessLogo: businessLogoUrl,
+                // Ensure all required fields for API are present
+                // We might need to map some fields if backend DTO differs from frontend state
+                // But pendingAdData should be mostly correct structure
+            };
+
+            // 3. Create Ad via API
+            const { createAdWithApi } = await import('../utils/adStorage');
+            const result = await createAdWithApi(finalAdData);
 
             if (result.success) {
-                setSuccess('결제 요청이 완료되었습니다. 입금 확인 후 광고가 게시됩니다.');
+                setSuccess('광고 등록이 완료되었습니다. 관리자 승인 후 게시됩니다.');
                 setTimeout(() => {
                     navigate('/advertiser/dashboard');
                 }, 2000);
@@ -367,6 +399,7 @@ const PostAd = () => {
                 setError(result.message);
             }
         } catch (error) {
+            console.error(error);
             setError('광고 등록 중 오류가 발생했습니다.');
         } finally {
             setLoading(false);

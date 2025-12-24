@@ -80,15 +80,37 @@ const AdvertiserCRM: React.FC = () => {
         loadAds();
     }, [navigate]);
 
-    const handleDeleteAd = (adId: string) => {
-        if (window.confirm('정말 이 광고를 삭제하시겠습니까?')) {
+    const handleDeleteAd = async (adId: string) => {
+        if (!window.confirm('정말 이 광고를 삭제하시겠습니까?')) return;
+
+        if (USE_API_ADS) {
+            const { deleteAdWithApi } = await import('../utils/adStorage');
+            const result = await deleteAdWithApi(adId);
+            if (result.success) {
+                // Reload ads
+                const apiAds = await fetchMyAdsFromApi();
+                setMyAds(apiAds);
+                // Update stats (re-calculate)
+                const apiStats = {
+                    total: apiAds.length,
+                    active: apiAds.filter(a => a.status === 'active').length,
+                    pending: apiAds.filter(a => a.status === 'pending').length,
+                    expired: apiAds.filter(a => a.status === 'expired' || a.status === 'closed').length,
+                    totalViews: apiAds.reduce((sum, a) => sum + (a.views || 0), 0),
+                    totalInquiries: apiAds.reduce((sum, a) => sum + (a.inquiries || 0), 0)
+                };
+                setStats(apiStats);
+            } else {
+                alert(result.message);
+            }
+        } else {
             deleteAd(adId);
             setMyAds(getMyAds());
             setStats(getAdStats());
         }
     };
 
-    const handleExtendAd = (adId: string) => {
+    const handleExtendAd = async (adId: string) => {
         const days = window.prompt('연장할 기간을 입력하세요 (일 수):', '30');
         if (!days) return;
         const extensionDays = parseInt(days);
@@ -96,16 +118,52 @@ const AdvertiserCRM: React.FC = () => {
             alert('유효한 숫자를 입력해주세요.');
             return;
         }
-        const result = extendAd(adId, extensionDays);
-        alert(result.message);
-        if (result.success) {
-            setMyAds(getMyAds());
-            setStats(getAdStats());
+
+        if (USE_API_ADS) {
+            const { updateAdWithApi, fetchAdByIdFromApi } = await import('../utils/adStorage');
+            // First get current ad to calculate new date
+            const ad = await fetchAdByIdFromApi(adId);
+            if (!ad) return;
+
+            const currentExpires = new Date(ad.expiresAt);
+            const now = new Date();
+            const baseDate = currentExpires > now ? currentExpires : now;
+            const newExpiresAt = new Date(baseDate.getTime() + extensionDays * 24 * 60 * 60 * 1000).toISOString();
+
+            const result = await updateAdWithApi(adId, {
+                status: 'active', // Reactivate if expired
+                expiresAt: newExpiresAt,
+                endDate: newExpiresAt.split('T')[0]
+            });
+
+            alert(result.message);
+            if (result.success) {
+                const apiAds = await fetchMyAdsFromApi();
+                setMyAds(apiAds);
+                // Recalculate stats logic repeated... ideally extract to loadAds function
+            }
+        } else {
+            const result = extendAd(adId, extensionDays);
+            alert(result.message);
+            if (result.success) {
+                setMyAds(getMyAds());
+                setStats(getAdStats());
+            }
         }
     };
 
-    const handleCloseAd = (adId: string) => {
-        if (window.confirm('이 광고를 마감하시겠습니까?')) {
+    const handleCloseAd = async (adId: string) => {
+        if (!window.confirm('이 광고를 마감하시겠습니까?')) return;
+
+        if (USE_API_ADS) {
+            const { updateAdWithApi } = await import('../utils/adStorage');
+            const result = await updateAdWithApi(adId, { status: 'closed' });
+            alert(result.message);
+            if (result.success) {
+                const apiAds = await fetchMyAdsFromApi();
+                setMyAds(apiAds);
+            }
+        } else {
             const result = closeAd(adId);
             alert(result.message);
             if (result.success) {

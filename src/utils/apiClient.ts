@@ -193,6 +193,62 @@ export class SecureApiClient {
     delete<T>(endpoint: string) {
         return this.request<T>('DELETE', endpoint);
     }
+
+    async upload<T>(endpoint: string, formData: FormData): Promise<ApiResponse<T>> {
+        if (isRateLimited(endpoint)) {
+            return {
+                data: null,
+                error: '요청이 너무 많습니다. 잠시 후 다시 시도해주세요.',
+                status: 429
+            };
+        }
+
+        try {
+            const headers = new Headers({
+                'X-Requested-With': 'XMLHttpRequest'
+            });
+
+            if (accessToken && !isTokenExpired()) {
+                headers.set('Authorization', `Bearer ${accessToken}`);
+            }
+
+            if (this.csrfToken) {
+                headers.set('X-CSRF-Token', this.csrfToken);
+            }
+
+            // Note: Content-Type is NOT set here so the browser can set it with the boundary for FormData
+
+            const response = await fetch(`${this.config.baseUrl}${endpoint}`, {
+                method: 'POST',
+                headers,
+                body: formData,
+                credentials: 'include'
+            });
+
+            // Update rate limit state
+            updateRateLimitState(endpoint, response.headers);
+
+            // Handle 401 (token expired)
+            if (response.status === 401) {
+                const refreshed = await this.refreshToken();
+                if (refreshed) {
+                    return this.upload<T>(endpoint, formData);
+                }
+                clearAccessToken();
+                return { data: null, error: '세션이 만료되었습니다. 다시 로그인해주세요.', status: 401 };
+            }
+
+            const data = response.ok ? await response.json() : null;
+            const error = !response.ok
+                ? (await response.json().catch(() => ({ message: '업로드 중 오류가 발생했습니다' }))).message
+                : null;
+
+            return { data, error, status: response.status };
+
+        } catch (err) {
+            return { data: null, error: '네트워크 오류가 발생했습니다.', status: 0 };
+        }
+    }
 }
 
 // Export singleton instance

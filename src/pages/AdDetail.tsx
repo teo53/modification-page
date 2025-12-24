@@ -1,19 +1,23 @@
-import React, { useMemo, useState } from 'react';
-import { DollarSign, Phone, MessageCircle, Heart, Share2, ChevronLeft, AlertCircle, User, Building2, Briefcase, Calendar, Tag, ChevronDown, ChevronUp, MessageSquare, Eye } from 'lucide-react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import {
+    MapPin, Phone, MessageCircle, Star, Heart, Share2, AlertCircle,
+    Info, Monitor, Coffee, Clock, Calendar, CheckCircle, ChevronRight, Siren
+} from 'lucide-react';
+import { fetchAdByIdFromApi, type UserAd } from '../utils/adStorage';
 import scrapedAds from '../data/scraped_ads.json';
 import ReportButton from '../components/common/ReportButton';
 
 interface AdvertiserInfo {
     nickname: string;
-    call_number: string;
-    call_mgmt_number: string;
+    call_number?: string;
+    call_mgmt_number?: string;
     phone: string;
-    kakao_id: string;
-    telegram_id: string;
-    business_name: string;
-    work_location: string;
-    views: number;
+    kakao_id?: string;
+    telegram_id?: string;
+    business_name?: string;
+    work_location?: string;
+    views?: number;
 }
 
 interface RecruitmentInfo {
@@ -222,15 +226,98 @@ const CompanyInfoSection: React.FC<{
 
 const AdDetail: React.FC = () => {
     const { id } = useParams<{ id: string }>();
+    const [ad, setAd] = useState<ScrapedAd | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
 
-    // Find the ad by ID (handle both string and number comparison)
-    const ad = useMemo(() => {
-        if (!id) return null;
-        const numId = parseInt(id, 10);
-        return (scrapedAds as ScrapedAd[]).find(a => a.id === numId || String(a.id) === id);
+    useEffect(() => {
+        const loadAd = async () => {
+            if (!id) return;
+            setLoading(true);
+            try {
+                // Try to fetch from API first
+                const apiAd = await fetchAdByIdFromApi(id);
+
+                if (apiAd) {
+                    // Map API UserAd to View Model (ScrapedAd)
+                    const mappedAd: ScrapedAd = {
+                        id: Number(apiAd.id), // Ensure ID type compat
+                        title: apiAd.title,
+                        thumbnail: apiAd.images?.[0] || 'https://via.placeholder.com/300x400',
+                        location: apiAd.location,
+                        pay: apiAd.salary,
+                        phones: [apiAd.contact],
+                        content: apiAd.description,
+                        detail_images: apiAd.images || [], // Ensure it's an array
+                        advertiser: {
+                            nickname: apiAd.businessName,
+                            call_number: '',
+                            call_mgmt_number: '',
+                            phone: apiAd.contact,
+                            kakao_id: '', // Add to UserAd if needed
+                            telegram_id: '',
+                            business_name: apiAd.businessName,
+                            work_location: apiAd.location,
+                            views: apiAd.views
+                        },
+                        recruitment: {
+                            job_type: '상세내용 참고',
+                            employment_type: '협의',
+                            salary: apiAd.salary,
+                            deadline: apiAd.endDate || '상시모집',
+                            benefits: apiAd.themes || [],
+                            keywords: []
+                        },
+                        company: {
+                            company_name: apiAd.businessName,
+                            company_address: apiAd.location,
+                            representative: ''
+                        },
+                        detail: {
+                            description: apiAd.description,
+                            images: apiAd.images || []
+                        }
+                    };
+                    setAd(mappedAd);
+                } else {
+                    // Fallback to local JSON if not found in API (legacy support)
+                    const numId = parseInt(id, 10);
+                    const localAd = (scrapedAds as ScrapedAd[]).find(a => a.id === numId || String(a.id) === id);
+                    if (localAd) {
+                        // Ensure all properties are present for localAd as well
+                        const fullLocalAd: ScrapedAd = {
+                            ...localAd,
+                            detail_images: localAd.detail_images || localAd.detail?.images || [],
+                            advertiser: localAd.advertiser || {} as AdvertiserInfo,
+                            recruitment: localAd.recruitment || {} as RecruitmentInfo,
+                            company: localAd.company || {} as CompanyInfo,
+                            detail: localAd.detail || { description: localAd.content, images: localAd.detail_images || [] }
+                        };
+                        setAd(fullLocalAd);
+                    } else {
+                        setError('광고를 찾을 수 없습니다.');
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                setError('오류가 발생했습니다.');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadAd();
     }, [id]);
 
-    if (!ad) {
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-background flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+            </div>
+        );
+    }
+
+    if (error || !ad) {
         return (
             <div className="min-h-screen bg-background flex items-center justify-center p-4">
                 <div className="max-w-md w-full bg-accent rounded-xl border border-white/10 p-8 text-center space-y-4">
@@ -238,7 +325,7 @@ const AdDetail: React.FC = () => {
                         <AlertCircle size={32} />
                     </div>
                     <h2 className="text-xl font-bold text-white">광고를 찾을 수 없습니다</h2>
-                    <p className="text-text-muted">요청하신 광고 정보가 존재하지 않습니다.</p>
+                    <p className="text-text-muted">{error || '요청하신 광고 정보가 존재하지 않습니다.'}</p>
                     <Link
                         to="/"
                         className="inline-block px-6 py-3 bg-primary text-black font-bold rounded-lg hover:bg-primary/90 transition-colors"
@@ -250,11 +337,13 @@ const AdDetail: React.FC = () => {
         );
     }
 
+    // Extract data with fallbacks (Keep existing view logic)
+
     // Extract data with fallbacks
-    const advertiser = ad.advertiser || {} as AdvertiserInfo;
-    const recruitment = ad.recruitment || {} as RecruitmentInfo;
-    const company = ad.company || {} as CompanyInfo;
-    const detailImages = ad.detail?.images || ad.detail_images || [];
+    const advertiser = ad.advertiser;
+    const recruitment = ad.recruitment;
+    const company = ad.company;
+    const detailImages = ad.detail.images || ad.detail_images || [];
     const primaryPhone = advertiser.phone || ad.phones?.[0] || '';
 
     return (

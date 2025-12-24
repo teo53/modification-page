@@ -49,6 +49,7 @@ export interface UserAd {
     rejectionReason?: string;  // 반려 사유 (rejected 상태일 때)
     views: number;
     inquiries: number;
+    images?: string[]; // 이미지 URL 배열
     createdAt: string;
     expiresAt: string;
 }
