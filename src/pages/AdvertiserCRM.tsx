@@ -22,7 +22,7 @@ const AdvertiserCRM: React.FC = () => {
     const [myAds, setMyAds] = useState<UserAd[]>([]);
     const [stats, setStats] = useState({ total: 0, active: 0, pending: 0, expired: 0, totalViews: 0, totalInquiries: 0 });
     const [activeTab, setActiveTab] = useState<'analytics' | 'management'>('management');
-    const [adTab, setAdTab] = useState<'active' | 'expired'>('active');
+    const [adTab, setAdTab] = useState<'active' | 'pending' | 'rejected' | 'expired'>('active');
     const [jumpUpCount, setJumpUpCount] = useState(9);
     const [showLogoModal, setShowLogoModal] = useState(false);
     const [logoUrl, setLogoUrl] = useState('');
@@ -90,6 +90,8 @@ const AdvertiserCRM: React.FC = () => {
     };
 
     const activeAds = myAds.filter(ad => ad.status === 'active');
+    const pendingAds = myAds.filter(ad => ad.status === 'pending');
+    const rejectedAds = myAds.filter(ad => ad.status === 'rejected');
     const expiredAds = myAds.filter(ad => ad.status === 'expired' || ad.status === 'closed');
 
     if (!user) {
@@ -283,115 +285,154 @@ const AdvertiserCRM: React.FC = () => {
                         </div>
 
                         {/* Ad Tabs */}
-                        <div className="flex gap-2 mb-4">
+                        <div className="flex gap-2 mb-4 flex-wrap">
                             <button
                                 onClick={() => setAdTab('active')}
                                 className={`px-4 py-2 rounded-lg font-bold text-sm ${adTab === 'active' ? 'bg-green-500 text-white' : 'bg-accent/30 text-text-muted'
                                     }`}
                             >
-                                진행중인 광고
+                                진행중 ({activeAds.length})
+                            </button>
+                            <button
+                                onClick={() => setAdTab('pending')}
+                                className={`px-4 py-2 rounded-lg font-bold text-sm ${adTab === 'pending' ? 'bg-yellow-500 text-black' : 'bg-accent/30 text-text-muted'
+                                    }`}
+                            >
+                                승인대기 ({pendingAds.length})
+                            </button>
+                            <button
+                                onClick={() => setAdTab('rejected')}
+                                className={`px-4 py-2 rounded-lg font-bold text-sm ${adTab === 'rejected' ? 'bg-red-500 text-white' : 'bg-accent/30 text-text-muted'
+                                    }`}
+                            >
+                                반려됨 ({rejectedAds.length})
                             </button>
                             <button
                                 onClick={() => setAdTab('expired')}
                                 className={`px-4 py-2 rounded-lg font-bold text-sm ${adTab === 'expired' ? 'bg-gray-500 text-white' : 'bg-accent/30 text-text-muted'
                                     }`}
                             >
-                                마감된 광고
+                                마감됨 ({expiredAds.length})
                             </button>
                         </div>
 
                         {/* Ads List */}
                         <div className="bg-accent/30 rounded-xl border border-white/5">
-                            {(adTab === 'active' ? activeAds : expiredAds).length === 0 ? (
-                                <div className="text-center py-12">
-                                    <FileText className="mx-auto mb-4 text-text-muted" size={48} />
-                                    <p className="text-text-muted mb-4">
-                                        {adTab === 'active' ? '진행중인 광고가 없습니다.' : '마감된 광고가 없습니다.'}
-                                    </p>
-                                    {adTab === 'active' && (
-                                        <Link to="/post-ad" className="inline-flex items-center gap-2 bg-primary text-black font-bold px-6 py-2 rounded-lg">
-                                            <Plus size={18} />
-                                            새 광고 등록
-                                        </Link>
-                                    )}
-                                </div>
-                            ) : (
-                                <div className="divide-y divide-white/5">
-                                    {(adTab === 'active' ? activeAds : expiredAds).map((ad) => (
-                                        <div key={ad.id} className="p-4 hover:bg-white/5 transition-colors">
-                                            <div className="flex flex-wrap gap-4 items-center justify-between">
-                                                <div className="flex-1 min-w-0">
-                                                    <div className="flex items-center gap-2 text-xs text-text-muted mb-1">
-                                                        <span>수정일: {ad.createdAt?.split('T')[0]}</span>
-                                                        <span>마감일: {ad.endDate || ad.expiresAt?.split('T')[0]}</span>
-                                                    </div>
-                                                    <div className="flex items-center gap-2">
-                                                        {ad.productType && (
-                                                            <span className={`text-xs px-2 py-0.5 rounded font-bold ${ad.productType === 'diamond' ? 'bg-cyan-400 text-black' :
-                                                                ad.productType === 'vip' ? 'bg-primary text-black' :
-                                                                    'bg-gray-500 text-white'
-                                                                }`}>
-                                                                {ad.productType.toUpperCase()}
+                            {(() => {
+                                const currentAds = adTab === 'active' ? activeAds :
+                                    adTab === 'pending' ? pendingAds :
+                                        adTab === 'rejected' ? rejectedAds : expiredAds;
+
+                                if (currentAds.length === 0) {
+                                    return (
+                                        <div className="text-center py-12">
+                                            <FileText className="mx-auto mb-4 text-text-muted" size={48} />
+                                            <p className="text-text-muted mb-4">
+                                                {adTab === 'active' ? '진행중인 광고가 없습니다.' :
+                                                    adTab === 'pending' ? '승인 대기중인 광고가 없습니다.' :
+                                                        adTab === 'rejected' ? '반려된 광고가 없습니다.' : '마감된 광고가 없습니다.'}
+                                            </p>
+                                            {(adTab === 'active' || adTab === 'pending') && (
+                                                <Link to="/post-ad" className="inline-flex items-center gap-2 bg-primary text-black font-bold px-6 py-2 rounded-lg">
+                                                    <Plus size={18} />
+                                                    새 광고 등록
+                                                </Link>
+                                            )}
+                                        </div>
+                                    );
+                                }
+
+                                return (
+                                    <div className="divide-y divide-white/5">
+                                        {currentAds.map((ad) => (
+                                            <div key={ad.id} className="p-4 hover:bg-white/5 transition-colors">
+                                                <div className="flex flex-wrap gap-4 items-center justify-between">
+                                                    <div className="flex-1 min-w-0">
+                                                        <div className="flex items-center gap-2 text-xs text-text-muted mb-1">
+                                                            <span>수정일: {ad.createdAt?.split('T')[0]}</span>
+                                                            <span>마감일: {ad.endDate || ad.expiresAt?.split('T')[0]}</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-2">
+                                                            {ad.productType && (
+                                                                <span className={`text-xs px-2 py-0.5 rounded font-bold ${ad.productType === 'diamond' ? 'bg-cyan-400 text-black' :
+                                                                    ad.productType === 'vip' ? 'bg-primary text-black' :
+                                                                        'bg-gray-500 text-white'
+                                                                    }`}>
+                                                                    {ad.productType.toUpperCase()}
+                                                                </span>
+                                                            )}
+                                                            <h3 className="text-white font-bold truncate">{ad.title}</h3>
+                                                        </div>
+                                                        <div className="flex items-center gap-4 mt-1 text-sm text-text-muted">
+                                                            <span className="flex items-center gap-1">
+                                                                <MapPin size={12} />
+                                                                {ad.location}
                                                             </span>
+                                                            <span>급여: {ad.salary}</span>
+                                                        </div>
+                                                        {/* Show rejection reason if rejected */}
+                                                        {ad.status === 'rejected' && ad.rejectionReason && (
+                                                            <div className="mt-2 p-2 bg-red-500/10 border border-red-500/20 rounded-lg">
+                                                                <span className="text-xs text-red-400 font-bold">반려 사유: </span>
+                                                                <span className="text-xs text-red-300">{ad.rejectionReason}</span>
+                                                            </div>
                                                         )}
-                                                        <h3 className="text-white font-bold truncate">{ad.title}</h3>
+                                                        {/* Show pending status message */}
+                                                        {ad.status === 'pending' && (
+                                                            <div className="mt-2 p-2 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
+                                                                <span className="text-xs text-yellow-400">⏳ 관리자 승인 대기중입니다. 승인 후 광고가 노출됩니다.</span>
+                                                            </div>
+                                                        )}
                                                     </div>
-                                                    <div className="flex items-center gap-4 mt-1 text-sm text-text-muted">
-                                                        <span className="flex items-center gap-1">
-                                                            <MapPin size={12} />
-                                                            {ad.location}
-                                                        </span>
-                                                        <span>급여: {ad.salary}</span>
-                                                    </div>
-                                                </div>
-                                                <div className="flex gap-2 flex-wrap">
-                                                    {adTab === 'active' && (
-                                                        <>
-                                                            <button
-                                                                onClick={() => handleExtendAd(ad.id)}
-                                                                className="flex items-center gap-1 bg-red-500 text-white px-3 py-2 rounded-lg text-xs font-bold hover:bg-red-600"
-                                                            >
-                                                                <RotateCcw size={14} />
-                                                                연장
-                                                            </button>
-                                                            <button
-                                                                onClick={() => handleJumpUp(ad.id)}
-                                                                className="flex items-center gap-1 bg-green-500 text-white px-3 py-2 rounded-lg text-xs font-bold hover:bg-green-600"
-                                                            >
-                                                                <ArrowUp size={14} />
-                                                                점프
-                                                            </button>
-                                                        </>
-                                                    )}
-                                                    <Link
-                                                        to={`/edit-ad/${ad.id}`}
-                                                        className="flex items-center gap-1 bg-blue-500 text-white px-3 py-2 rounded-lg text-xs font-bold hover:bg-blue-600"
-                                                    >
-                                                        <Edit size={14} />
-                                                        수정
-                                                    </Link>
-                                                    {adTab === 'active' && (
-                                                        <button
-                                                            onClick={() => handleCloseAd(ad.id)}
-                                                            className="flex items-center gap-1 bg-gray-500 text-white px-3 py-2 rounded-lg text-xs font-bold hover:bg-gray-600"
+                                                    <div className="flex gap-2 flex-wrap">
+                                                        {adTab === 'active' && (
+                                                            <>
+                                                                <button
+                                                                    onClick={() => handleExtendAd(ad.id)}
+                                                                    className="flex items-center gap-1 bg-red-500 text-white px-3 py-2 rounded-lg text-xs font-bold hover:bg-red-600"
+                                                                >
+                                                                    <RotateCcw size={14} />
+                                                                    연장
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => handleJumpUp(ad.id)}
+                                                                    className="flex items-center gap-1 bg-green-500 text-white px-3 py-2 rounded-lg text-xs font-bold hover:bg-green-600"
+                                                                >
+                                                                    <ArrowUp size={14} />
+                                                                    점프
+                                                                </button>
+                                                            </>
+                                                        )}
+                                                        <Link
+                                                            to={`/edit-ad/${ad.id}`}
+                                                            className="flex items-center gap-1 bg-blue-500 text-white px-3 py-2 rounded-lg text-xs font-bold hover:bg-blue-600"
                                                         >
-                                                            <XCircle size={14} />
-                                                            마감
+                                                            <Edit size={14} />
+                                                            수정
+                                                        </Link>
+                                                        {adTab === 'active' && (
+                                                            <button
+                                                                onClick={() => handleCloseAd(ad.id)}
+                                                                className="flex items-center gap-1 bg-gray-500 text-white px-3 py-2 rounded-lg text-xs font-bold hover:bg-gray-600"
+                                                            >
+                                                                <XCircle size={14} />
+                                                                마감
+                                                            </button>
+                                                        )}
+                                                        <button
+                                                            onClick={() => handleDeleteAd(ad.id)}
+                                                            className="flex items-center gap-1 bg-red-800 text-white px-3 py-2 rounded-lg text-xs font-bold hover:bg-red-900"
+                                                        >
+                                                            <Trash2 size={14} />
+                                                            삭제
                                                         </button>
-                                                    )}
-                                                    <button
-                                                        onClick={() => handleDeleteAd(ad.id)}
-                                                        className="flex items-center gap-1 bg-red-800 text-white px-3 py-2 rounded-lg text-xs font-bold hover:bg-red-900"
-                                                    >
-                                                        <Trash2 size={14} />
-                                                        삭제
-                                                    </button>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
+                                        ))}
+                                    </div>
+                                );
+                            })()}
                         </div>
 
                         {/* Bottom Stats */}
