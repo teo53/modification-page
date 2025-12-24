@@ -5,6 +5,7 @@ import { Step2RecruitmentInfo, Step3ProductSelection } from '../components/PostA
 import type { AdFormState } from '../types/ad';
 import { getCurrentUser } from '../utils/auth';
 import { createAd } from '../utils/adStorage';
+import PaymentModal from '../components/payment/PaymentModal';
 
 
 // Helper for districts
@@ -26,6 +27,10 @@ const PostAd = () => {
     const [loading, setLoading] = useState(false);
 
     const [isAuthorized, setIsAuthorized] = useState(false);
+
+    // Payment modal state
+    const [showPaymentModal, setShowPaymentModal] = useState(false);
+    const [pendingAdData, setPendingAdData] = useState<any>(null);
 
     // Multi-select products state with period extension (qty = number of periods)
     const [selectedProducts, setSelectedProducts] = useState<Record<string, { qty: number; startDate: string }>>({});
@@ -258,6 +263,17 @@ const PostAd = () => {
         }
     ];
 
+    // Calculate total price based on selected products
+    const totalPrice = useMemo(() => {
+        let total = 0;
+        Object.entries(selectedProducts).forEach(([productId, selection]) => {
+            const product = products.find(p => p.id === productId);
+            if (product) {
+                total += product.priceNum * selection.qty;
+            }
+        });
+        return total;
+    }, [selectedProducts, products]);
 
     const handleInputChange = (field: keyof AdFormState, value: any) => {
         setFormData(prev => ({ ...prev, [field]: value }));
@@ -266,18 +282,15 @@ const PostAd = () => {
     const handleSubmit = () => {
         setError('');
         setSuccess('');
-        setLoading(true);
 
         // Validation
         if (!formData.businessName || !formData.title) {
             setError('업소명과 공고 제목은 필수입니다.');
-            setLoading(false);
             return;
         }
 
         if (Object.keys(selectedProducts).length === 0) {
             setError('최소 1개의 광고 상품을 선택해주세요.');
-            setLoading(false);
             return;
         }
 
@@ -300,8 +313,8 @@ const PostAd = () => {
             productType = 'highlight';
         }
 
-        // Create ad
-        const result = createAd({
+        // Prepare ad data for payment
+        const adData = {
             title: formData.title,
             businessName: formData.businessName,
             location: (formData.location.city && formData.location.district)
@@ -326,18 +339,39 @@ const PostAd = () => {
                 totalCount: jumpUpSettings.count,
                 remainingCount: jumpUpSettings.count
             } : undefined
-        });
+        };
 
-        if (result.success) {
-            setSuccess(result.message + ' 대시보드로 이동합니다...');
-            setTimeout(() => {
-                navigate('/advertiser/dashboard');
-            }, 1500);
-        } else {
-            setError(result.message);
+        // Show payment modal with calculated amount
+        setPendingAdData(adData);
+        setShowPaymentModal(true);
+    };
+
+    // Handle payment completion
+    const handlePaymentComplete = async (depositorName: string) => {
+        setLoading(true);
+
+        try {
+            // Create ad with pending payment status
+            const result = createAd({
+                ...pendingAdData,
+                paymentStatus: 'pending',
+                depositorName,
+            });
+
+            if (result.success) {
+                setSuccess('결제 요청이 완료되었습니다. 입금 확인 후 광고가 게시됩니다.');
+                setTimeout(() => {
+                    navigate('/advertiser/dashboard');
+                }, 2000);
+            } else {
+                setError(result.message);
+            }
+        } catch (error) {
+            setError('광고 등록 중 오류가 발생했습니다.');
+        } finally {
+            setLoading(false);
+            setShowPaymentModal(false);
         }
-
-        setLoading(false);
     };
 
     return (
@@ -587,6 +621,15 @@ const PostAd = () => {
                     />
                 )}
             </div>
+
+            {/* Payment Modal */}
+            <PaymentModal
+                isOpen={showPaymentModal}
+                onClose={() => setShowPaymentModal(false)}
+                productName={pendingAdData?.productType ? `${pendingAdData.productType.toUpperCase()} 광고` : '광고 상품'}
+                amount={totalPrice}
+                onPaymentComplete={handlePaymentComplete}
+            />
         </div>
     );
 };
