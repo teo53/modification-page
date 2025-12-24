@@ -58,7 +58,7 @@ export class SecureApiClient {
         this.config = {
             // 우선순위: config.baseUrl > VITE_API_URL > 로컬 (4000)
             baseUrl: config.baseUrl || import.meta.env.VITE_API_URL || 'http://localhost:4000/api/v1',
-            timeout: config.timeout || 30000
+            timeout: config.timeout || 10000  // 10초로 단축
         };
     }
 
@@ -116,8 +116,9 @@ export class SecureApiClient {
                 this.csrfToken = newCsrfToken;
             }
 
-            // Handle 401 (token expired)
-            if (response.status === 401) {
+            // Handle 401 (token expired) - 단, 로그인/회원가입은 제외
+            const noRetryEndpoints = ['/auth/login', '/auth/signup', '/auth/refresh'];
+            if (response.status === 401 && !noRetryEndpoints.some(e => endpoint.includes(e))) {
                 // Try to refresh token
                 const refreshed = await this.refreshToken();
                 if (refreshed) {

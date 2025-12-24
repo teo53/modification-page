@@ -26,12 +26,24 @@ const Login: React.FC = () => {
         }
 
         try {
-            // Try API auth first if configured, then fallback to localStorage
             let result;
+
+            // API 인증 시도 (5초 타임아웃)
             if (USE_API_AUTH) {
-                result = await loginWithApi(email, password);
+                const apiPromise = loginWithApi(email, password);
+                const timeoutPromise = new Promise<{ success: false; message: string }>((resolve) =>
+                    setTimeout(() => resolve({ success: false, message: 'TIMEOUT' }), 5000)
+                );
+
+                result = await Promise.race([apiPromise, timeoutPromise]);
+
+                // API 타임아웃 또는 실패 시 localStorage 폴백
+                if (!result.success && result.message === 'TIMEOUT') {
+                    console.warn('API 로그인 타임아웃, localStorage 폴백 사용');
+                    result = login(email, password);
+                }
             } else {
-                // Fallback to localStorage auth
+                // localStorage 인증
                 result = login(email, password);
             }
 
@@ -50,7 +62,14 @@ const Login: React.FC = () => {
             }
         } catch (err) {
             console.error('Login error:', err);
-            setError('로그인 중 오류가 발생했습니다.');
+            // 오류 발생 시 localStorage 폴백
+            const fallbackResult = login(email, password);
+            if (fallbackResult.success) {
+                setSuccess(fallbackResult.message);
+                setTimeout(() => navigate('/'), 1000);
+            } else {
+                setError('로그인 중 오류가 발생했습니다.');
+            }
         } finally {
             setLoading(false);
         }
