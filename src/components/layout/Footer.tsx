@@ -14,7 +14,9 @@ const Footer: React.FC = () => {
                 <div className="grid md:grid-cols-4 gap-8 mb-8">
                     {/* Company Info */}
                     <div className="space-y-4">
-                        <h3 className="text-lg font-bold text-white mb-4">DalbitAlba</h3>
+                        <Link to="/" className="block">
+                            <img src="/logo-horizontal-white.png" alt="달빛알바" className="h-8 object-contain" />
+                        </Link>
                         <p className="text-sm text-text-muted leading-relaxed">
                             대한민국 No.1 유흥알바 채용 플랫폼
                         </p>
