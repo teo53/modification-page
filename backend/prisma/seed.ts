@@ -13,10 +13,10 @@ async function main() {
 
     // 기본 테넌트 생성
     const tenant = await prisma.tenant.upsert({
-        where: { id: 'default-tenant' },
+        where: { id: 'default' },
         update: {},
         create: {
-            id: 'default-tenant',
+            id: 'default',
             name: 'queenalba',
             displayName: 'QueenAlba',
             primaryColor: '#D4AF37',
