@@ -1,20 +1,52 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Search, Filter } from 'lucide-react';
 import AdCard from '../components/ad/AdCard';
 import SelectionGroup from '../components/ui/SelectionGroup';
 import HorizontalFilterBar from '../components/ui/HorizontalFilterBar';
 import { allAds } from '../data/mockAds';
+import { USE_API_ADS, fetchAdsFromApi } from '../utils/adStorage';
 
 const SearchResults: React.FC = () => {
     const [sortOrder, setSortOrder] = useState('latest');
     const [displayCount, setDisplayCount] = useState(12);
     const [searchQuery, setSearchQuery] = useState('강남');
+    const [apiAds, setApiAds] = useState<any[]>([]);
     const [filters, setFilters] = useState({
         region: 'all',
         industry: 'all',
         salary: 'all',
         type: 'all'
     });
+
+    // API에서 광고 데이터 로드
+    useEffect(() => {
+        const loadApiAds = async () => {
+            if (USE_API_ADS) {
+                try {
+                    const response = await fetchAdsFromApi();
+                    const data = response?.ads || [];
+                    if (data.length > 0) {
+                        setApiAds(data.map((ad: any) => ({
+                            id: ad.id,
+                            title: ad.title,
+                            location: ad.location || ad.region || '',
+                            pay: ad.salary || '협의',
+                            thumbnail: ad.thumbnail || '',
+                            images: ad.images || [],
+                            badges: ad.themes || [],
+                            isNew: true,
+                            isHot: ad.productType === 'vip',
+                            productType: ad.productType || 'general',
+                            industry: ad.industry || ''
+                        })));
+                    }
+                } catch (error) {
+                    console.warn('API fetch failed for search, using local data');
+                }
+            }
+        };
+        loadApiAds();
+    }, []);
 
     const SORT_OPTIONS = [
         { label: '최신순', value: 'latest' },
@@ -44,7 +76,8 @@ const SearchResults: React.FC = () => {
 
     // 필터링 및 정렬된 광고 목록
     const filteredAds = useMemo(() => {
-        let results = [...userAds, ...allAds];
+        // API 광고 + 로컬 사용자 광고 + 목업 광고 병합
+        let results = [...apiAds, ...userAds, ...allAds];
 
         // 검색어 필터
         if (searchQuery) {
@@ -137,7 +170,7 @@ const SearchResults: React.FC = () => {
         }
 
         return results.length > 0 ? results : allAds.slice(0, 12);
-    }, [searchQuery, filters, sortOrder, userAds]);
+    }, [searchQuery, filters, sortOrder, userAds, apiAds]);
 
     const handleFilterChange = (newFilters: typeof filters) => {
         setFilters(newFilters);

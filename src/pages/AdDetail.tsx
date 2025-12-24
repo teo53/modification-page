@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { DollarSign, Phone, MessageCircle, Heart, Share2, ChevronLeft, AlertCircle, User, Building2, Briefcase, Calendar, Tag, ChevronDown, ChevronUp, MessageSquare, Eye } from 'lucide-react';
 import { useParams, Link } from 'react-router-dom';
 import scrapedAds from '../data/scraped_ads.json';
+import ReportButton from '../components/common/ReportButton';
 
 interface AdvertiserInfo {
     nickname: string;
@@ -262,7 +263,10 @@ const AdDetail: React.FC = () => {
             <div className="md:hidden sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-white/10 p-4 flex items-center justify-between">
                 <Link to="/" className="text-white"><ChevronLeft /></Link>
                 <span className="font-bold text-white">채용정보</span>
-                <button className="text-white"><Share2 size={20} /></button>
+                <div className="flex items-center gap-3">
+                    <ReportButton targetType="ad" targetId={String(ad.id)} targetTitle={ad.title} />
+                    <button className="text-white"><Share2 size={20} /></button>
+                </div>
             </div>
 
             <div className="container mx-auto px-4 md:py-8">
@@ -367,6 +371,10 @@ const AdDetail: React.FC = () => {
                                 <Heart size={20} />
                                 관심등록
                             </button>
+
+                            <div className="pt-2 border-t border-white/10 mt-2 flex justify-end">
+                                <ReportButton targetType="ad" targetId={String(ad.id)} targetTitle={ad.title} />
+                            </div>
                         </div>
                     </div>
                 </div>

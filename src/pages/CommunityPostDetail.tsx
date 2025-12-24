@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, ThumbsUp, MessageSquare, Eye, Share2 } from 'lucide-react';
 import { api } from '../utils/apiClient';
+import ReportButton from '../components/common/ReportButton';
 
 interface Comment {
     id: string;
@@ -156,15 +157,18 @@ const CommunityPostDetail: React.FC = () => {
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex items-center gap-3 mt-8 pt-6 border-t border-white/5">
-                    <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white transition-colors">
-                        <ThumbsUp size={18} />
-                        <span>추천 {post.likeCount}</span>
-                    </button>
-                    <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white transition-colors">
-                        <Share2 size={18} />
-                        <span>공유</span>
-                    </button>
+                <div className="flex items-center justify-between mt-8 pt-6 border-t border-white/5">
+                    <div className="flex items-center gap-3">
+                        <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white transition-colors">
+                            <ThumbsUp size={18} />
+                            <span>추천 {post.likeCount}</span>
+                        </button>
+                        <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white transition-colors">
+                            <Share2 size={18} />
+                            <span>공유</span>
+                        </button>
+                    </div>
+                    <ReportButton targetType="post" targetId={post.id} targetTitle={post.title} />
                 </div>
             </div>
 
