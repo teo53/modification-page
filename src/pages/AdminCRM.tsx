@@ -51,6 +51,8 @@ const AdminCRM: React.FC = () => {
         const newMode = !crmOperationalMode;
         setCrmOperationalMode(newMode);
         localStorage.setItem('lunaalba_crm_mode', newMode ? 'operational' : 'demo');
+        // 즉시 동기화를 위해 커스텀 이벤트 발행
+        window.dispatchEvent(new CustomEvent('crmModeChange', { detail: { mode: newMode ? 'operational' : 'demo' } }));
     };
 
     // 샘플 회원 데이터 (홍보 시연용)

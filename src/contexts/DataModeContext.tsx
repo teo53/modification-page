@@ -40,6 +40,18 @@ export const DataModeProvider: React.FC<{ children: ReactNode }> = ({ children }
         };
 
         checkAdmin();
+
+        // CRM 모드 변경 이벤트 리스너 (즉시 동기화)
+        const handleCrmModeChange = (event: CustomEvent) => {
+            const mode = event.detail?.mode;
+            if (mode) {
+                const shouldUseSample = mode !== 'operational';
+                setUseSampleDataState(shouldUseSample);
+            }
+        };
+
+        window.addEventListener('crmModeChange', handleCrmModeChange as EventListener);
+
         // Check periodically for login state changes and CRM mode changes
         const interval = setInterval(() => {
             checkAdmin();
@@ -50,7 +62,11 @@ export const DataModeProvider: React.FC<{ children: ReactNode }> = ({ children }
                 setUseSampleDataState(shouldUseSample);
             }
         }, 1000);
-        return () => clearInterval(interval);
+
+        return () => {
+            clearInterval(interval);
+            window.removeEventListener('crmModeChange', handleCrmModeChange as EventListener);
+        };
     }, []);
 
     const setUseSampleData = (value: boolean) => {
