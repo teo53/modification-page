@@ -1,7 +1,23 @@
 // Simple LocalStorage-based Ad Storage
 // For demo purposes - not for production
+// Now with optional API backend integration
 
 import { getCurrentUser } from './auth';
+
+// Re-export API functions for use when backend is available
+export {
+    USE_API_ADS,
+    fetchAdsFromApi,
+    fetchAdByIdFromApi,
+    createAdWithApi,
+    updateAdWithApi,
+    deleteAdWithApi,
+    fetchMyAdsFromApi,
+    fetchPendingAdsFromApi,
+    approveAdWithApi,
+    rejectAdWithApi,
+    incrementAdViewWithApi
+} from './adService';
 
 export interface UserAd {
     id: string;
