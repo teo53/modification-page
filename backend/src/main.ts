@@ -48,4 +48,4 @@ async function bootstrap() {
   logger.log(`🌐 CORS enabled for: ${process.env.FRONTEND_URL || 'http://localhost:5173'}`);
 }
 
-bootstrap();
+void bootstrap();

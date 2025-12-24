@@ -188,7 +188,7 @@ export class AuthController {
     // 현재 사용자 정보
     // ============================================
     @Get('me')
-    async getMe(@CurrentUser() user: any) {
+    async getMe(@CurrentUser() user: Record<string, unknown>) {
         return {
             success: true,
             data: user,

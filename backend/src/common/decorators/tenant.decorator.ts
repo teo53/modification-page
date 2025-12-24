@@ -4,17 +4,23 @@
 // =============================================================================
 
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import { Request } from 'express';
+
+interface RequestWithTenant extends Request {
+    tenant?: unknown;
+    tenantId?: string;
+}
 
 export const CurrentTenant = createParamDecorator(
-    (data: unknown, ctx: ExecutionContext) => {
-        const request = ctx.switchToHttp().getRequest();
+    (_data: unknown, ctx: ExecutionContext): unknown => {
+        const request = ctx.switchToHttp().getRequest<RequestWithTenant>();
         return request.tenant;
     },
 );
 
 export const TenantId = createParamDecorator(
-    (data: unknown, ctx: ExecutionContext) => {
-        const request = ctx.switchToHttp().getRequest();
+    (_data: unknown, ctx: ExecutionContext): string | undefined => {
+        const request = ctx.switchToHttp().getRequest<RequestWithTenant>();
         return request.tenantId;
     },
 );

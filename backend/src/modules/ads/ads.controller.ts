@@ -19,6 +19,7 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { AdsService } from './ads.service';
+import { UserRole } from '@prisma/client';
 import { CreateAdDto } from './dto/create-ad.dto';
 import { QueryAdDto } from './dto/query-ad.dto';
 import { Public } from '../../common/decorators/public.decorator';
@@ -106,7 +107,7 @@ export class AdsController {
             tenantId,
             id,
             userId,
-            userRole as any,
+            userRole as UserRole,
             dto,
             ipAddress,
         );
@@ -136,7 +137,7 @@ export class AdsController {
             tenantId,
             id,
             userId,
-            userRole as any,
+            userRole as UserRole,
             ipAddress,
         );
 
