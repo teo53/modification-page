@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, AlertCircle, CheckCircle } from 'lucide-react';
-import { login } from '../utils/auth';
+import { login, loginWithApi, USE_API_AUTH } from '../utils/auth';
 
 const Login: React.FC = () => {
     const navigate = useNavigate();
@@ -12,7 +12,7 @@ const Login: React.FC = () => {
     const [success, setSuccess] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
         setSuccess('');
@@ -25,24 +25,35 @@ const Login: React.FC = () => {
             return;
         }
 
-        // Attempt login
-        const result = login(email, password);
+        try {
+            // Try API auth first if configured, then fallback to localStorage
+            let result;
+            if (USE_API_AUTH) {
+                result = await loginWithApi(email, password);
+            } else {
+                // Fallback to localStorage auth
+                result = login(email, password);
+            }
 
-        if (result.success) {
-            setSuccess(result.message);
-            setTimeout(() => {
-                // Redirect based on user type
-                if (result.user?.type === 'advertiser') {
-                    navigate('/advertiser/dashboard');
-                } else {
-                    navigate('/');
-                }
-            }, 1000);
-        } else {
-            setError(result.message);
+            if (result.success) {
+                setSuccess(result.message);
+                setTimeout(() => {
+                    // Redirect based on user type
+                    if (result.user?.type === 'advertiser') {
+                        navigate('/advertiser/dashboard');
+                    } else {
+                        navigate('/');
+                    }
+                }, 1000);
+            } else {
+                setError(result.message);
+            }
+        } catch (err) {
+            console.error('Login error:', err);
+            setError('로그인 중 오류가 발생했습니다.');
+        } finally {
+            setLoading(false);
         }
-
-        setLoading(false);
     };
 
     return (

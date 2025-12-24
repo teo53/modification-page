@@ -1,7 +1,22 @@
 // Simple LocalStorage-based Auth Utility
 // With password hashing for security
+// Now with optional API backend integration
 
 import { hashSync, hashAsync } from './hash';
+
+// Re-export API functions for use when backend is available
+export {
+    loginWithApi,
+    signupWithApi,
+    logoutWithApi,
+    initializeAuth,
+    loadPersistedToken,
+    checkApiConnection
+} from './authService';
+
+// Use API mode when VITE_API_URL is set and not localhost
+const API_URL = import.meta.env.VITE_API_URL || '';
+export const USE_API_AUTH = API_URL.length > 0 && !API_URL.includes('localhost');
 
 export interface User {
     id: string;

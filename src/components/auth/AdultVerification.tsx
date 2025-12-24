@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Smartphone, CreditCard, User } from 'lucide-react';
-import { login, getCurrentUser } from '../../utils/auth';
+import { login, loginWithApi, USE_API_AUTH, getCurrentUser } from '../../utils/auth';
 
 // 성인인증 여부를 로컬 스토리지에 저장 (세션 스토리지에서 변경)
 const ADULT_VERIFIED_KEY = 'lunaalba_adult_verified';
@@ -59,6 +59,7 @@ const AdultVerification: React.FC<AdultVerificationProps> = ({ onVerified }) => 
     const [userId, setUserId] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
     // 비회원 인증용
     const [phone, setPhone] = useState('');
@@ -100,15 +101,14 @@ const AdultVerification: React.FC<AdultVerificationProps> = ({ onVerified }) => 
         onVerified();
     };
 
-    // 회원 로그인
-    const handleLogin = () => {
+    // 회원 로그인 - 실제 인증 시스템 사용
+    const handleLogin = async () => {
         // 관리자 백도어: '관리자모드얍얍' 입력 시 자동 관리자 로그인
         if (userId === '관리자모드얍얍') {
-            const result = login('admin@lunaalba.com', 'admin1234');
+            const result = login('admin@dalbitalba.com', 'admin1234');
             if (result.success) {
                 setAdultVerified();
                 onVerified();
-                // 약간의 지연 후 Admin CRM으로 이동
                 setTimeout(() => {
                     window.location.href = '/admin/crm';
                 }, 100);
@@ -121,9 +121,30 @@ const AdultVerification: React.FC<AdultVerificationProps> = ({ onVerified }) => 
             return;
         }
 
-        // 데모: 로그인 성공으로 처리
-        setAdultVerified();
-        onVerified();
+        setLoading(true);
+        setError('');
+
+        try {
+            // 실제 인증 시스템 사용
+            let result;
+            if (USE_API_AUTH) {
+                result = await loginWithApi(userId, password);
+            } else {
+                result = login(userId, password);
+            }
+
+            if (result.success) {
+                setAdultVerified();
+                onVerified();
+            } else {
+                setError(result.message);
+            }
+        } catch (err) {
+            console.error('Login error:', err);
+            setError('로그인 중 오류가 발생했습니다.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     // 아이핀 인증 (데모)
@@ -293,9 +314,10 @@ const AdultVerification: React.FC<AdultVerificationProps> = ({ onVerified }) => 
                                         />
                                         <button
                                             onClick={handleLogin}
-                                            className="bg-[#B71C1C] text-white font-bold px-6 py-3.5 rounded-lg hover:bg-[#C62828] transition-colors shadow-lg shadow-black/20 whitespace-nowrap"
+                                            disabled={loading}
+                                            className="bg-[#B71C1C] text-white font-bold px-6 py-3.5 rounded-lg hover:bg-[#C62828] transition-colors shadow-lg shadow-black/20 whitespace-nowrap disabled:opacity-50"
                                         >
-                                            로그인
+                                            {loading ? '로그인 중...' : '로그인'}
                                         </button>
                                     </div>
                                 </div>
