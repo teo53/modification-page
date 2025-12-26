@@ -102,9 +102,25 @@ export const createAdWithApi = async (
             success: false,
             message: response.error || response.data?.message || '광고 등록에 실패했습니다.'
         };
-    } catch (error) {
+    } catch (error: any) {
         console.error('Create ad error:', error);
-        return { success: false, message: '서버 연결에 실패했습니다.' };
+
+        // 백엔드 검증 에러 메시지 추출
+        const backendMessage = error.response?.data?.message;
+
+        if (backendMessage) {
+            return {
+                success: false,
+                message: Array.isArray(backendMessage)
+                    ? backendMessage.join('\n')
+                    : backendMessage
+            };
+        }
+
+        return {
+            success: false,
+            message: error.message || '서버 연결에 실패했습니다.'
+        };
     }
 };
 
@@ -128,9 +144,22 @@ export const updateAdWithApi = async (
             success: false,
             message: response.error || response.data?.message || '광고 수정에 실패했습니다.'
         };
-    } catch (error) {
+    } catch (error: any) {
         console.error('Update ad error:', error);
-        return { success: false, message: '서버 연결에 실패했습니다.' };
+
+        // 백엔드 검증 에러 메시지 추출
+        const backendMessage = error.response?.data?.message;
+
+        if (backendMessage) {
+            return {
+                success: false,
+                message: Array.isArray(backendMessage)
+                    ? backendMessage.join('\n')
+                    : backendMessage
+            };
+        }
+
+        return { success: false, message: error.message || '서버 연결에 실패했습니다.' };
     }
 };
 

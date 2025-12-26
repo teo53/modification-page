@@ -372,18 +372,113 @@ const PostAd = () => {
                 if (logoResult) businessLogoUrl = logoResult.url;
             }
 
-            // 2. Prepare Final Ad Data
-            // Map the form data to the API expected format
-            // API expects `images` as array of strings
+            // Handle Ad Logo Upload
+            let adLogoUrl = '';
+            if (formData.adLogo) {
+                const adLogoResult = await import('../utils/fileService').then(m => m.uploadImage(formData.adLogo as File, 'logos'));
+                if (adLogoResult) adLogoUrl = adLogoResult.url;
+            }
+
+            // 2. Prepare Final Ad Data - Map frontend form data to backend DTO
             const finalAdData = {
-                ...pendingAdData,
+                // ==============================
+                // 업소 정보 (Step 1)
+                // ==============================
+                businessName: formData.businessName,
+                managerName: formData.managerName,
+                managerPhone: formData.managerPhone,
+
+                // SNS 연락처 (messengers → contact*)
+                contactKakao: formData.messengers.kakao || undefined,
+                contactLine: formData.messengers.line || undefined,
+                contactTelegram: formData.messengers.telegram || undefined,
+
+                // 주소 정보
+                zonecode: formData.address.zonecode || undefined,
+                roadAddress: formData.address.roadAddress || undefined,
+                addressDetail: formData.address.detailAddress || undefined,
+
+                // 로고 이미지
+                businessLogoUrl: businessLogoUrl || undefined,
+                adLogoUrl: adLogoUrl || undefined,
+
+                // ==============================
+                // 모집 정보 (Step 2)
+                // ==============================
+                title: formData.title,
+                description: formData.description || undefined,
+
+                // 업종 정보
+                industryLevel1: formData.industry.level1 || undefined,
+                industryLevel2: formData.industry.level2 || undefined,
+
+                // 지역 정보 (location → region/district/town)
+                region: formData.location.city || undefined,
+                district: formData.location.district || undefined,
+                town: formData.location.town || undefined,
+
+                // 고용 형태
+                recruitmentType: formData.recruitmentType || undefined,
+                recruitNumber: formData.recruitNumber || undefined,
+
+                // 근무 시간 (workHours → workHoursType/Start/End)
+                workHoursType: formData.workHours.type || undefined,
+                workHoursStart: formData.workHours.start || undefined,
+                workHoursEnd: formData.workHours.end || undefined,
+
+                // 근무 요일
+                workDays: formData.workDays.length > 0 ? formData.workDays : undefined,
+
+                // 급여 정보 (salary → salaryType/Amount)
+                salaryType: formData.salary.type || undefined,
+                salaryAmount: formData.salary.amount || undefined,
+
+                // 나이 제한 (ageLimit → ageMin/Max/NoLimit)
+                ageMin: formData.ageLimit.noLimit ? undefined : (formData.ageLimit.start || undefined),
+                ageMax: formData.ageLimit.noLimit ? undefined : (formData.ageLimit.end || undefined),
+                ageNoLimit: formData.ageLimit.noLimit || undefined,
+
+                // 성별/경력/휴무
+                gender: formData.gender || undefined,
+                experience: formData.experience || undefined,
+                daysOff: formData.daysOff || undefined,
+
+                // 마감일 (deadline → deadlineDate/Always)
+                deadlineDate: formData.deadline.always ? undefined : (formData.deadline.date || undefined),
+                deadlineAlways: formData.deadline.always || undefined,
+
+                // 복지/조건/접수방법/제출서류
+                welfare: formData.welfare.length > 0 ? formData.welfare : undefined,
+                preferredConditions: formData.preferredConditions.length > 0 ? formData.preferredConditions : undefined,
+                receptionMethods: formData.receptionMethods.length > 0 ? formData.receptionMethods : undefined,
+                requiredDocuments: formData.requiredDocuments.length > 0 ? formData.requiredDocuments : undefined,
+
+                // 키워드/테마
+                keywords: formData.keywords.length > 0 ? formData.keywords : undefined,
+                themes: formData.themes.length > 0 ? formData.themes : undefined,
+
+                // ==============================
+                // 이미지
+                // ==============================
+                thumbnail: uploadedImageUrls[0] || undefined,
+                images: uploadedImageUrls.length > 0 ? uploadedImageUrls : undefined,
+
+                // ==============================
+                // 광고 옵션 (Step 3)
+                // ==============================
+                productId: pendingAdData?.productType || undefined,
+
+                // 형광펜 효과
+                highlightConfig: pendingAdData?.highlightConfig || undefined,
+
+                // 자동 상위업
+                jumpUpConfig: pendingAdData?.jumpUpConfig || undefined,
+
+                // ==============================
+                // 결제 정보
+                // ==============================
                 depositorName,
                 paymentStatus: 'pending',
-                images: uploadedImageUrls,
-                businessLogo: businessLogoUrl,
-                // Ensure all required fields for API are present
-                // We might need to map some fields if backend DTO differs from frontend state
-                // But pendingAdData should be mostly correct structure
             };
 
             // 3. Create Ad via API

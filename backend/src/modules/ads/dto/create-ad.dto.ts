@@ -12,6 +12,13 @@ import {
     IsArray,
     MaxLength,
     IsObject,
+    Matches,
+    Min,
+    Max,
+    IsInt,
+    IsIn,
+    IsUrl,
+    ValidateIf,
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 
@@ -31,6 +38,9 @@ export class CreateAdDto {
 
     @IsOptional()
     @IsString()
+    @Matches(/^01[0-9]-?[0-9]{3,4}-?[0-9]{4}$/, {
+        message: '올바른 전화번호 형식이 아닙니다. (예: 010-1234-5678 또는 01012345678)',
+    })
     @MaxLength(20)
     managerPhone?: string;
 
@@ -59,11 +69,17 @@ export class CreateAdDto {
     addressDetail?: string;
 
     @IsOptional()
-    @IsString()
+    @IsUrl({}, { message: '올바른 URL 형식이 아닙니다.' })
+    @Matches(/^https:\/\/res\.cloudinary\.com\//, {
+        message: '허용된 이미지 서버(Cloudinary)의 URL만 사용 가능합니다.',
+    })
     businessLogoUrl?: string;
 
     @IsOptional()
-    @IsString()
+    @IsUrl({}, { message: '올바른 URL 형식이 아닙니다.' })
+    @Matches(/^https:\/\/res\.cloudinary\.com\//, {
+        message: '허용된 이미지 서버(Cloudinary)의 URL만 사용 가능합니다.',
+    })
     adLogoUrl?: string;
 
     // ==============================
@@ -121,7 +137,7 @@ export class CreateAdDto {
 
     @IsOptional()
     @IsArray()
-    @IsString({ each: true })
+    @IsIn(['월', '화', '수', '목', '금', '토', '일'], { each: true, message: '근무요일은 월~일 중에서만 선택 가능합니다.' })
     workDays?: string[];
 
     @IsOptional()
@@ -133,12 +149,16 @@ export class CreateAdDto {
     salaryAmount?: string;
 
     @IsOptional()
-    @IsNumber()
+    @IsInt({ message: '나이는 정수여야 합니다.' })
+    @Min(14, { message: '최소 나이는 14세 이상이어야 합니다.' })
+    @Max(100, { message: '최대 나이는 100세 이하여야 합니다.' })
     @Type(() => Number)
     ageMin?: number;
 
     @IsOptional()
-    @IsNumber()
+    @IsInt({ message: '나이는 정수여야 합니다.' })
+    @Min(14, { message: '최소 나이는 14세 이상이어야 합니다.' })
+    @Max(100, { message: '최대 나이는 100세 이하여야 합니다.' })
     @Type(() => Number)
     ageMax?: number;
 
@@ -202,12 +222,19 @@ export class CreateAdDto {
     // 이미지
     // ==============================
     @IsOptional()
-    @IsString()
+    @IsUrl({}, { message: '올바른 URL 형식이 아닙니다.' })
+    @Matches(/^https:\/\/res\.cloudinary\.com\//, {
+        message: '허용된 이미지 서버(Cloudinary)의 URL만 사용 가능합니다.',
+    })
     thumbnail?: string;
 
     @IsOptional()
     @IsArray()
-    @IsString({ each: true })
+    @IsUrl({}, { each: true, message: '올바른 URL 형식이 아닙니다.' })
+    @Matches(/^https:\/\/res\.cloudinary\.com\//, {
+        each: true,
+        message: '허용된 이미지 서버(Cloudinary)의 URL만 사용 가능합니다.',
+    })
     images?: string[];
 
     // ==============================

@@ -7,6 +7,7 @@ import {
     Injectable,
     NotFoundException,
     ForbiddenException,
+    ConflictException,
     Logger,
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
@@ -112,8 +113,19 @@ export class AdsService {
             take: limit,
         });
 
+        // 광고주별 통계 추가 (회차, 활동일수)
+        const enrichedData = await Promise.all(
+            data.map(async (ad) => {
+                const stats = await this.getAdvertiserStats(ad.userId, tenantId);
+                return {
+                    ...ad,
+                    advertiserStats: stats,
+                };
+            })
+        );
+
         return {
-            data,
+            data: enrichedData,
             meta: {
                 total,
                 page,
@@ -122,6 +134,45 @@ export class AdsService {
                 hasNextPage: page < totalPages,
                 hasPrevPage: page > 1,
             },
+        };
+    }
+
+    // ============================================
+    // 광고주 통계 조회 (회차, 활동일수)
+    // ============================================
+    async getAdvertiserStats(userId: string, tenantId: string) {
+        // 해당 광고주의 전체 광고 수 (회차)
+        const totalAds = await this.prisma.ad.count({
+            where: {
+                userId,
+                tenantId,
+                deletedAt: null,
+            },
+        });
+
+        // 해당 광고주의 첫 광고 등록일
+        const firstAd = await this.prisma.ad.findFirst({
+            where: {
+                userId,
+                tenantId,
+                deletedAt: null,
+            },
+            orderBy: { createdAt: 'asc' },
+            select: { createdAt: true, firstAdDate: true },
+        });
+
+        // 활동일수 계산 (첫 광고일로부터 현재까지)
+        let activeDays = 0;
+        if (firstAd) {
+            const startDate = firstAd.firstAdDate || firstAd.createdAt;
+            const now = new Date();
+            const diffTime = Math.abs(now.getTime() - startDate.getTime());
+            activeDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        }
+
+        return {
+            rotationCount: totalAds,  // 광고 회차 (총 광고 수)
+            activeDays: activeDays,   // 활동일수
         };
     }
 
@@ -152,13 +203,49 @@ export class AdsService {
             throw new NotFoundException('광고를 찾을 수 없습니다.');
         }
 
-        return ad;
+        // 광고주 통계 추가 (회차, 활동일수)
+        const advertiserStats = await this.getAdvertiserStats(ad.userId, tenantId);
+
+        return {
+            ...ad,
+            advertiserStats,
+        };
+    }
+
+    // ============================================
+    // 중복 광고 확인
+    // ============================================
+    private async checkDuplicateAd(
+        userId: string,
+        tenantId: string,
+        title: string,
+        businessName: string,
+    ) {
+        const existingAd = await this.prisma.ad.findFirst({
+            where: {
+                userId,
+                tenantId,
+                title,
+                businessName,
+                deletedAt: null,
+                status: { in: [AdStatus.ACTIVE, AdStatus.PENDING] },
+            },
+        });
+
+        if (existingAd) {
+            throw new ConflictException(
+                '동일한 제목과 업소명의 광고가 이미 등록되어 있습니다. 기존 광고를 수정하시거나 다른 제목을 사용해주세요.',
+            );
+        }
     }
 
     // ============================================
     // 광고 등록
     // ============================================
     async create(tenantId: string, userId: string, dto: CreateAdDto, ipAddress?: string) {
+        // 중복 광고 확인
+        await this.checkDuplicateAd(userId, tenantId, dto.title, dto.businessName);
+
         const ad = await this.prisma.ad.create({
             data: {
                 tenantId,
