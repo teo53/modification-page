@@ -160,7 +160,8 @@ export class AdsController {
     ) {
         const tenantId = this.getTenantId(req);
         const ipHash = this.hashIp(this.getIpAddress(req));
-        const sessionId = req.cookies?.sessionId;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const sessionId = (req as Request & { cookies?: Record<string, string> }).cookies?.sessionId;
         const userAgent = req.headers['user-agent'];
         const referer = req.headers['referer'];
 

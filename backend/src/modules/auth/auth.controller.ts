@@ -110,6 +110,7 @@ export class AuthController {
         @Req() req: Request,
         @Res({ passthrough: true }) res: Response,
     ) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const refreshToken = req.cookies?.refreshToken;
 
         if (!refreshToken) {
@@ -147,6 +148,7 @@ export class AuthController {
         @Req() req: Request,
         @Res({ passthrough: true }) res: Response,
     ) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const refreshToken = req.cookies?.refreshToken;
 
         await this.authService.logout(refreshToken);

@@ -125,6 +125,7 @@ export class AdminService {
     }
 
     // 광고 반려
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async rejectAd(adId: string, _reason?: string) {
         return this.prisma.ad.update({
             where: { id: adId },

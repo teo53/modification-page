@@ -116,6 +116,7 @@ export class CommunityController {
             id,
             dto,
             userId,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
             (dto as any).password,
         );
 

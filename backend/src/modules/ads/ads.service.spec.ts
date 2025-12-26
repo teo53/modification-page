@@ -7,10 +7,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException, ForbiddenException } from '@nestjs/common';
 import { AdsService } from './ads.service';
 import { PrismaService } from '../../prisma/prisma.service';
+import { CreateAdDto } from './dto/create-ad.dto';
 import { AdStatus, AdHistoryAction, UserRole } from '@prisma/client';
 
 describe('AdsService', () => {
     let service: AdsService;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let prismaService: any;
 
     const mockAd = {
@@ -69,6 +71,7 @@ describe('AdsService', () => {
         }).compile();
 
         service = module.get<AdsService>(AdsService);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         prismaService = module.get(PrismaService);
     });
 
@@ -167,7 +170,8 @@ describe('AdsService', () => {
             });
             prismaService.adHistory.create.mockResolvedValue({ id: 'history-id' });
 
-            const result = await service.create('tenant-1', 'user-123', createAdDto as any);
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+            const result = await service.create('tenant-1', 'user-123', createAdDto as CreateAdDto);
 
             expect(result).toBeDefined();
             expect(prismaService.ad.create).toHaveBeenCalled();
@@ -187,7 +191,8 @@ describe('AdsService', () => {
             });
             prismaService.adHistory.create.mockResolvedValue({ id: 'history-id' });
 
-            await service.create('tenant-1', 'user-123', createAdDto as any);
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+            await service.create('tenant-1', 'user-123', createAdDto as CreateAdDto);
 
             expect(prismaService.ad.create).toHaveBeenCalledWith(
                 expect.objectContaining({

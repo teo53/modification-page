@@ -26,6 +26,7 @@ import { v2 as cloudinary } from 'cloudinary';
 
 describe('FilesService', () => {
     let service: FilesService;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let configService: any;
 
     const mockUploadResponse = {
@@ -106,10 +107,12 @@ describe('FilesService', () => {
         });
 
         it('should throw BadRequestException if no file provided', async () => {
-            await expect(service.uploadImage(null as any, 'ads')).rejects.toThrow(
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+            await expect(service.uploadImage(null as unknown as Express.Multer.File, 'ads')).rejects.toThrow(
                 BadRequestException,
             );
-            await expect(service.uploadImage(null as any, 'ads')).rejects.toThrow(
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+            await expect(service.uploadImage(null as unknown as Express.Multer.File, 'ads')).rejects.toThrow(
                 '파일이 없습니다.',
             );
         });

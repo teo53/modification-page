@@ -30,7 +30,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     async validate(payload: JwtPayload) {
-        const user = await this.authService.validateUser(payload as any);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        const user = await this.authService.validateUser(payload as Parameters<typeof this.authService.validateUser>[0]);
 
         if (!user) {
             throw new UnauthorizedException('유효하지 않은 토큰입니다.');
