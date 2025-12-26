@@ -22,9 +22,25 @@ async function bootstrap() {
   const apiPrefix = process.env.API_PREFIX || '/api/v1';
   app.setGlobalPrefix(apiPrefix);
 
-  // CORS 설정
+  // CORS 설정 - 화이트리스트 기반
+  const allowedOrigins = [
+    process.env.FRONTEND_URL || 'http://localhost:5173',
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'https://dalbit-alba.vercel.app',
+    'https://lunaalba.com',
+  ].filter(Boolean);
+
   app.enableCors({
-    origin: true, // 개발 및 테스트를 위해 요청 Origin을 그대로 허용
+    origin: (origin, callback) => {
+      // 서버-투-서버 요청 허용 (origin이 없는 경우)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        logger.warn(`CORS blocked request from: ${origin}`);
+        callback(new Error('CORS 정책에 의해 차단됨'));
+      }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Tenant-ID', 'X-Request-ID', 'X-Requested-With', 'X-CSRF-Token'],
@@ -39,7 +55,7 @@ async function bootstrap() {
   app.use(cookieParser());
 
   // 포트 설정
-  const port = process.env.PORT || 4001;
+  const port = process.env.PORT || 4000;
 
   await app.listen(port);
 

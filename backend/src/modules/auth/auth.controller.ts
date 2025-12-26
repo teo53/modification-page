@@ -15,6 +15,7 @@ import {
     Get,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { Throttle } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
 import { SmsService } from './sms.service';
 import { SignupDto } from './dto/signup.dto';
@@ -38,6 +39,7 @@ export class AuthController {
     // ============================================
     @Public()
     @Post('signup')
+    @Throttle({ default: { limit: 3, ttl: 3600000 } }) // 1시간(3600초)에 3회 제한 (브루트포스 방지)
     async signup(
         @Body() dto: SignupDto,
         @Req() req: Request,
@@ -70,6 +72,7 @@ export class AuthController {
     @Public()
     @Post('login')
     @HttpCode(HttpStatus.OK)
+    @Throttle({ default: { limit: 5, ttl: 60000 } }) // 1분(60초)에 5회 제한 (브루트포스 공격 방지)
     async login(
         @Body() dto: LoginDto,
         @Req() req: Request,

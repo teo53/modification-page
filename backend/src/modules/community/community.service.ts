@@ -145,7 +145,7 @@ export class CommunityService {
         // 비밀번호 해싱 (익명 글)
         let hashedPassword: string | undefined;
         if (dto.password && !userId) {
-            hashedPassword = await bcrypt.hash(dto.password, 10);
+            hashedPassword = await bcrypt.hash(dto.password, 12);
         }
 
         const ipHash = ipAddress
@@ -294,7 +294,7 @@ export class CommunityService {
         // 비밀번호 해싱
         let hashedPassword: string | undefined;
         if (dto.password && !userId) {
-            hashedPassword = await bcrypt.hash(dto.password, 10);
+            hashedPassword = await bcrypt.hash(dto.password, 12);
         }
 
         const ipHash = ipAddress

@@ -3,12 +3,14 @@
 // 🏷️  역할 기반 접근 제어 가드
 // =============================================================================
 
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext, Logger } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { ROLES_KEY } from '../decorators/roles.decorator';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
+    private readonly logger = new Logger(RolesGuard.name);
+
     constructor(private reflector: Reflector) { }
 
     canActivate(context: ExecutionContext): boolean {
@@ -21,12 +23,24 @@ export class RolesGuard implements CanActivate {
             return true;
         }
 
-        const { user } = context.switchToHttp().getRequest();
+        const request = context.switchToHttp().getRequest();
+        const { user } = request;
 
         if (!user) {
+            // 보안 이벤트: 인증되지 않은 사용자의 보호된 리소스 접근 시도
+            this.logger.warn(`Access denied: No user context for ${request.method} ${request.url}`);
             return false;
         }
 
-        return requiredRoles.some((role) => user.role === role);
+        const hasRole = requiredRoles.some((role) => user.role === role);
+
+        if (!hasRole) {
+            // 보안 이벤트: 권한 없는 사용자의 접근 시도
+            this.logger.warn(
+                `Access denied: User ${user.id} (role: ${user.role}) attempted to access ${request.method} ${request.url} (required roles: ${requiredRoles.join(', ')})`,
+            );
+        }
+
+        return hasRole;
     }
 }

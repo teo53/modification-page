@@ -158,13 +158,13 @@ export class AdsService {
                 deletedAt: null,
             },
             orderBy: { createdAt: 'asc' },
-            select: { createdAt: true, firstAdDate: true },
+            select: { createdAt: true },
         });
 
         // 활동일수 계산 (첫 광고일로부터 현재까지)
         let activeDays = 0;
         if (firstAd) {
-            const startDate = firstAd.firstAdDate || firstAd.createdAt;
+            const startDate = firstAd.createdAt;
             const now = new Date();
             const diffTime = Math.abs(now.getTime() - startDate.getTime());
             activeDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));

@@ -248,6 +248,14 @@ model Ad {
   sortPriority    Int      @default(0) @map("sort_priority")
   lastJumpUpAt    DateTime? @map("last_jump_up_at")
   
+  // ==============================
+  // 광고 이력 추적 (queenalba 스타일)
+  // ==============================
+  // 광고주의 광고 회차 (몇 번째 광고인지)
+  rotationCount   Int      @default(1) @map("rotation_count")
+  // 해당 광고주의 첫 광고 등록일 (activeDays 계산용)
+  firstAdDate     DateTime @default(now()) @map("first_ad_date")
+  
   // 타임스탬프
   createdAt       DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")

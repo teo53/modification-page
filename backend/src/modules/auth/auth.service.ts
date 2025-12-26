@@ -106,7 +106,8 @@ export class AuthService {
             },
         });
 
-        this.logger.log(`New user registered: ${user.email} (${user.role})`);
+        // 보안: 프로덕션에서는 이메일 대신 사용자 ID만 로깅
+        this.logger.log(`New user registered: ${user.id} (${user.role})`);
 
         // 토큰 생성
         const tokens = await this.generateTokens(user.id, user.email, user.role, tenantId);
@@ -140,25 +141,35 @@ export class AuthService {
         });
 
         if (!user) {
+            // 보안 이벤트: 존재하지 않는 이메일로 로그인 시도
+            this.logger.warn(`Failed login attempt: User not found (IP: ${ipAddress})`);
             throw new UnauthorizedException('이메일 또는 비밀번호가 일치하지 않습니다.');
         }
 
         // 계정 상태 확인
         if (!user.isActive) {
+            // 보안 이벤트: 비활성화된 계정 접근 시도
+            this.logger.warn(`Failed login attempt: Inactive account ${user.id} (IP: ${ipAddress})`);
             throw new UnauthorizedException('비활성화된 계정입니다.');
         }
 
         if (user.isBanned) {
+            // 보안 이벤트: 차단된 계정 접근 시도
+            this.logger.warn(`Failed login attempt: Banned account ${user.id} (IP: ${ipAddress})`);
             throw new UnauthorizedException(`차단된 계정입니다. 사유: ${user.banReason || '문의 바랍니다.'}`);
         }
 
         if (user.deletedAt) {
+            // 보안 이벤트: 탈퇴한 계정 접근 시도
+            this.logger.warn(`Failed login attempt: Deleted account ${user.id} (IP: ${ipAddress})`);
             throw new UnauthorizedException('탈퇴한 계정입니다.');
         }
 
         // 비밀번호 확인
         const isPasswordValid = await bcrypt.compare(dto.password, user.passwordHash);
         if (!isPasswordValid) {
+            // 보안 이벤트: 잘못된 비밀번호로 로그인 시도
+            this.logger.warn(`Failed login attempt: Invalid password for user ${user.id} (IP: ${ipAddress})`);
             throw new UnauthorizedException('이메일 또는 비밀번호가 일치하지 않습니다.');
         }
 
@@ -171,7 +182,8 @@ export class AuthService {
             },
         });
 
-        this.logger.log(`User logged in: ${user.email}`);
+        // 보안: 프로덕션에서는 이메일 대신 사용자 ID만 로깅
+        this.logger.log(`User logged in: ${user.id}`);
 
         // 토큰 생성
         const tokens = await this.generateTokens(user.id, user.email, user.role, tenantId);
@@ -220,7 +232,8 @@ export class AuthService {
 
         if (familyTokens.length > 0) {
             // 토큰 재사용 감지 - 모든 family 토큰 삭제
-            this.logger.warn(`Token reuse detected for user: ${storedToken.user.email}`);
+            // 보안: 이메일 대신 사용자 ID만 로깅
+            this.logger.warn(`Token reuse detected for user: ${storedToken.userId}`);
             await this.prisma.refreshToken.deleteMany({
                 where: { family: storedToken.family },
             });
