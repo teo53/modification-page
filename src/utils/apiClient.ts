@@ -159,6 +159,14 @@ export class SecureApiClient {
             return { data, error, status: response.status };
 
         } catch (err) {
+            // Enhanced error logging
+            console.error('[API Error]', {
+                endpoint,
+                method,
+                error: err instanceof Error ? err.message : 'Unknown error',
+                timestamp: new Date().toISOString()
+            });
+
             if (err instanceof Error && err.name === 'AbortError') {
                 return { data: null, error: '요청 시간이 초과되었습니다.', status: 0 };
             }

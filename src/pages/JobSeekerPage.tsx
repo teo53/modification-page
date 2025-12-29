@@ -196,7 +196,7 @@ const JobSeekerPage: React.FC = () => {
 
             <form onSubmit={handleSubmit} className="max-w-3xl mx-auto space-y-8">
                 {/* 기본 정보 */}
-                <section className="bg-accent rounded-xl border border-white/5 p-6">
+                <section className="bg-accent/30 rounded-xl border border-white/10 p-6">
                     <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                         <User size={20} className="text-primary" />
                         기본 정보
@@ -247,8 +247,8 @@ const JobSeekerPage: React.FC = () => {
                                     type="button"
                                     onClick={() => setFormData(prev => ({ ...prev, gender: 'female' }))}
                                     className={`flex-1 py-3 rounded-lg font-bold transition-colors ${formData.gender === 'female'
-                                            ? 'bg-pink-500 text-white'
-                                            : 'bg-black/40 border border-white/10 text-text-muted hover:border-white/30'
+                                        ? 'bg-pink-500 text-white'
+                                        : 'bg-black/40 border border-white/10 text-text-muted hover:border-white/30'
                                         }`}
                                 >
                                     여성
@@ -257,8 +257,8 @@ const JobSeekerPage: React.FC = () => {
                                     type="button"
                                     onClick={() => setFormData(prev => ({ ...prev, gender: 'male' }))}
                                     className={`flex-1 py-3 rounded-lg font-bold transition-colors ${formData.gender === 'male'
-                                            ? 'bg-blue-500 text-white'
-                                            : 'bg-black/40 border border-white/10 text-text-muted hover:border-white/30'
+                                        ? 'bg-blue-500 text-white'
+                                        : 'bg-black/40 border border-white/10 text-text-muted hover:border-white/30'
                                         }`}
                                 >
                                     남성
@@ -269,7 +269,7 @@ const JobSeekerPage: React.FC = () => {
                 </section>
 
                 {/* 희망 조건 */}
-                <section className="bg-accent rounded-xl border border-white/5 p-6">
+                <section className="bg-accent/30 rounded-xl border border-white/10 p-6">
                     <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                         <Briefcase size={20} className="text-primary" />
                         희망 조건
@@ -288,8 +288,8 @@ const JobSeekerPage: React.FC = () => {
                                     type="button"
                                     onClick={() => toggleArrayItem('preferredRegions', region)}
                                     className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${formData.preferredRegions.includes(region)
-                                            ? 'bg-primary text-black'
-                                            : 'bg-black/40 border border-white/10 text-text-muted hover:border-primary'
+                                        ? 'bg-primary text-black'
+                                        : 'bg-black/40 border border-white/10 text-text-muted hover:border-primary'
                                         }`}
                                 >
                                     {region}
@@ -311,8 +311,8 @@ const JobSeekerPage: React.FC = () => {
                                     type="button"
                                     onClick={() => toggleArrayItem('preferredJobTypes', job)}
                                     className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${formData.preferredJobTypes.includes(job)
-                                            ? 'bg-primary text-black'
-                                            : 'bg-black/40 border border-white/10 text-text-muted hover:border-primary'
+                                        ? 'bg-primary text-black'
+                                        : 'bg-black/40 border border-white/10 text-text-muted hover:border-primary'
                                         }`}
                                 >
                                     {job}
@@ -334,8 +334,8 @@ const JobSeekerPage: React.FC = () => {
                                     type="button"
                                     onClick={() => setFormData(prev => ({ ...prev, preferredWorkTime: time }))}
                                     className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${formData.preferredWorkTime === time
-                                            ? 'bg-primary text-black'
-                                            : 'bg-black/40 border border-white/10 text-text-muted hover:border-primary'
+                                        ? 'bg-primary text-black'
+                                        : 'bg-black/40 border border-white/10 text-text-muted hover:border-primary'
                                         }`}
                                 >
                                     {time}
@@ -362,7 +362,7 @@ const JobSeekerPage: React.FC = () => {
                 </section>
 
                 {/* 자기소개 */}
-                <section className="bg-accent rounded-xl border border-white/5 p-6">
+                <section className="bg-accent/30 rounded-xl border border-white/10 p-6">
                     <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                         <FileText size={20} className="text-primary" />
                         자기소개
@@ -406,7 +406,7 @@ const JobSeekerPage: React.FC = () => {
                 </section>
 
                 {/* 추가 옵션 - 토글 버튼 스타일 */}
-                <section className="bg-accent rounded-xl border border-white/5 p-6">
+                <section className="bg-accent/30 rounded-xl border border-white/10 p-6">
                     <h2 className="text-lg font-bold text-white mb-4">추가 옵션</h2>
                     <div className="grid md:grid-cols-2 gap-3">
                         <ToggleButton
@@ -433,7 +433,7 @@ const JobSeekerPage: React.FC = () => {
                 </section>
 
                 {/* 연락 수단 - 광고주 스타일로 다양화 */}
-                <section className="bg-accent rounded-xl border border-white/5 p-6">
+                <section className="bg-accent/30 rounded-xl border border-white/10 p-6">
                     <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                         <Phone size={20} className="text-primary" />
                         연락 수단

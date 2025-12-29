@@ -117,12 +117,18 @@ const PostAd = () => {
                     </div>
                     <h2 className="text-xl font-bold text-white">접근 권한이 없습니다</h2>
                     <p className="text-text-muted">광고주 계정만 광고를 등록할 수 있습니다.<br />광고주로 회원가입 후 이용해주세요.</p>
-                    <div className="flex gap-2 justify-center pt-4">
+                    <div className="flex flex-wrap gap-2 justify-center pt-4">
                         <button
                             onClick={() => navigate('/')}
                             className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors"
                         >
                             홈으로
+                        </button>
+                        <button
+                            onClick={() => navigate('/login')}
+                            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-lg transition-colors"
+                        >
+                            로그인
                         </button>
                         <button
                             onClick={() => navigate('/signup')}
@@ -406,7 +412,7 @@ const PostAd = () => {
                 // 모집 정보 (Step 2)
                 // ==============================
                 title: formData.title,
-                description: formData.description || undefined,
+                description: formData.description || '',
 
                 // 업종 정보
                 industryLevel1: formData.industry.level1 || undefined,
@@ -473,6 +479,17 @@ const PostAd = () => {
 
                 // 자동 상위업
                 jumpUpConfig: pendingAdData?.jumpUpConfig || undefined,
+
+                // ==============================
+                // UserAd 필수 필드 (createAdWithApi 호환용)
+                // ==============================
+                location: (formData.location.city && formData.location.district)
+                    ? `${formData.location.city} ${formData.location.district}`
+                    : (formData.address.roadAddress || ''),
+                salary: formData.salary.amount || '협의',
+                workHours: formData.workHours.type || '',
+                productType: pendingAdData?.productType || 'regular',
+                contact: formData.managerPhone || '',
 
                 // ==============================
                 // 결제 정보
@@ -672,21 +689,24 @@ const PostAd = () => {
                                 </div>
                             </div>
 
-                            {/* Business Logo Upload */}
+                            {/* Business Logo Upload - 정사각형 필수 */}
                             <div className="space-y-2">
-                                <label className="text-sm text-text-muted">업소 로고</label>
-                                <div className="flex items-center gap-4">
-                                    <div className="w-20 h-20 bg-background border-2 border-dashed border-white/20 rounded-xl flex items-center justify-center text-text-muted hover:border-primary/50 transition-colors cursor-pointer">
+                                <label className="text-sm text-text-muted">업소 로고 (정사각형) <span className="text-red-500">*</span></label>
+                                <div className="flex items-start gap-4">
+                                    <div className="w-24 h-24 bg-background border-2 border-dashed border-white/20 rounded-xl flex items-center justify-center text-text-muted hover:border-primary/50 transition-colors cursor-pointer overflow-hidden">
                                         {formData.businessLogo ? (
-                                            <img src={URL.createObjectURL(formData.businessLogo)} alt="Logo" className="w-full h-full object-cover rounded-xl" />
+                                            <img src={URL.createObjectURL(formData.businessLogo)} alt="Logo" className="w-full h-full object-cover" />
                                         ) : (
                                             <span className="text-2xl">+</span>
                                         )}
                                     </div>
-                                    <div className="text-xs text-text-muted">
-                                        <p>권장 크기: 200x200px</p>
-                                        <p>지원 형식: JPG, PNG</p>
-                                        <label className="inline-block mt-2 px-3 py-1.5 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20 transition-colors text-white">
+                                    <div className="flex-1">
+                                        <div className="text-xs text-text-muted space-y-1 mb-2">
+                                            <p className="text-primary font-bold">⚠️ 정사각형 필수</p>
+                                            <p>• 크기: <span className="text-white font-bold">200 x 200px</span></p>
+                                            <p>• 형식: JPG, PNG (500KB 이하)</p>
+                                        </div>
+                                        <label className="inline-block px-3 py-1.5 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20 transition-colors text-white text-sm">
                                             파일 선택
                                             <input
                                                 type="file"
@@ -701,6 +721,7 @@ const PostAd = () => {
                                         </label>
                                     </div>
                                 </div>
+                                <p className="text-xs text-text-muted">※ 이 로고는 광고 카드 및 상세페이지 상단에 정사각형 형태로 표시됩니다. 광고용 이미지는 Step 2에서 별도로 등록합니다.</p>
                             </div>
                         </div>
 

@@ -78,11 +78,11 @@ const PremiumAdGrid: React.FC = () => {
                         </span>
                     )}
                 </h2>
-                <Link to="/theme" className="text-sm text-text-muted hover:text-primary">더보기 +</Link>
+                <Link to="/search?productType=vip" className="text-sm text-text-muted hover:text-primary">더보기 +</Link>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
-                {adsWithThumbnails.slice(0, 12).map((ad) => (
+                {adsWithThumbnails.slice(0, 24).map((ad) => (
                     <AdCard
                         key={ad.id}
                         id={ad.id}

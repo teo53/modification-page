@@ -102,7 +102,9 @@ const BusinessVerification: React.FC<BusinessVerificationProps> = ({
                     }
                     return;
                 } catch (err) {
-                    console.log('API 호출 실패, 로컬 검증으로 대체:', err);
+                    if (import.meta.env.DEV) {
+                        console.log('API 호출 실패, 로컬 검증으로 대체:', err);
+                    }
                     // API 실패 시 로컬 검증으로 폴백
                 }
             }

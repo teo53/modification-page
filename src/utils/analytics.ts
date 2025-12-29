@@ -206,7 +206,9 @@ export const initializeAnalytics = () => {
     // Track page leave
     window.addEventListener('beforeunload', trackPageLeave);
 
-    console.log('[Analytics] Enhanced tracking initialized');
+    if (import.meta.env.DEV) {
+        console.log('[Analytics] Enhanced tracking initialized');
+    }
 };
 
 // Get analytics summary for Admin CRM

@@ -91,7 +91,9 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                     // 데모 모드인 경우 코드 표시
                     if (data.demoCode) {
                         setSentCode(data.demoCode);
-                        console.log(`[DEMO] 인증번호: ${data.demoCode}`);
+                        if (import.meta.env.DEV) {
+                            console.log(`[DEMO] 인증번호: ${data.demoCode}`);
+                        }
                         // Toast로 인증번호 표시
                         if (toast) {
                             toast.showDemoCode(data.demoCode);
@@ -122,7 +124,9 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
             setTimer(180);
             setStep('code');
 
-            console.log(`[DEMO] 인증번호: ${code}`);
+            if (import.meta.env.DEV) {
+                console.log(`[DEMO] 인증번호: ${code}`);
+            }
             // Toast로 인증번호 표시
             if (toast) {
                 toast.showDemoCode(code);

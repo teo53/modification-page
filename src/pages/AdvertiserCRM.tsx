@@ -548,48 +548,76 @@ const AdvertiserCRM: React.FC = () => {
                         <h3 className="text-xl font-bold text-white mb-4">로고 및 배너 수정</h3>
 
                         <div className="mb-6">
-                            <label className="block text-sm text-white mb-2 font-bold">업소 로고 이미지</label>
-                            <p className="text-xs text-text-muted mb-2">광고 카드 및 상세페이지 상단에 표시됩니다.</p>
-                            <div className="flex gap-2">
-                                <input
-                                    type="text"
-                                    placeholder="파일 선택..."
-                                    value={logoUrl}
-                                    onChange={(e) => setLogoUrl(e.target.value)}
-                                    className="flex-1 bg-background border border-white/10 rounded-lg px-3 py-2 text-white"
-                                />
-                                <button className="bg-primary text-black px-4 py-2 rounded-lg font-bold">파일선택</button>
-                            </div>
-                            <div className="mt-2 p-3 bg-background rounded-lg border border-white/5">
-                                <p className="text-xs text-primary font-bold mb-1">권장 규격</p>
-                                <ul className="text-xs text-text-muted space-y-1">
-                                    <li>• 이미지 크기: <span className="text-white">160 x 60px</span></li>
-                                    <li>• 파일 형식: <span className="text-white">JPG, PNG, GIF</span></li>
-                                    <li>• 최대 용량: <span className="text-white">500KB 이하</span></li>
-                                </ul>
+                            <label className="block text-sm text-white mb-2 font-bold">업소 로고 (정사각형)</label>
+                            <p className="text-xs text-text-muted mb-2">광고 카드 및 상세페이지 상단에 정사각형 형태로 표시됩니다.</p>
+                            <div className="flex gap-4 items-start">
+                                <div className="w-24 h-24 bg-background border-2 border-dashed border-white/20 rounded-xl flex items-center justify-center overflow-hidden">
+                                    {logoUrl ? (
+                                        <img src={logoUrl} alt="로고 미리보기" className="w-full h-full object-cover" />
+                                    ) : (
+                                        <span className="text-text-muted text-xs">미리보기</span>
+                                    )}
+                                </div>
+                                <div className="flex-1">
+                                    <label className="block bg-primary text-black px-4 py-2 rounded-lg font-bold cursor-pointer hover:bg-primary/90 transition-colors text-center">
+                                        파일 선택
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            className="hidden"
+                                            onChange={(e) => {
+                                                if (e.target.files?.[0]) {
+                                                    setLogoUrl(URL.createObjectURL(e.target.files[0]));
+                                                }
+                                            }}
+                                        />
+                                    </label>
+                                    <div className="mt-2 p-3 bg-background rounded-lg border border-white/5">
+                                        <p className="text-xs text-primary font-bold mb-1">⚠️ 필수 규격</p>
+                                        <ul className="text-xs text-text-muted space-y-1">
+                                            <li>• 이미지 크기: <span className="text-white font-bold">200 x 200px (정사각형)</span></li>
+                                            <li>• 파일 형식: <span className="text-white">JPG, PNG, GIF</span></li>
+                                            <li>• 최대 용량: <span className="text-white">500KB 이하</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
                         <div className="mb-6">
-                            <label className="block text-sm text-white mb-2 font-bold">광고용 배너 이미지</label>
-                            <p className="text-xs text-text-muted mb-2">홈페이지 메인 및 광고 상세페이지에 노출됩니다.</p>
-                            <div className="flex gap-2">
-                                <input
-                                    type="text"
-                                    placeholder="파일 선택..."
-                                    value={bannerUrl}
-                                    onChange={(e) => setBannerUrl(e.target.value)}
-                                    className="flex-1 bg-background border border-white/10 rounded-lg px-3 py-2 text-white"
-                                />
-                                <button className="bg-primary text-black px-4 py-2 rounded-lg font-bold">파일선택</button>
-                            </div>
-                            <div className="mt-2 p-3 bg-background rounded-lg border border-white/5">
-                                <p className="text-xs text-primary font-bold mb-1">권장 규격</p>
-                                <ul className="text-xs text-text-muted space-y-1">
-                                    <li>• 이미지 크기: <span className="text-white">640 x 480px</span></li>
-                                    <li>• 파일 형식: <span className="text-white">JPG, PNG, GIF</span></li>
-                                    <li>• 최대 용량: <span className="text-white">2MB 이하</span></li>
-                                </ul>
+                            <label className="block text-sm text-white mb-2 font-bold">광고용 썸네일 이미지</label>
+                            <p className="text-xs text-text-muted mb-2">홈페이지 광고 카드 및 상세페이지 본문에 노출됩니다. 로고와 별개입니다.</p>
+                            <div className="flex gap-4 items-start">
+                                <div className="w-32 h-24 bg-background border-2 border-dashed border-white/20 rounded-xl flex items-center justify-center overflow-hidden">
+                                    {bannerUrl ? (
+                                        <img src={bannerUrl} alt="썸네일 미리보기" className="w-full h-full object-cover" />
+                                    ) : (
+                                        <span className="text-text-muted text-xs">미리보기</span>
+                                    )}
+                                </div>
+                                <div className="flex-1">
+                                    <label className="block bg-primary text-black px-4 py-2 rounded-lg font-bold cursor-pointer hover:bg-primary/90 transition-colors text-center">
+                                        파일 선택
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            className="hidden"
+                                            onChange={(e) => {
+                                                if (e.target.files?.[0]) {
+                                                    setBannerUrl(URL.createObjectURL(e.target.files[0]));
+                                                }
+                                            }}
+                                        />
+                                    </label>
+                                    <div className="mt-2 p-3 bg-background rounded-lg border border-white/5">
+                                        <p className="text-xs text-primary font-bold mb-1">권장 규격</p>
+                                        <ul className="text-xs text-text-muted space-y-1">
+                                            <li>• 이미지 크기: <span className="text-white">640 x 480px (4:3 비율)</span></li>
+                                            <li>• 파일 형식: <span className="text-white">JPG, PNG, GIF</span></li>
+                                            <li>• 최대 용량: <span className="text-white">2MB 이하</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 

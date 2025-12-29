@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, AlertCircle, CheckCircle } from 'lucide-react';
 import { login, loginWithApi, USE_API_AUTH } from '../utils/auth';
+import { validateEmail, detectSqlInjection } from '../utils/validation';
 
 const Login: React.FC = () => {
     const navigate = useNavigate();
@@ -18,9 +19,24 @@ const Login: React.FC = () => {
         setSuccess('');
         setLoading(true);
 
-        // Validation
+        // Basic validation
         if (!email || !password) {
             setError('이메일과 비밀번호를 입력해주세요.');
+            setLoading(false);
+            return;
+        }
+
+        // Email format validation
+        if (!validateEmail(email)) {
+            setError('올바른 이메일 형식을 입력해주세요.');
+            setLoading(false);
+            return;
+        }
+
+        // Malicious input detection
+        if (detectSqlInjection(email) || detectSqlInjection(password)) {
+            setError('유효하지 않은 입력입니다.');
+            console.error('[Security] Suspicious input detected in login form');
             setLoading(false);
             return;
         }

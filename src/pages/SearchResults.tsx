@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Search, Filter } from 'lucide-react';
 import AdCard from '../components/ad/AdCard';
 import SelectionGroup from '../components/ui/SelectionGroup';
@@ -6,10 +7,22 @@ import HorizontalFilterBar from '../components/ui/HorizontalFilterBar';
 import { allAds } from '../data/mockAds';
 import { USE_API_ADS, fetchAdsFromApi } from '../utils/adStorage';
 
+// 광고 상품 타입 라벨 (실제 데이터 productType 값과 매핑)
+const PRODUCT_TYPE_LABELS: Record<string, string> = {
+    'all': '전체',
+    'vip': 'VIP 프리미엄',
+    'special': '스페셜',
+    'general': '일반',
+};
+
 const SearchResults: React.FC = () => {
+    const [searchParams, setSearchParams] = useSearchParams();
+    const initialProductType = searchParams.get('productType') || 'all';
+
     const [sortOrder, setSortOrder] = useState('latest');
     const [displayCount, setDisplayCount] = useState(12);
-    const [searchQuery, setSearchQuery] = useState('강남');
+    const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
+    const [productTypeFilter, setProductTypeFilter] = useState(initialProductType);
     const [apiAds, setApiAds] = useState<any[]>([]);
     const [filters, setFilters] = useState({
         region: 'all',
@@ -86,6 +99,11 @@ const SearchResults: React.FC = () => {
                 ad.title.toLowerCase().includes(query) ||
                 ad.location.toLowerCase().includes(query)
             );
+        }
+
+        // 광고 상품 타입 필터
+        if (productTypeFilter !== 'all') {
+            results = results.filter(ad => ad.productType === productTypeFilter);
         }
 
         // 지역 필터
@@ -170,7 +188,7 @@ const SearchResults: React.FC = () => {
         }
 
         return results.length > 0 ? results : allAds.slice(0, 12);
-    }, [searchQuery, filters, sortOrder, userAds, apiAds]);
+    }, [searchQuery, filters, sortOrder, userAds, apiAds, productTypeFilter]);
 
     const handleFilterChange = (newFilters: typeof filters) => {
         setFilters(newFilters);
@@ -216,6 +234,35 @@ const SearchResults: React.FC = () => {
 
             {/* Horizontal Filter Bar */}
             <HorizontalFilterBar onFilterChange={handleFilterChange} />
+
+            {/* 광고 상품 타입 필터 */}
+            <div className="container mx-auto px-4 mb-4">
+                <div className="flex flex-wrap gap-2">
+                    {Object.entries(PRODUCT_TYPE_LABELS).map(([value, label]) => (
+                        <button
+                            key={value}
+                            onClick={() => {
+                                setProductTypeFilter(value);
+                                setSearchParams(prev => {
+                                    if (value === 'all') {
+                                        prev.delete('productType');
+                                    } else {
+                                        prev.set('productType', value);
+                                    }
+                                    return prev;
+                                });
+                                setDisplayCount(12);
+                            }}
+                            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${productTypeFilter === value
+                                ? 'bg-primary text-black'
+                                : 'bg-accent/50 text-text-muted hover:bg-accent border border-white/10'
+                                }`}
+                        >
+                            {label}
+                        </button>
+                    ))}
+                </div>
+            </div>
 
             {/* Results Section */}
             <div className="container mx-auto px-4">

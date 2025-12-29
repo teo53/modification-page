@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Menu, User, LogIn, PenSquare, LogOut, LayoutDashboard, X } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getCurrentUser, logout, isAdvertiser, login } from '../../utils/auth';
+import { getCurrentUser, logout, isAdvertiser } from '../../utils/auth';
+import { detectSqlInjection } from '../../utils/validation';
 
 const Header: React.FC = () => {
     const navigate = useNavigate();
@@ -52,27 +53,14 @@ const Header: React.FC = () => {
                                 const input = e.currentTarget;
                                 const searchTerm = input.value.trim();
 
-                                // Secret admin entry keyword - auto login as admin
-                                if (searchTerm === '관리자모드얍얍') {
-                                    input.value = '';
-                                    // Auto login as admin
-                                    const result = login('admin@dalbitalba.com', 'admin1234');
-                                    if (result.success) {
-                                        setUser(result.user || null);
-                                        // Small delay to allow state propagation before navigation
-                                        setTimeout(() => {
-                                            navigate('/admin/crm');
-                                        }, 100);
-                                    } else {
-                                        // If login fails, try to seed accounts and retry
-                                        console.log('Admin login failed, attempting to reseed...');
-                                        navigate('/admin/crm');
-                                    }
-                                    return;
-                                }
-
-                                // Normal search
+                                // Normal search with security check
                                 if (searchTerm) {
+                                    // Block malicious input
+                                    if (detectSqlInjection(searchTerm)) {
+                                        console.error('[Security] Suspicious search term blocked');
+                                        input.value = '';
+                                        return;
+                                    }
                                     navigate(`/search?q=${encodeURIComponent(searchTerm)}`);
                                 }
                             }

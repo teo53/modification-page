@@ -38,9 +38,11 @@ export async function uploadImage(file: File, folder: string = 'ads'): Promise<U
         return new Promise((resolve) => {
             const reader = new FileReader();
             reader.onload = () => {
-                console.log('📷 [이미지 업로드 테스트 모드]');
-                console.log(`   파일명: ${file.name}`);
-                console.log(`   크기: ${(file.size / 1024).toFixed(2)} KB`);
+                if (import.meta.env.DEV) {
+                    console.log('📷 [이미지 업로드 테스트 모드]');
+                    console.log(`   파일명: ${file.name}`);
+                    console.log(`   크기: ${(file.size / 1024).toFixed(2)} KB`);
+                }
                 resolve({
                     success: true,
                     url: reader.result as string,
