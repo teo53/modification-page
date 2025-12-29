@@ -20,6 +20,129 @@ const getDistrictsForCity = (city: string) => {
     return districts[city] || ['전체'];
 };
 
+// Products array (static, moved outside component)
+const products = [
+    {
+        id: 'diamond',
+        name: '다이아몬드',
+        price: '5,000,000원',
+        priceNum: 5000000,
+        duration: '30일',
+        durationDays: 30,
+        color: 'border-cyan-300',
+        bg: 'bg-gradient-to-br from-cyan-400/10 via-white/5 to-cyan-400/10',
+        bgFill: 'bg-gradient-to-r from-white to-cyan-200',
+        textColor: 'text-cyan-200',
+        features: ['최상단 2슬롯', '다이아몬드 보더', '연기 효과', '최대 노출'],
+        description: '최상위 프리미엄 광고. 보라색 벨벳 배경 위 최상단에 2개만 노출됩니다.',
+        tips: '하루 평균 조회수 3,000~5,000회 예상. 신규 오픈/대형 업소에 추천.',
+        recommended: '대형 업소, 신규 오픈, 최대 노출 필요 시',
+        warning: '⚠️ 2슬롯 한정: 선착순 마감될 수 있습니다'
+    },
+    {
+        id: 'sapphire',
+        name: '사파이어',
+        price: '3,000,000원',
+        priceNum: 3000000,
+        duration: '30일',
+        durationDays: 30,
+        color: 'border-blue-400',
+        bg: 'bg-blue-500/10',
+        bgFill: 'bg-gradient-to-r from-blue-400 to-blue-500',
+        textColor: 'text-blue-400',
+        features: ['상단 3슬롯', '사파이어 보더', '프리미엄 배치'],
+        description: '다이아몬드 바로 아래, 3개 슬롯에 노출됩니다.',
+        tips: '하루 평균 조회수 2,000~3,500회 예상. 가성비 좋은 프리미엄 옵션.',
+        recommended: '중대형 업소, 안정적 노출 원할 때',
+        warning: '⚠️ 3슬롯 한정: 조기 마감 가능'
+    },
+    {
+        id: 'ruby',
+        name: '루비',
+        price: '2,000,000원',
+        priceNum: 2000000,
+        duration: '30일',
+        durationDays: 30,
+        color: 'border-red-400',
+        bg: 'bg-red-500/10',
+        bgFill: 'bg-gradient-to-r from-red-400 to-rose-500',
+        textColor: 'text-rose-400',
+        features: ['중상단 4슬롯', '루비 보더', '우선 배치'],
+        description: '사파이어 아래, 4개 슬롯에 노출됩니다.',
+        tips: '하루 평균 조회수 1,500~2,500회 예상. 인기 영역 중 합리적 가격.',
+        recommended: '중형 업소, 지속적 노출 원할 때',
+        warning: ''
+    },
+    {
+        id: 'gold',
+        name: '골드',
+        price: '1,000,000원',
+        priceNum: 1000000,
+        duration: '30일',
+        durationDays: 30,
+        color: 'border-yellow-400',
+        bg: 'bg-yellow-400/10',
+        bgFill: 'bg-gradient-to-r from-yellow-400 to-amber-500',
+        textColor: 'text-amber-400',
+        features: ['중단 5슬롯', '골드 보더', '형광펜 강조'],
+        description: '루비 아래, 5개 슬롯에 노출됩니다.',
+        tips: '하루 평균 조회수 1,000~1,800회 예상. VIP 입문 상품으로 인기.',
+        recommended: '중소형 업소, 첫 광고 테스트 시',
+        warning: ''
+    },
+    {
+        id: 'premium',
+        name: '프리미엄',
+        price: '500,000원',
+        priceNum: 500000,
+        duration: '15일',
+        durationDays: 15,
+        color: 'border-purple-400',
+        bg: 'bg-purple-400/10',
+        bgFill: 'bg-purple-400',
+        textColor: 'text-purple-400',
+        features: ['프리미엄 섹션', '일반 카드 형태'],
+        description: '프리미엄 섹션에 카드 형태로 노출됩니다.',
+        tips: '⭐ 15일 단위로 유연하게 운영 가능. 카드형 이미지로 시각적 어필.',
+        recommended: '단기 이벤트, 시즌 프로모션',
+        warning: '💡 15일 단위: 장기 운영 시 연장 구매 권장'
+    },
+    {
+        id: 'special',
+        name: '스페셜',
+        price: '300,000원',
+        priceNum: 300000,
+        duration: '7일',
+        durationDays: 7,
+        color: 'border-indigo-400',
+        bg: 'bg-indigo-400/10',
+        bgFill: 'bg-indigo-400',
+        textColor: 'text-indigo-400',
+        features: ['스페셜 섹션', '리스트 형태'],
+        description: '스페셜 섹션에 리스트 형태로 노출됩니다.',
+        tips: '7일 단위의 빠른 테스트 가능. 급구/이벤트에 적합.',
+        recommended: '급구 채용, 주말 이벤트, 단기 테스트',
+        warning: '💡 7일 단위: 빠른 노출 후 효과 측정 용이'
+    },
+    {
+        id: 'general',
+        name: '일반 텍스트',
+        price: '150,000원',
+        priceNum: 150000,
+        duration: '30일',
+        durationDays: 30,
+        color: 'border-white/20',
+        bg: 'bg-white/5',
+        bgFill: 'bg-gray-500',
+        textColor: 'text-gray-400',
+        features: ['기본 텍스트 리스트', '저렴한 비용'],
+        description: '일반 텍스트 리스트에 노출됩니다.',
+        tips: '📄 가장 경제적인 옵션. 지속적 노출로 브랜드 인지도 확보.',
+        recommended: '예산 제한적, 장기 운영 업소',
+        warning: '💡 "자동 상위업" 추가 권장: 주기적 상단 노출로 효과 증대'
+    }
+];
+
 const PostAd = () => {
     const navigate = useNavigate();
     const [error, setError] = useState('');
@@ -88,6 +211,18 @@ const PostAd = () => {
         return '';
     }, [formData.images]);
 
+    // Calculate total price based on selected products (moved above early return)
+    const totalPrice = useMemo(() => {
+        let total = 0;
+        Object.entries(selectedProducts).forEach(([productId, selection]) => {
+            const product = products.find(p => p.id === productId);
+            if (product) {
+                total += product.priceNum * selection.qty;
+            }
+        });
+        return total;
+    }, [selectedProducts]);
+
     // Auth Check Effect
     useEffect(() => {
         const user = getCurrentUser();
@@ -147,139 +282,7 @@ const PostAd = () => {
 
 
 
-    const products = [
-        {
-            id: 'diamond',
-            name: '다이아몬드',
-            price: '5,000,000원',
-            priceNum: 5000000,
-            duration: '30일',
-            durationDays: 30,
-            color: 'border-cyan-300',
-            bg: 'bg-gradient-to-br from-cyan-400/10 via-white/5 to-cyan-400/10',
-            bgFill: 'bg-gradient-to-r from-white to-cyan-200',
-            textColor: 'text-cyan-200',
-            features: ['최상단 2슬롯', '다이아몬드 보더', '연기 효과', '최대 노출'],
-            description: '최상위 프리미엄 광고. 보라색 벨벳 배경 위 최상단에 2개만 노출됩니다.',
-            tips: '하루 평균 조회수 3,000~5,000회 예상. 신규 오픈/대형 업소에 추천.',
-            recommended: '대형 업소, 신규 오픈, 최대 노출 필요 시',
-            warning: '⚠️ 2슬롯 한정: 선착순 마감될 수 있습니다'
-        },
-        {
-            id: 'sapphire',
-            name: '사파이어',
-            price: '3,000,000원',
-            priceNum: 3000000,
-            duration: '30일',
-            durationDays: 30,
-            color: 'border-blue-400',
-            bg: 'bg-blue-500/10',
-            bgFill: 'bg-gradient-to-r from-blue-400 to-blue-500',
-            textColor: 'text-blue-400',
-            features: ['상단 3슬롯', '사파이어 보더', '프리미엄 배치'],
-            description: '다이아몬드 바로 아래, 3개 슬롯에 노출됩니다.',
-            tips: '하루 평균 조회수 2,000~3,500회 예상. 가성비 좋은 프리미엄 옵션.',
-            recommended: '중대형 업소, 안정적 노출 원할 때',
-            warning: '⚠️ 3슬롯 한정: 조기 마감 가능'
-        },
-        {
-            id: 'ruby',
-            name: '루비',
-            price: '2,000,000원',
-            priceNum: 2000000,
-            duration: '30일',
-            durationDays: 30,
-            color: 'border-red-400',
-            bg: 'bg-red-500/10',
-            bgFill: 'bg-gradient-to-r from-red-400 to-rose-500',
-            textColor: 'text-rose-400',
-            features: ['중상단 4슬롯', '루비 보더', '우선 배치'],
-            description: '사파이어 아래, 4개 슬롯에 노출됩니다.',
-            tips: '하루 평균 조회수 1,500~2,500회 예상. 인기 영역 중 합리적 가격.',
-            recommended: '중형 업소, 지속적 노출 원할 때',
-            warning: ''
-        },
-        {
-            id: 'gold',
-            name: '골드',
-            price: '1,000,000원',
-            priceNum: 1000000,
-            duration: '30일',
-            durationDays: 30,
-            color: 'border-yellow-400',
-            bg: 'bg-yellow-400/10',
-            bgFill: 'bg-gradient-to-r from-yellow-400 to-amber-500',
-            textColor: 'text-amber-400',
-            features: ['중단 5슬롯', '골드 보더', '형광펜 강조'],
-            description: '루비 아래, 5개 슬롯에 노출됩니다.',
-            tips: '하루 평균 조회수 1,000~1,800회 예상. VIP 입문 상품으로 인기.',
-            recommended: '중소형 업소, 첫 광고 테스트 시',
-            warning: ''
-        },
-        {
-            id: 'premium',
-            name: '프리미엄',
-            price: '500,000원',
-            priceNum: 500000,
-            duration: '15일',
-            durationDays: 15,
-            color: 'border-purple-400',
-            bg: 'bg-purple-400/10',
-            bgFill: 'bg-purple-400',
-            textColor: 'text-purple-400',
-            features: ['프리미엄 섹션', '일반 카드 형태'],
-            description: '프리미엄 섹션에 카드 형태로 노출됩니다.',
-            tips: '⭐ 15일 단위로 유연하게 운영 가능. 카드형 이미지로 시각적 어필.',
-            recommended: '단기 이벤트, 시즌 프로모션',
-            warning: '💡 15일 단위: 장기 운영 시 연장 구매 권장'
-        },
-        {
-            id: 'special',
-            name: '스페셜',
-            price: '300,000원',
-            priceNum: 300000,
-            duration: '7일',
-            durationDays: 7,
-            color: 'border-indigo-400',
-            bg: 'bg-indigo-400/10',
-            bgFill: 'bg-indigo-400',
-            textColor: 'text-indigo-400',
-            features: ['스페셜 섹션', '리스트 형태'],
-            description: '스페셜 섹션에 리스트 형태로 노출됩니다.',
-            tips: '7일 단위의 빠른 테스트 가능. 급구/이벤트에 적합.',
-            recommended: '급구 채용, 주말 이벤트, 단기 테스트',
-            warning: '💡 7일 단위: 빠른 노출 후 효과 측정 용이'
-        },
-        {
-            id: 'general',
-            name: '일반 텍스트',
-            price: '150,000원',
-            priceNum: 150000,
-            duration: '30일',
-            durationDays: 30,
-            color: 'border-white/20',
-            bg: 'bg-white/5',
-            bgFill: 'bg-gray-500',
-            textColor: 'text-gray-400',
-            features: ['기본 텍스트 리스트', '저렴한 비용'],
-            description: '일반 텍스트 리스트에 노출됩니다.',
-            tips: '📄 가장 경제적인 옵션. 지속적 노출로 브랜드 인지도 확보.',
-            recommended: '예산 제한적, 장기 운영 업소',
-            warning: '💡 "자동 상위업" 추가 권장: 주기적 상단 노출로 효과 증대'
-        }
-    ];
-
-    // Calculate total price based on selected products
-    const totalPrice = useMemo(() => {
-        let total = 0;
-        Object.entries(selectedProducts).forEach(([productId, selection]) => {
-            const product = products.find(p => p.id === productId);
-            if (product) {
-                total += product.priceNum * selection.qty;
-            }
-        });
-        return total;
-    }, [selectedProducts, products]);
+    // Note: products is now defined outside component, totalPrice useMemo moved above early return
 
     const handleInputChange = (field: keyof AdFormState, value: any) => {
         setFormData(prev => ({ ...prev, [field]: value }));
