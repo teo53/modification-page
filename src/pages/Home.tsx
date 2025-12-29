@@ -7,6 +7,7 @@ import PremiumJobGrid from '../components/home/PremiumJobGrid';
 import CompactAdGrid from '../components/home/CompactAdGrid';
 import TextAdsList from '../components/home/TextAdsList';
 import CommunityPreview from '../components/home/CommunityPreview';
+import DenseAdList from '../components/home/DenseAdList';
 
 const Home: React.FC = () => {
     return (
@@ -43,6 +44,11 @@ const Home: React.FC = () => {
 
             {/* 텍스트 광고 */}
             <TextAdsList />
+
+            {/* ========================================== */}
+            {/* 최신 채용정보 - 밀집형 리스트 (레퍼런스 사이트 스타일) */}
+            {/* ========================================== */}
+            <DenseAdList />
         </div>
     );
 };

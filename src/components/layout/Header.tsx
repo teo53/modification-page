@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Menu, User, LogIn, PenSquare, LogOut, LayoutDashboard, X } from 'lucide-react';
+import { Search, Menu, User, LogIn, PenSquare, LogOut, LayoutDashboard, X, Phone, MessageCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getCurrentUser, logout, isAdvertiser } from '../../utils/auth';
 import { detectSqlInjection } from '../../utils/validation';
+
+// 사이트 통계 (실제로는 API에서 가져옴)
+const siteStats = {
+    totalAds: 2847,
+    todayAds: 127,
+    totalMembers: 15420,
+};
+
 
 const Header: React.FC = () => {
     const navigate = useNavigate();
@@ -35,7 +43,35 @@ const Header: React.FC = () => {
 
     return (
         <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-white/10">
-            {/* Top Bar */}
+            {/* Top Info Bar - CS & Stats */}
+            <div className="bg-gradient-to-r from-primary/10 to-secondary/10 border-b border-white/5">
+                <div className="container mx-auto px-4 h-8 flex items-center justify-between text-xs">
+                    {/* Customer Service */}
+                    <div className="flex items-center gap-4">
+                        <a href="tel:1577-0000" className="flex items-center gap-1 text-text-muted hover:text-primary transition-colors">
+                            <Phone size={12} />
+                            <span>고객센터: 1577-0000</span>
+                        </a>
+                        <a href="https://open.kakao.com/o/dalbitAlba" target="_blank" rel="noopener noreferrer" className="hidden sm:flex items-center gap-1 text-text-muted hover:text-yellow-400 transition-colors">
+                            <MessageCircle size={12} />
+                            <span>카카오 상담</span>
+                        </a>
+                    </div>
+                    {/* Site Stats */}
+                    <div className="flex items-center gap-4 text-text-muted">
+                        <span className="hidden sm:inline">
+                            총 광고 <span className="text-primary font-bold">{siteStats.totalAds.toLocaleString()}</span>개
+                        </span>
+                        <span className="hidden md:inline">
+                            오늘 등록 <span className="text-green-400 font-bold">{siteStats.todayAds}</span>개
+                        </span>
+                        <span>
+                            회원 <span className="text-secondary font-bold">{siteStats.totalMembers.toLocaleString()}</span>명
+                        </span>
+                    </div>
+                </div>
+            </div>
+            {/* Main Header */}
             <div className="container mx-auto px-4 h-16 flex items-center justify-between">
                 {/* Logo */}
                 <Link to="/" className="flex items-center">
