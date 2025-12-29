@@ -32,8 +32,16 @@ const checkCommunityAccess = (): { canAccess: boolean; reason: string } => {
         return { canAccess: false, reason: 'login' };
     }
 
-    // 관리자 계정은 무조건 접근 허용
-    if (user.email === 'admin@lunaalba.com' || user.email === 'admin@example.com') {
+    // 관리자 계정은 무조건 접근 허용 (이메일 또는 타입으로 판단)
+    const userRole = (user as any).role;
+    if (
+        user.email === 'admin@dalbitalba.com' ||
+        user.email === 'admin@lunaalba.com' ||
+        user.email === 'admin@example.com' ||
+        (user as any).type === 'admin' ||
+        userRole === 'ADMIN' ||
+        userRole === 'SUPER_ADMIN'
+    ) {
         return { canAccess: true, reason: '' };
     }
 
