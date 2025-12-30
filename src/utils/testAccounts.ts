@@ -67,7 +67,7 @@ export const testAccounts: TestAccount[] = [
     // 5. 시연용 간편 계정 (쉬운 비밀번호)
     // ==============================
     {
-        email: 'demo',
+        email: 'demo@demo.com',
         password: 'demo1234',
         name: '시연관리자',
         nickname: '데모',
