@@ -214,12 +214,12 @@ const AdultVerification: React.FC<AdultVerificationProps> = ({ onVerified }) => 
                 <div className="bg-[#1a1a1a]/90 backdrop-blur-md rounded-2xl shadow-2xl overflow-hidden border border-white/10">
                     <div className="grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-white/10">
                         {/* 좌측: 비회원 로그인 */}
-                        <div className="p-8 md:p-10 relative">
-                            <div className="flex items-center gap-3 mb-8">
+                        <div className="p-4 sm:p-6 md:p-10 relative">
+                            <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-8">
                                 <div className="p-2 rounded-lg bg-gray-800/50 text-gray-400">
                                     <Smartphone size={20} />
                                 </div>
-                                <h2 className="text-xl font-bold text-white">비회원 인증</h2>
+                                <h2 className="text-base sm:text-xl font-bold text-white">비회원 인증</h2>
                             </div>
 
                             <div className="space-y-4">
@@ -288,13 +288,13 @@ const AdultVerification: React.FC<AdultVerificationProps> = ({ onVerified }) => 
                         </div>
 
                         {/* 우측: 회원 로그인 */}
-                        <div className="p-8 md:p-10 bg-black/20">
-                            <div className="flex items-center justify-between mb-8">
+                        <div className="p-4 sm:p-6 md:p-10 bg-black/20">
+                            <div className="flex items-center justify-between mb-4 sm:mb-8">
                                 <div className="flex items-center gap-3">
                                     <div className="p-2 rounded-lg bg-gray-800/50 text-gray-400">
                                         <User size={20} />
                                     </div>
-                                    <h2 className="text-xl font-bold text-white">회원 로그인</h2>
+                                    <h2 className="text-base sm:text-xl font-bold text-white">회원 로그인</h2>
                                 </div>
                                 <div className="flex bg-black/40 rounded-lg p-1 border border-white/5">
                                     <button
