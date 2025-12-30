@@ -120,12 +120,16 @@ const AdultVerification: React.FC<AdultVerificationProps> = ({ onVerified }) => 
             // [Demo Bypass] Network Error 방지용 클라이언트 사이드 로그인 처리
             localStorage.setItem('auth_token', 'demo_bypass_token_' + Date.now());
             localStorage.setItem('user', JSON.stringify({
-                id: 9999,
+                id: '9999', // ID should be string based on interface
                 email: 'test@dalbitalba.com',
                 name: '테스트 광고주',
                 nickname: '테스트업체',
+                type: 'advertiser',
                 role: 'advertiser',
-                is_verified: true
+                phone: '010-1234-5678',
+                phoneVerified: true,
+                gender: 'female',
+                createdAt: new Date().toISOString()
             }));
 
             setAdultVerified();
