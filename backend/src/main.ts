@@ -34,7 +34,16 @@ async function bootstrap() {
   app.enableCors({
     origin: (origin, callback) => {
       // 서버-투-서버 요청 허용 (origin이 없는 경우)
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      const isAllowed = allowedOrigins.includes(origin) ||
+        /^https:\/\/.*\.vercel\.app$/.test(origin) ||
+        /^https:\/\/.*\.railway\.app$/.test(origin) ||
+        /^http:\/\/localhost:\d+$/.test(origin);
+
+      if (isAllowed) {
         callback(null, true);
       } else {
         logger.warn(`CORS blocked request from: ${origin}`);
