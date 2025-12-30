@@ -72,10 +72,10 @@ const Header: React.FC = () => {
                 </div>
             </div>
             {/* Main Header */}
-            <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+            <div className="container mx-auto px-2 sm:px-4 h-14 sm:h-16 flex items-center justify-between">
                 {/* Logo */}
-                <Link to="/" className="flex items-center">
-                    <img src="/logo-horizontal-white.png" alt="달빛알바" className="h-12 object-contain" />
+                <Link to="/" className="flex items-center shrink-0">
+                    <img src="/logo-horizontal-white.png" alt="달빛알바" className="h-8 sm:h-10 md:h-12 object-contain" />
                 </Link>
 
                 {/* Search Bar (Desktop) */}
@@ -177,9 +177,9 @@ const Header: React.FC = () => {
 
                     <Link
                         to="/post-ad"
-                        className="flex items-center gap-2 bg-primary hover:bg-primary-hover text-black font-bold px-4 py-2 rounded-full transition-colors"
+                        className="flex items-center gap-1 sm:gap-2 bg-primary hover:bg-primary-hover text-black font-bold px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-full transition-colors text-xs sm:text-sm whitespace-nowrap"
                     >
-                        <PenSquare size={18} />
+                        <PenSquare size={14} className="sm:w-[18px] sm:h-[18px]" />
                         <span>광고등록</span>
                     </Link>
 
