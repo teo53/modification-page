@@ -19,18 +19,11 @@ const DATA_MODE_KEY = 'lunaalba_data_mode';
 const CRM_MODE_KEY = 'lunaalba_crm_mode';
 
 export const DataModeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const [useSampleData, setUseSampleDataState] = useState(() => {
-        // Check CRM mode first, then fall back to data mode
-        const crmMode = localStorage.getItem(CRM_MODE_KEY);
-        if (crmMode) {
-            // CRM operational mode = real data, demo mode = sample data
-            return crmMode !== 'operational';
-        }
-        // Fall back to old data mode key
-        const saved = localStorage.getItem(DATA_MODE_KEY);
-        // Default to sample data for live site stability
-        return saved !== 'real';
-    });
+    // ============================================
+    // 🚨 강제 샘플 모드 - 라이브 사이트 안정성을 위해
+    // localStorage 무시하고 항상 샘플 데이터 사용
+    // ============================================
+    const [useSampleData, setUseSampleDataState] = useState(true);
 
     const [isAdmin, setIsAdmin] = useState(false);
 
