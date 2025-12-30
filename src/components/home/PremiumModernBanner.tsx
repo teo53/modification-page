@@ -1,7 +1,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, DollarSign, Clock } from 'lucide-react';
+import { MapPin, DollarSign } from 'lucide-react';
 
 type TierType = 'diamond' | 'sapphire' | 'ruby' | 'gold';
 
@@ -59,7 +59,7 @@ const tierStyles = {
 };
 
 const PremiumModernBanner: React.FC<PremiumModernBannerProps & { isEditMode?: boolean }> = ({
-    id, tier, title, location, salary, workHours, businessName, isEditMode = false
+    id, tier, title, location, salary, workHours: _workHours, businessName, isEditMode = false
 }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const containerRef = useRef<HTMLElement>(null);
@@ -290,9 +290,9 @@ const PremiumModernBanner: React.FC<PremiumModernBannerProps & { isEditMode?: bo
             {...linkProps as any}
             onClick={handleClick}
             ref={containerRef as any}
-            className="block relative w-full h-[200px] rounded-lg group hover:-translate-y-1 transition-transform duration-300"
+            className="block relative w-full h-[140px] sm:h-[160px] md:h-[200px] rounded-lg group hover:-translate-y-1 transition-transform duration-300"
             style={{
-                background: 'linear-gradient(145deg, #0d0d10 0%, #12121a 40%, #0a0a0f 60%, #101018 100%)' // Default Dark
+                background: 'linear-gradient(145deg, #0d0d10 0%, #12121a 40%, #0a0a0f 60%, #101018 100%)'
             }}
         >
             {/* 1. Underlying Glow */}
@@ -304,64 +304,63 @@ const PremiumModernBanner: React.FC<PremiumModernBannerProps & { isEditMode?: bo
             {/* 2. Main Background Wrapper */}
             <div className="absolute inset-0 rounded-lg overflow-hidden border border-white/5 bg-[#0a0a0a]">
 
-                {/* 3. Static Frame Border (Gradient) */}
-                <div className="absolute top-[14px] left-[14px] right-[14px] bottom-[14px] rounded pointer-events-none z-10">
-                    <div className="absolute inset-0 rounded border-[1.5px]" style={{
+                {/* 3. Static Frame Border (Gradient) - Hide on mobile */}
+                <div className="absolute top-[10px] left-[10px] right-[10px] bottom-[10px] sm:top-[14px] sm:left-[14px] sm:right-[14px] sm:bottom-[14px] rounded pointer-events-none z-10">
+                    <div className="absolute inset-0 rounded border-[1px] sm:border-[1.5px]" style={{
                         background: config.frameGradient,
                         WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
                         WebkitMaskComposite: 'xor',
                         maskComposite: 'exclude',
-                        padding: '1.5px'
+                        padding: '1px'
                     }} />
                 </div>
 
-                {/* 4. Canvas Layer (Lights + Sparkles) - Must be ABOVE background but BELOW content */}
-                <canvas ref={canvasRef} className="absolute inset-0 z-20 pointer-events-none" />
+                {/* 4. Canvas Layer - Hidden on mobile for performance */}
+                <canvas ref={canvasRef} className="absolute inset-0 z-20 pointer-events-none hidden sm:block" />
 
-                {/* 5. Content Layer */}
-                <div className="relative z-30 h-full flex items-center px-3 sm:px-5 md:px-10">
-                    {/* Rotating Logo */}
-                    <div className="mr-3 sm:mr-4 md:mr-10 shrink-0">
-                        <div className="w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] md:w-[85px] md:h-[85px] relative flex items-center justify-center">
+                {/* 5. Content Layer - MOBILE FIRST DESIGN */}
+                <div className="relative z-30 h-full flex flex-col sm:flex-row items-center justify-center sm:justify-start px-4 sm:px-5 md:px-10 py-3 sm:py-0">
+
+                    {/* Rotating Logo - Hidden on small mobile */}
+                    <div className="hidden sm:block mr-4 md:mr-10 shrink-0">
+                        <div className="w-[50px] h-[50px] md:w-[85px] md:h-[85px] relative flex items-center justify-center">
                             <div className="absolute inset-0 rounded-full border opacity-30" style={{ borderColor: config.borderColor }} />
-                            <div className="absolute w-[40px] h-[40px] sm:w-[50px] sm:h-[50px] md:w-[70px] md:h-[70px] rounded-full border opacity-50 animate-[spin_20s_linear_infinite]" style={{ borderColor: config.borderColor }} />
-                            <span className="text-white/80 text-[8px] sm:text-[10px] md:text-[13px] font-medium tracking-[2px] sm:tracking-[3px] whitespace-nowrap">{businessName.slice(0, 4)}</span>
+                            <div className="absolute w-[40px] h-[40px] md:w-[70px] md:h-[70px] rounded-full border opacity-50 animate-[spin_20s_linear_infinite]" style={{ borderColor: config.borderColor }} />
+                            <span className="text-white/80 text-[9px] md:text-[13px] font-medium tracking-[2px]">{businessName.slice(0, 4)}</span>
                         </div>
                     </div>
 
-                    <div className="flex-1 min-w-0 overflow-hidden">
+                    {/* Text Content - Centered on mobile */}
+                    <div className="flex-1 min-w-0 text-center sm:text-left">
                         {/* Tier Badge */}
                         <div
-                            className="inline-flex items-center gap-1 sm:gap-1.5 px-2 py-0.5 sm:px-2.5 md:px-3.5 md:py-1 rounded-[2px] text-[9px] sm:text-[10px] md:text-[11px] font-bold tracking-[2px] sm:tracking-[3px] mb-1.5 sm:mb-2 md:mb-3 shadow-lg"
+                            className="inline-flex items-center gap-1 px-2 py-0.5 sm:px-2.5 md:px-3.5 md:py-1 rounded-[2px] text-[8px] sm:text-[10px] md:text-[11px] font-bold tracking-[2px] mb-1 sm:mb-2 md:mb-3 shadow-lg"
                             style={{ background: config.badgeColor, color: config.badgeTextColor }}
                         >
-                            <span className="text-[8px] sm:text-[9px] md:text-[10px]">✦</span> {config.badge}
+                            <span className="text-[7px] sm:text-[9px] md:text-[10px]">✦</span> {config.badge}
                         </div>
 
-                        {/* Title */}
-                        <h1 className="text-[16px] sm:text-[20px] md:text-[26px] font-bold text-white tracking-wide mb-1 md:mb-1.5 truncate">
+                        {/* Title - Larger, single line */}
+                        <h1 className="text-[15px] sm:text-[18px] md:text-[26px] font-bold text-white tracking-wide mb-0.5 sm:mb-1 md:mb-1.5 truncate">
                             {title}
                         </h1>
-                        <p className="text-[8px] sm:text-[10px] md:text-[11px] font-light tracking-[3px] sm:tracking-[5px] text-white/40 mb-2 sm:mb-3 md:mb-4 uppercase truncate">
+
+                        {/* Subtitle - Hidden on mobile */}
+                        <p className="hidden sm:block text-[9px] md:text-[11px] font-light tracking-[4px] text-white/40 mb-2 md:mb-4 uppercase">
                             Premium Entertainment
                         </p>
 
-                        {/* Info Tags - Mobile: Column layout, Desktop: Row */}
-                        <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-1 sm:gap-x-3 sm:gap-y-1 md:gap-6">
-                            <div className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-[11px] md:text-[13px] text-white/75 whitespace-nowrap">
-                                <MapPin size={10} style={{ fill: config.iconFill, color: config.iconFill }} className="opacity-60 shrink-0 sm:w-[12px] sm:h-[12px] md:w-[14px] md:h-[14px]" />
-                                <span className="truncate max-w-[120px] sm:max-w-none">{location}</span>
-                            </div>
-                            <div className="hidden md:block w-px h-3.5 bg-white/15" />
-                            <div className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-[11px] md:text-[13px] text-white/75 whitespace-nowrap">
-                                <DollarSign size={10} style={{ fill: config.iconFill, color: config.iconFill }} className="opacity-60 shrink-0 sm:w-[12px] sm:h-[12px] md:w-[14px] md:h-[14px]" />
-                                <span className="truncate max-w-[80px] sm:max-w-none">{salary}</span>
-                            </div>
-                            <div className="hidden md:block w-px h-3.5 bg-white/15" />
-                            <div className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-[11px] md:text-[13px] text-white/75 whitespace-nowrap">
-                                <Clock size={10} style={{ fill: config.iconFill, color: config.iconFill }} className="opacity-60 shrink-0 sm:w-[12px] sm:h-[12px] md:w-[14px] md:h-[14px]" />
-                                <span className="truncate max-w-[60px] sm:max-w-none">{workHours}</span>
-                            </div>
+                        {/* Info Tags - Simplified on mobile, single line */}
+                        <div className="flex items-center justify-center sm:justify-start gap-2 sm:gap-4 md:gap-6 text-[9px] sm:text-[11px] md:text-[13px] text-white/70">
+                            <span className="flex items-center gap-1">
+                                <MapPin size={10} className="opacity-60" style={{ color: config.iconFill }} />
+                                <span className="truncate max-w-[60px] sm:max-w-[100px] md:max-w-none">{location}</span>
+                            </span>
+                            <span className="hidden sm:inline text-white/30">|</span>
+                            <span className="hidden sm:flex items-center gap-1">
+                                <DollarSign size={10} className="opacity-60" style={{ color: config.iconFill }} />
+                                <span className="truncate max-w-[80px]">{salary}</span>
+                            </span>
                         </div>
                     </div>
                 </div>
