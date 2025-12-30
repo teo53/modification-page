@@ -319,48 +319,48 @@ const PremiumModernBanner: React.FC<PremiumModernBannerProps & { isEditMode?: bo
                 <canvas ref={canvasRef} className="absolute inset-0 z-20 pointer-events-none" />
 
                 {/* 5. Content Layer */}
-                <div className="relative z-30 h-full flex items-center px-5 md:px-10">
+                <div className="relative z-30 h-full flex items-center px-3 sm:px-5 md:px-10">
                     {/* Rotating Logo */}
-                    <div className="mr-4 md:mr-10 shrink-0">
-                        <div className="w-[60px] h-[60px] md:w-[85px] md:h-[85px] relative flex items-center justify-center">
+                    <div className="mr-3 sm:mr-4 md:mr-10 shrink-0">
+                        <div className="w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] md:w-[85px] md:h-[85px] relative flex items-center justify-center">
                             <div className="absolute inset-0 rounded-full border opacity-30" style={{ borderColor: config.borderColor }} />
-                            <div className="absolute w-[50px] h-[50px] md:w-[70px] md:h-[70px] rounded-full border opacity-50 animate-[spin_20s_linear_infinite]" style={{ borderColor: config.borderColor }} />
-                            <span className="text-white/80 text-[10px] md:text-[13px] font-medium tracking-[3px]">{businessName.slice(0, 4)}</span>
+                            <div className="absolute w-[40px] h-[40px] sm:w-[50px] sm:h-[50px] md:w-[70px] md:h-[70px] rounded-full border opacity-50 animate-[spin_20s_linear_infinite]" style={{ borderColor: config.borderColor }} />
+                            <span className="text-white/80 text-[8px] sm:text-[10px] md:text-[13px] font-medium tracking-[2px] sm:tracking-[3px] whitespace-nowrap">{businessName.slice(0, 4)}</span>
                         </div>
                     </div>
 
-                    <div className="flex-1 min-w-0">
+                    <div className="flex-1 min-w-0 overflow-hidden">
                         {/* Tier Badge */}
                         <div
-                            className="inline-flex items-center gap-1.5 px-2.5 py-0.5 md:px-3.5 md:py-1 rounded-[2px] text-[10px] md:text-[11px] font-bold tracking-[3px] mb-2 md:mb-3 shadow-lg"
+                            className="inline-flex items-center gap-1 sm:gap-1.5 px-2 py-0.5 sm:px-2.5 md:px-3.5 md:py-1 rounded-[2px] text-[9px] sm:text-[10px] md:text-[11px] font-bold tracking-[2px] sm:tracking-[3px] mb-1.5 sm:mb-2 md:mb-3 shadow-lg"
                             style={{ background: config.badgeColor, color: config.badgeTextColor }}
                         >
-                            <span className="text-[9px] md:text-[10px]">✦</span> {config.badge}
+                            <span className="text-[8px] sm:text-[9px] md:text-[10px]">✦</span> {config.badge}
                         </div>
 
                         {/* Title */}
-                        <h1 className="text-[20px] md:text-[26px] font-bold text-white tracking-wide mb-1 md:mb-1.5 truncate">
+                        <h1 className="text-[16px] sm:text-[20px] md:text-[26px] font-bold text-white tracking-wide mb-1 md:mb-1.5 truncate">
                             {title}
                         </h1>
-                        <p className="text-[10px] md:text-[11px] font-light tracking-[5px] text-white/40 mb-3 md:mb-4 uppercase">
+                        <p className="text-[8px] sm:text-[10px] md:text-[11px] font-light tracking-[3px] sm:tracking-[5px] text-white/40 mb-2 sm:mb-3 md:mb-4 uppercase truncate">
                             Premium Entertainment
                         </p>
 
-                        {/* Info Tags */}
-                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 md:gap-6">
-                            <div className="flex items-center gap-2 text-[11px] md:text-[13px] text-white/75">
-                                <MapPin size={12} style={{ fill: config.iconFill, color: config.iconFill }} className="opacity-60 md:w-[14px] md:h-[14px]" />
-                                {location}
+                        {/* Info Tags - Mobile: Column layout, Desktop: Row */}
+                        <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-1 sm:gap-x-3 sm:gap-y-1 md:gap-6">
+                            <div className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-[11px] md:text-[13px] text-white/75 whitespace-nowrap">
+                                <MapPin size={10} style={{ fill: config.iconFill, color: config.iconFill }} className="opacity-60 shrink-0 sm:w-[12px] sm:h-[12px] md:w-[14px] md:h-[14px]" />
+                                <span className="truncate max-w-[120px] sm:max-w-none">{location}</span>
                             </div>
                             <div className="hidden md:block w-px h-3.5 bg-white/15" />
-                            <div className="flex items-center gap-2 text-[11px] md:text-[13px] text-white/75">
-                                <DollarSign size={12} style={{ fill: config.iconFill, color: config.iconFill }} className="opacity-60 md:w-[14px] md:h-[14px]" />
-                                {salary}
+                            <div className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-[11px] md:text-[13px] text-white/75 whitespace-nowrap">
+                                <DollarSign size={10} style={{ fill: config.iconFill, color: config.iconFill }} className="opacity-60 shrink-0 sm:w-[12px] sm:h-[12px] md:w-[14px] md:h-[14px]" />
+                                <span className="truncate max-w-[80px] sm:max-w-none">{salary}</span>
                             </div>
                             <div className="hidden md:block w-px h-3.5 bg-white/15" />
-                            <div className="flex items-center gap-2 text-[11px] md:text-[13px] text-white/75">
-                                <Clock size={12} style={{ fill: config.iconFill, color: config.iconFill }} className="opacity-60 md:w-[14px] md:h-[14px]" />
-                                {workHours}
+                            <div className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-[11px] md:text-[13px] text-white/75 whitespace-nowrap">
+                                <Clock size={10} style={{ fill: config.iconFill, color: config.iconFill }} className="opacity-60 shrink-0 sm:w-[12px] sm:h-[12px] md:w-[14px] md:h-[14px]" />
+                                <span className="truncate max-w-[60px] sm:max-w-none">{workHours}</span>
                             </div>
                         </div>
                     </div>

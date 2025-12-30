@@ -13,19 +13,23 @@ export interface TestAccount {
 }
 
 export const testAccounts: TestAccount[] = [
-    // 일반 회원 테스트 계정
+    // ==============================
+    // 1. 여성 일반회원 테스트 계정
+    // ==============================
     {
-        email: 'test@dalbitalba.com',
-        password: 'TestUser2024!',  // 강화된 비밀번호
-        name: '테스트유저',
-        nickname: '테스터',
+        email: 'member@dalbitalba.com',
+        password: 'Member2024!',
+        name: '김여름',
+        nickname: '여름이',
         phone: '010-1234-5678',
         type: 'worker'
     },
-    // 광고주 테스트 계정
+    // ==============================
+    // 2. 광고주 테스트 계정
+    // ==============================
     {
         email: 'advertiser@dalbitalba.com',
-        password: 'Advertiser2024!',  // 강화된 비밀번호
+        password: 'Advertiser2024!',
         name: '광고주테스트',
         nickname: '광고테스터',
         phone: '010-9876-5432',
@@ -33,10 +37,25 @@ export const testAccounts: TestAccount[] = [
         businessNumber: '123-45-67890',
         businessName: '테스트업소'
     },
-    // 관리자 테스트 계정 (향후 관리자 기능 추가 시 사용)
+    // ==============================
+    // 3. 데모용 광고주 계정 (클라이언트 시연용)
+    // ==============================
+    {
+        email: 'test@dalbitalba.com',
+        password: 'TestPass123!',
+        name: '테스트 광고주',
+        nickname: '테스트업체',
+        phone: '010-1111-2222',
+        type: 'advertiser',
+        businessNumber: '111-22-33333',
+        businessName: '달빛테스트업소'
+    },
+    // ==============================
+    // 4. 관리자 계정
+    // ==============================
     {
         email: 'admin@dalbitalba.com',
-        password: 'DalbitAdmin2024!',  // 강화된 비밀번호
+        password: 'DalbitAdmin2024!',
         name: '관리자',
         nickname: '어드민',
         phone: '010-0000-0000',
