@@ -137,6 +137,27 @@ const AdultVerification: React.FC<AdultVerificationProps> = ({ onVerified }) => 
             return;
         }
 
+        // [시연용 계정 바이패스] demo@demo.com / demo1234
+        if (userId === 'demo@demo.com' && password === 'demo1234') {
+            localStorage.setItem('auth_token', 'demo_simple_token_' + Date.now());
+            localStorage.setItem('user', JSON.stringify({
+                id: '8888',
+                email: 'demo@demo.com',
+                name: '시연관리자',
+                nickname: '데모',
+                type: 'advertiser',
+                role: 'advertiser',
+                phone: '010-0000-1234',
+                phoneVerified: true,
+                gender: 'female',
+                createdAt: new Date().toISOString()
+            }));
+
+            setAdultVerified();
+            onVerified();
+            return;
+        }
+
         if (!userId || !password) {
             setError('아이디와 비밀번호를 입력해주세요.');
             return;
