@@ -41,6 +41,7 @@ async function bootstrap() {
       const isAllowed = allowedOrigins.includes(origin) ||
         /^https:\/\/.*\.vercel\.app$/.test(origin) ||
         /^https:\/\/.*\.railway\.app$/.test(origin) ||
+        /^https:\/\/.*dalbitalba\.co\.kr$/.test(origin) ||
         /^http:\/\/localhost:\d+$/.test(origin);
 
       if (isAllowed) {
