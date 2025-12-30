@@ -17,6 +17,15 @@
   --font-sans: "Noto Sans KR", "Roboto", sans-serif;
 }
 
+/* ===== 모바일 한국어 텍스트 줄바꿈 수정 ===== */
+/* word-break: keep-all - 한국어를 단어 단위로 줄바꿈 */
+html,
+body {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  -webkit-text-size-adjust: 100%;
+}
+
 /* ===== Global Button & Interactive Element Styles ===== */
 button,
 [role="button"],
