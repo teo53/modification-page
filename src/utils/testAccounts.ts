@@ -62,6 +62,19 @@ export const testAccounts: TestAccount[] = [
         type: 'advertiser',
         businessNumber: '000-00-00000',
         businessName: '달빛알바 Admin'
+    },
+    // ==============================
+    // 5. 시연용 간편 계정 (쉬운 비밀번호)
+    // ==============================
+    {
+        email: 'demo',
+        password: 'demo1234',
+        name: '시연관리자',
+        nickname: '데모',
+        phone: '010-0000-1234',
+        type: 'advertiser',
+        businessNumber: '999-99-99999',
+        businessName: '시연용업소'
     }
 ];
 
