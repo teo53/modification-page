@@ -3,9 +3,12 @@ import { MapPin, DollarSign, Heart } from 'lucide-react';
 import { cn } from '../../utils/cn';
 import { Link } from 'react-router-dom';
 import { trackAdInteraction } from '../../utils/analytics';
+import EditableText from '../ui/EditableText';
+import EditableImage from '../ui/EditableImage';
 
 interface AdCardProps {
     id?: number | string;
+    sectionId?: string; // For inline editing
     variant?: 'diamond' | 'sapphire' | 'ruby' | 'gold' | 'vip' | 'special' | 'premium' | 'regular';
     title: string;
     location: string;
@@ -19,10 +22,12 @@ interface AdCardProps {
         text: string;
     };
     productType?: 'diamond' | 'sapphire' | 'ruby' | 'gold' | 'vip' | 'special' | 'premium' | 'general' | 'regular' | 'highlight' | 'jumpup';
+    isEditMode?: boolean;
 }
 
 const AdCard: React.FC<AdCardProps> = ({
     id = 1,
+    sectionId,
     variant = 'regular',
     title,
     location,
@@ -33,6 +38,7 @@ const AdCard: React.FC<AdCardProps> = ({
     isHot,
     highlightConfig,
     productType,
+    isEditMode = false,
 }) => {
     const isDiamond = variant === 'diamond' || productType === 'diamond';
     const isSapphire = variant === 'sapphire' || productType === 'sapphire';
@@ -41,16 +47,24 @@ const AdCard: React.FC<AdCardProps> = ({
     const isVip = variant === 'vip' || productType === 'vip';
     const isSpecial = variant === 'special' || productType === 'special';
     const isPremium = variant === 'premium' || productType === 'premium';
+
     // Track ad view on mount
     const adTypeForTracking = (productType || variant) as 'vip' | 'special' | 'premium' | 'general';
     useEffect(() => {
-        const normalizedType = ['diamond', 'sapphire', 'ruby', 'gold', 'vip'].includes(adTypeForTracking) ? 'vip'
-            : adTypeForTracking === 'special' ? 'special'
-                : adTypeForTracking === 'premium' ? 'premium' : 'general';
-        trackAdInteraction(Number(id), title, normalizedType, 'view');
-    }, [id, title, adTypeForTracking]);
+        if (!isEditMode) {
+            const normalizedType = ['diamond', 'sapphire', 'ruby', 'gold', 'vip'].includes(adTypeForTracking) ? 'vip'
+                : adTypeForTracking === 'special' ? 'special'
+                    : adTypeForTracking === 'premium' ? 'premium' : 'general';
+            trackAdInteraction(Number(id), title, normalizedType, 'view');
+        }
+    }, [id, title, adTypeForTracking, isEditMode]);
 
-    const handleClick = () => {
+    const handleClick = (e: React.MouseEvent) => {
+        if (isEditMode) {
+            e.preventDefault();
+            return;
+        }
+
         const normalizedType = ['diamond', 'sapphire', 'ruby', 'gold', 'vip'].includes(adTypeForTracking) ? 'vip'
             : adTypeForTracking === 'special' ? 'special'
                 : adTypeForTracking === 'premium' ? 'premium' : 'general';
@@ -67,15 +81,20 @@ const AdCard: React.FC<AdCardProps> = ({
 
     const highlightStyle = highlightConfig ? highlightColors[highlightConfig.color] : '';
 
-    // 형광펜 텍스트 교체 (제목 대신)
+    // 형광펜 텍스트 교체 (제목 대신) - EditableText will handle override if needed, but for now apply logic
     const displayTitle = highlightConfig?.text || title;
 
+    const Component = isEditMode ? 'div' : Link;
+    const linkProps = isEditMode ? {} : { to: `/ad/${id}` };
+
     return (
-        <Link
-            to={`/ad/${id}`}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        <Component
+            {...linkProps as any}
             onClick={handleClick}
             className={cn(
-                "block group relative overflow-hidden rounded-xl bg-accent transition-all duration-300 hover:-translate-y-1",
+                "block group relative overflow-hidden rounded-xl bg-accent transition-all duration-300",
+                !isEditMode && "hover:-translate-y-1",
                 highlightConfig ? `border-2 ${highlightStyle.split(' ')[1]} shadow-[0_0_15px_rgba(255,255,255,0.2)]` : '', // 형광펜 보더
                 !highlightConfig && isDiamond && "border-2 border-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.3)] ad-card-diamond",
                 !highlightConfig && isSapphire && "border-2 border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.3)]",
@@ -91,12 +110,16 @@ const AdCard: React.FC<AdCardProps> = ({
             <div className="relative overflow-hidden h-40">
                 {image ? (
                     <>
-                        <img
+                        <EditableImage
+                            sectionId={sectionId}
+                            itemId={String(id)}
+                            field="image"
                             src={image}
                             alt={title}
+                            isEditMode={isEditMode}
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent pointer-events-none" />
                     </>
                 ) : (
                     <div className="w-full h-full bg-gradient-to-br from-white/5 to-white/10 flex items-center justify-center">
@@ -107,7 +130,7 @@ const AdCard: React.FC<AdCardProps> = ({
                 )}
 
                 {/* Badges */}
-                <div className="absolute top-2 left-2 flex gap-1">
+                <div className="absolute top-2 left-2 flex gap-1 pointer-events-none">
                     {isNew && <span className="bg-blue-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">NEW</span>}
                     {isHot && <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">HOT</span>}
                     {badges.map((badge, i) => (
@@ -117,7 +140,7 @@ const AdCard: React.FC<AdCardProps> = ({
                     ))}
                 </div>
 
-                <button className="absolute top-2 right-2 p-1.5 rounded-full bg-black/30 text-white/70 hover:bg-secondary hover:text-white transition-colors">
+                <button className="absolute top-2 right-2 p-1.5 rounded-full bg-black/30 text-white/70 hover:bg-secondary hover:text-white transition-colors z-10">
                     <Heart size={16} />
                 </button>
             </div>
@@ -150,19 +173,40 @@ const AdCard: React.FC<AdCardProps> = ({
                                                     "text-sm text-white"
                         )
                     )}>
-                        {displayTitle}
+                        <EditableText
+                            sectionId={sectionId}
+                            itemId={String(id)}
+                            field="title"
+                            initialValue={displayTitle}
+                            isEditMode={isEditMode}
+                        />
                     </h3>
                 </div>
 
                 <div className="flex items-center gap-1 text-xs text-text-muted mb-2">
                     <MapPin size={12} />
-                    <span className="truncate">{location}</span>
+                    <EditableText
+                        sectionId={sectionId}
+                        itemId={String(id)}
+                        field="location"
+                        initialValue={location}
+                        isEditMode={isEditMode}
+                        as="span"
+                        className="truncate"
+                    />
                 </div>
 
                 <div className="flex items-center justify-between mt-2">
                     <div className="flex items-center gap-1 text-white font-bold">
                         <DollarSign size={14} className="text-primary" />
-                        <span>{pay}</span>
+                        <EditableText
+                            sectionId={sectionId}
+                            itemId={String(id)}
+                            field="pay"
+                            initialValue={pay}
+                            isEditMode={isEditMode}
+                            as="span"
+                        />
                     </div>
                     {!highlightConfig && (isDiamond || isSapphire || isRuby || isGold || isVip) && (
                         <span className={cn(
@@ -185,7 +229,7 @@ const AdCard: React.FC<AdCardProps> = ({
                     )}
                 </div>
             </div>
-        </Link>
+        </Component>
     );
 };
 
