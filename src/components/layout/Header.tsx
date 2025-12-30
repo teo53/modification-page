@@ -124,7 +124,7 @@ const Header: React.FC = () => {
 
                             {/* User Dropdown Menu */}
                             {showUserMenu && (
-                                <div className="absolute right-0 top-full mt-2 w-48 bg-accent border border-white/10 rounded-lg shadow-xl overflow-hidden">
+                                <div className="absolute right-0 top-full mt-2 w-48 bg-accent border border-white/10 rounded-lg shadow-xl overflow-hidden z-50">
                                     <div className="p-3 border-b border-white/10">
                                         <p className="text-sm font-medium text-white">{user.name}</p>
                                         <p className="text-xs text-text-muted">{user.email}</p>

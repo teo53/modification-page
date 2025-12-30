@@ -8,6 +8,7 @@ import {
     getPendingAds, approveAd, rejectAd, type UserAd,
     USE_API_ADS, fetchPendingAdsFromApi, approveAdWithApi, rejectAdWithApi
 } from '../utils/adStorage';
+import { adminService } from '../utils/adminService';
 
 // User type from localStorage
 interface StoredUser {
@@ -162,10 +163,12 @@ const AdminCRM: React.FC = () => {
         // Listen for auth state changes
         window.addEventListener('authStateChange', checkAuth);
 
-        // Load users from localStorage
-        const loadUsers = () => {
-            const storedUsers = JSON.parse(localStorage.getItem('lunaalba_users') || '[]');
-            setUsers(storedUsers);
+        // Load users from API (with localStorage fallback)
+        const loadUsers = async () => {
+            const result = await adminService.getUsers(userFilter);
+            if (result.success && result.data) {
+                setUsers(result.data as unknown as StoredUser[]);
+            }
         };
         loadUsers();
 

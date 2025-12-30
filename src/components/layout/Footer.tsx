@@ -89,6 +89,11 @@ const Footer: React.FC = () => {
                                 🔐 관리자 CRM
                             </Link>
                         )}
+                        {isAdmin && (
+                            <Link to="/admin/content" className="text-cyan-400/70 hover:text-cyan-400 transition-colors font-medium">
+                                ⚙️ 사이트 관리
+                            </Link>
+                        )}
                     </div>
 
                     {/* Company Info */}

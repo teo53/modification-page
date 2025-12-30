@@ -16,7 +16,11 @@ interface DenseAd {
     isHot?: boolean;
 }
 
-const DenseAdList: React.FC = () => {
+interface DenseAdListProps {
+    isEditMode?: boolean;
+}
+
+const DenseAdList: React.FC<DenseAdListProps> = ({ isEditMode = false }) => {
     // Get sample ads as dense list
     const textAds: DenseAd[] = allSampleAds.slice(0, 30);
 
@@ -35,6 +39,12 @@ const DenseAdList: React.FC = () => {
             ? textAds.filter(a => a.isHot)
             : textAds.filter(a => a.isNew);
 
+    const LinkComponent = isEditMode ? 'div' : Link;
+    const getLinkProps = (to: string) => isEditMode ? {} : { to };
+    const handleClick = (e: React.MouseEvent) => {
+        if (isEditMode) e.preventDefault();
+    };
+
     return (
         <section className="py-8 container mx-auto px-4">
             <div className="flex items-center justify-between mb-4">
@@ -47,9 +57,9 @@ const DenseAdList: React.FC = () => {
                         총 {textAds.length}건
                     </span>
                 </h2>
-                <Link to="/search" className="text-sm text-text-muted hover:text-primary flex items-center gap-1">
+                <LinkComponent {...getLinkProps('/search') as any} onClick={handleClick} className="text-sm text-text-muted hover:text-primary flex items-center gap-1 cursor-pointer">
                     전체보기 <ChevronRight size={16} />
-                </Link>
+                </LinkComponent>
             </div>
 
             {/* Category Tabs */}
@@ -57,27 +67,28 @@ const DenseAdList: React.FC = () => {
                 {categories.map(cat => (
                     <button
                         key={cat.id}
-                        onClick={() => setActiveTab(cat.id)}
+                        onClick={() => !isEditMode && setActiveTab(cat.id)}
                         className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${activeTab === cat.id
-                                ? 'bg-primary text-black'
-                                : 'bg-accent text-text-muted hover:text-white'
-                            }`}
+                            ? 'bg-primary text-black'
+                            : 'bg-accent text-text-muted hover:text-white'
+                            } ${isEditMode ? 'cursor-default' : ''}`}
                     >
                         {cat.name} <span className="opacity-70">({cat.count})</span>
                     </button>
                 ))}
             </div>
 
-            {/* Dense Ad List - 2 Column Grid */}
+            {/* Dense Ad List - Responsive Grid */}
             <div className="bg-accent/30 rounded-xl border border-white/5 divide-y divide-white/5">
-                <div className="grid md:grid-cols-2 divide-x divide-white/5">
+                <div className="grid grid-cols-1 md:grid-cols-2 md:divide-x divide-white/5">
                     {/* Left Column */}
                     <div className="divide-y divide-white/5">
                         {filteredAds.slice(0, Math.ceil(filteredAds.length / 2)).map((ad, idx) => (
-                            <Link
+                            <LinkComponent
                                 key={ad.id}
-                                to={`/ad/${ad.id}`}
-                                className="flex items-center gap-3 p-3 hover:bg-white/5 transition-colors group"
+                                {...getLinkProps(`/ad/${ad.id}`) as any}
+                                onClick={handleClick}
+                                className="flex items-center gap-3 p-3 hover:bg-white/5 transition-colors group cursor-pointer"
                             >
                                 <span className="text-xs text-text-muted w-6">{idx + 1}</span>
                                 <div className="flex-1 min-w-0">
@@ -100,17 +111,18 @@ const DenseAdList: React.FC = () => {
                                     <Clock size={10} />
                                     오늘
                                 </div>
-                            </Link>
+                            </LinkComponent>
                         ))}
                     </div>
 
                     {/* Right Column */}
                     <div className="divide-y divide-white/5">
                         {filteredAds.slice(Math.ceil(filteredAds.length / 2)).map((ad, idx) => (
-                            <Link
+                            <LinkComponent
                                 key={ad.id}
-                                to={`/ad/${ad.id}`}
-                                className="flex items-center gap-3 p-3 hover:bg-white/5 transition-colors group"
+                                {...getLinkProps(`/ad/${ad.id}`) as any}
+                                onClick={handleClick}
+                                className="flex items-center gap-3 p-3 hover:bg-white/5 transition-colors group cursor-pointer"
                             >
                                 <span className="text-xs text-text-muted w-6">
                                     {Math.ceil(filteredAds.length / 2) + idx + 1}
@@ -135,7 +147,7 @@ const DenseAdList: React.FC = () => {
                                     <Clock size={10} />
                                     오늘
                                 </div>
-                            </Link>
+                            </LinkComponent>
                         ))}
                     </div>
                 </div>

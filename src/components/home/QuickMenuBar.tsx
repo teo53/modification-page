@@ -22,7 +22,15 @@ const advertiserMenuItem = {
     color: 'from-pink-600/20 to-pink-400/5 border-pink-500/30'
 };
 
-const QuickMenuBar: React.FC = () => {
+interface QuickMenuBarProps {
+    itemsPerRow?: number;
+    isEditMode?: boolean;
+}
+
+const QuickMenuBar: React.FC<QuickMenuBarProps> = ({
+    itemsPerRow,
+    isEditMode = false
+}) => {
     const currentUser = getCurrentUser();
 
     // 관리자 또는 광고주인 경우 광고게시 메뉴 추가
@@ -35,22 +43,32 @@ const QuickMenuBar: React.FC = () => {
         ? [...menuItems, advertiserMenuItem]
         : menuItems;
 
+    const gridStyle = itemsPerRow
+        ? { gridTemplateColumns: `repeat(${itemsPerRow}, minmax(0, 1fr))` }
+        : undefined;
+
     return (
         <section className="py-4 container mx-auto px-4">
             <h2 className="text-lg font-bold text-white mb-4 text-center">빠른 메뉴</h2>
             <div className="flex justify-center">
-                <div className={`grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 ${isAdminOrAdvertiser ? 'lg:grid-cols-7' : 'lg:grid-cols-6'} gap-2 md:gap-3 max-w-4xl`}>
+                <div
+                    className={`grid gap-2 md:gap-3 max-w-4xl ${!itemsPerRow ? `grid-cols-3 sm:grid-cols-4 md:grid-cols-6 ${isAdminOrAdvertiser ? 'lg:grid-cols-7' : 'lg:grid-cols-6'}` : ''}`}
+                    style={gridStyle}
+                >
                     {visibleMenuItems.map((item) => {
                         const Icon = item.icon;
+                        const Wrapper = isEditMode ? 'div' : Link;
+                        const linkProps = isEditMode ? {} : { to: item.to };
+
                         return (
-                            <Link
+                            <Wrapper
                                 key={item.id}
-                                to={item.to}
+                                {...linkProps as any}
                                 className={`
                                     relative group flex flex-col items-center justify-center gap-1.5 p-3 md:p-4 
                                     rounded-xl border bg-gradient-to-br ${item.color}
-                                    hover:scale-105 transition-all duration-300
-                                    hover:shadow-lg hover:shadow-white/10
+                                    ${!isEditMode && 'hover:scale-105 hover:shadow-lg hover:shadow-white/10'}
+                                    transition-all duration-300
                                 `}
                             >
                                 <div className="p-2 rounded-lg bg-black/30 group-hover:bg-black/40 transition-colors">
@@ -59,7 +77,7 @@ const QuickMenuBar: React.FC = () => {
                                 <span className="text-[10px] md:text-xs font-bold text-white text-center">
                                     {item.label}
                                 </span>
-                            </Link>
+                            </Wrapper>
                         );
                     })}
                 </div>

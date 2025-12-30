@@ -14,6 +14,7 @@ import PostAd from './pages/PostAd';
 
 import AdvertiserCRM from './pages/AdvertiserCRM';
 import AdminCRM from './pages/AdminCRM';
+import ContentManager from './pages/admin/ContentManager';
 
 import CommunityPage from './pages/CommunityPage';
 import CommunityPostDetail from './pages/CommunityPostDetail';
@@ -35,6 +36,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import YouthProtectionPolicy from './pages/YouthProtectionPolicy';
 import JobSeekerPage from './pages/JobSeekerPage';
 import JobSeekerListPage from './pages/JobSeekerListPage';
+import AdminFloatingPanel from './components/admin/AdminFloatingPanel';
 
 
 function App() {
@@ -79,6 +81,7 @@ function App() {
               <Route path="/admin" element={<Navigate to="/admin/crm" replace />} />
               <Route path="/admin/dashboard" element={<Navigate to="/admin/crm" replace />} />
               <Route path="/admin/crm" element={<AdminCRM />} />
+              <Route path="/admin/content" element={<ContentManager />} />
               <Route path="urgent" element={<UrgentPage />} />
               <Route path="login" element={<Login />} />
               <Route path="signup" element={<Signup />} />
@@ -94,6 +97,8 @@ function App() {
               <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>
+          {/* 관리자 전용 플로팅 패널 */}
+          <AdminFloatingPanel />
         </BrowserRouter>
       </ErrorBoundary>
     </ToastProvider>

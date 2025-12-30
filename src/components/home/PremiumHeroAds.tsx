@@ -115,7 +115,7 @@ const generateTierAds = (): TierAd[] => {
 
 const realAds = generateTierAds();
 
-const TierSection: React.FC<{ tierKey: TierType; ads: TierAd[] }> = ({ tierKey, ads }) => {
+const TierSection: React.FC<{ tierKey: TierType; ads: TierAd[]; isEditMode?: boolean }> = ({ tierKey, ads, isEditMode }) => {
     const tier = tierConfig[tierKey];
     const tierAds = ads.filter(ad => ad.tier === tierKey);
 
@@ -139,6 +139,7 @@ const TierSection: React.FC<{ tierKey: TierType; ads: TierAd[] }> = ({ tierKey, 
                             salary={ad.salary}
                             workHours={ad.workHours}
                             businessName={ad.businessName}
+                            isEditMode={isEditMode}
                         />
                     </div>
                 ))}
@@ -147,7 +148,11 @@ const TierSection: React.FC<{ tierKey: TierType; ads: TierAd[] }> = ({ tierKey, 
     );
 };
 
-const PremiumHeroAds: React.FC = () => {
+interface PremiumHeroAdsProps {
+    isEditMode?: boolean;
+}
+
+const PremiumHeroAds: React.FC<PremiumHeroAdsProps> = ({ isEditMode = false }) => {
     const { useSampleData } = useDataMode();
 
     // Use sample or real data based on toggle
@@ -168,10 +173,10 @@ const PremiumHeroAds: React.FC = () => {
                     </p>
                 </div>
 
-                <TierSection tierKey="diamond" ads={allAds} />
-                <TierSection tierKey="sapphire" ads={allAds} />
-                <TierSection tierKey="ruby" ads={allAds} />
-                <TierSection tierKey="gold" ads={allAds} />
+                <TierSection tierKey="diamond" ads={allAds} isEditMode={isEditMode} />
+                <TierSection tierKey="sapphire" ads={allAds} isEditMode={isEditMode} />
+                <TierSection tierKey="ruby" ads={allAds} isEditMode={isEditMode} />
+                <TierSection tierKey="gold" ads={allAds} isEditMode={isEditMode} />
             </div>
         </section>
     );

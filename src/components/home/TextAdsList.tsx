@@ -28,7 +28,17 @@ const jobSeekers = [
     { id: 8, nickname: 'Binbo○○○', age: 20, gender: '여', title: '부산입니다', category: '노래주점', pay: '', payType: '면접 후 협의', date: '12-23', isNew: true },
 ];
 
-const TextAdsList: React.FC = () => {
+interface TextAdsListProps {
+    isEditMode?: boolean;
+}
+
+const TextAdsList: React.FC<TextAdsListProps> = ({ isEditMode = false }) => {
+    const LinkComponent = isEditMode ? 'div' : Link;
+    const getLinkProps = (to: string) => isEditMode ? {} : { to };
+    const handleClick = (e: React.MouseEvent) => {
+        if (isEditMode) e.preventDefault();
+    };
+
     return (
         <section className="py-8 container mx-auto px-4">
             <div className="grid lg:grid-cols-2 gap-6">
@@ -43,18 +53,19 @@ const TextAdsList: React.FC = () => {
                             <Sparkles size={18} />
                             추천채용
                         </h2>
-                        <Link to="/post-ad" className="text-xs bg-white/20 hover:bg-white/30 text-white px-3 py-1.5 rounded-lg transition-colors font-medium">
+                        <LinkComponent {...getLinkProps('/post-ad') as any} onClick={handleClick} className="text-xs bg-white/20 hover:bg-white/30 text-white px-3 py-1.5 rounded-lg transition-colors font-medium cursor-pointer">
                             광고신청 +
-                        </Link>
+                        </LinkComponent>
                     </div>
 
                     {/* 광고 목록 */}
                     <div className="divide-y divide-white/5">
                         {textAds.map((ad) => (
-                            <Link
+                            <LinkComponent
                                 key={ad.id}
-                                to={`/ad/${ad.id}`}
-                                className="block p-4 hover:bg-white/5 transition-colors group"
+                                {...getLinkProps(`/ad/${ad.id}`) as any}
+                                onClick={handleClick}
+                                className="block p-4 hover:bg-white/5 transition-colors group cursor-pointer"
                             >
                                 {/* 상단: 배지 + 제목 + 지역 */}
                                 <div className="flex items-center gap-2 mb-2">
@@ -86,17 +97,18 @@ const TextAdsList: React.FC = () => {
                                         <span className="text-primary font-bold">{ad.rotation}회</span> {ad.days}일
                                     </span>
                                 </div>
-                            </Link>
+                            </LinkComponent>
                         ))}
                     </div>
 
                     {/* 더보기 */}
-                    <Link
-                        to="/search"
-                        className="flex items-center justify-center gap-1 py-3 text-sm text-text-muted hover:text-primary border-t border-white/5 transition-colors"
+                    <LinkComponent
+                        {...getLinkProps('/search') as any}
+                        onClick={handleClick}
+                        className="flex items-center justify-center gap-1 py-3 text-sm text-text-muted hover:text-primary border-t border-white/5 transition-colors cursor-pointer"
                     >
                         더보기 <ChevronRight size={14} />
-                    </Link>
+                    </LinkComponent>
                 </div>
 
                 {/* ============================================= */}
@@ -109,9 +121,9 @@ const TextAdsList: React.FC = () => {
                             <Users size={18} />
                             최신인재정보
                         </h2>
-                        <Link to="/job-seeker-list" className="text-xs bg-white/20 hover:bg-white/30 text-white px-3 py-1.5 rounded-lg transition-colors font-medium">
+                        <LinkComponent {...getLinkProps('/job-seeker-list') as any} onClick={handleClick} className="text-xs bg-white/20 hover:bg-white/30 text-white px-3 py-1.5 rounded-lg transition-colors font-medium cursor-pointer">
                             MORE
-                        </Link>
+                        </LinkComponent>
                     </div>
 
                     {/* 테이블 헤더 */}
@@ -127,10 +139,11 @@ const TextAdsList: React.FC = () => {
                     {/* 구직자 목록 */}
                     <div className="divide-y divide-white/5">
                         {jobSeekers.map((seeker) => (
-                            <Link
+                            <LinkComponent
                                 key={seeker.id}
-                                to={`/job-seeker/${seeker.id}`}
-                                className="grid grid-cols-12 gap-2 px-4 py-3 hover:bg-white/5 transition-colors items-center text-sm"
+                                {...getLinkProps(`/job-seeker/${seeker.id}`) as any}
+                                onClick={handleClick}
+                                className="grid grid-cols-12 gap-2 px-4 py-3 hover:bg-white/5 transition-colors items-center text-sm cursor-pointer"
                             >
                                 {/* 이름 */}
                                 <div className="col-span-2 text-white font-medium truncate">{seeker.nickname}</div>
@@ -160,17 +173,18 @@ const TextAdsList: React.FC = () => {
 
                                 {/* 작성일 */}
                                 <div className="col-span-1 text-right text-text-muted text-xs">{seeker.date}</div>
-                            </Link>
+                            </LinkComponent>
                         ))}
                     </div>
 
                     {/* 더보기 - 구직자 목록 페이지로 링크 */}
-                    <Link
-                        to="/job-seeker-list"
-                        className="flex items-center justify-center gap-1 py-3 text-sm text-text-muted hover:text-primary border-t border-white/5 transition-colors"
+                    <LinkComponent
+                        {...getLinkProps('/job-seeker-list') as any}
+                        onClick={handleClick}
+                        className="flex items-center justify-center gap-1 py-3 text-sm text-text-muted hover:text-primary border-t border-white/5 transition-colors cursor-pointer"
                     >
                         더보기 <ChevronRight size={14} />
-                    </Link>
+                    </LinkComponent>
                 </div>
             </div>
         </section>

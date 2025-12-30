@@ -107,7 +107,7 @@ const AdCard: React.FC<AdCardProps> = ({
             )}
         >
             {/* Image Section */}
-            <div className="relative overflow-hidden h-40">
+            <div className="relative overflow-hidden h-28 sm:h-36 md:h-40">
                 {image ? (
                     <>
                         <EditableImage

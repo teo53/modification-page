@@ -79,15 +79,22 @@ const borderColorMap: Record<string, string> = {
 };
 
 // 191×154 세로형 카드 - queenalba 정확 카피
-const VerticalCard: React.FC<{ ad: PremiumAd }> = ({ ad }) => {
+const VerticalCard: React.FC<{ ad: PremiumAd; isEditMode?: boolean }> = ({ ad, isEditMode }) => {
     const locColor = locationColors[ad.location] || 'bg-gray-500';
     const borderColor = borderColorMap[ad.borderColor] || 'border-pink-400';
     // 광고주 등급 계산 (활동일 기반)
     const grade = estimateGradeFromDays(ad.activeDays);
 
+    const Component = isEditMode ? 'div' : Link;
+    const linkProps = isEditMode ? {} : { to: `/ad/${ad.id}` };
+    const handleClick = (e: React.MouseEvent) => {
+        if (isEditMode) e.preventDefault();
+    };
+
     return (
-        <Link
-            to={`/ad/${ad.id}`}
+        <Component
+            {...linkProps as any}
+            onClick={handleClick}
             className="block group"
         >
             {/* 191×154 비율 카드 */}
@@ -158,12 +165,16 @@ const VerticalCard: React.FC<{ ad: PremiumAd }> = ({ ad }) => {
                     </div>
                 </div>
             </div>
-        </Link>
+        </Component>
     );
 };
 
 // 메인 컴포넌트
-const PremiumJobGrid: React.FC = () => {
+interface PremiumJobGridProps {
+    isEditMode?: boolean;
+}
+
+const PremiumJobGrid: React.FC<PremiumJobGridProps> = ({ isEditMode = false }) => {
     const { useSampleData } = useDataMode();
 
     return (
@@ -177,24 +188,34 @@ const PremiumJobGrid: React.FC = () => {
                             <span className="text-pink-400">프리미엄</span>
                             <span className="text-white">채용정보</span>
                         </h2>
-                        <button className="text-xs bg-white/10 hover:bg-white/20 text-white px-3 py-1 rounded border border-white/10 transition-colors">
-                            광고신청 +
-                        </button>
+                        {isEditMode ? (
+                            <button className="text-xs bg-white/10 text-white/50 px-3 py-1 rounded border border-white/10 cursor-not-allowed">
+                                광고신청 +
+                            </button>
+                        ) : (
+                            <button className="text-xs bg-white/10 hover:bg-white/20 text-white px-3 py-1 rounded border border-white/10 transition-colors">
+                                광고신청 +
+                            </button>
+                        )}
                         {useSampleData && (
                             <span className="text-[10px] bg-primary/20 text-primary px-2 py-0.5 rounded-full">
                                 샘플
                             </span>
                         )}
                     </div>
-                    <Link to="/search?productType=vip" className="text-xs text-text-muted hover:text-primary transition-colors">
-                        더보기 +
-                    </Link>
+                    {isEditMode ? (
+                        <span className="text-xs text-text-muted cursor-not-allowed opacity-50">더보기 +</span>
+                    ) : (
+                        <Link to="/search?productType=vip" className="text-xs text-text-muted hover:text-primary transition-colors">
+                            더보기 +
+                        </Link>
+                    )}
                 </div>
 
-                {/* 7열 그리드 - 191×154 비율 카드 */}
-                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 gap-2">
+                {/* 7열 반응형 그리드 - 모바일 최적화 */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-2">
                     {premiumAdsData.map((ad) => (
-                        <VerticalCard key={ad.id} ad={ad} />
+                        <VerticalCard key={ad.id} ad={ad} isEditMode={isEditMode} />
                     ))}
                 </div>
             </div>

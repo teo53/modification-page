@@ -19,7 +19,17 @@ interface AdData {
     productType?: string;
 }
 
-const PremiumAdGrid: React.FC = () => {
+interface PremiumAdGridProps {
+    itemsPerRow?: number;
+    maxItems?: number;
+    isEditMode?: boolean;
+}
+
+const PremiumAdGrid: React.FC<PremiumAdGridProps> = ({
+    itemsPerRow,
+    maxItems = 24,
+    isEditMode = false
+}) => {
     const { useSampleData } = useDataMode();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [apiAds, setApiAds] = useState<AdData[]>([]);
@@ -31,7 +41,7 @@ const PremiumAdGrid: React.FC = () => {
                     const { ads } = await fetchAdsFromApi({
                         status: 'active',
                         productType: 'vip',
-                        limit: 12
+                        limit: maxItems
                     });
                     setApiAds(ads as unknown as AdData[]);
                 } catch (error) {
@@ -40,24 +50,20 @@ const PremiumAdGrid: React.FC = () => {
             }
         };
         loadAds();
-    }, [useSampleData]);
+    }, [useSampleData, maxItems]);
+
+    // ... (data source logic) ...
 
     // Determine data source based on mode
-    // 시연 모드 (useSampleData=true): 항상 샘플 데이터 사용
-    // 운영 모드 (useSampleData=false): API 데이터 > 빈 화면
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let sourceAds: any[];
     if (useSampleData) {
-        // 시연 모드: 샘플 데이터 표시
         sourceAds = sampleVipAds;
     } else if (USE_API_ADS && apiAds.length > 0) {
-        // 운영 모드 + API 데이터 있음
         sourceAds = apiAds;
     } else if (USE_API_ADS) {
-        // 운영 모드 + API 연결됨 but 데이터 없음 -> 빈 배열
         sourceAds = apiAds;
     } else {
-        // API 연결 안됨 -> mock 데이터 (개발환경용)
         sourceAds = vipAds;
     }
 
@@ -66,6 +72,10 @@ const PremiumAdGrid: React.FC = () => {
         ad.thumbnail &&
         ad.thumbnail.trim() !== ''
     );
+
+    const gridStyle = itemsPerRow
+        ? { gridTemplateColumns: `repeat(${itemsPerRow}, minmax(0, 1fr))` }
+        : undefined;
 
     return (
         <section className="py-6 container mx-auto px-4">
@@ -81,8 +91,11 @@ const PremiumAdGrid: React.FC = () => {
                 <Link to="/search?productType=vip" className="text-sm text-text-muted hover:text-primary">더보기 +</Link>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
-                {adsWithThumbnails.slice(0, 24).map((ad) => (
+            <div
+                className={`grid gap-2 sm:gap-3 ${!itemsPerRow ? 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6' : ''}`}
+                style={gridStyle}
+            >
+                {adsWithThumbnails.slice(0, maxItems).map((ad) => (
                     <AdCard
                         key={ad.id}
                         id={ad.id}
@@ -95,6 +108,7 @@ const PremiumAdGrid: React.FC = () => {
                         isNew={ad.isNew}
                         isHot={ad.isHot}
                         productType={ad.productType}
+                        isEditMode={isEditMode}
                     />
                 ))}
             </div>

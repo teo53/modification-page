@@ -6,7 +6,17 @@ import { sampleSpecialAds } from '../../data/sampleAds';
 import { useDataMode } from '../../contexts/DataModeContext';
 import { USE_API_ADS, fetchAdsFromApi } from '../../utils/adStorage';
 
-const SpecialAdGrid: React.FC = () => {
+interface SpecialAdGridProps {
+    itemsPerRow?: number;
+    maxItems?: number;
+    isEditMode?: boolean;
+}
+
+const SpecialAdGrid: React.FC<SpecialAdGridProps> = ({
+    itemsPerRow,
+    maxItems = 24,
+    isEditMode = false
+}) => {
     const { useSampleData } = useDataMode();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [apiAds, setApiAds] = useState<any[]>([]);
@@ -18,7 +28,7 @@ const SpecialAdGrid: React.FC = () => {
                     const { ads } = await fetchAdsFromApi({
                         status: 'active',
                         productType: 'special',
-                        limit: 12
+                        limit: maxItems
                     });
                     setApiAds(ads);
                 } catch (error) {
@@ -27,11 +37,9 @@ const SpecialAdGrid: React.FC = () => {
             }
         };
         loadAds();
-    }, [useSampleData]);
+    }, [useSampleData, maxItems]);
 
     // Determine data source based on mode
-    // 시연 모드 (useSampleData=true): 항상 샘플 데이터 사용
-    // 운영 모드 (useSampleData=false): API 데이터 > 빈 화면
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let sourceAds: any[];
     if (useSampleData) {
@@ -50,6 +58,10 @@ const SpecialAdGrid: React.FC = () => {
         ad.thumbnail.trim() !== ''
     );
 
+    const gridStyle = itemsPerRow
+        ? { gridTemplateColumns: `repeat(${itemsPerRow}, minmax(0, 1fr))` }
+        : undefined;
+
     return (
         <section className="py-6 bg-accent/30">
             <div className="container mx-auto px-4">
@@ -62,11 +74,18 @@ const SpecialAdGrid: React.FC = () => {
                             </span>
                         )}
                     </h2>
-                    <Link to="/search?productType=special" className="text-sm text-text-muted hover:text-secondary">더보기 +</Link>
+                    {isEditMode ? (
+                        <span className="text-sm text-text-muted cursor-not-allowed opacity-50">더보기 +</span>
+                    ) : (
+                        <Link to="/search?productType=special" className="text-sm text-text-muted hover:text-secondary">더보기 +</Link>
+                    )}
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
-                    {adsWithThumbnails.slice(0, 24).map((ad) => (
+                <div
+                    className={`grid gap-2 sm:gap-3 ${!itemsPerRow ? 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6' : ''}`}
+                    style={gridStyle}
+                >
+                    {adsWithThumbnails.slice(0, maxItems).map((ad) => (
                         <AdCard
                             key={ad.id}
                             id={String(ad.id)}
@@ -78,6 +97,7 @@ const SpecialAdGrid: React.FC = () => {
                             badges={ad.badges}
                             isNew={ad.isNew}
                             productType={ad.productType}
+                            isEditMode={isEditMode}
                         />
                     ))}
                 </div>

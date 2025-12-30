@@ -88,15 +88,22 @@ const getActiveDaysColor = (days: number): string => {
 };
 
 // 반응형 가로형 카드 - 230×114 비율을 약 2:1로 반응형으로 적용
-const WideCard: React.FC<{ ad: CompactAd }> = ({ ad }) => {
+const WideCard: React.FC<{ ad: CompactAd; isEditMode?: boolean }> = ({ ad, isEditMode }) => {
     const locColor = locationColors[ad.location] || 'bg-gray-500';
     const daysColor = getActiveDaysColor(ad.activeDays);
     // 광고주 등급 계산 (활동일 기반)
     const grade = estimateGradeFromDays(ad.activeDays);
 
+    const Component = isEditMode ? 'div' : Link;
+    const linkProps = isEditMode ? {} : { to: `/ad/${ad.id}` };
+    const handleClick = (e: React.MouseEvent) => {
+        if (isEditMode) e.preventDefault();
+    };
+
     return (
-        <Link
-            to={`/ad/${ad.id}`}
+        <Component
+            {...linkProps as any}
+            onClick={handleClick}
             className="block group"
         >
             {/* 카드 - 반응형 aspect ratio 사용 */}
@@ -179,12 +186,16 @@ const WideCard: React.FC<{ ad: CompactAd }> = ({ ad }) => {
                     </div>
                 </div>
             </div>
-        </Link>
+        </Component>
     );
 };
 
 // 메인 컴포넌트
-const CompactAdGrid: React.FC = () => {
+interface CompactAdGridProps {
+    isEditMode?: boolean;
+}
+
+const CompactAdGrid: React.FC<CompactAdGridProps> = ({ isEditMode = false }) => {
     const { useSampleData } = useDataMode();
 
     return (
@@ -203,15 +214,19 @@ const CompactAdGrid: React.FC = () => {
                         )}
                     </div>
 
-                    <Link to="/search?productType=general" className="text-xs text-text-muted hover:text-primary transition-colors">
-                        더보기 +
-                    </Link>
+                    {isEditMode ? (
+                        <span className="text-xs text-text-muted cursor-not-allowed opacity-50">더보기 +</span>
+                    ) : (
+                        <Link to="/search?productType=general" className="text-xs text-text-muted hover:text-primary transition-colors">
+                            더보기 +
+                        </Link>
+                    )}
                 </div>
 
-                {/* 6열 반응형 그리드 - 다른 섹션과 동일 폭 */}
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                {/* 6열 반응형 그리드 - 모바일 최적화 */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2 sm:gap-3">
                     {compactAdsData.map((ad) => (
-                        <WideCard key={ad.id} ad={ad} />
+                        <WideCard key={ad.id} ad={ad} isEditMode={isEditMode} />
                     ))}
                 </div>
             </div>
