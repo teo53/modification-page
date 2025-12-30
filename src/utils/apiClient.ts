@@ -55,9 +55,14 @@ export class SecureApiClient {
     private csrfToken: string | null = null;
 
     constructor(config: Partial<ApiConfig> = {}) {
+        const isProd = import.meta.env.PROD;
+        const defaultUrl = isProd
+            ? 'https://modification-page-production.up.railway.app/api/v1'
+            : 'http://localhost:4000/api/v1';
+
         this.config = {
-            // 우선순위: config.baseUrl > VITE_API_URL > 로컬 (4000)
-            baseUrl: config.baseUrl || import.meta.env.VITE_API_URL || 'http://localhost:4000/api/v1',
+            // 우선순위: config.baseUrl > VITE_API_URL > 환경별 기본값
+            baseUrl: config.baseUrl || import.meta.env.VITE_API_URL || defaultUrl,
             timeout: config.timeout || 10000  // 10초로 단축
         };
     }

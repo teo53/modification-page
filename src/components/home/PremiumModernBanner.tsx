@@ -58,11 +58,11 @@ const tierStyles = {
     }
 };
 
-const PremiumModernBanner: React.FC<PremiumModernBannerProps> = ({
-    id, tier, title, location, salary, workHours, businessName
+const PremiumModernBanner: React.FC<PremiumModernBannerProps & { isEditMode?: boolean }> = ({
+    id, tier, title, location, salary, workHours, businessName, isEditMode = false
 }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const containerRef = useRef<HTMLAnchorElement>(null);
+    const containerRef = useRef<HTMLElement>(null);
     const config = tierStyles[tier];
     const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
@@ -76,7 +76,7 @@ const PremiumModernBanner: React.FC<PremiumModernBannerProps> = ({
                 });
             }
         });
-        resizeObserver.observe(containerRef.current);
+        resizeObserver.observe(containerRef.current as HTMLElement);
         return () => resizeObserver.disconnect();
     }, []);
 
@@ -87,7 +87,7 @@ const PremiumModernBanner: React.FC<PremiumModernBannerProps> = ({
         const observer = new IntersectionObserver(([entry]) => {
             setIsVisible(entry.isIntersecting);
         }, { threshold: 0.1 });
-        observer.observe(containerRef.current);
+        observer.observe(containerRef.current as HTMLElement);
         return () => observer.disconnect();
     }, []);
 
@@ -276,10 +276,20 @@ const PremiumModernBanner: React.FC<PremiumModernBannerProps> = ({
         return () => cancelAnimationFrame(animationFrameId);
     }, [dimensions, tier, config, isVisible]); // Re-run when visibility changes
 
+    const Component = isEditMode ? 'div' : Link;
+    const linkProps = isEditMode ? {} : { to: `/ad/${id}` };
+
+    const handleClick = (e: React.MouseEvent) => {
+        if (isEditMode) {
+            e.preventDefault();
+        }
+    };
+
     return (
-        <Link
-            to={`/ad/${id}`}
-            ref={containerRef}
+        <Component
+            {...linkProps as any}
+            onClick={handleClick}
+            ref={containerRef as any}
             className="block relative w-full h-[200px] rounded-lg group hover:-translate-y-1 transition-transform duration-300"
             style={{
                 background: 'linear-gradient(145deg, #0d0d10 0%, #12121a 40%, #0a0a0f 60%, #101018 100%)' // Default Dark
@@ -309,47 +319,47 @@ const PremiumModernBanner: React.FC<PremiumModernBannerProps> = ({
                 <canvas ref={canvasRef} className="absolute inset-0 z-20 pointer-events-none" />
 
                 {/* 5. Content Layer */}
-                <div className="relative z-30 h-full flex items-center px-10">
+                <div className="relative z-30 h-full flex items-center px-5 md:px-10">
                     {/* Rotating Logo */}
-                    <div className="mr-10 shrink-0">
-                        <div className="w-[85px] h-[85px] relative flex items-center justify-center">
+                    <div className="mr-4 md:mr-10 shrink-0">
+                        <div className="w-[60px] h-[60px] md:w-[85px] md:h-[85px] relative flex items-center justify-center">
                             <div className="absolute inset-0 rounded-full border opacity-30" style={{ borderColor: config.borderColor }} />
-                            <div className="absolute w-[70px] h-[70px] rounded-full border opacity-50 animate-[spin_20s_linear_infinite]" style={{ borderColor: config.borderColor }} />
-                            <span className="text-white/80 text-[13px] font-medium tracking-[3px]">{businessName.slice(0, 4)}</span>
+                            <div className="absolute w-[50px] h-[50px] md:w-[70px] md:h-[70px] rounded-full border opacity-50 animate-[spin_20s_linear_infinite]" style={{ borderColor: config.borderColor }} />
+                            <span className="text-white/80 text-[10px] md:text-[13px] font-medium tracking-[3px]">{businessName.slice(0, 4)}</span>
                         </div>
                     </div>
 
                     <div className="flex-1 min-w-0">
                         {/* Tier Badge */}
                         <div
-                            className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-[2px] text-[11px] font-bold tracking-[3px] mb-3 shadow-lg"
+                            className="inline-flex items-center gap-1.5 px-2.5 py-0.5 md:px-3.5 md:py-1 rounded-[2px] text-[10px] md:text-[11px] font-bold tracking-[3px] mb-2 md:mb-3 shadow-lg"
                             style={{ background: config.badgeColor, color: config.badgeTextColor }}
                         >
-                            <span className="text-[10px]">✦</span> {config.badge}
+                            <span className="text-[9px] md:text-[10px]">✦</span> {config.badge}
                         </div>
 
                         {/* Title */}
-                        <h1 className="text-[26px] font-bold text-white tracking-wide mb-1.5 truncate">
+                        <h1 className="text-[20px] md:text-[26px] font-bold text-white tracking-wide mb-1 md:mb-1.5 truncate">
                             {title}
                         </h1>
-                        <p className="text-[11px] font-light tracking-[5px] text-white/40 mb-4 uppercase">
+                        <p className="text-[10px] md:text-[11px] font-light tracking-[5px] text-white/40 mb-3 md:mb-4 uppercase">
                             Premium Entertainment
                         </p>
 
                         {/* Info Tags */}
-                        <div className="flex gap-6">
-                            <div className="flex items-center gap-2 text-[13px] text-white/75">
-                                <MapPin size={14} style={{ fill: config.iconFill, color: config.iconFill }} className="opacity-60" />
+                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 md:gap-6">
+                            <div className="flex items-center gap-2 text-[11px] md:text-[13px] text-white/75">
+                                <MapPin size={12} style={{ fill: config.iconFill, color: config.iconFill }} className="opacity-60 md:w-[14px] md:h-[14px]" />
                                 {location}
                             </div>
-                            <div className="w-px h-3.5 bg-white/15" />
-                            <div className="flex items-center gap-2 text-[13px] text-white/75">
-                                <DollarSign size={14} style={{ fill: config.iconFill, color: config.iconFill }} className="opacity-60" />
+                            <div className="hidden md:block w-px h-3.5 bg-white/15" />
+                            <div className="flex items-center gap-2 text-[11px] md:text-[13px] text-white/75">
+                                <DollarSign size={12} style={{ fill: config.iconFill, color: config.iconFill }} className="opacity-60 md:w-[14px] md:h-[14px]" />
                                 {salary}
                             </div>
-                            <div className="w-px h-3.5 bg-white/15" />
-                            <div className="flex items-center gap-2 text-[13px] text-white/75">
-                                <Clock size={14} style={{ fill: config.iconFill, color: config.iconFill }} className="opacity-60" />
+                            <div className="hidden md:block w-px h-3.5 bg-white/15" />
+                            <div className="flex items-center gap-2 text-[11px] md:text-[13px] text-white/75">
+                                <Clock size={12} style={{ fill: config.iconFill, color: config.iconFill }} className="opacity-60 md:w-[14px] md:h-[14px]" />
                                 {workHours}
                             </div>
                         </div>
@@ -362,7 +372,7 @@ const PremiumModernBanner: React.FC<PremiumModernBannerProps> = ({
                     style={{ background: `radial-gradient(ellipse, rgba(${config.glowColor}, 0.15) 0%, transparent 70%)` }} />
 
             </div>
-        </Link>
+        </Component>
     );
 };
 

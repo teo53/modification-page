@@ -28,7 +28,8 @@ export const DataModeProvider: React.FC<{ children: ReactNode }> = ({ children }
         }
         // Fall back to old data mode key
         const saved = localStorage.getItem(DATA_MODE_KEY);
-        return saved === 'sample';
+        // Default to sample data for live site stability
+        return saved !== 'real';
     });
 
     const [isAdmin, setIsAdmin] = useState(false);
