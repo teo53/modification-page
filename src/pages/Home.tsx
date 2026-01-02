@@ -63,7 +63,7 @@ const Home: React.FC = () => {
     <PullToRefresh onRefresh={handleRefresh} isRefreshing={isRefreshing}>
       <div ref={containerRef} className="min-h-screen bg-background pb-4">
         {/* Header */}
-        <header className="sticky top-0 z-50 bg-white border-b border-border">
+        <header className="sticky top-0 z-50 bg-card border-b border-border">
           <div className="flex items-center justify-between px-4 py-3">
             <h1 className="text-lg font-bold">
               <span className="text-primary">Luna</span>
@@ -94,7 +94,7 @@ const Home: React.FC = () => {
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="absolute left-4 right-4 mt-2 bg-white rounded-xl shadow-lg border border-border z-50"
+                className="absolute left-4 right-4 mt-2 bg-card rounded-xl shadow-lg border border-border z-50"
               >
                 {locations.map((loc) => (
                   <button
@@ -197,7 +197,7 @@ const Home: React.FC = () => {
               <Link key={ad.id} to={`/ad/${ad.id}`} className="flex-shrink-0 w-[200px]">
                 <motion.div
                   whileTap={{ scale: 0.98 }}
-                  className="bg-white rounded-xl border border-border overflow-hidden"
+                  className="bg-card rounded-xl border border-border overflow-hidden"
                 >
                   {/* Company Logo Area */}
                   <div className="h-16 bg-accent flex items-center justify-center relative">
@@ -238,7 +238,7 @@ const Home: React.FC = () => {
               <Link key={brand.id} to={`/search?brand=${brand.name}`}>
                 <motion.div
                   whileTap={{ scale: 0.98 }}
-                  className="bg-white rounded-xl p-4 text-center border border-border"
+                  className="bg-card rounded-xl p-4 text-center border border-border"
                 >
                   <div className="w-12 h-12 bg-accent rounded-full flex items-center justify-center mx-auto mb-2">
                     <span className="text-lg font-bold text-text-main">{brand.initial}</span>
@@ -265,7 +265,7 @@ const Home: React.FC = () => {
               <Link key={ad.id} to={`/ad/${ad.id}`}>
                 <motion.div
                   whileTap={{ backgroundColor: '#f5f5f5' }}
-                  className="px-4 py-4 bg-white"
+                  className="px-4 py-4 bg-card"
                 >
                   <div className="flex justify-between items-start mb-1">
                     <p className="text-xs text-text-muted truncate flex-1">
@@ -304,7 +304,7 @@ const Home: React.FC = () => {
               <Link key={ad.id} to={`/ad/${ad.id}`}>
                 <motion.div
                   whileTap={{ scale: 0.99 }}
-                  className="bg-white rounded-xl p-4 border border-border"
+                  className="bg-card rounded-xl p-4 border border-border"
                 >
                   <p className="text-xs text-text-muted mb-1">
                     #{ad.badges.join(' #')}
@@ -341,7 +341,7 @@ const Home: React.FC = () => {
                 if (!ad) return null;
                 return (
                   <Link key={view.id} to={`/ad/${ad.id}`} className="flex-shrink-0 w-[150px]">
-                    <div className="bg-white rounded-xl border border-border overflow-hidden">
+                    <div className="bg-card rounded-xl border border-border overflow-hidden">
                       <div className="h-20 bg-accent flex items-center justify-center">
                         <Building2 size={24} className="text-text-muted" />
                       </div>
@@ -374,7 +374,7 @@ const Home: React.FC = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="fixed bottom-24 right-4 w-12 h-12 bg-white rounded-full shadow-lg border border-border flex items-center justify-center z-40"
+          className="fixed bottom-24 right-4 w-12 h-12 bg-card rounded-full shadow-lg border border-border flex items-center justify-center z-40"
         >
           <ChevronRight size={20} className="text-primary rotate-[-90deg]" />
         </motion.button>
