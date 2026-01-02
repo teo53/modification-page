@@ -131,7 +131,7 @@ const PWAInstallPrompt: React.FC = () => {
             /* Android/Desktop Install Button */
             <button
               onClick={handleInstall}
-              className="mt-4 w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary-hover text-black font-bold py-3 rounded-xl transition-colors"
+              className="mt-4 w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary-hover text-white font-bold py-3 rounded-xl transition-colors"
             >
               <Download size={20} />
               <span>지금 설치하기</span>
@@ -140,7 +140,7 @@ const PWAInstallPrompt: React.FC = () => {
         </div>
 
         {/* Benefits */}
-        <div className="bg-white/5 px-4 py-3 flex items-center gap-4 text-xs text-text-muted">
+        <div className="bg-surface px-4 py-3 flex items-center gap-4 text-xs text-text-muted">
           <span className="flex items-center gap-1">
             <span className="text-green-400">✓</span> 오프라인 사용
           </span>
