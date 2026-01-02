@@ -1,13 +1,154 @@
 <!doctype html>
-<html lang="en">
+<html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- PWA Meta Tags -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover" />
+    <meta name="theme-color" content="#111111" />
+    <meta name="background-color" content="#111111" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="LunaAlba" />
+    <meta name="application-name" content="LunaAlba" />
+    <meta name="msapplication-TileColor" content="#111111" />
+    <meta name="msapplication-TileImage" content="/icons/icon-144x144.png" />
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="LunaAlba - 밤의 일자리 구인구직 플랫폼. 유흥업소 구인구직, 밤알바, 룸알바 정보" />
+    <meta name="keywords" content="밤알바, 구인구직, 유흥알바, 룸알바, 밤의일자리" />
+    <meta name="author" content="LunaAlba" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="LunaAlba - 밤의 일자리" />
+    <meta property="og:description" content="밤의 일자리 구인구직 플랫폼" />
+    <meta property="og:image" content="/icons/icon-512x512.png" />
+    <meta property="og:url" content="https://lunaalba.com" />
+    <meta property="og:site_name" content="LunaAlba" />
+    <meta property="og:locale" content="ko_KR" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="LunaAlba - 밤의 일자리" />
+    <meta name="twitter:description" content="밤의 일자리 구인구직 플랫폼" />
+    <meta name="twitter:image" content="/icons/icon-512x512.png" />
+
+    <!-- Favicon & Icons -->
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="icon" type="image/svg+xml" href="/icons/icon.svg" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152x152.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="167x167" href="/icons/icon-152x152.png" />
+
+    <!-- Preconnect to external resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Splash Screens for iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+
     <title>LunaAlba - 밤의 일자리 구인구직</title>
+
+    <style>
+      /* PWA Loading Screen */
+      html, body {
+        margin: 0;
+        padding: 0;
+        background-color: #111111;
+      }
+
+      /* iOS Safe Area Support */
+      body {
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+      }
+
+      /* App Loading Indicator */
+      #app-loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #1a1a2e 0%, #111111 100%);
+        z-index: 9999;
+        opacity: 1;
+        transition: opacity 0.3s ease;
+      }
+
+      #app-loader.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      #app-loader svg {
+        width: 80px;
+        height: 80px;
+        animation: pulse 2s ease-in-out infinite;
+      }
+
+      #app-loader .loader-text {
+        margin-top: 20px;
+        color: #D4AF37;
+        font-family: 'Noto Sans KR', sans-serif;
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      @keyframes pulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.05); opacity: 0.8; }
+      }
+    </style>
   </head>
   <body>
+    <!-- App Loading Screen -->
+    <div id="app-loader">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+        <defs>
+          <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#1a1a2e"/>
+            <stop offset="100%" style="stop-color:#111111"/>
+          </linearGradient>
+          <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#D4AF37"/>
+            <stop offset="100%" style="stop-color:#B5952F"/>
+          </linearGradient>
+        </defs>
+        <circle cx="256" cy="220" r="120" fill="url(#gold)"/>
+        <circle cx="310" cy="190" r="90" fill="url(#bg)"/>
+        <circle cx="150" cy="150" r="8" fill="#D4AF37" opacity="0.9"/>
+        <circle cx="380" cy="120" r="6" fill="#D4AF37" opacity="0.8"/>
+        <circle cx="420" cy="200" r="5" fill="#D4AF37" opacity="0.7"/>
+      </svg>
+      <div class="loader-text">LunaAlba</div>
+    </div>
+
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+
+    <script>
+      // Hide loader when app is ready
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          var loader = document.getElementById('app-loader');
+          if (loader) {
+            loader.classList.add('hidden');
+            setTimeout(function() {
+              loader.remove();
+            }, 300);
+          }
+        }, 500);
+      });
+    </script>
   </body>
 </html>
