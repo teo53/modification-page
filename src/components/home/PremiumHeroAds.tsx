@@ -76,9 +76,9 @@ const TierSection: React.FC<{ tierKey: TierType }> = ({ tierKey }) => {
     return (
         <div className="mb-12">
             <h3 className="text-white/30 text-sm font-bold tracking-[0.2em] mb-4 uppercase flex items-center gap-4">
-                <span className="h-px bg-white/10 flex-1"></span>
+                <span className="h-px bg-card/10 flex-1"></span>
                 {tier.name} TIER
-                <span className="h-px bg-white/10 flex-1"></span>
+                <span className="h-px bg-card/10 flex-1"></span>
             </h3>
             <div className={`grid grid-cols-1 xl:grid-cols-2 gap-6`}>
                 {tierAds.map(ad => (

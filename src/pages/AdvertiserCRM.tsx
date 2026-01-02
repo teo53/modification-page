@@ -19,7 +19,7 @@ const AdvertiserCRM: React.FC = () => {
 
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-                <div className="bg-white p-6 rounded-xl border border-border shadow-sm">
+                <div className="bg-card p-6 rounded-xl border border-border shadow-sm">
                     <div className="flex items-center justify-between mb-4">
                         <span className="text-text-muted">총 노출수</span>
                         <Eye className="text-primary" size={20} />
@@ -29,7 +29,7 @@ const AdvertiserCRM: React.FC = () => {
                         <TrendingUp size={12} /> +12.5%
                     </span>
                 </div>
-                <div className="bg-white p-6 rounded-xl border border-border shadow-sm">
+                <div className="bg-card p-6 rounded-xl border border-border shadow-sm">
                     <div className="flex items-center justify-between mb-4">
                         <span className="text-text-muted">클릭수</span>
                         <MousePointer className="text-secondary" size={20} />
@@ -39,7 +39,7 @@ const AdvertiserCRM: React.FC = () => {
                         <TrendingUp size={12} /> +8.2%
                     </span>
                 </div>
-                <div className="bg-white p-6 rounded-xl border border-border shadow-sm">
+                <div className="bg-card p-6 rounded-xl border border-border shadow-sm">
                     <div className="flex items-center justify-between mb-4">
                         <span className="text-text-muted">전화문의</span>
                         <Phone className="text-blue-500" size={20} />
@@ -49,7 +49,7 @@ const AdvertiserCRM: React.FC = () => {
                         <TrendingUp size={12} /> -2.1%
                     </span>
                 </div>
-                <div className="bg-white p-6 rounded-xl border border-border shadow-sm">
+                <div className="bg-card p-6 rounded-xl border border-border shadow-sm">
                     <div className="flex items-center justify-between mb-4">
                         <span className="text-text-muted">CTR (클릭률)</span>
                         <TrendingUp className="text-purple-500" size={20} />
@@ -61,7 +61,7 @@ const AdvertiserCRM: React.FC = () => {
 
             {/* Charts */}
             <div className="grid md:grid-cols-2 gap-8 mb-8">
-                <div className="bg-white p-6 rounded-xl border border-border shadow-sm">
+                <div className="bg-card p-6 rounded-xl border border-border shadow-sm">
                     <h3 className="text-lg font-bold text-text-main mb-6">주간 성과 추이</h3>
                     <div className="h-64">
                         <ResponsiveContainer width="100%" height="100%">
@@ -80,7 +80,7 @@ const AdvertiserCRM: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="bg-white p-6 rounded-xl border border-border shadow-sm">
+                <div className="bg-card p-6 rounded-xl border border-border shadow-sm">
                     <h3 className="text-lg font-bold text-text-main mb-6">전환율 분석</h3>
                     <div className="h-64">
                         <ResponsiveContainer width="100%" height="100%">
@@ -100,7 +100,7 @@ const AdvertiserCRM: React.FC = () => {
             </div>
 
             {/* Active Ads Table */}
-            <div className="bg-white rounded-xl border border-border shadow-sm overflow-hidden">
+            <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
                 <div className="p-6 border-b border-border">
                     <h3 className="text-lg font-bold text-text-main">진행 중인 광고</h3>
                 </div>

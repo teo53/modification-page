@@ -53,7 +53,7 @@ const CommunityPage: React.FC = () => {
                     <Link
                         key={post.id}
                         to={`/community/post/${post.id}`}
-                        className={`block p-4 rounded-xl border transition-all hover:bg-surface bg-white border-border`}
+                        className={`block p-4 rounded-xl border transition-all hover:bg-surface bg-card border-border`}
                     >
                         <div className="flex items-center justify-between mb-2">
                             <span className={`text-xs font-bold px-2 py-1 rounded bg-surface text-text-muted`}>

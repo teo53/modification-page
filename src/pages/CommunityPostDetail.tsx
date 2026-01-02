@@ -34,7 +34,7 @@ const CommunityPostDetail: React.FC = () => {
             </button>
 
             {/* Post Content */}
-            <div className="bg-white rounded-xl border border-border p-6 mb-6 shadow-sm">
+            <div className="bg-card rounded-xl border border-border p-6 mb-6 shadow-sm">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-4 pb-4 border-b border-border">
                     <div className="flex items-center gap-3">
@@ -88,7 +88,7 @@ const CommunityPostDetail: React.FC = () => {
             </div>
 
             {/* Comments Section */}
-            <div className="bg-white rounded-xl border border-border p-6 shadow-sm">
+            <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
                 <h3 className="text-lg font-bold text-text-main mb-4">
                     댓글 {post.comments}개
                 </h3>

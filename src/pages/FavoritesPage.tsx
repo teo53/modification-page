@@ -31,7 +31,7 @@ const FavoritesPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header Info */}
-      <div className="px-4 py-6 border-b border-border bg-white">
+      <div className="px-4 py-6 border-b border-border bg-card">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-xl font-bold text-text-main flex items-center gap-2">
@@ -68,7 +68,7 @@ const FavoritesPage: React.FC = () => {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
-                className="relative bg-white"
+                className="relative bg-card"
               >
                 <Link
                   to={`/ad/${ad.id}`}
@@ -118,7 +118,7 @@ const FavoritesPage: React.FC = () => {
         </div>
       ) : (
         /* Empty State */
-        <div className="flex flex-col items-center justify-center py-20 px-4 bg-white">
+        <div className="flex flex-col items-center justify-center py-20 px-4 bg-card">
           <div className="w-24 h-24 rounded-full bg-accent flex items-center justify-center mb-6">
             <Heart size={40} className="text-text-muted" />
           </div>

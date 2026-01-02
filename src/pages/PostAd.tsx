@@ -130,7 +130,7 @@ const PostAd = () => {
     if (!isAuthorized && getCurrentUser()) {
         return (
             <div className="min-h-screen bg-background flex items-center justify-center p-4">
-                <div className="max-w-md w-full bg-white rounded-xl border border-border shadow-lg p-8 text-center space-y-4">
+                <div className="max-w-md w-full bg-card rounded-xl border border-border shadow-lg p-8 text-center space-y-4">
                     <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto text-red-500">
                         <AlertCircle size={32} />
                     </div>
@@ -267,7 +267,7 @@ const PostAd = () => {
             duration: '30일',
             durationDays: 30,
             color: 'border-white/20',
-            bg: 'bg-white/5',
+            bg: 'bg-card/5',
             bgFill: 'bg-gray-500',
             textColor: 'text-gray-400',
             features: ['기본 텍스트 리스트', '저렴한 비용'],
@@ -383,7 +383,7 @@ const PostAd = () => {
                     <div className="absolute top-1/2 left-0 w-full h-1 bg-border -z-10" />
                     {[1, 2, 3].map((s) => (
                         <div key={s} className={`flex flex-col items-center gap-2 bg-background px-4 ${step >= s ? 'text-primary' : 'text-text-muted'}`}>
-                            <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 ${step >= s ? 'border-primary bg-primary/20' : 'border-border bg-white'}`}>
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 ${step >= s ? 'border-primary bg-primary/20' : 'border-border bg-card'}`}>
                                 {step > s ? <Check size={20} /> : s}
                             </div>
                             <span className="text-sm font-medium">
@@ -401,7 +401,7 @@ const PostAd = () => {
                         </h2>
 
                         {/* Business Name & Manager */}
-                        <div className="bg-white/5 rounded-xl border border-white/10 p-6 space-y-6">
+                        <div className="bg-card/5 rounded-xl border border-white/10 p-6 space-y-6">
                             <h3 className="text-sm font-bold text-white flex items-center gap-2">
                                 <Building2 size={16} className="text-primary" /> 업소 기본 정보
                             </h3>
@@ -502,7 +502,7 @@ const PostAd = () => {
                                     <div className="text-xs text-text-muted">
                                         <p>권장 크기: 200x200px</p>
                                         <p>지원 형식: JPG, PNG</p>
-                                        <label className="inline-block mt-2 px-3 py-1.5 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20 transition-colors text-white">
+                                        <label className="inline-block mt-2 px-3 py-1.5 bg-card/10 rounded-lg cursor-pointer hover:bg-card/20 transition-colors text-white">
                                             파일 선택
                                             <input
                                                 type="file"
@@ -589,7 +589,7 @@ const PostAd = () => {
                         </div>
 
                         {/* Enterprise & Contact Info */}
-                        <div className="bg-white/5 rounded-xl border border-white/10 p-4 space-y-4">
+                        <div className="bg-card/5 rounded-xl border border-white/10 p-4 space-y-4">
                             <h3 className="text-white font-bold text-sm mb-4">📢 담당자 연락처 정보</h3>
                             <div className="grid md:grid-cols-2 gap-4">
                                 <div>
@@ -668,7 +668,7 @@ const PostAd = () => {
                                         onClick={() => setFormData(prev => ({ ...prev, industry: { ...prev.industry, level2: item.id } }))}
                                         className={`p-3 rounded-lg border transition-all ${formData.industry.level2 === item.id
                                             ? 'bg-primary text-black border-primary font-bold shadow-lg shadow-primary/20'
-                                            : 'bg-white/5 border-white/10 text-text-muted hover:bg-white/10 hover:border-white/30'
+                                            : 'bg-card/5 border-white/10 text-text-muted hover:bg-card/10 hover:border-white/30'
                                             }`}
                                     >
                                         {item.label}
@@ -680,7 +680,7 @@ const PostAd = () => {
                         {/* 2. Salary (Buttons + Input) */}
                         <div className="space-y-3">
                             <label className="text-sm font-medium text-text-muted">급여 조건</label>
-                            <div className="bg-white/5 rounded-xl border border-white/10 p-4 space-y-4">
+                            <div className="bg-card/5 rounded-xl border border-white/10 p-4 space-y-4">
                                 <div className="flex flex-wrap gap-2">
                                     {[
                                         { id: 'hourly', label: '시급' },
@@ -692,8 +692,8 @@ const PostAd = () => {
                                             key={type.id}
                                             onClick={() => setFormData(prev => ({ ...prev, salary: { ...prev.salary, type: type.id as any } }))}
                                             className={`px-4 py-2 rounded-lg text-sm border transition-all ${formData.salary.type === type.id
-                                                ? 'bg-white text-black border-white font-bold'
-                                                : 'bg-black/20 border-white/10 text-text-muted hover:bg-white/5'
+                                                ? 'bg-card text-black border-white font-bold'
+                                                : 'bg-black/20 border-white/10 text-text-muted hover:bg-card/5'
                                                 }`}
                                         >
                                             {type.label}
@@ -720,7 +720,7 @@ const PostAd = () => {
                         {/* 3. Region Selection (Button Grid) & Detailed Address */}
                         <div className="space-y-4">
                             <label className="text-sm font-medium text-text-muted">근무 지역 <span className="text-red-500">*</span></label>
-                            <div className="bg-white/5 rounded-xl border border-white/10 p-4 space-y-4">
+                            <div className="bg-card/5 rounded-xl border border-white/10 p-4 space-y-4">
                                 {/* City Grid */}
                                 <div className="space-y-2">
                                     <div className="text-xs text-text-muted">시/도 선택</div>
@@ -754,8 +754,8 @@ const PostAd = () => {
                                                     key={district}
                                                     onClick={() => setFormData(prev => ({ ...prev, location: { ...prev.location, district } }))}
                                                     className={`py-2 rounded text-xs border transition-all ${formData.location.district === district
-                                                        ? 'bg-white text-black border-white font-bold'
-                                                        : 'bg-black/40 border-white/10 leading-none text-text-muted hover:bg-white/5'
+                                                        ? 'bg-card text-black border-white font-bold'
+                                                        : 'bg-black/40 border-white/10 leading-none text-text-muted hover:bg-card/5'
                                                         }`}
                                                 >
                                                     {district}
@@ -804,7 +804,7 @@ const PostAd = () => {
                                             onClick={() => setFormData(prev => ({ ...prev, workHours: { ...prev.workHours, type: time.id as any } }))}
                                             className={`p-3 rounded-lg border text-sm transition-all ${formData.workHours.type === time.id
                                                 ? 'bg-primary/20 border-primary text-primary font-bold'
-                                                : 'bg-white/5 border-white/10 text-text-muted hover:bg-white/10'
+                                                : 'bg-card/5 border-white/10 text-text-muted hover:bg-card/10'
                                                 }`}
                                         >
                                             {time.label}
@@ -818,7 +818,7 @@ const PostAd = () => {
                         <div className="grid md:grid-cols-2 gap-6">
                             <div className="space-y-3">
                                 <label className="text-sm font-medium text-text-muted">상세 모집 요강</label>
-                                <div className="bg-white/5 rounded-xl border border-white/10 p-4 space-y-4">
+                                <div className="bg-card/5 rounded-xl border border-white/10 p-4 space-y-4">
                                     {/* Age */}
                                     <div className="flex items-center justify-between">
                                         <label className="text-xs text-text-muted w-16">나이</label>
@@ -838,7 +838,7 @@ const PostAd = () => {
                                         <label className="text-xs text-text-muted w-16">성별</label>
                                         <div className="flex gap-1 flex-1">
                                             {[{ id: 'female', label: '여성' }, { id: 'male', label: '남성' }, { id: 'any', label: '무관' }].map(g => (
-                                                <button key={g.id} onClick={() => setFormData(p => ({ ...p, gender: g.id as any }))} className={`flex-1 py-1 text-xs rounded border ${formData.gender === g.id ? 'bg-white text-black border-white' : 'bg-transparent border-white/10 text-white/50'}`}>{g.label}</button>
+                                                <button key={g.id} onClick={() => setFormData(p => ({ ...p, gender: g.id as any }))} className={`flex-1 py-1 text-xs rounded border ${formData.gender === g.id ? 'bg-card text-black border-white' : 'bg-transparent border-white/10 text-white/50'}`}>{g.label}</button>
                                             ))}
                                         </div>
                                     </div>
@@ -848,7 +848,7 @@ const PostAd = () => {
                                         <label className="text-xs text-text-muted w-16">경력</label>
                                         <div className="flex gap-1 flex-1">
                                             {[{ id: 'novice', label: '초보' }, { id: 'experienced', label: '경력' }, { id: 'any', label: '무관' }].map(e => (
-                                                <button key={e.id} onClick={() => setFormData(p => ({ ...p, experience: e.id as any }))} className={`flex-1 py-1 text-xs rounded border ${formData.experience === e.id ? 'bg-white text-black border-white' : 'bg-transparent border-white/10 text-white/50'}`}>{e.label}</button>
+                                                <button key={e.id} onClick={() => setFormData(p => ({ ...p, experience: e.id as any }))} className={`flex-1 py-1 text-xs rounded border ${formData.experience === e.id ? 'bg-card text-black border-white' : 'bg-transparent border-white/10 text-white/50'}`}>{e.label}</button>
                                             ))}
                                         </div>
                                     </div>
@@ -891,7 +891,7 @@ const PostAd = () => {
                                 {/* Welfare (Convenience) - Matched to Image 1 */}
                                 <div className="space-y-3">
                                     <label className="text-sm font-medium text-text-muted">편의사항 (복리후생)</label>
-                                    <div className="bg-white/5 rounded-xl border border-white/10 p-4 flex flex-wrap gap-2">
+                                    <div className="bg-card/5 rounded-xl border border-white/10 p-4 flex flex-wrap gap-2">
                                         {[
                                             '선불가능', '순번확실', '원룸제공', '만근비지원', '성형지원',
                                             '출퇴근지원', '식사제공', '팁별도', '인센티브', '홀복지원',
@@ -901,7 +901,7 @@ const PostAd = () => {
                                             <button key={item} onClick={() => {
                                                 const current = formData.welfare;
                                                 setFormData(p => ({ ...p, welfare: current.includes(item) ? current.filter(i => i !== item) : [...current, item] }))
-                                            }} className={`px-3 py-1.5 rounded text-xs border ${formData.welfare.includes(item) ? 'bg-blue-500/20 text-blue-400 border-blue-500' : 'bg-white/5 border-white/10 text-white/50 hover:bg-white/10'}`}>
+                                            }} className={`px-3 py-1.5 rounded text-xs border ${formData.welfare.includes(item) ? 'bg-blue-500/20 text-blue-400 border-blue-500' : 'bg-card/5 border-white/10 text-white/50 hover:bg-card/10'}`}>
                                                 {item}
                                             </button>
                                         ))}
@@ -911,7 +911,7 @@ const PostAd = () => {
                                 {/* Keywords - Matched to Image 1 */}
                                 <div className="space-y-3">
                                     <label className="text-sm font-medium text-text-muted">키워드</label>
-                                    <div className="bg-white/5 rounded-xl border border-white/10 p-4 flex flex-wrap gap-2">
+                                    <div className="bg-card/5 rounded-xl border border-white/10 p-4 flex flex-wrap gap-2">
                                         {[
                                             '신규업소', '초보가능', '경력우대', '주말알바', '투잡알바',
                                             '당일지급', '생리휴무', '룸싸롱', '주점', '바',
@@ -942,7 +942,7 @@ const PostAd = () => {
                         </div>
 
                         {/* Reception & Documents (Full Width) */}
-                        <div className="grid md:grid-cols-2 gap-6 bg-white/5 rounded-xl border border-white/10 p-4">
+                        <div className="grid md:grid-cols-2 gap-6 bg-card/5 rounded-xl border border-white/10 p-4">
                             <div className="space-y-3">
                                 <label className="text-sm font-medium text-white">접수방법</label>
                                 <div className="grid grid-cols-3 gap-2">
@@ -967,7 +967,7 @@ const PostAd = () => {
                                 <div className="border-t border-white/5 pt-3 mt-3">
                                     <label className="text-xs text-text-muted mb-2 block">사업자등록증 (선택)</label>
                                     <div className="flex items-center gap-3">
-                                        <label className="cursor-pointer bg-white/5 border border-white/10 hover:bg-white/10 px-3 py-1.5 rounded text-xs text-white">
+                                        <label className="cursor-pointer bg-card/5 border border-white/10 hover:bg-card/10 px-3 py-1.5 rounded text-xs text-white">
                                             파일 선택
                                             <input type="file" className="hidden" accept="image/*,.pdf" onChange={(e) => setFormData(p => ({ ...p, businessLicense: e.target.files?.[0] || null }))} />
                                         </label>
@@ -985,7 +985,7 @@ const PostAd = () => {
                             <div className="grid grid-cols-5 gap-4">
                                 {formData.images.map((img, idx) => (
                                     <div key={idx} className="aspect-square relative group">
-                                        <div className={`w-full h-full rounded-lg border-2 border-dashed flex items-center justify-center overflow-hidden ${img.file ? 'border-primary bg-background' : 'border-white/10 bg-white/5 hover:border-primary/50'}`}>
+                                        <div className={`w-full h-full rounded-lg border-2 border-dashed flex items-center justify-center overflow-hidden ${img.file ? 'border-primary bg-background' : 'border-white/10 bg-card/5 hover:border-primary/50'}`}>
                                             {img.file ? (
                                                 <img
                                                     src={URL.createObjectURL(img.file)}
@@ -1049,7 +1049,7 @@ const PostAd = () => {
                             </h3>
 
                             {/* Icon Selection */}
-                            <div className="bg-white/5 rounded-xl border border-white/10 p-6 space-y-4">
+                            <div className="bg-card/5 rounded-xl border border-white/10 p-6 space-y-4">
                                 <div className="flex justify-between items-center mb-2">
                                     <h4 className="font-bold text-white">아이콘 추가</h4>
                                     <span className="text-xs text-text-muted">제목 앞에 아이콘이 표시됩니다.</span>
@@ -1067,7 +1067,7 @@ const PostAd = () => {
                                         { id: 'member', label: '회원제운영', icon: '⭕' },
                                         { id: 'urgent', label: '급전가능', icon: '✨' },
                                     ].map(item => (
-                                        <label key={item.id} className="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-white/5 border border-transparent hover:border-white/10">
+                                        <label key={item.id} className="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-card/5 border border-transparent hover:border-white/10">
                                             <input
                                                 type="radio"
                                                 name="adIcon"
@@ -1083,7 +1083,7 @@ const PostAd = () => {
                             </div>
 
                             {/* Highlight Selection */}
-                            <div className="bg-white/5 rounded-xl border border-white/10 p-6 space-y-4">
+                            <div className="bg-card/5 rounded-xl border border-white/10 p-6 space-y-4">
                                 <div className="flex justify-between items-center mb-2">
                                     <h4 className="font-bold text-white">형광펜 효과</h4>
                                     <span className="text-xs text-text-muted">제목 배경에 형광펜 효과를 적용합니다.</span>
@@ -1121,7 +1121,7 @@ const PostAd = () => {
                         <div className="flex justify-between pt-8 border-t border-white/10">
                             <button
                                 onClick={() => setStep(1)}
-                                className="bg-white/10 text-white font-bold px-8 py-3 rounded-lg hover:bg-white/20 transition-colors"
+                                className="bg-card/10 text-white font-bold px-8 py-3 rounded-lg hover:bg-card/20 transition-colors"
                             >
                                 이전 단계
                             </button>
@@ -1189,7 +1189,7 @@ const PostAd = () => {
                                                                             });
                                                                         }
                                                                     }}
-                                                                    className={`w-8 h-8 rounded-lg flex items-center justify-center text-lg font-bold transition-colors ${qty > 0 ? 'bg-white/20 text-white hover:bg-white/30' : 'bg-white/5 text-white/30 cursor-not-allowed'}`}
+                                                                    className={`w-8 h-8 rounded-lg flex items-center justify-center text-lg font-bold transition-colors ${qty > 0 ? 'bg-card/20 text-white hover:bg-card/30' : 'bg-card/5 text-white/30 cursor-not-allowed'}`}
                                                                     disabled={qty === 0}
                                                                 >
                                                                     −
@@ -1216,7 +1216,7 @@ const PostAd = () => {
                                                         {/* Features */}
                                                         <div className="flex flex-wrap gap-1.5 mb-3">
                                                             {product.features.map((feature, idx) => (
-                                                                <span key={idx} className="text-xs px-2 py-1 bg-white/10 rounded text-text-muted">
+                                                                <span key={idx} className="text-xs px-2 py-1 bg-card/10 rounded text-text-muted">
                                                                     {feature}
                                                                 </span>
                                                             ))}
@@ -1277,7 +1277,7 @@ const PostAd = () => {
                                                     <div className="mt-4 space-y-4 pt-4 border-t border-white/10">
                                                         {/* Highlight Settings */}
                                                         {product.id === 'highlight' && (
-                                                            <div className="bg-white/5 rounded-lg p-4 space-y-3">
+                                                            <div className="bg-card/5 rounded-lg p-4 space-y-3">
                                                                 <div className="flex items-center gap-2 text-sm text-yellow-500 font-bold mb-2">
                                                                     <Palette size={16} /> 형광펜 설정
                                                                 </div>
@@ -1361,7 +1361,7 @@ const PostAd = () => {
                                 <div className={`rounded-xl border p-5 transition-all ${jumpUpSettings.enabled ? 'bg-green-500/10 border-green-500/50' : 'bg-background border-white/10 opacity-70 hover:opacity-100'}`}>
                                     <div className="flex items-start justify-between mb-4">
                                         <div className="flex items-center gap-3">
-                                            <div className={`p-2 rounded-lg ${jumpUpSettings.enabled ? 'bg-green-500/20 text-green-400' : 'bg-white/5 text-text-muted'}`}>
+                                            <div className={`p-2 rounded-lg ${jumpUpSettings.enabled ? 'bg-green-500/20 text-green-400' : 'bg-card/5 text-text-muted'}`}>
                                                 <RefreshCw size={20} className={jumpUpSettings.enabled ? 'animate-spin-slow' : ''} />
                                             </div>
                                             <div>
@@ -1372,9 +1372,9 @@ const PostAd = () => {
                                         <button
                                             type="button"
                                             onClick={() => setJumpUpSettings(prev => ({ ...prev, enabled: !prev.enabled }))}
-                                            className={`relative w-12 h-6 rounded-full transition-colors ${jumpUpSettings.enabled ? 'bg-green-500' : 'bg-white/10'}`}
+                                            className={`relative w-12 h-6 rounded-full transition-colors ${jumpUpSettings.enabled ? 'bg-green-500' : 'bg-card/10'}`}
                                         >
-                                            <span className={`absolute top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform ${jumpUpSettings.enabled ? 'translate-x-6' : ''}`} />
+                                            <span className={`absolute top-1 left-1 bg-card w-4 h-4 rounded-full transition-transform ${jumpUpSettings.enabled ? 'translate-x-6' : ''}`} />
                                         </button>
                                     </div>
 
@@ -1388,7 +1388,7 @@ const PostAd = () => {
                                                             key={days}
                                                             type="button"
                                                             onClick={() => setJumpUpSettings(prev => ({ ...prev, interval: days }))}
-                                                            className={`px-3 py-1.5 rounded text-sm transition-colors ${jumpUpSettings.interval === days ? 'bg-green-500 text-black font-bold' : 'bg-white/5 text-text-muted hover:bg-white/10'}`}
+                                                            className={`px-3 py-1.5 rounded text-sm transition-colors ${jumpUpSettings.interval === days ? 'bg-green-500 text-black font-bold' : 'bg-card/5 text-text-muted hover:bg-card/10'}`}
                                                         >
                                                             {days}일 마다
                                                         </button>
@@ -1403,7 +1403,7 @@ const PostAd = () => {
                                                             key={cnt}
                                                             type="button"
                                                             onClick={() => setJumpUpSettings(prev => ({ ...prev, count: cnt }))}
-                                                            className={`px-3 py-1.5 rounded text-sm transition-colors ${jumpUpSettings.count === cnt ? 'bg-green-500 text-black font-bold' : 'bg-white/5 text-text-muted hover:bg-white/10'}`}
+                                                            className={`px-3 py-1.5 rounded text-sm transition-colors ${jumpUpSettings.count === cnt ? 'bg-green-500 text-black font-bold' : 'bg-card/5 text-text-muted hover:bg-card/10'}`}
                                                         >
                                                             {cnt}회
                                                         </button>
@@ -1516,7 +1516,7 @@ const PostAd = () => {
                                                         <div key={tierId} className={`h-6 border-b border-white/5 p-0.5 flex items-center transition-all duration-300 ${isHovered ? 'ring-2 ring-primary/50 bg-primary/10 z-10 scale-105 rounded' : ''} ${selectedProducts[tierId] ? tierBg : 'bg-accent/5'}`}>
                                                             <div className="flex-1 flex gap-0.5 px-0.5">
                                                                 {Array.from({ length: tierSlots }).map((_, i) => (
-                                                                    <div key={i} className={`flex-1 h-4 rounded-sm ${selectedProducts[tierId] ? `${tierColor} shadow-[0_0_5px_currentColor]` : 'bg-white/5'}`} />
+                                                                    <div key={i} className={`flex-1 h-4 rounded-sm ${selectedProducts[tierId] ? `${tierColor} shadow-[0_0_5px_currentColor]` : 'bg-card/5'}`} />
                                                                 ))}
                                                             </div>
                                                         </div>
@@ -1527,7 +1527,7 @@ const PostAd = () => {
                                                 <div className={`h-8 border-b border-white/5 p-0.5 flex items-center ${selectedProducts['premium'] ? 'bg-purple-400/20' : 'bg-accent/10'}`}>
                                                     <div className="flex-1 flex gap-0.5 px-0.5">
                                                         {[1, 2, 3, 4, 5, 6].map(i => (
-                                                            <div key={i} className={`flex-1 h-2 rounded-sm ${selectedProducts['premium'] ? 'bg-purple-400/60 ring-1 ring-purple-400' : 'bg-white/5'}`} />
+                                                            <div key={i} className={`flex-1 h-2 rounded-sm ${selectedProducts['premium'] ? 'bg-purple-400/60 ring-1 ring-purple-400' : 'bg-card/5'}`} />
                                                         ))}
                                                     </div>
                                                 </div>
@@ -1536,7 +1536,7 @@ const PostAd = () => {
                                                 <div className={`h-6 border-b border-white/5 p-0.5 flex items-center ${selectedProducts['special'] ? 'bg-indigo-400/20' : 'bg-accent/10'}`}>
                                                     <div className="flex-1 space-y-0.5 px-0.5">
                                                         {[1, 2, 3].map(i => (
-                                                            <div key={i} className={`h-1 rounded-sm ${selectedProducts['special'] ? 'bg-indigo-400/60' : 'bg-white/5'}`} />
+                                                            <div key={i} className={`h-1 rounded-sm ${selectedProducts['special'] ? 'bg-indigo-400/60' : 'bg-card/5'}`} />
                                                         ))}
                                                     </div>
                                                 </div>
@@ -1546,7 +1546,7 @@ const PostAd = () => {
                                                     <div className="space-y-0.5 px-0.5">
                                                         {[1, 2, 3, 4].map(i => {
                                                             return (
-                                                                <div key={i} className={`h-1.5 rounded-sm ${selectedProducts['general'] ? 'bg-white/40' : 'bg-white/5'}`} />
+                                                                <div key={i} className={`h-1.5 rounded-sm ${selectedProducts['general'] ? 'bg-card/40' : 'bg-card/5'}`} />
                                                             );
                                                         })}
                                                     </div>
@@ -1570,7 +1570,7 @@ const PostAd = () => {
                         <div className="bg-accent/30 rounded-xl border border-white/10 p-5 mt-6">
                             <h4 className="font-bold text-white mb-4">이용약관 및 유의사항</h4>
                             <div className="space-y-4">
-                                <label className="flex items-center gap-3 p-4 bg-white/5 rounded-lg cursor-pointer hover:bg-white/10 transition-colors">
+                                <label className="flex items-center gap-3 p-4 bg-card/5 rounded-lg cursor-pointer hover:bg-card/10 transition-colors">
                                     <input
                                         type="checkbox"
                                         className="w-5 h-5 rounded border-white/20 bg-black/40 checked:bg-primary accent-primary"
@@ -1607,7 +1607,7 @@ const PostAd = () => {
                         <div className="flex justify-between items-center pt-6 border-t border-white/10">
                             <button
                                 onClick={() => setStep(2)}
-                                className="bg-white/10 text-white font-bold px-8 py-3 rounded-lg hover:bg-white/20 transition-colors"
+                                className="bg-card/10 text-white font-bold px-8 py-3 rounded-lg hover:bg-card/20 transition-colors"
                             >
                                 이전 단계
                             </button>

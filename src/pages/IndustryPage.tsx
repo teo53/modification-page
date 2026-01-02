@@ -60,7 +60,7 @@ const StatCard: React.FC<StatCardProps> = ({ icon: Icon, iconColor, value, suffi
     const displayValue = format ? format(animatedValue) : animatedValue;
 
     return (
-        <div className="bg-white rounded-xl border border-border p-8 text-center shadow-sm">
+        <div className="bg-card rounded-xl border border-border p-8 text-center shadow-sm">
             <Icon className={`${iconColor} w-10 h-10 mx-auto mb-3`} />
             <div className="text-4xl font-bold text-text-main mb-2">
                 {displayValue}{suffix}
@@ -167,7 +167,7 @@ const IndustryPage: React.FC = () => {
                             placeholder="업종명, 지역, 키워드로 검색..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full bg-white border border-border rounded-lg py-3 pl-12 pr-4 text-text-main focus:border-primary outline-none"
+                            className="w-full bg-card border border-border rounded-lg py-3 pl-12 pr-4 text-text-main focus:border-primary outline-none"
                         />
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={20} />
                     </div>
@@ -212,7 +212,7 @@ const IndustryPage: React.FC = () => {
                             onClick={() => setActiveRegion(activeRegion === region.name ? null : region.name)}
                             className={`p-4 rounded-xl border transition-all duration-300 text-center ${activeRegion === region.name
                                 ? 'bg-primary/20 border-primary'
-                                : `${region.color} bg-white hover:bg-surface`
+                                : `${region.color} bg-card hover:bg-surface`
                                 }`}
                         >
                             <div className="text-lg font-bold text-text-main mb-1">{region.name}</div>
@@ -238,7 +238,7 @@ const IndustryPage: React.FC = () => {
                                     p-6 rounded-xl border transition-all duration-300 flex flex-col items-center gap-3 group
                                     ${isActive
                                         ? 'bg-primary/10 border-primary shadow-[0_0_15px_rgba(255,107,53,0.2)]'
-                                        : 'bg-white border-border hover:border-primary/30 hover:bg-surface'
+                                        : 'bg-card border-border hover:border-primary/30 hover:bg-surface'
                                     }
                                 `}
                             >

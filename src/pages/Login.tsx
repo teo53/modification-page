@@ -66,7 +66,7 @@ const Login: React.FC = () => {
                     <p className="text-text-muted">LunaAlba에 오신 것을 환영합니다</p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="mt-8 space-y-6 bg-white rounded-xl p-8 border border-border shadow-sm">
+                <form onSubmit={handleSubmit} className="mt-8 space-y-6 bg-card rounded-xl p-8 border border-border shadow-sm">
                     {/* Error Message */}
                     {error && (
                         <div className="flex items-center gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400">

@@ -58,7 +58,7 @@ const AdvertiserDashboard: React.FC = () => {
                 <div className="grid lg:grid-cols-4 gap-6">
                     {/* Sidebar */}
                     <aside className="lg:col-span-1">
-                        <div className="bg-white rounded-xl border border-border p-6 sticky top-20 space-y-6 shadow-sm">
+                        <div className="bg-card rounded-xl border border-border p-6 sticky top-20 space-y-6 shadow-sm">
                             {/* User Stats */}
                             <div>
                                 <h3 className="text-lg font-bold text-text-main mb-4 flex items-center gap-2">
@@ -170,7 +170,7 @@ const AdvertiserDashboard: React.FC = () => {
 
                         {/* Stats Cards */}
                         <div className="grid md:grid-cols-4 gap-4 mb-8">
-                            <div className="bg-white rounded-xl border border-border p-6 shadow-sm">
+                            <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
                                 <div className="flex items-center justify-between mb-2">
                                     <TrendingUp className="text-green-500" size={24} />
                                     <span className="text-xs text-green-500">+12%</span>
@@ -178,7 +178,7 @@ const AdvertiserDashboard: React.FC = () => {
                                 <div className="text-2xl font-bold text-text-main mb-1">2,847</div>
                                 <div className="text-sm text-text-muted">총 조회수</div>
                             </div>
-                            <div className="bg-white rounded-xl border border-border p-6 shadow-sm">
+                            <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
                                 <div className="flex items-center justify-between mb-2">
                                     <Clock className="text-yellow-500" size={24} />
                                     <span className="text-xs text-yellow-500">진행중</span>
@@ -186,7 +186,7 @@ const AdvertiserDashboard: React.FC = () => {
                                 <div className="text-2xl font-bold text-text-main mb-1">{stats.active}</div>
                                 <div className="text-sm text-text-muted">활성 광고</div>
                             </div>
-                            <div className="bg-white rounded-xl border border-border p-6 shadow-sm">
+                            <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
                                 <div className="flex items-center justify-between mb-2">
                                     <CheckCircle className="text-blue-500" size={24} />
                                     <span className="text-xs text-blue-500">만료</span>
@@ -194,7 +194,7 @@ const AdvertiserDashboard: React.FC = () => {
                                 <div className="text-2xl font-bold text-text-main mb-1">{stats.expired}</div>
                                 <div className="text-sm text-text-muted">만료된 광고</div>
                             </div>
-                            <div className="bg-white rounded-xl border border-border p-6 shadow-sm">
+                            <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
                                 <div className="flex items-center justify-between mb-2">
                                     <DollarSign className="text-primary" size={24} />
                                     <span className="text-xs text-primary">조회수</span>
@@ -208,7 +208,7 @@ const AdvertiserDashboard: React.FC = () => {
                         <div>
                             <h2 className="text-xl font-bold text-text-main mb-4">내 광고 목록</h2>
                             {myAds.length === 0 ? (
-                                <div className="text-center py-12 bg-white rounded-xl border border-border shadow-sm">
+                                <div className="text-center py-12 bg-card rounded-xl border border-border shadow-sm">
                                     <FileText className="mx-auto mb-4 text-text-muted" size={48} />
                                     <p className="text-text-muted mb-4">등록된 광고가 없습니다.</p>
                                     <Link to="/post-ad" className="inline-flex items-center gap-2 bg-primary text-white font-bold px-6 py-2 rounded-lg">
@@ -229,7 +229,7 @@ const AdvertiserDashboard: React.FC = () => {
                                                 productType={ad.productType}
                                             />
                                             <div className="absolute top-2 right-2 flex gap-2">
-                                                <button className="bg-white/90 backdrop-blur-sm text-text-main px-3 py-1 rounded text-xs hover:bg-white transition-colors shadow-sm">
+                                                <button className="bg-card/90 backdrop-blur-sm text-text-main px-3 py-1 rounded text-xs hover:bg-card transition-colors shadow-sm">
                                                     수정
                                                 </button>
                                                 <button

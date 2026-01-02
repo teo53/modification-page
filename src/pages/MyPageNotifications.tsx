@@ -67,7 +67,7 @@ const MyPageNotifications: React.FC = () => {
     return (
         <div className="min-h-screen pb-24 bg-background">
             {/* Header */}
-            <div className="sticky top-0 z-40 bg-white border-b border-border p-4 flex items-center gap-4">
+            <div className="sticky top-0 z-40 bg-card border-b border-border p-4 flex items-center gap-4">
                 <button onClick={() => navigate(-1)} className="text-text-main">
                     <ChevronLeft size={24} />
                 </button>
@@ -79,7 +79,7 @@ const MyPageNotifications: React.FC = () => {
                     <motion.div
                         key={setting.id}
                         whileTap={{ scale: 0.98 }}
-                        className="bg-white rounded-xl p-4 border border-border"
+                        className="bg-card rounded-xl p-4 border border-border"
                     >
                         <div className="flex items-center gap-4">
                             <div className="text-primary">{setting.icon}</div>
@@ -94,7 +94,7 @@ const MyPageNotifications: React.FC = () => {
                                 }`}
                             >
                                 <motion.div
-                                    className="absolute top-1 w-5 h-5 bg-white rounded-full shadow"
+                                    className="absolute top-1 w-5 h-5 bg-card rounded-full shadow"
                                     animate={{ left: setting.enabled ? '24px' : '4px' }}
                                     transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                                 />
@@ -105,7 +105,7 @@ const MyPageNotifications: React.FC = () => {
             </div>
 
             {/* Save Button */}
-            <div className="fixed bottom-20 left-0 right-0 p-4 bg-white border-t border-border">
+            <div className="fixed bottom-20 left-0 right-0 p-4 bg-card border-t border-border">
                 <motion.button
                     whileTap={{ scale: 0.98 }}
                     onClick={handleSave}

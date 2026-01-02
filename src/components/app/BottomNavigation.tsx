@@ -65,7 +65,7 @@ const BottomNavigation: React.FC = () => {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-border safe-area-pb">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border safe-area-pb">
       <div className="flex items-stretch h-16">
         {navItems.map((item) => {
           const Icon = item.icon;

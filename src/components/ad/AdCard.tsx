@@ -44,7 +44,7 @@ const AdCard: React.FC<AdCardProps> = ({
         <Link
             to={`/ad/${id}`}
             className={cn(
-                "block group relative overflow-hidden rounded-xl bg-white transition-all duration-300 hover:-translate-y-1 shadow-sm",
+                "block group relative overflow-hidden rounded-xl bg-card transition-all duration-300 hover:-translate-y-1 shadow-sm",
                 isDiamond && "border-2 border-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.2)]",
                 isSapphire && "border-2 border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.2)]",
                 isRuby && "border-2 border-red-500 shadow-[0_0_15px_rgba(239,68,68,0.2)]",
@@ -79,7 +79,7 @@ const AdCard: React.FC<AdCardProps> = ({
                     {isNew && <span className="bg-blue-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">NEW</span>}
                     {isHot && <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">HOT</span>}
                     {badges.map((badge, i) => (
-                        <span key={i} className="bg-white/20 backdrop-blur-md text-white text-[10px] px-1.5 py-0.5 rounded">
+                        <span key={i} className="bg-card/20 backdrop-blur-md text-white text-[10px] px-1.5 py-0.5 rounded">
                             {badge}
                         </span>
                     ))}

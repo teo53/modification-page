@@ -116,7 +116,7 @@ const HorizontalFilterBar: React.FC<HorizontalFilterBarProps> = ({ onFilterChang
                                 flex items-center gap-1.5 font-medium border
                                 ${isSelected
                                     ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20'
-                                    : 'bg-white text-text-muted border-border hover:border-primary/30 hover:text-text-main hover:bg-surface'
+                                    : 'bg-card text-text-muted border-border hover:border-primary/30 hover:text-text-main hover:bg-surface'
                                 }
                             `}
                         >
@@ -130,7 +130,7 @@ const HorizontalFilterBar: React.FC<HorizontalFilterBarProps> = ({ onFilterChang
     );
 
     return (
-        <div className="bg-white border-y border-border py-6 mb-8 sticky top-0 z-20 shadow-lg">
+        <div className="bg-card border-y border-border py-6 mb-8 sticky top-0 z-20 shadow-lg">
             <div className="container mx-auto px-4">
                 <div className="space-y-4">
                     <FilterGroup

@@ -69,7 +69,7 @@ const MyPage: React.FC = () => {
   if (!user) {
     return (
       <div className="min-h-screen flex flex-col bg-background">
-        <div className="flex-1 flex flex-col items-center justify-center px-4 py-12 bg-white">
+        <div className="flex-1 flex flex-col items-center justify-center px-4 py-12 bg-card">
           <div className="w-24 h-24 rounded-full bg-accent flex items-center justify-center mb-6">
             <User size={48} className="text-text-muted" />
           </div>
@@ -94,7 +94,7 @@ const MyPage: React.FC = () => {
         </div>
 
         {/* Quick Links for non-logged users */}
-        <div className="border-t border-border bg-white">
+        <div className="border-t border-border bg-card">
           <MenuItem icon={<HelpCircle size={22} />} label="고객센터" to="/support" />
         </div>
       </div>
@@ -104,7 +104,7 @@ const MyPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-surface">
       {/* Profile Section */}
-      <div className="px-4 py-6 border-b border-border bg-white">
+      <div className="px-4 py-6 border-b border-border bg-card">
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary/30 to-primary/10 flex items-center justify-center">
             <User size={32} className="text-primary" />
@@ -149,7 +149,7 @@ const MyPage: React.FC = () => {
       {/* Menu Sections */}
       <div className="divide-y divide-border">
         {/* Activity */}
-        <div className="bg-white">
+        <div className="bg-card">
           <p className="px-4 py-3 text-xs text-text-muted font-medium bg-surface">활동</p>
           <MenuItem
             icon={<Heart size={22} />}
@@ -171,7 +171,7 @@ const MyPage: React.FC = () => {
 
         {/* Advertiser Section */}
         {user.type === 'advertiser' && (
-          <div className="bg-white">
+          <div className="bg-card">
             <p className="px-4 py-3 text-xs text-text-muted font-medium bg-surface">광고주</p>
             <MenuItem
               icon={<FileText size={22} />}
@@ -187,7 +187,7 @@ const MyPage: React.FC = () => {
         )}
 
         {/* Settings */}
-        <div className="bg-white">
+        <div className="bg-card">
           <p className="px-4 py-3 text-xs text-text-muted font-medium bg-surface">설정</p>
           <MenuItem
             icon={<Bell size={22} />}
@@ -202,7 +202,7 @@ const MyPage: React.FC = () => {
         </div>
 
         {/* Support */}
-        <div className="bg-white">
+        <div className="bg-card">
           <p className="px-4 py-3 text-xs text-text-muted font-medium bg-surface">지원</p>
           <MenuItem
             icon={<HelpCircle size={22} />}
@@ -212,7 +212,7 @@ const MyPage: React.FC = () => {
         </div>
 
         {/* Logout */}
-        <div className="pb-8 bg-white">
+        <div className="pb-8 bg-card">
           <MenuItem
             icon={<LogOut size={22} />}
             label="로그아웃"

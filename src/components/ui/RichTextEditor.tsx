@@ -95,7 +95,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, placeh
             <div className="bg-gray-100 border-b border-gray-300 p-2 flex flex-wrap gap-1 items-center">
                 <div className="flex items-center gap-1 mr-2">
                     <select
-                        className="h-8 text-sm border border-gray-300 rounded px-1 bg-white"
+                        className="h-8 text-sm border border-gray-300 rounded px-1 bg-card"
                         onChange={(e) => execCommand('fontName', e.target.value)}
                         defaultValue="sans-serif"
                     >
@@ -106,7 +106,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, placeh
                         <option value="Batang">바탕</option>
                     </select>
                     <select
-                        className="h-8 text-sm border border-gray-300 rounded px-1 bg-white"
+                        className="h-8 text-sm border border-gray-300 rounded px-1 bg-card"
                         onChange={(e) => execCommand('fontSize', e.target.value)}
                         defaultValue="3"
                     >

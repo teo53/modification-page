@@ -53,7 +53,7 @@ const JobCard: React.FC<JobCardProps> = ({
       <Link to={`/ad/${id}`} onClick={handleCardClick}>
         <motion.div
           whileTap={{ scale: 0.98 }}
-          className="bg-white rounded-2xl overflow-hidden border border-border shadow-sm active:border-primary/30"
+          className="bg-card rounded-2xl overflow-hidden border border-border shadow-sm active:border-primary/30"
         >
           {/* Image */}
           <div className="relative aspect-[4/3]">
@@ -109,7 +109,7 @@ const JobCard: React.FC<JobCardProps> = ({
       <Link to={`/ad/${id}`} onClick={handleCardClick}>
         <motion.div
           whileTap={{ scale: 0.99 }}
-          className="flex gap-3 p-3 bg-white rounded-xl border border-border shadow-sm active:border-primary/30"
+          className="flex gap-3 p-3 bg-card rounded-xl border border-border shadow-sm active:border-primary/30"
         >
           {/* Image */}
           <div className="relative w-20 h-20 rounded-xl overflow-hidden flex-shrink-0">
@@ -165,7 +165,7 @@ const JobCard: React.FC<JobCardProps> = ({
       <Link to={`/ad/${id}`} onClick={handleCardClick}>
         <motion.div
           whileTap={{ scale: 0.98 }}
-          className="bg-white rounded-2xl overflow-hidden border border-border shadow-sm"
+          className="bg-card rounded-2xl overflow-hidden border border-border shadow-sm"
         >
           {/* Image */}
           <div className="relative h-32">
@@ -219,7 +219,7 @@ const JobCard: React.FC<JobCardProps> = ({
       <Link to={`/ad/${id}`} onClick={handleCardClick}>
         <motion.div
           whileTap={{ scale: 0.98 }}
-          className="bg-white rounded-xl overflow-hidden border border-border shadow-sm"
+          className="bg-card rounded-xl overflow-hidden border border-border shadow-sm"
         >
           <div className="aspect-[4/3]">
             <img

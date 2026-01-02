@@ -48,7 +48,7 @@ const MyPagePrivacy: React.FC = () => {
     return (
         <div className="min-h-screen pb-24 bg-background">
             {/* Header */}
-            <div className="sticky top-0 z-40 bg-white border-b border-border p-4 flex items-center gap-4">
+            <div className="sticky top-0 z-40 bg-card border-b border-border p-4 flex items-center gap-4">
                 <button onClick={() => navigate(-1)} className="text-text-main">
                     <ChevronLeft size={24} />
                 </button>
@@ -60,7 +60,7 @@ const MyPagePrivacy: React.FC = () => {
                 <div className="space-y-3">
                     <h2 className="text-sm font-bold text-text-muted px-1">공개 설정</h2>
 
-                    <div className="bg-white rounded-xl p-4 border border-border">
+                    <div className="bg-card rounded-xl p-4 border border-border">
                         <div className="flex items-center gap-4">
                             <Eye size={22} className="text-primary" />
                             <div className="flex-1">
@@ -74,14 +74,14 @@ const MyPagePrivacy: React.FC = () => {
                                 }`}
                             >
                                 <motion.div
-                                    className="absolute top-1 w-5 h-5 bg-white rounded-full shadow"
+                                    className="absolute top-1 w-5 h-5 bg-card rounded-full shadow"
                                     animate={{ left: privacySettings.profileVisible ? '24px' : '4px' }}
                                 />
                             </button>
                         </div>
                     </div>
 
-                    <div className="bg-white rounded-xl p-4 border border-border">
+                    <div className="bg-card rounded-xl p-4 border border-border">
                         <div className="flex items-center gap-4">
                             <Shield size={22} className="text-primary" />
                             <div className="flex-1">
@@ -95,7 +95,7 @@ const MyPagePrivacy: React.FC = () => {
                                 }`}
                             >
                                 <motion.div
-                                    className="absolute top-1 w-5 h-5 bg-white rounded-full shadow"
+                                    className="absolute top-1 w-5 h-5 bg-card rounded-full shadow"
                                     animate={{ left: privacySettings.activityVisible ? '24px' : '4px' }}
                                 />
                             </button>
@@ -112,7 +112,7 @@ const MyPagePrivacy: React.FC = () => {
                             localStorage.removeItem('searchHistory');
                             alert('검색 기록이 삭제되었습니다.');
                         }}
-                        className="w-full bg-white rounded-xl p-4 border border-border text-left"
+                        className="w-full bg-card rounded-xl p-4 border border-border text-left"
                     >
                         <div className="flex items-center gap-4">
                             <Trash2 size={22} className="text-text-muted" />
@@ -128,7 +128,7 @@ const MyPagePrivacy: React.FC = () => {
                             localStorage.removeItem('recentViews');
                             alert('최근 본 공고가 삭제되었습니다.');
                         }}
-                        className="w-full bg-white rounded-xl p-4 border border-border text-left"
+                        className="w-full bg-card rounded-xl p-4 border border-border text-left"
                     >
                         <div className="flex items-center gap-4">
                             <EyeOff size={22} className="text-text-muted" />
@@ -160,7 +160,7 @@ const MyPagePrivacy: React.FC = () => {
             </div>
 
             {/* Save Button */}
-            <div className="fixed bottom-20 left-0 right-0 p-4 bg-white border-t border-border">
+            <div className="fixed bottom-20 left-0 right-0 p-4 bg-card border-t border-border">
                 <motion.button
                     whileTap={{ scale: 0.98 }}
                     onClick={handleSave}
@@ -183,7 +183,7 @@ const MyPagePrivacy: React.FC = () => {
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="bg-white rounded-2xl p-6 max-w-sm w-full border border-border shadow-xl"
+                        className="bg-card rounded-2xl p-6 max-w-sm w-full border border-border shadow-xl"
                     >
                         <div className="text-center">
                             <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">

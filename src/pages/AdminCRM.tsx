@@ -27,7 +27,7 @@ const AdminCRM: React.FC = () => {
 
             {/* Global Stats */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-                <div className="bg-white p-6 rounded-xl border border-border shadow-sm">
+                <div className="bg-card p-6 rounded-xl border border-border shadow-sm">
                     <div className="flex items-center justify-between mb-4">
                         <span className="text-text-muted">총 회원수</span>
                         <Users className="text-blue-500" size={20} />
@@ -37,7 +37,7 @@ const AdminCRM: React.FC = () => {
                         +125명 (오늘)
                     </span>
                 </div>
-                <div className="bg-white p-6 rounded-xl border border-border shadow-sm">
+                <div className="bg-card p-6 rounded-xl border border-border shadow-sm">
                     <div className="flex items-center justify-between mb-4">
                         <span className="text-text-muted">월 매출</span>
                         <DollarSign className="text-primary" size={20} />
@@ -47,7 +47,7 @@ const AdminCRM: React.FC = () => {
                         +12.5% (전월 대비)
                     </span>
                 </div>
-                <div className="bg-white p-6 rounded-xl border border-border shadow-sm">
+                <div className="bg-card p-6 rounded-xl border border-border shadow-sm">
                     <div className="flex items-center justify-between mb-4">
                         <span className="text-text-muted">승인 대기 광고</span>
                         <Clock className="text-yellow-500" size={20} />
@@ -57,7 +57,7 @@ const AdminCRM: React.FC = () => {
                         평균 처리 시간: 1.2시간
                     </span>
                 </div>
-                <div className="bg-white p-6 rounded-xl border border-border shadow-sm">
+                <div className="bg-card p-6 rounded-xl border border-border shadow-sm">
                     <div className="flex items-center justify-between mb-4">
                         <span className="text-text-muted">신고 접수</span>
                         <AlertTriangle className="text-red-500" size={20} />
@@ -74,7 +74,7 @@ const AdminCRM: React.FC = () => {
                 <div className="lg:col-span-2 space-y-8">
                     <div className="grid md:grid-cols-2 gap-8">
                         {/* Ad Type Distribution */}
-                        <div className="bg-white p-6 rounded-xl border border-border shadow-sm">
+                        <div className="bg-card p-6 rounded-xl border border-border shadow-sm">
                             <h3 className="text-lg font-bold text-text-main mb-6">광고 상품 분포</h3>
                             <div className="h-64">
                                 <ResponsiveContainer width="100%" height="100%">
@@ -110,7 +110,7 @@ const AdminCRM: React.FC = () => {
                         </div>
 
                         {/* Revenue Chart */}
-                        <div className="bg-white p-6 rounded-xl border border-border shadow-sm">
+                        <div className="bg-card p-6 rounded-xl border border-border shadow-sm">
                             <h3 className="text-lg font-bold text-text-main mb-6">매출 현황</h3>
                             <div className="h-64">
                                 <ResponsiveContainer width="100%" height="100%">
@@ -130,7 +130,7 @@ const AdminCRM: React.FC = () => {
                     </div>
 
                     {/* Interactive Heatmap */}
-                    <div className="bg-white p-6 rounded-xl border border-border shadow-sm">
+                    <div className="bg-card p-6 rounded-xl border border-border shadow-sm">
                         <div className="flex items-center justify-between mb-6">
                             <div>
                                 <h3 className="text-lg font-bold text-text-main flex items-center gap-2">
@@ -217,7 +217,7 @@ const AdminCRM: React.FC = () => {
                 {/* Side Column: Activity & Tasks */}
                 <div className="space-y-8">
                     {/* Pending Approvals */}
-                    <div className="bg-white rounded-xl border border-border shadow-sm overflow-hidden">
+                    <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
                         <div className="p-4 border-b border-border flex justify-between items-center">
                             <h3 className="font-bold text-text-main">승인 대기 목록</h3>
                             <span className="bg-yellow-500/20 text-yellow-600 text-xs px-2 py-1 rounded-full">12건</span>
@@ -250,7 +250,7 @@ const AdminCRM: React.FC = () => {
                     </div>
 
                     {/* Recent Activity Log */}
-                    <div className="bg-white rounded-xl border border-border shadow-sm overflow-hidden">
+                    <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
                         <div className="p-4 border-b border-border">
                             <h3 className="font-bold text-text-main">실시간 활동 로그</h3>
                         </div>
@@ -276,7 +276,7 @@ const AdminCRM: React.FC = () => {
                     </div>
 
                     {/* Reported Content */}
-                    <div className="bg-white rounded-xl border border-border shadow-sm overflow-hidden">
+                    <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
                         <div className="p-4 border-b border-border flex justify-between items-center">
                             <h3 className="font-bold text-text-main">신고 관리</h3>
                             <AlertTriangle size={16} className="text-red-500" />

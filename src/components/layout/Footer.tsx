@@ -15,13 +15,13 @@ const Footer: React.FC = () => {
                             대한민국 No.1 유흥알바 채용 플랫폼
                         </p>
                         <div className="flex gap-3">
-                            <a href="#" className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-text-muted hover:text-primary hover:bg-accent transition-colors border border-border">
+                            <a href="#" className="w-8 h-8 rounded-full bg-card flex items-center justify-center text-text-muted hover:text-primary hover:bg-accent transition-colors border border-border">
                                 <Facebook size={16} />
                             </a>
-                            <a href="#" className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-text-muted hover:text-primary hover:bg-accent transition-colors border border-border">
+                            <a href="#" className="w-8 h-8 rounded-full bg-card flex items-center justify-center text-text-muted hover:text-primary hover:bg-accent transition-colors border border-border">
                                 <Instagram size={16} />
                             </a>
-                            <a href="#" className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-text-muted hover:text-primary hover:bg-accent transition-colors border border-border">
+                            <a href="#" className="w-8 h-8 rounded-full bg-card flex items-center justify-center text-text-muted hover:text-primary hover:bg-accent transition-colors border border-border">
                                 <Youtube size={16} />
                             </a>
                         </div>

@@ -185,7 +185,7 @@ const Signup: React.FC = () => {
                     <p className="text-text-muted">LunaAlba의 회원이 되어주세요</p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="mt-8 space-y-6 bg-white rounded-xl p-8 border border-border shadow-sm">
+                <form onSubmit={handleSubmit} className="mt-8 space-y-6 bg-card rounded-xl p-8 border border-border shadow-sm">
                     {/* Error Message */}
                     {error && (
                         <div className="flex items-center gap-2 p-4 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 animate-shake">
@@ -419,7 +419,7 @@ const Signup: React.FC = () => {
                                 type="checkbox"
                                 checked={allAgreed}
                                 onChange={(e) => handleAllAgreedChange(e.target.checked)}
-                                className="w-5 h-5 rounded border-border bg-white accent-primary"
+                                className="w-5 h-5 rounded border-border bg-card accent-primary"
                             />
                             <span className="text-text-main font-bold">전체 동의</span>
                         </label>
@@ -433,7 +433,7 @@ const Signup: React.FC = () => {
                                         type="checkbox"
                                         checked={agreements.terms}
                                         onChange={(e) => handleAgreementChange('terms', e.target.checked)}
-                                        className="w-4 h-4 rounded border-border bg-white accent-primary"
+                                        className="w-4 h-4 rounded border-border bg-card accent-primary"
                                     />
                                     <span className="text-text-muted flex-1">이용약관 동의 <span className="text-red-400">*</span></span>
                                     <button
@@ -461,7 +461,7 @@ const Signup: React.FC = () => {
                                         type="checkbox"
                                         checked={agreements.privacy}
                                         onChange={(e) => handleAgreementChange('privacy', e.target.checked)}
-                                        className="w-4 h-4 rounded border-border bg-white accent-primary"
+                                        className="w-4 h-4 rounded border-border bg-card accent-primary"
                                     />
                                     <span className="text-text-muted flex-1">개인정보처리방침 동의 <span className="text-red-400">*</span></span>
                                     <button
@@ -489,7 +489,7 @@ const Signup: React.FC = () => {
                                     type="checkbox"
                                     checked={agreements.marketing}
                                     onChange={(e) => handleAgreementChange('marketing', e.target.checked)}
-                                    className="w-4 h-4 rounded border-border bg-white accent-primary"
+                                    className="w-4 h-4 rounded border-border bg-card accent-primary"
                                 />
                                 <span className="text-text-muted flex-1">마케팅 정보 수신 동의 <span className="text-text-light">(선택)</span></span>
                             </label>

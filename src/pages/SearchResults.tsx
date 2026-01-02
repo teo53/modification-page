@@ -132,7 +132,7 @@ const SearchResults: React.FC = () => {
     return (
         <div className="pb-20 bg-background">
             {/* Search Header */}
-            <div className="bg-white border-b border-border">
+            <div className="bg-card border-b border-border">
                 <div className="container mx-auto px-4 py-6">
                     <h1 className="text-xl font-bold text-text-main mb-4">검색 결과</h1>
                     <form onSubmit={handleSearch} className="flex gap-2">

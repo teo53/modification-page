@@ -36,7 +36,7 @@ const MyPageViews: React.FC = () => {
     return (
         <div className="min-h-screen pb-24 bg-background">
             {/* Header */}
-            <div className="sticky top-0 z-40 bg-white border-b border-border p-4 flex items-center gap-4">
+            <div className="sticky top-0 z-40 bg-card border-b border-border p-4 flex items-center gap-4">
                 <button onClick={() => navigate(-1)} className="text-text-main">
                     <ChevronLeft size={24} />
                 </button>
@@ -56,7 +56,7 @@ const MyPageViews: React.FC = () => {
                             >
                                 <Link
                                     to={`/ad/${ad.id}`}
-                                    className="flex gap-4 p-4 active:bg-surface bg-white"
+                                    className="flex gap-4 p-4 active:bg-surface bg-card"
                                 >
                                     {/* Thumbnail */}
                                     <div className="w-20 h-20 rounded-xl overflow-hidden bg-accent flex-shrink-0">

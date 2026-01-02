@@ -61,7 +61,7 @@ const AppBar: React.FC<AppBarProps> = ({
         sticky top-0 z-40 h-14
         ${transparent
           ? 'bg-transparent'
-          : 'bg-white/95 backdrop-blur-lg border-b border-border'
+          : 'bg-card/95 backdrop-blur-lg border-b border-border'
         }
         safe-area-pt
       `}

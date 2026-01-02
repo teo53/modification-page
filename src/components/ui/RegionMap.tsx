@@ -22,7 +22,7 @@ const RegionMap: React.FC = () => {
     const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
 
     return (
-        <div className="bg-white rounded-xl border border-border p-6 shadow-sm">
+        <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
             <h3 className="text-lg font-bold text-text-main mb-4 flex items-center gap-2">
                 <MapPin className="text-primary" size={20} />
                 지역별 업소 찾기
@@ -74,7 +74,7 @@ const RegionMap: React.FC = () => {
                                     px-3 py-1.5 rounded-lg text-xs font-bold
                                     ${isSelected
                                         ? 'bg-primary text-white scale-110'
-                                        : 'bg-white text-text-main shadow-md border border-border group-hover:bg-primary/10 group-hover:text-primary'
+                                        : 'bg-card text-text-main shadow-md border border-border group-hover:bg-primary/10 group-hover:text-primary'
                                     }
                                     transition-all duration-300
                                 `}>

@@ -69,7 +69,7 @@ const AdDetail: React.FC = () => {
     return (
         <div className="pb-24 md:pb-12 bg-background">
             {/* Mobile Header */}
-            <div className="md:hidden sticky top-0 z-40 bg-white border-b border-border p-4 flex items-center justify-between">
+            <div className="md:hidden sticky top-0 z-40 bg-card border-b border-border p-4 flex items-center justify-between">
                 <button onClick={() => navigate(-1)} className="text-text-main">
                     <ChevronLeft />
                 </button>
@@ -218,7 +218,7 @@ const AdDetail: React.FC = () => {
 
                     {/* Right Column: Sticky Contact (Desktop) */}
                     <div className="hidden md:block">
-                        <div className="sticky top-24 space-y-4 p-6 rounded-xl bg-white border border-border shadow-sm">
+                        <div className="sticky top-24 space-y-4 p-6 rounded-xl bg-card border border-border shadow-sm">
                             <div className="text-center mb-4">
                                 <div className="w-20 h-20 bg-accent rounded-full mx-auto mb-3 overflow-hidden">
                                     <img src={ad.thumbnail} alt="" className="w-full h-full object-cover" />
@@ -241,7 +241,7 @@ const AdDetail: React.FC = () => {
             </div>
 
             {/* Mobile Sticky Footer */}
-            <div className="md:hidden fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-border flex gap-2 z-50 safe-area-pb">
+            <div className="md:hidden fixed bottom-0 left-0 right-0 p-4 bg-card border-t border-border flex gap-2 z-50 safe-area-pb">
                 <motion.button
                     whileTap={{ scale: 0.98 }}
                     className="flex-1 py-3 rounded-lg bg-primary text-white font-bold flex items-center justify-center gap-2"

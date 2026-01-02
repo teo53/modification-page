@@ -342,12 +342,12 @@ const PremiumModernBanner: React.FC<PremiumModernBannerProps> = ({
                                 <MapPin size={14} style={{ fill: config.iconFill, color: config.iconFill }} className="opacity-60" />
                                 {location}
                             </div>
-                            <div className="w-px h-3.5 bg-white/15" />
+                            <div className="w-px h-3.5 bg-card/15" />
                             <div className="flex items-center gap-2 text-[13px] text-white/75">
                                 <DollarSign size={14} style={{ fill: config.iconFill, color: config.iconFill }} className="opacity-60" />
                                 {salary}
                             </div>
-                            <div className="w-px h-3.5 bg-white/15" />
+                            <div className="w-px h-3.5 bg-card/15" />
                             <div className="flex items-center gap-2 text-[13px] text-white/75">
                                 <Clock size={14} style={{ fill: config.iconFill, color: config.iconFill }} className="opacity-60" />
                                 {workHours}

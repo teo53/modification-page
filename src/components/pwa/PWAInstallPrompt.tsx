@@ -112,7 +112,7 @@ const PWAInstallPrompt: React.FC = () => {
 
           {isIOS ? (
             /* iOS Installation Instructions */
-            <div className="mt-4 bg-white/5 rounded-lg p-3">
+            <div className="mt-4 bg-card/5 rounded-lg p-3">
               <p className="text-xs text-text-muted mb-2">iOS에서 설치하려면:</p>
               <ol className="space-y-2 text-sm text-white">
                 <li className="flex items-center gap-2">

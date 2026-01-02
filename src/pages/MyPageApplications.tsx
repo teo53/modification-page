@@ -12,7 +12,7 @@ const MyPageApplications: React.FC = () => {
     return (
         <div className="min-h-screen pb-24 bg-background">
             {/* Header */}
-            <div className="sticky top-0 z-40 bg-white border-b border-border p-4 flex items-center gap-4">
+            <div className="sticky top-0 z-40 bg-card border-b border-border p-4 flex items-center gap-4">
                 <button onClick={() => navigate(-1)} className="text-text-main">
                     <ChevronLeft size={24} />
                 </button>
@@ -22,17 +22,17 @@ const MyPageApplications: React.FC = () => {
             {/* Stats Summary */}
             <div className="p-4 border-b border-border">
                 <div className="grid grid-cols-3 gap-3">
-                    <div className="bg-white rounded-xl p-4 text-center border border-border">
+                    <div className="bg-card rounded-xl p-4 text-center border border-border">
                         <Hourglass size={24} className="text-yellow-500 mx-auto mb-2" />
                         <p className="text-lg font-bold text-text-main">0</p>
                         <p className="text-xs text-text-muted">대기중</p>
                     </div>
-                    <div className="bg-white rounded-xl p-4 text-center border border-border">
+                    <div className="bg-card rounded-xl p-4 text-center border border-border">
                         <CheckCircle size={24} className="text-green-500 mx-auto mb-2" />
                         <p className="text-lg font-bold text-text-main">0</p>
                         <p className="text-xs text-text-muted">합격</p>
                     </div>
-                    <div className="bg-white rounded-xl p-4 text-center border border-border">
+                    <div className="bg-card rounded-xl p-4 text-center border border-border">
                         <XCircle size={24} className="text-red-500 mx-auto mb-2" />
                         <p className="text-lg font-bold text-text-main">0</p>
                         <p className="text-xs text-text-muted">불합격</p>

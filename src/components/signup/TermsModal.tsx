@@ -25,7 +25,7 @@ const TermsModal: React.FC<TermsModalProps> = ({ isOpen, onClose, title, content
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4" onClick={onClose}>
-            <div className="bg-white border border-border rounded-2xl max-w-2xl w-full max-h-[80vh] flex flex-col overflow-hidden shadow-xl" onClick={e => e.stopPropagation()}>
+            <div className="bg-card border border-border rounded-2xl max-w-2xl w-full max-h-[80vh] flex flex-col overflow-hidden shadow-xl" onClick={e => e.stopPropagation()}>
                 <div className="p-6 border-b border-border flex justify-between items-center">
                     <h3 className="font-bold text-xl text-text-main">{title}</h3>
                     <button onClick={onClose} className="text-text-muted hover:text-text-main">

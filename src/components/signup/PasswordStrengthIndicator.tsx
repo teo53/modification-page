@@ -36,7 +36,7 @@ const PasswordStrengthIndicator: React.FC<PasswordStrengthIndicatorProps> = ({ p
                 {[1, 2, 3, 4].map((level) => (
                     <div
                         key={level}
-                        className={`h-1 flex-1 rounded-full transition-all ${level <= strength ? getStrengthColor() : 'bg-white/10'
+                        className={`h-1 flex-1 rounded-full transition-all ${level <= strength ? getStrengthColor() : 'bg-card/10'
                             }`}
                     />
                 ))}

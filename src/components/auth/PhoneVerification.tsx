@@ -187,7 +187,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                                 type="tel"
                                 value={phone}
                                 onChange={handlePhoneChange}
-                                className="w-full bg-white border border-border rounded-lg py-3 pl-10 pr-4 text-text-main focus:border-primary outline-none transition-colors"
+                                className="w-full bg-card border border-border rounded-lg py-3 pl-10 pr-4 text-text-main focus:border-primary outline-none transition-colors"
                                 placeholder="010-0000-0000"
                                 maxLength={13}
                             />
@@ -232,7 +232,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                                     value={digit}
                                     onChange={(e) => handleCodeChange(index, e.target.value)}
                                     onKeyDown={(e) => handleKeyDown(index, e)}
-                                    className="w-12 h-14 text-center text-2xl font-bold bg-white border border-border rounded-lg text-text-main focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                                    className="w-12 h-14 text-center text-2xl font-bold bg-card border border-border rounded-lg text-text-main focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
                                     maxLength={1}
                                 />
                             ))}

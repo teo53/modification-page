@@ -67,7 +67,7 @@ const TextAdsList: React.FC = () => {
 
             <div className="grid lg:grid-cols-2 gap-6">
                 {/* Column 1: Highlighter / Emphasized Ads */}
-                <div className="bg-white rounded-xl border border-border shadow-sm overflow-hidden">
+                <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
                     <div className="px-6 py-3 bg-primary/10 border-b border-primary/20 text-sm font-bold text-primary flex items-center justify-center">
                         프리미엄 강조형
                     </div>
@@ -102,7 +102,7 @@ const TextAdsList: React.FC = () => {
                 </div>
 
                 {/* Column 2: Standard Ads */}
-                <div className="bg-white rounded-xl border border-border shadow-sm overflow-hidden">
+                <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
                     <div className="px-6 py-3 bg-surface border-b border-border text-sm font-bold text-text-muted flex items-center justify-center">
                         일반 리스트형
                     </div>

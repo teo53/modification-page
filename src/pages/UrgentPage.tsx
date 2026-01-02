@@ -53,7 +53,7 @@ const UrgentPage: React.FC = () => {
                             px-4 py-2 rounded-full whitespace-nowrap transition-colors
                             ${i === 0
                                 ? 'bg-red-600 text-white font-bold'
-                                : 'bg-white text-text-muted border border-border hover:text-text-main hover:bg-surface'
+                                : 'bg-card text-text-muted border border-border hover:text-text-main hover:bg-surface'
                             }
                         `}
                     >

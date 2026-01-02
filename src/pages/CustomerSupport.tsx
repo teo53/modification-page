@@ -55,7 +55,7 @@ const CustomerSupport: React.FC = () => {
             </div>
 
             {/* Content */}
-            <div className="max-w-3xl mx-auto bg-white rounded-xl border border-border p-6 min-h-[400px] shadow-sm">
+            <div className="max-w-3xl mx-auto bg-card rounded-xl border border-border p-6 min-h-[400px] shadow-sm">
                 {activeTab === 'notice' && (
                     <div className="space-y-4 animate-fade-in">
                         {notices.map((notice) => (

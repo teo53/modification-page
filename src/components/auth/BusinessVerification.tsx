@@ -196,7 +196,7 @@ const BusinessVerification: React.FC<BusinessVerificationProps> = ({
                         type="text"
                         value={businessNumber}
                         onChange={handleBusinessNumberChange}
-                        className={`flex-1 bg-white border rounded-lg py-3 px-4 text-text-main focus:border-primary outline-none transition-colors ${isVerified ? 'border-green-500/50' : 'border-border'
+                        className={`flex-1 bg-card border rounded-lg py-3 px-4 text-text-main focus:border-primary outline-none transition-colors ${isVerified ? 'border-green-500/50' : 'border-border'
                             }`}
                         placeholder="000-00-00000"
                         maxLength={12}
@@ -263,7 +263,7 @@ const BusinessVerification: React.FC<BusinessVerificationProps> = ({
                     type="text"
                     value={businessName}
                     onChange={(e) => onBusinessNameChange(e.target.value)}
-                    className="w-full bg-white border border-border rounded-lg py-3 px-4 text-text-main focus:border-primary outline-none transition-colors"
+                    className="w-full bg-card border border-border rounded-lg py-3 px-4 text-text-main focus:border-primary outline-none transition-colors"
                     placeholder="사업자등록증에 기재된 상호명"
                 />
             </div>

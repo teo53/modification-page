@@ -59,7 +59,7 @@ const StatCard: React.FC<StatCardProps> = ({ icon: Icon, iconColor, value, suffi
     const animatedValue = useCountUp(value, 2000);
 
     return (
-        <div className="bg-white rounded-xl border border-border p-6 text-center shadow-sm">
+        <div className="bg-card rounded-xl border border-border p-6 text-center shadow-sm">
             <Icon className={`${iconColor} w-8 h-8 mx-auto mb-2`} />
             <div className={`text-3xl md:text-4xl font-bold ${textColor} mb-2`}>
                 {animatedValue}{suffix}
@@ -161,7 +161,7 @@ const ThemePage: React.FC = () => {
                     label="만족도"
                     textColor="text-yellow-400"
                 />
-                <div className="bg-white rounded-xl border border-border p-6 text-center shadow-sm">
+                <div className="bg-card rounded-xl border border-border p-6 text-center shadow-sm">
                     <Zap className="text-red-400 w-8 h-8 mx-auto mb-2" />
                     <div className="text-xl md:text-2xl font-bold text-red-400 mb-2 animate-pulse">실시간</div>
                     <div className="text-sm text-text-muted">업데이트</div>
@@ -183,7 +183,7 @@ const ThemePage: React.FC = () => {
                                     p-4 rounded-xl border transition-all duration-300 flex flex-col items-center gap-2
                                     ${isActive
                                         ? 'bg-primary/10 border-primary shadow-[0_0_15px_rgba(255,107,53,0.2)]'
-                                        : 'bg-white border-border hover:border-primary/30 hover:bg-surface'
+                                        : 'bg-card border-border hover:border-primary/30 hover:bg-surface'
                                     }
                                 `}
                             >

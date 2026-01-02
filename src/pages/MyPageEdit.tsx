@@ -62,7 +62,7 @@ const MyPageEdit: React.FC = () => {
     return (
         <div className="min-h-screen pb-24 bg-background">
             {/* Header */}
-            <div className="sticky top-0 z-40 bg-white border-b border-border p-4 flex items-center gap-4">
+            <div className="sticky top-0 z-40 bg-card border-b border-border p-4 flex items-center gap-4">
                 <button onClick={() => navigate(-1)} className="text-text-main">
                     <ChevronLeft size={24} />
                 </button>
@@ -116,7 +116,7 @@ const MyPageEdit: React.FC = () => {
                                 type="text"
                                 value={formData.name}
                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                className="w-full bg-white border border-border rounded-lg py-3 pl-10 pr-4 text-text-main focus:border-primary outline-none"
+                                className="w-full bg-card border border-border rounded-lg py-3 pl-10 pr-4 text-text-main focus:border-primary outline-none"
                                 placeholder="이름"
                             />
                         </div>
@@ -129,7 +129,7 @@ const MyPageEdit: React.FC = () => {
                             type="text"
                             value={formData.nickname}
                             onChange={(e) => setFormData({ ...formData, nickname: e.target.value })}
-                            className="w-full bg-white border border-border rounded-lg py-3 px-4 text-text-main focus:border-primary outline-none"
+                            className="w-full bg-card border border-border rounded-lg py-3 px-4 text-text-main focus:border-primary outline-none"
                             placeholder="닉네임"
                         />
                     </div>
@@ -143,7 +143,7 @@ const MyPageEdit: React.FC = () => {
                                 type="tel"
                                 value={formData.phone}
                                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                className="w-full bg-white border border-border rounded-lg py-3 pl-10 pr-4 text-text-main focus:border-primary outline-none"
+                                className="w-full bg-card border border-border rounded-lg py-3 pl-10 pr-4 text-text-main focus:border-primary outline-none"
                                 placeholder="010-0000-0000"
                             />
                         </div>
