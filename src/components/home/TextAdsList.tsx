@@ -61,22 +61,22 @@ const TextAdsList: React.FC = () => {
     return (
         <section className="py-8 container mx-auto px-4">
             <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-white">전체 채용 광고</h2>
+                <h2 className="text-2xl font-bold text-text-main">전체 채용 광고</h2>
                 <Link to="/search" className="text-sm text-text-muted hover:text-primary">더보기 +</Link>
             </div>
 
             <div className="grid lg:grid-cols-2 gap-6">
                 {/* Column 1: Highlighter / Emphasized Ads */}
-                <div className="bg-accent/30 rounded-xl border border-white/5 overflow-hidden">
-                    <div className="px-6 py-3 bg-yellow-500/10 border-b border-yellow-500/20 text-sm font-bold text-yellow-500 flex items-center justify-center">
-                        ✨ 프리미엄 강조형
+                <div className="bg-white rounded-xl border border-border shadow-sm overflow-hidden">
+                    <div className="px-6 py-3 bg-primary/10 border-b border-primary/20 text-sm font-bold text-primary flex items-center justify-center">
+                        프리미엄 강조형
                     </div>
-                    <div className="divide-y divide-white/5">
+                    <div className="divide-y divide-border">
                         {highlightAds.map((ad, index) => (
                             <Link
                                 key={ad.id}
                                 to={`/ad/${ad.id}`}
-                                className="flex items-center gap-3 px-6 py-4 hover:bg-yellow-500/5 transition-colors group relative overflow-hidden"
+                                className="flex items-center gap-3 px-6 py-4 hover:bg-primary/5 transition-colors group relative overflow-hidden"
                             >
                                 <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-yellow-400 to-amber-500 opacity-0 group-hover:opacity-100 transition-opacity" />
                                 <div className="text-text-muted text-sm w-6 text-center">{index + 1}</div>
@@ -85,7 +85,7 @@ const TextAdsList: React.FC = () => {
                                         <div className="flex gap-1">
                                             {ad.isNew && <span className="bg-blue-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">NEW</span>}
                                             {ad.isHot && <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">HOT</span>}
-                                            {ad.badge === 'VIP' && <span className="bg-primary text-black text-[10px] font-bold px-1.5 py-0.5 rounded">VIP</span>}
+                                            {ad.badge === 'VIP' && <span className="bg-primary text-white text-[10px] font-bold px-1.5 py-0.5 rounded">VIP</span>}
                                         </div>
                                         <div className="text-xs text-text-muted flex items-center gap-1">
                                             <MapPin size={10} />
@@ -102,16 +102,16 @@ const TextAdsList: React.FC = () => {
                 </div>
 
                 {/* Column 2: Standard Ads */}
-                <div className="bg-accent/30 rounded-xl border border-white/5 overflow-hidden">
-                    <div className="px-6 py-3 bg-accent/50 border-b border-white/5 text-sm font-bold text-text-muted flex items-center justify-center">
+                <div className="bg-white rounded-xl border border-border shadow-sm overflow-hidden">
+                    <div className="px-6 py-3 bg-surface border-b border-border text-sm font-bold text-text-muted flex items-center justify-center">
                         일반 리스트형
                     </div>
-                    <div className="divide-y divide-white/5">
+                    <div className="divide-y divide-border">
                         {standardAds.map((ad, index) => (
                             <Link
                                 key={ad.id}
                                 to={`/ad/${ad.id}`}
-                                className="flex items-center gap-3 px-6 py-4 hover:bg-white/5 transition-colors group"
+                                className="flex items-center gap-3 px-6 py-4 hover:bg-surface transition-colors group"
                             >
                                 <div className="text-text-muted text-sm w-6 text-center">{index + 1}</div>
                                 <div className="flex-1 min-w-0">
@@ -122,7 +122,7 @@ const TextAdsList: React.FC = () => {
                                         </div>
                                         {ad.isUrgent && <Clock size={12} className="text-red-400" />}
                                     </div>
-                                    <h3 className="text-white group-hover:text-primary transition-colors truncate">
+                                    <h3 className="text-text-main group-hover:text-primary transition-colors truncate">
                                         {ad.title}
                                     </h3>
                                 </div>

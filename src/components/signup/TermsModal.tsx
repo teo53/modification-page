@@ -24,11 +24,11 @@ const TermsModal: React.FC<TermsModalProps> = ({ isOpen, onClose, title, content
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4" onClick={onClose}>
-            <div className="bg-background border border-white/10 rounded-2xl max-w-2xl w-full max-h-[80vh] flex flex-col overflow-hidden" onClick={e => e.stopPropagation()}>
-                <div className="p-6 border-b border-white/10 flex justify-between items-center">
-                    <h3 className="font-bold text-xl text-white">{title}</h3>
-                    <button onClick={onClose} className="text-text-muted hover:text-white">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4" onClick={onClose}>
+            <div className="bg-white border border-border rounded-2xl max-w-2xl w-full max-h-[80vh] flex flex-col overflow-hidden shadow-xl" onClick={e => e.stopPropagation()}>
+                <div className="p-6 border-b border-border flex justify-between items-center">
+                    <h3 className="font-bold text-xl text-text-main">{title}</h3>
+                    <button onClick={onClose} className="text-text-muted hover:text-text-main">
                         <X size={24} />
                     </button>
                 </div>
@@ -41,19 +41,19 @@ const TermsModal: React.FC<TermsModalProps> = ({ isOpen, onClose, title, content
                     {content}
                 </div>
 
-                <div className="p-6 border-t border-white/10">
+                <div className="p-6 border-t border-border">
                     {onAgree ? (
                         <button
                             onClick={onAgree}
                             disabled={!hasScrolledToBottom}
-                            className="w-full bg-primary text-black font-bold py-3 rounded-lg hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full bg-primary text-white font-bold py-3 rounded-lg hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {hasScrolledToBottom ? '동의하고 계속하기' : '내용을 끝까지 읽어주세요'}
                         </button>
                     ) : (
                         <button
                             onClick={onClose}
-                            className="w-full bg-white/10 text-white font-bold py-3 rounded-lg hover:bg-white/20 transition-colors"
+                            className="w-full bg-surface text-text-main font-bold py-3 rounded-lg hover:bg-border transition-colors"
                         >
                             닫기
                         </button>

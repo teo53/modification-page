@@ -155,7 +155,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                     <button
                         type="button"
                         onClick={resetVerification}
-                        className="text-xs text-text-muted hover:text-white transition-colors"
+                        className="text-xs text-text-muted hover:text-text-main transition-colors"
                     >
                         재인증
                     </button>
@@ -187,7 +187,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                                 type="tel"
                                 value={phone}
                                 onChange={handlePhoneChange}
-                                className="w-full bg-background border border-white/10 rounded-lg py-3 pl-10 pr-4 text-white focus:border-primary outline-none transition-colors"
+                                className="w-full bg-white border border-border rounded-lg py-3 pl-10 pr-4 text-text-main focus:border-primary outline-none transition-colors"
                                 placeholder="010-0000-0000"
                                 maxLength={13}
                             />
@@ -196,7 +196,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                             type="button"
                             onClick={sendCode}
                             disabled={loading || phone.replace(/\D/g, '').length < 10}
-                            className="px-4 py-3 bg-primary text-black font-bold rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 whitespace-nowrap"
+                            className="px-4 py-3 bg-primary text-white font-bold rounded-lg hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 whitespace-nowrap"
                         >
                             {loading ? (
                                 <Loader2 size={18} className="animate-spin" />
@@ -213,7 +213,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
 
             {step === 'code' && (
                 <div className="space-y-4">
-                    <div className="bg-accent/50 rounded-lg p-4 border border-white/10">
+                    <div className="bg-surface rounded-lg p-4 border border-border">
                         <div className="flex items-center justify-between mb-3">
                             <span className="text-sm text-text-muted">인증번호 입력</span>
                             <span className={`text-sm font-mono ${timer < 60 ? 'text-red-400' : 'text-primary'}`}>
@@ -232,7 +232,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                                     value={digit}
                                     onChange={(e) => handleCodeChange(index, e.target.value)}
                                     onKeyDown={(e) => handleKeyDown(index, e)}
-                                    className="w-12 h-14 text-center text-2xl font-bold bg-background border border-white/20 rounded-lg text-white focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                                    className="w-12 h-14 text-center text-2xl font-bold bg-white border border-border rounded-lg text-text-main focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
                                     maxLength={1}
                                 />
                             ))}
@@ -243,7 +243,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                                 type="button"
                                 onClick={verifyCode}
                                 disabled={loading || verificationCode.join('').length !== 6}
-                                className="flex-1 py-3 bg-primary text-black font-bold rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                className="flex-1 py-3 bg-primary text-white font-bold rounded-lg hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                             >
                                 {loading ? (
                                     <Loader2 size={18} className="animate-spin" />
@@ -258,7 +258,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                                 type="button"
                                 onClick={sendCode}
                                 disabled={loading || timer > 150}
-                                className="px-4 py-3 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                                className="px-4 py-3 bg-surface text-text-main rounded-lg hover:bg-border transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
                             >
                                 재전송
                             </button>
@@ -276,7 +276,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                     <button
                         type="button"
                         onClick={resetVerification}
-                        className="w-full text-center text-sm text-text-muted hover:text-white transition-colors py-2"
+                        className="w-full text-center text-sm text-text-muted hover:text-text-main transition-colors py-2"
                     >
                         ← 휴대폰 번호 변경
                     </button>

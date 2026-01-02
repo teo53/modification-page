@@ -175,7 +175,7 @@ const BusinessVerification: React.FC<BusinessVerificationProps> = ({
 
     return (
         <div className="space-y-6">
-            <h3 className="text-sm font-bold text-white flex items-center gap-2">
+            <h3 className="text-sm font-bold text-text-main flex items-center gap-2">
                 <Building2 size={16} className="text-primary" /> 사업자 정보
             </h3>
 
@@ -196,7 +196,7 @@ const BusinessVerification: React.FC<BusinessVerificationProps> = ({
                         type="text"
                         value={businessNumber}
                         onChange={handleBusinessNumberChange}
-                        className={`flex-1 bg-background border rounded-lg py-3 px-4 text-white focus:border-primary outline-none transition-colors ${isVerified ? 'border-green-500/50' : 'border-white/10'
+                        className={`flex-1 bg-white border rounded-lg py-3 px-4 text-text-main focus:border-primary outline-none transition-colors ${isVerified ? 'border-green-500/50' : 'border-border'
                             }`}
                         placeholder="000-00-00000"
                         maxLength={12}
@@ -207,7 +207,7 @@ const BusinessVerification: React.FC<BusinessVerificationProps> = ({
                             type="button"
                             onClick={verifyBusinessNumber}
                             disabled={loading || !isValidFormat(businessNumber)}
-                            className="px-4 py-3 bg-primary text-black font-bold rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 whitespace-nowrap"
+                            className="px-4 py-3 bg-primary text-white font-bold rounded-lg hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 whitespace-nowrap"
                         >
                             {loading ? (
                                 <Loader2 size={18} className="animate-spin" />
@@ -222,7 +222,7 @@ const BusinessVerification: React.FC<BusinessVerificationProps> = ({
                                 onVerified(false);
                                 setVerificationResult(null);
                             }}
-                            className="px-4 py-3 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors text-sm"
+                            className="px-4 py-3 bg-surface text-text-main rounded-lg hover:bg-border transition-colors text-sm"
                         >
                             재입력
                         </button>
@@ -263,7 +263,7 @@ const BusinessVerification: React.FC<BusinessVerificationProps> = ({
                     type="text"
                     value={businessName}
                     onChange={(e) => onBusinessNameChange(e.target.value)}
-                    className="w-full bg-background border border-white/10 rounded-lg py-3 px-4 text-white focus:border-primary outline-none transition-colors"
+                    className="w-full bg-white border border-border rounded-lg py-3 px-4 text-text-main focus:border-primary outline-none transition-colors"
                     placeholder="사업자등록증에 기재된 상호명"
                 />
             </div>
@@ -276,9 +276,9 @@ const BusinessVerification: React.FC<BusinessVerificationProps> = ({
 
                 {!certificate ? (
                     <label className="block cursor-pointer">
-                        <div className="border-2 border-dashed border-white/20 rounded-xl p-6 text-center hover:border-primary/50 transition-colors">
+                        <div className="border-2 border-dashed border-border rounded-xl p-6 text-center hover:border-primary/50 transition-colors">
                             <Upload className="mx-auto text-text-muted mb-3" size={32} />
-                            <p className="text-sm text-white mb-1">사업자등록증을 업로드하세요</p>
+                            <p className="text-sm text-text-main mb-1">사업자등록증을 업로드하세요</p>
                             <p className="text-xs text-text-muted">JPG, PNG, GIF, PDF (최대 10MB)</p>
                         </div>
                         <input
@@ -289,7 +289,7 @@ const BusinessVerification: React.FC<BusinessVerificationProps> = ({
                         />
                     </label>
                 ) : (
-                    <div className="relative bg-white/5 rounded-xl p-4 border border-white/10">
+                    <div className="relative bg-surface rounded-xl p-4 border border-border">
                         <button
                             type="button"
                             onClick={removeCertificate}
@@ -303,10 +303,10 @@ const BusinessVerification: React.FC<BusinessVerificationProps> = ({
                                 <img
                                     src={certificatePreview}
                                     alt="사업자등록증"
-                                    className="w-24 h-32 object-cover rounded-lg border border-white/10"
+                                    className="w-24 h-32 object-cover rounded-lg border border-border"
                                 />
                                 <div className="flex-1">
-                                    <p className="text-white font-medium text-sm truncate">{certificate.name}</p>
+                                    <p className="text-text-main font-medium text-sm truncate">{certificate.name}</p>
                                     <p className="text-xs text-text-muted mt-1">
                                         {(certificate.size / 1024 / 1024).toFixed(2)} MB
                                     </p>
@@ -322,7 +322,7 @@ const BusinessVerification: React.FC<BusinessVerificationProps> = ({
                                     <FileText className="text-primary" size={24} />
                                 </div>
                                 <div className="flex-1">
-                                    <p className="text-white font-medium text-sm truncate">{certificate.name}</p>
+                                    <p className="text-text-main font-medium text-sm truncate">{certificate.name}</p>
                                     <p className="text-xs text-text-muted mt-1">
                                         PDF 파일 • {(certificate.size / 1024 / 1024).toFixed(2)} MB
                                     </p>

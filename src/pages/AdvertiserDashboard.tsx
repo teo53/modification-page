@@ -211,7 +211,7 @@ const AdvertiserDashboard: React.FC = () => {
                                 <div className="text-center py-12 bg-white rounded-xl border border-border shadow-sm">
                                     <FileText className="mx-auto mb-4 text-text-muted" size={48} />
                                     <p className="text-text-muted mb-4">등록된 광고가 없습니다.</p>
-                                    <Link to="/post-ad" className="inline-flex items-center gap-2 bg-primary text-black font-bold px-6 py-2 rounded-lg">
+                                    <Link to="/post-ad" className="inline-flex items-center gap-2 bg-primary text-white font-bold px-6 py-2 rounded-lg">
                                         <Plus size={18} />
                                         새 광고 등록
                                     </Link>

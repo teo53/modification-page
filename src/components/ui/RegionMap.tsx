@@ -22,14 +22,14 @@ const RegionMap: React.FC = () => {
     const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
 
     return (
-        <div className="bg-accent rounded-xl border border-white/5 p-6">
-            <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+        <div className="bg-white rounded-xl border border-border p-6 shadow-sm">
+            <h3 className="text-lg font-bold text-text-main mb-4 flex items-center gap-2">
                 <MapPin className="text-primary" size={20} />
                 지역별 업소 찾기
             </h3>
 
             {/* Map Container */}
-            <div className="relative bg-black/30 rounded-lg p-8 aspect-square">
+            <div className="relative bg-surface rounded-lg p-8 aspect-square">
                 {/* Korea Map Background - using dark styled map */}
                 <div className="absolute inset-0 flex items-center justify-center opacity-10">
                     <svg viewBox="0 0 200 250" className="w-full h-full">
@@ -73,8 +73,8 @@ const RegionMap: React.FC = () => {
                                     absolute top-4 left-1/2 -translate-x-1/2 whitespace-nowrap
                                     px-3 py-1.5 rounded-lg text-xs font-bold
                                     ${isSelected
-                                        ? 'bg-primary text-black scale-110'
-                                        : 'bg-black/80 text-white group-hover:bg-primary/20 group-hover:text-primary'
+                                        ? 'bg-primary text-white scale-110'
+                                        : 'bg-white text-text-main shadow-md border border-border group-hover:bg-primary/10 group-hover:text-primary'
                                     }
                                     transition-all duration-300
                                 `}>
@@ -101,13 +101,13 @@ const RegionMap: React.FC = () => {
                                 w-full flex items-center justify-between px-4 py-2 rounded-lg
                                 transition-all duration-300
                                 ${isSelected
-                                    ? 'bg-primary text-black font-bold'
-                                    : 'bg-black/20 text-white hover:bg-white/5'
+                                    ? 'bg-primary text-white font-bold'
+                                    : 'bg-surface text-text-main hover:bg-border'
                                 }
                             `}
                         >
                             <span>{region.name}</span>
-                            <span className={isSelected ? 'text-black' : 'text-primary'}>
+                            <span className={isSelected ? 'text-white' : 'text-primary'}>
                                 {region.count}개
                             </span>
                         </button>

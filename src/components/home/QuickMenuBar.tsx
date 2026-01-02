@@ -16,7 +16,7 @@ const menuItems = [
 const QuickMenuBar: React.FC = () => {
     return (
         <section className="py-8 container mx-auto px-4">
-            <h2 className="text-xl font-bold text-white mb-6 text-center">빠른 메뉴</h2>
+            <h2 className="text-xl font-bold text-text-main mb-6 text-center">빠른 메뉴</h2>
             <div className="grid grid-cols-4 md:grid-cols-8 gap-3 md:gap-4">
                 {menuItems.map((item) => {
                     const Icon = item.icon;
@@ -31,10 +31,10 @@ const QuickMenuBar: React.FC = () => {
                                 hover:shadow-lg hover:shadow-white/10
                             `}
                         >
-                            <div className="p-3 rounded-xl bg-black/30 group-hover:bg-black/40 transition-colors">
-                                <Icon size={24} className="text-white" />
+                            <div className="p-3 rounded-xl bg-surface group-hover:bg-border transition-colors">
+                                <Icon size={24} className="text-text-main" />
                             </div>
-                            <span className="text-xs md:text-sm font-bold text-white text-center">
+                            <span className="text-xs md:text-sm font-bold text-text-main text-center">
                                 {item.label}
                             </span>
                         </Link>

@@ -114,7 +114,7 @@ const CommunityPreview: React.FC = () => {
                         </div>
                         <Link
                             to="/community/write"
-                            className="block w-full py-3 bg-primary text-black font-bold rounded-lg hover:bg-primary/90 transition-colors text-center"
+                            className="block w-full py-3 bg-primary text-white font-bold rounded-lg hover:bg-primary-hover transition-colors text-center"
                         >
                             + 새 글 작성하기
                         </Link>

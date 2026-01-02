@@ -115,12 +115,12 @@ const HorizontalFilterBar: React.FC<HorizontalFilterBarProps> = ({ onFilterChang
                                 px-4 py-2 rounded-lg text-sm whitespace-nowrap transition-all duration-200
                                 flex items-center gap-1.5 font-medium border
                                 ${isSelected
-                                    ? 'bg-primary text-black border-primary shadow-[0_0_15px_rgba(212,175,55,0.3)]'
-                                    : 'bg-accent/50 text-text-muted border-white/5 hover:border-white/20 hover:text-white hover:bg-white/5'
+                                    ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20'
+                                    : 'bg-white text-text-muted border-border hover:border-primary/30 hover:text-text-main hover:bg-surface'
                                 }
                             `}
                         >
-                            {Icon && <Icon size={14} className={isSelected ? 'text-black' : 'text-text-muted group-hover:text-white'} />}
+                            {Icon && <Icon size={14} className={isSelected ? 'text-white' : 'text-text-muted group-hover:text-text-main'} />}
                             {option.label}
                         </button>
                     );
@@ -130,7 +130,7 @@ const HorizontalFilterBar: React.FC<HorizontalFilterBarProps> = ({ onFilterChang
     );
 
     return (
-        <div className="bg-black/95 border-y border-white/10 py-6 mb-8 sticky top-0 z-20 backdrop-blur-md shadow-xl">
+        <div className="bg-white border-y border-border py-6 mb-8 sticky top-0 z-20 shadow-lg">
             <div className="container mx-auto px-4">
                 <div className="space-y-4">
                     <FilterGroup
@@ -154,7 +154,7 @@ const HorizontalFilterBar: React.FC<HorizontalFilterBarProps> = ({ onFilterChang
                                 selected={selectedSalary}
                             />
                         </div>
-                        <div className="w-px h-8 bg-white/10 hidden lg:block mx-4"></div>
+                        <div className="w-px h-8 bg-border hidden lg:block mx-4"></div>
                         <div className="flex-1">
                             <FilterGroup
                                 title="조건"

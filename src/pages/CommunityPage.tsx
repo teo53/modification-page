@@ -26,7 +26,7 @@ const CommunityPage: React.FC = () => {
         <div className="container mx-auto px-4 py-8">
             <div className="flex items-center justify-between mb-8">
                 <h1 className="text-2xl font-bold text-text-main">커뮤니티</h1>
-                <button className="bg-primary text-black font-bold px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors">
+                <button className="bg-primary text-white font-bold px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors">
                     글쓰기
                 </button>
             </div>
@@ -86,7 +86,7 @@ const CommunityPage: React.FC = () => {
 
             {/* Pagination */}
             <div className="flex justify-center mt-8 gap-2">
-                <button className="w-8 h-8 rounded-lg bg-primary text-black font-bold flex items-center justify-center">
+                <button className="w-8 h-8 rounded-lg bg-primary text-white font-bold flex items-center justify-center">
                     1
                 </button>
                 <button className="w-8 h-8 rounded-lg bg-transparent text-text-muted flex items-center justify-center hover:bg-surface">

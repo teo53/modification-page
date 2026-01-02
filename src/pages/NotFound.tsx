@@ -27,7 +27,7 @@ const NotFound: React.FC = () => {
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                     <Link
                         to="/"
-                        className="flex items-center justify-center gap-2 bg-primary text-black font-bold py-3 px-6 rounded-lg hover:bg-primary-hover transition-colors"
+                        className="flex items-center justify-center gap-2 bg-primary text-white font-bold py-3 px-6 rounded-lg hover:bg-primary-hover transition-colors"
                     >
                         <Home size={20} />
                         홈으로 돌아가기
