@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">LunaAlba</string>
+    <string name="title_activity_main">LunaAlba</string>
+    <string name="package_name">com.lunaalba.app</string>
+    <string name="custom_url_scheme">com.lunaalba.app</string>
+</resources>
