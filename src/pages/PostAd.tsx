@@ -130,22 +130,22 @@ const PostAd = () => {
     if (!isAuthorized && getCurrentUser()) {
         return (
             <div className="min-h-screen bg-background flex items-center justify-center p-4">
-                <div className="max-w-md w-full bg-accent rounded-xl border border-white/10 p-8 text-center space-y-4">
+                <div className="max-w-md w-full bg-white rounded-xl border border-border shadow-lg p-8 text-center space-y-4">
                     <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto text-red-500">
                         <AlertCircle size={32} />
                     </div>
-                    <h2 className="text-xl font-bold text-white">접근 권한이 없습니다</h2>
+                    <h2 className="text-xl font-bold text-text-main">접근 권한이 없습니다</h2>
                     <p className="text-text-muted">광고주 계정만 광고를 등록할 수 있습니다.<br />광고주로 회원가입 후 이용해주세요.</p>
                     <div className="flex gap-2 justify-center pt-4">
                         <button
                             onClick={() => navigate('/')}
-                            className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors"
+                            className="px-4 py-2 bg-surface hover:bg-accent text-text-main rounded-lg transition-colors border border-border"
                         >
                             홈으로
                         </button>
                         <button
                             onClick={() => navigate('/signup')}
-                            className="px-4 py-2 bg-primary text-black font-bold rounded-lg hover:bg-primary/90 transition-colors"
+                            className="px-4 py-2 bg-primary text-white font-bold rounded-lg hover:bg-primary/90 transition-colors"
                         >
                             광고주 가입
                         </button>
@@ -353,13 +353,13 @@ const PostAd = () => {
     };
 
     return (
-        <div className="min-h-screen bg-background text-white p-4 md:p-8">
+        <div className="min-h-screen bg-background text-text-main p-4 md:p-8">
             <div className="max-w-4xl mx-auto">
-                <h1 className="text-3xl font-bold mb-8 text-center">광고 등록</h1>
+                <h1 className="text-3xl font-bold mb-8 text-center text-text-main">광고 등록</h1>
 
                 {/* Error Message */}
                 {error && (
-                    <div className="flex items-center gap-2 p-4 mb-6 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400">
+                    <div className="flex items-center gap-2 p-4 mb-6 rounded-lg bg-red-500/10 border border-red-500/20 text-red-500">
                         <AlertCircle size={20} />
                         <span>{error}</span>
                         {!getCurrentUser() && (
@@ -372,7 +372,7 @@ const PostAd = () => {
 
                 {/* Success Message */}
                 {success && (
-                    <div className="flex items-center gap-2 p-4 mb-6 rounded-lg bg-green-500/10 border border-green-500/20 text-green-400">
+                    <div className="flex items-center gap-2 p-4 mb-6 rounded-lg bg-green-500/10 border border-green-500/20 text-green-600">
                         <CheckCircle size={20} />
                         <span>{success}</span>
                     </div>
@@ -380,10 +380,10 @@ const PostAd = () => {
 
                 {/* Progress Steps */}
                 <div className="flex justify-between mb-12 relative">
-                    <div className="absolute top-1/2 left-0 w-full h-1 bg-white/10 -z-10" />
+                    <div className="absolute top-1/2 left-0 w-full h-1 bg-border -z-10" />
                     {[1, 2, 3].map((s) => (
                         <div key={s} className={`flex flex-col items-center gap-2 bg-background px-4 ${step >= s ? 'text-primary' : 'text-text-muted'}`}>
-                            <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 ${step >= s ? 'border-primary bg-primary/20' : 'border-white/10 bg-background'}`}>
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 ${step >= s ? 'border-primary bg-primary/20' : 'border-border bg-white'}`}>
                                 {step > s ? <Check size={20} /> : s}
                             </div>
                             <span className="text-sm font-medium">
