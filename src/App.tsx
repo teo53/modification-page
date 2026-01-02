@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AppProvider } from './context/AppContext';
+import { ThemeProvider } from './context/ThemeContext';
 import AppLayout from './components/app/AppLayout';
 
 // Lazy load pages for code splitting
@@ -39,8 +40,9 @@ const PageLoader = () => (
 
 function App() {
   return (
-    <AppProvider>
-      <BrowserRouter>
+    <ThemeProvider>
+      <AppProvider>
+        <BrowserRouter>
         <Routes>
           <Route path="/" element={<AppLayout />}>
             {/* Main Routes */}
@@ -252,8 +254,9 @@ function App() {
             />
           </Route>
         </Routes>
-      </BrowserRouter>
-    </AppProvider>
+        </BrowserRouter>
+      </AppProvider>
+    </ThemeProvider>
   );
 }
 

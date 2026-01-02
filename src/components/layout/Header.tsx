@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Search, Menu, User, LogIn, PenSquare, LogOut, LayoutDashboard, X } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getCurrentUser, logout, isAdvertiser } from '../../utils/auth';
+import ThemeToggle from '../ui/ThemeToggle';
 
 const Header: React.FC = () => {
     const navigate = useNavigate();
@@ -27,7 +28,7 @@ const Header: React.FC = () => {
     };
 
     return (
-        <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-border">
+        <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
             {/* Top Bar */}
             <div className="container mx-auto px-4 h-16 flex items-center justify-between">
                 {/* Logo */}
@@ -66,7 +67,7 @@ const Header: React.FC = () => {
 
                             {/* User Dropdown Menu */}
                             {showUserMenu && (
-                                <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-border rounded-lg shadow-xl overflow-hidden">
+                                <div className="absolute right-0 top-full mt-2 w-48 bg-card border border-border rounded-lg shadow-xl overflow-hidden">
                                     <div className="p-3 border-b border-border">
                                         <p className="text-sm font-medium text-text-main">{user.name}</p>
                                         <p className="text-xs text-text-muted">{user.email}</p>
@@ -125,6 +126,8 @@ const Header: React.FC = () => {
                         <span>광고등록</span>
                     </Link>
 
+                    <ThemeToggle className="hidden sm:flex" />
+
                     <button
                         className="md:hidden text-text-main"
                         onClick={() => setShowMobileMenu(!showMobileMenu)}
@@ -136,7 +139,7 @@ const Header: React.FC = () => {
 
             {/* Mobile Menu */}
             {showMobileMenu && (
-                <div className="md:hidden bg-white border-t border-border">
+                <div className="md:hidden bg-card border-t border-border">
                     <div className="container mx-auto px-4 py-4 space-y-4">
                         {user ? (
                             <div className="flex items-center gap-3 pb-4 border-b border-border">
@@ -178,10 +181,16 @@ const Header: React.FC = () => {
                                 </Link>
                             ))}
                         </nav>
+                        {/* Theme Toggle in Mobile Menu */}
+                        <div className="flex items-center justify-between py-2 border-t border-border mt-4 pt-4">
+                            <span className="text-sm text-text-muted">테마 설정</span>
+                            <ThemeToggle showLabel />
+                        </div>
+
                         {user && (
                             <button
                                 onClick={() => { handleLogout(); setShowMobileMenu(false); }}
-                                className="w-full py-2 text-center text-sm text-red-500 border border-red-500/20 rounded-lg"
+                                className="w-full py-2 text-center text-sm text-red-500 border border-red-500/20 rounded-lg mt-4"
                             >
                                 로그아웃
                             </button>

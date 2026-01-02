@@ -1,50 +1,99 @@
 @import "tailwindcss";
 
 @theme {
-  /* Light Theme - Albamon Style */
-  --color-background: #FFFFFF;
-  --color-surface: #F5F5F5;
-
+  /* Base colors - shared between themes */
   --color-primary: #FF6B35;
   --color-primary-hover: #E55A2B;
-
   --color-secondary: #FF6B35;
   --color-secondary-hover: #E55A2B;
-
-  --color-accent: #F8F8F8;
-  --color-accent-dark: #EEEEEE;
-
-  --color-text-main: #222222;
-  --color-text-muted: #888888;
-  --color-text-light: #AAAAAA;
-
-  --color-border: #E5E5E5;
-  --color-card: #FFFFFF;
-
   --color-salary: #FF6B35;
   --color-badge-hot: #FF4444;
   --color-badge-new: #22C55E;
   --color-badge-ad: #CCCCCC;
-
   --font-sans: "Noto Sans KR", "Roboto", sans-serif;
+
+  /* Dark Theme (Default) */
+  --color-background: #111111;
+  --color-surface: #1A1A1A;
+  --color-accent: #222222;
+  --color-accent-dark: #2A2A2A;
+  --color-text-main: #FFFFFF;
+  --color-text-muted: #888888;
+  --color-text-light: #666666;
+  --color-border: #333333;
+  --color-card: #1A1A1A;
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
+/* Dark Theme (default) */
+:root,
+html.dark {
+  --color-background: #111111;
+  --color-surface: #1A1A1A;
+  --color-accent: #222222;
+  --color-accent-dark: #2A2A2A;
+  --color-text-main: #FFFFFF;
+  --color-text-muted: #888888;
+  --color-text-light: #666666;
+  --color-border: #333333;
+  --color-card: #1A1A1A;
+  color-scheme: dark;
+}
+
+/* Light Theme */
+html.light {
+  --color-background: #FFFFFF;
+  --color-surface: #F5F5F5;
+  --color-accent: #F8F8F8;
+  --color-accent-dark: #EEEEEE;
+  --color-text-main: #222222;
+  --color-text-muted: #888888;
+  --color-text-light: #AAAAAA;
+  --color-border: #E5E5E5;
+  --color-card: #FFFFFF;
+  color-scheme: light;
+}
+
+/* Apply background color */
+body {
+  background-color: var(--color-background);
+  color: var(--color-text-main);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Custom Scrollbar - Dark */
+html.dark ::-webkit-scrollbar {
   width: 6px;
 }
 
-::-webkit-scrollbar-track {
-  background-color: var(--color-surface);
+html.dark ::-webkit-scrollbar-track {
+  background-color: #1A1A1A;
 }
 
-::-webkit-scrollbar-thumb {
-  background-color: var(--color-border);
+html.dark ::-webkit-scrollbar-thumb {
+  background-color: #333333;
   border-radius: 9999px;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background-color: var(--color-text-muted);
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background-color: #555555;
+}
+
+/* Custom Scrollbar - Light */
+html.light ::-webkit-scrollbar {
+  width: 6px;
+}
+
+html.light ::-webkit-scrollbar-track {
+  background-color: #F5F5F5;
+}
+
+html.light ::-webkit-scrollbar-thumb {
+  background-color: #E5E5E5;
+  border-radius: 9999px;
+}
+
+html.light ::-webkit-scrollbar-thumb:hover {
+  background-color: #888888;
 }
 
 /* PWA & Mobile Enhancements */
