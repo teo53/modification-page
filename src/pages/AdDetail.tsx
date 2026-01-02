@@ -1,73 +1,176 @@
-import React from 'react';
-import { MapPin, Clock, Calendar, DollarSign, Phone, MessageCircle, Heart, Share2, ChevronLeft } from 'lucide-react';
-import { useParams, Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { MapPin, Clock, Calendar, DollarSign, Phone, MessageCircle, Heart, Share2, ChevronLeft, Zap } from 'lucide-react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { allAds } from '../data/mockAds';
+import { useApp } from '../context/AppContext';
 
 const AdDetail: React.FC = () => {
     const { id } = useParams();
-    console.log("Ad ID:", id); // Use id to satisfy linter
+    const navigate = useNavigate();
+    const { isFavorite, toggleFavorite, addRecentView } = useApp();
+
+    // Find the ad by id
+    const ad = allAds.find(a => String(a.id) === id);
+    const isFav = id ? isFavorite(id) : false;
+
+    // Add to recent views on load
+    useEffect(() => {
+        if (ad) {
+            addRecentView({
+                id: String(ad.id),
+                title: ad.title,
+                location: ad.location,
+                pay: ad.pay
+            });
+        }
+    }, [ad, addRecentView]);
+
+    // Handle favorite toggle
+    const handleFavoriteClick = () => {
+        if (id) {
+            toggleFavorite(id);
+            if ('vibrate' in navigator) {
+                navigator.vibrate(10);
+            }
+        }
+    };
+
+    // Handle share
+    const handleShare = async () => {
+        if (navigator.share && ad) {
+            try {
+                await navigator.share({
+                    title: ad.title,
+                    text: `${ad.location} - ${ad.pay}`,
+                    url: window.location.href
+                });
+            } catch (err) {
+                console.log('Share cancelled');
+            }
+        }
+    };
+
+    // If ad not found
+    if (!ad) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <h2 className="text-xl font-bold text-white mb-2">공고를 찾을 수 없습니다</h2>
+                    <p className="text-text-muted mb-4">삭제되었거나 존재하지 않는 공고입니다.</p>
+                    <Link to="/" className="bg-primary text-black px-6 py-2 rounded-lg font-bold">
+                        홈으로 돌아가기
+                    </Link>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="pb-24 md:pb-12">
             {/* Mobile Header */}
             <div className="md:hidden sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-white/10 p-4 flex items-center justify-between">
-                <Link to="/" className="text-white"><ChevronLeft /></Link>
+                <button onClick={() => navigate(-1)} className="text-white">
+                    <ChevronLeft />
+                </button>
                 <span className="font-bold text-white">채용정보</span>
-                <button className="text-white"><Share2 size={20} /></button>
+                <button onClick={handleShare} className="text-white">
+                    <Share2 size={20} />
+                </button>
             </div>
 
             <div className="container mx-auto px-4 md:py-8">
                 <div className="grid md:grid-cols-3 gap-8">
                     {/* Left Column: Main Content */}
-                    <div className="md:col-span-2 space-y-8">
+                    <div className="md:col-span-2 space-y-6">
 
                         {/* Image Gallery */}
                         <div className="aspect-video rounded-xl overflow-hidden bg-accent relative group">
                             <img
-                                src="https://images.unsplash.com/photo-1566737236500-c8ac43014a67?q=80&w=1920&auto=format&fit=crop"
-                                alt="Store Interior"
+                                src={ad.thumbnail}
+                                alt={ad.title}
                                 className="w-full h-full object-cover"
                             />
+                            {ad.isHot && (
+                                <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-red-500 text-white text-sm font-bold flex items-center gap-1">
+                                    <Zap size={14} /> 급구
+                                </span>
+                            )}
                             <div className="absolute bottom-4 right-4 bg-black/50 backdrop-blur-md px-3 py-1 rounded-full text-xs text-white">
-                                1 / 5
+                                1 / 1
                             </div>
                         </div>
 
                         {/* Header Info */}
                         <div className="space-y-4">
                             <div className="flex items-start justify-between">
-                                <div>
-                                    <span className="inline-block px-2 py-1 rounded bg-primary/20 text-primary text-xs font-bold mb-2">
-                                        VIP 업소
-                                    </span>
-                                    <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">
-                                        강남 하이퍼블릭 VIP 모집합니다 (최고대우)
+                                <div className="flex-1">
+                                    {/* Badges */}
+                                    <div className="flex flex-wrap gap-2 mb-3">
+                                        {ad.productType === 'vip' && (
+                                            <span className="px-2 py-1 rounded bg-primary/20 text-primary text-xs font-bold">
+                                                VIP
+                                            </span>
+                                        )}
+                                        {ad.productType === 'special' && (
+                                            <span className="px-2 py-1 rounded bg-purple-500/20 text-purple-400 text-xs font-bold">
+                                                SPECIAL
+                                            </span>
+                                        )}
+                                        {ad.isNew && (
+                                            <span className="px-2 py-1 rounded bg-green-500/20 text-green-400 text-xs font-bold">
+                                                NEW
+                                            </span>
+                                        )}
+                                        {ad.badges.map((badge, idx) => (
+                                            <span key={idx} className="px-2 py-1 rounded bg-white/10 text-text-muted text-xs">
+                                                {badge}
+                                            </span>
+                                        ))}
+                                    </div>
+                                    <h1 className="text-xl md:text-2xl font-bold text-white mb-2">
+                                        {ad.title}
                                     </h1>
                                     <div className="flex items-center gap-2 text-text-muted">
                                         <MapPin size={16} />
-                                        <span>서울 강남구 역삼동</span>
+                                        <span>{ad.location}</span>
                                     </div>
                                 </div>
-                                <button className="p-2 rounded-full bg-accent hover:bg-secondary/20 hover:text-secondary transition-colors">
-                                    <Heart size={24} />
-                                </button>
+                                <motion.button
+                                    whileTap={{ scale: 0.9 }}
+                                    onClick={handleFavoriteClick}
+                                    className="p-3 rounded-full bg-accent hover:bg-secondary/20 transition-colors"
+                                >
+                                    <Heart
+                                        size={24}
+                                        className={isFav ? 'text-secondary' : 'text-white'}
+                                        fill={isFav ? 'currentColor' : 'none'}
+                                    />
+                                </motion.button>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4 p-4 rounded-xl bg-accent border border-white/5">
+                            <div className="grid grid-cols-2 gap-3 p-4 rounded-xl bg-accent border border-white/5">
                                 <div className="space-y-1">
-                                    <span className="text-xs text-text-muted flex items-center gap-1"><DollarSign size={12} /> 급여</span>
-                                    <p className="text-lg font-bold text-primary">시급 100,000원</p>
+                                    <span className="text-xs text-text-muted flex items-center gap-1">
+                                        <DollarSign size={12} /> 급여
+                                    </span>
+                                    <p className="text-lg font-bold text-primary">{ad.pay}</p>
                                 </div>
                                 <div className="space-y-1">
-                                    <span className="text-xs text-text-muted flex items-center gap-1"><Clock size={12} /> 근무시간</span>
-                                    <p className="text-white">20:00 ~ 04:00</p>
+                                    <span className="text-xs text-text-muted flex items-center gap-1">
+                                        <Clock size={12} /> 근무시간
+                                    </span>
+                                    <p className="text-white">협의</p>
                                 </div>
                                 <div className="space-y-1">
-                                    <span className="text-xs text-text-muted flex items-center gap-1"><Calendar size={12} /> 근무요일</span>
-                                    <p className="text-white">월~토 (협의가능)</p>
+                                    <span className="text-xs text-text-muted flex items-center gap-1">
+                                        <Calendar size={12} /> 근무요일
+                                    </span>
+                                    <p className="text-white">협의 가능</p>
                                 </div>
                                 <div className="space-y-1">
-                                    <span className="text-xs text-text-muted">연령</span>
-                                    <p className="text-white">20세 ~ 35세</p>
+                                    <span className="text-xs text-text-muted">등록일</span>
+                                    <p className="text-white">{new Date().toLocaleDateString('ko-KR')}</p>
                                 </div>
                             </div>
                         </div>
@@ -77,35 +180,38 @@ const AdDetail: React.FC = () => {
 
                         {/* Description */}
                         <div className="prose prose-invert max-w-none">
-                            <h3 className="text-xl font-bold text-white mb-4">상세모집요강</h3>
-                            <div className="bg-accent/30 p-6 rounded-xl border border-white/5 text-text-muted leading-relaxed whitespace-pre-line">
-                                {`안녕하세요. 강남 최고의 하이퍼블릭에서 새로운 가족을 모십니다.
-                
-                1. 자격요건
-                - 20세 이상 성인 여성
-                - 초보가능, 경력자 우대
-                - 대학생, 휴학생, 직장인 투잡 가능
-                
-                2. 근무조건
-                - 시급 10만원 + @ (팁, 인센티브 별도)
-                - 당일지급 원칙
-                - 출퇴근 자유, 강요 없음
-                
-                3. 복리후생
-                - 만근비 지급
-                - 명절 선물/보너스
-                - 쾌적한 대기실 완비
-                - 텃세 절대 없음
-                
-                편하게 문의주세요. 친절하게 상담해드립니다.`}
+                            <h3 className="text-lg font-bold text-white mb-4">상세모집요강</h3>
+                            <div className="bg-accent/30 p-5 rounded-xl border border-white/5 text-text-muted leading-relaxed whitespace-pre-line text-sm">
+                                {`안녕하세요. ${ad.title.split(' ')[0]}에서 새로운 가족을 모십니다.
+
+📌 자격요건
+- 20세 이상 성인
+- 초보가능, 경력자 우대
+- 대학생, 휴학생, 직장인 투잡 가능
+
+💰 근무조건
+- ${ad.pay} + @ (팁, 인센티브 별도)
+- 당일지급 원칙
+- 출퇴근 자유, 강요 없음
+
+🎁 복리후생
+- 만근비 지급
+- 명절 선물/보너스
+- 쾌적한 대기실 완비
+- 텃세 절대 없음
+
+편하게 문의주세요. 친절하게 상담해드립니다.`}
                             </div>
                         </div>
 
-                        {/* Map Placeholder */}
+                        {/* Location */}
                         <div className="space-y-4">
-                            <h3 className="text-xl font-bold text-white">위치 정보</h3>
-                            <div className="h-64 bg-accent rounded-xl flex items-center justify-center border border-white/5">
-                                <span className="text-text-muted">지도 영역 (Kakao/Naver Map)</span>
+                            <h3 className="text-lg font-bold text-white">위치 정보</h3>
+                            <div className="h-48 bg-accent rounded-xl flex items-center justify-center border border-white/5">
+                                <div className="text-center">
+                                    <MapPin size={32} className="text-text-muted mx-auto mb-2" />
+                                    <span className="text-text-muted">{ad.location}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -114,16 +220,16 @@ const AdDetail: React.FC = () => {
                     <div className="hidden md:block">
                         <div className="sticky top-24 space-y-4 p-6 rounded-xl bg-accent border border-white/10">
                             <div className="text-center mb-4">
-                                <div className="w-20 h-20 bg-white/10 rounded-full mx-auto mb-3 flex items-center justify-center">
-                                    <span className="text-2xl font-bold text-white">Logo</span>
+                                <div className="w-20 h-20 bg-white/10 rounded-full mx-auto mb-3 overflow-hidden">
+                                    <img src={ad.thumbnail} alt="" className="w-full h-full object-cover" />
                                 </div>
-                                <h3 className="text-lg font-bold text-white">골드문</h3>
-                                <p className="text-sm text-text-muted">담당자: 김실장</p>
+                                <h3 className="text-lg font-bold text-white">{ad.title.split(' ')[0]}</h3>
+                                <p className="text-sm text-text-muted">담당자: 매니저</p>
                             </div>
 
                             <button className="w-full py-3 rounded-lg bg-primary text-black font-bold hover:bg-primary-hover transition-colors flex items-center justify-center gap-2">
                                 <Phone size={20} />
-                                010-1234-5678
+                                전화 문의
                             </button>
                             <button className="w-full py-3 rounded-lg bg-[#FAE100] text-[#371D1E] font-bold hover:bg-[#FCE840] transition-colors flex items-center justify-center gap-2">
                                 <MessageCircle size={20} />
@@ -135,15 +241,21 @@ const AdDetail: React.FC = () => {
             </div>
 
             {/* Mobile Sticky Footer */}
-            <div className="md:hidden fixed bottom-0 left-0 right-0 p-4 bg-background border-t border-white/10 flex gap-2 z-50">
-                <button className="flex-1 py-3 rounded-lg bg-primary text-black font-bold flex items-center justify-center gap-2">
+            <div className="md:hidden fixed bottom-0 left-0 right-0 p-4 bg-background border-t border-white/10 flex gap-2 z-50 safe-area-pb">
+                <motion.button
+                    whileTap={{ scale: 0.98 }}
+                    className="flex-1 py-3 rounded-lg bg-primary text-black font-bold flex items-center justify-center gap-2"
+                >
                     <Phone size={20} />
                     전화하기
-                </button>
-                <button className="flex-1 py-3 rounded-lg bg-[#FAE100] text-[#371D1E] font-bold flex items-center justify-center gap-2">
+                </motion.button>
+                <motion.button
+                    whileTap={{ scale: 0.98 }}
+                    className="flex-1 py-3 rounded-lg bg-[#FAE100] text-[#371D1E] font-bold flex items-center justify-center gap-2"
+                >
                     <MessageCircle size={20} />
                     카톡문의
-                </button>
+                </motion.button>
             </div>
         </div>
     );
