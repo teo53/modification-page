@@ -21,6 +21,11 @@ const IndustryPage = lazy(() => import('./pages/IndustryPage'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const FavoritesPage = lazy(() => import('./pages/FavoritesPage'));
 const MyPage = lazy(() => import('./pages/MyPage'));
+const MyPageEdit = lazy(() => import('./pages/MyPageEdit'));
+const MyPageViews = lazy(() => import('./pages/MyPageViews'));
+const MyPageApplications = lazy(() => import('./pages/MyPageApplications'));
+const MyPageNotifications = lazy(() => import('./pages/MyPageNotifications'));
+const MyPagePrivacy = lazy(() => import('./pages/MyPagePrivacy'));
 
 // Page loader
 const PageLoader = () => (
@@ -154,6 +159,46 @@ function App() {
               element={
                 <Suspense fallback={<PageLoader />}>
                   <MyPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="mypage/edit"
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <MyPageEdit />
+                </Suspense>
+              }
+            />
+            <Route
+              path="mypage/views"
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <MyPageViews />
+                </Suspense>
+              }
+            />
+            <Route
+              path="mypage/applications"
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <MyPageApplications />
+                </Suspense>
+              }
+            />
+            <Route
+              path="mypage/notifications"
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <MyPageNotifications />
+                </Suspense>
+              }
+            />
+            <Route
+              path="mypage/privacy"
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <MyPagePrivacy />
                 </Suspense>
               }
             />

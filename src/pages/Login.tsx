@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, AlertCircle, CheckCircle } from 'lucide-react';
 import { login } from '../utils/auth';
+import { useApp } from '../context/AppContext';
 
 const Login: React.FC = () => {
     const navigate = useNavigate();
+    const { dispatch } = useApp();
     const [showPassword, setShowPassword] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -28,7 +30,18 @@ const Login: React.FC = () => {
         // Attempt login
         const result = login(email, password);
 
-        if (result.success) {
+        if (result.success && result.user) {
+            // Sync with AppContext
+            dispatch({
+                type: 'SET_USER',
+                payload: {
+                    id: result.user.id,
+                    name: result.user.name,
+                    email: result.user.email,
+                    type: result.user.type === 'worker' ? 'user' : 'advertiser',
+                    phone: result.user.phone
+                }
+            });
             setSuccess(result.message);
             setTimeout(() => {
                 // Redirect based on user type

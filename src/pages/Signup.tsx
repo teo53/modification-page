@@ -4,9 +4,11 @@ import { Mail, Lock, User, Eye, EyeOff, AlertCircle, CheckCircle, Shield, FileCh
 import { signup } from '../utils/auth';
 import PhoneVerification from '../components/auth/PhoneVerification';
 import BusinessVerification from '../components/auth/BusinessVerification';
+import { useApp } from '../context/AppContext';
 
 const Signup: React.FC = () => {
     const navigate = useNavigate();
+    const { dispatch } = useApp();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [error, setError] = useState('');
@@ -147,7 +149,18 @@ const Signup: React.FC = () => {
             nickname: formData.nickname
         });
 
-        if (result.success) {
+        if (result.success && result.user) {
+            // Sync with AppContext
+            dispatch({
+                type: 'SET_USER',
+                payload: {
+                    id: result.user.id,
+                    name: result.user.name,
+                    email: result.user.email,
+                    type: result.user.type === 'worker' ? 'user' : 'advertiser',
+                    phone: result.user.phone
+                }
+            });
             setSuccess(result.message + ' 잠시 후 이동합니다...');
             setTimeout(() => {
                 if (result.user?.type === 'advertiser') {
