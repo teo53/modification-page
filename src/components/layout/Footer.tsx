@@ -4,24 +4,24 @@ import { Mail, Phone, MapPin, Facebook, Instagram, Youtube } from 'lucide-react'
 
 const Footer: React.FC = () => {
     return (
-        <footer className="bg-accent/50 border-t border-white/10 mt-auto">
+        <footer className="bg-surface border-t border-border mt-auto">
             <div className="container mx-auto px-4 py-12">
                 {/* Main Footer Content */}
                 <div className="grid md:grid-cols-4 gap-8 mb-8">
                     {/* Company Info */}
                     <div className="space-y-4">
-                        <h3 className="text-lg font-bold text-white mb-4">LunaAlba</h3>
+                        <h3 className="text-lg font-bold text-text-main mb-4">LunaAlba</h3>
                         <p className="text-sm text-text-muted leading-relaxed">
                             대한민국 No.1 유흥알바 채용 플랫폼
                         </p>
                         <div className="flex gap-3">
-                            <a href="#" className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-text-muted hover:text-primary hover:bg-white/20 transition-colors">
+                            <a href="#" className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-text-muted hover:text-primary hover:bg-accent transition-colors border border-border">
                                 <Facebook size={16} />
                             </a>
-                            <a href="#" className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-text-muted hover:text-primary hover:bg-white/20 transition-colors">
+                            <a href="#" className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-text-muted hover:text-primary hover:bg-accent transition-colors border border-border">
                                 <Instagram size={16} />
                             </a>
-                            <a href="#" className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-text-muted hover:text-primary hover:bg-white/20 transition-colors">
+                            <a href="#" className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-text-muted hover:text-primary hover:bg-accent transition-colors border border-border">
                                 <Youtube size={16} />
                             </a>
                         </div>
@@ -29,30 +29,30 @@ const Footer: React.FC = () => {
 
                     {/* Quick Links */}
                     <div>
-                        <h4 className="text-white font-bold mb-4">서비스</h4>
+                        <h4 className="text-text-main font-bold mb-4">서비스</h4>
                         <ul className="space-y-2 text-sm">
-                            <li><Link to="/search" className="text-text-muted hover:text-white transition-colors">구인구직</Link></li>
-                            <li><Link to="/theme" className="text-text-muted hover:text-white transition-colors">테마별 알바</Link></li>
-                            <li><Link to="/urgent" className="text-text-muted hover:text-white transition-colors">급구 알바</Link></li>
-                            <li><Link to="/community" className="text-text-muted hover:text-white transition-colors">커뮤니티</Link></li>
-                            <li><Link to="/post-ad" className="text-text-muted hover:text-white transition-colors">광고 등록</Link></li>
+                            <li><Link to="/search" className="text-text-muted hover:text-text-main transition-colors">구인구직</Link></li>
+                            <li><Link to="/theme" className="text-text-muted hover:text-text-main transition-colors">테마별 알바</Link></li>
+                            <li><Link to="/urgent" className="text-text-muted hover:text-text-main transition-colors">급구 알바</Link></li>
+                            <li><Link to="/community" className="text-text-muted hover:text-text-main transition-colors">커뮤니티</Link></li>
+                            <li><Link to="/post-ad" className="text-text-muted hover:text-text-main transition-colors">광고 등록</Link></li>
                         </ul>
                     </div>
 
                     {/* Support */}
                     <div>
-                        <h4 className="text-white font-bold mb-4">고객지원</h4>
+                        <h4 className="text-text-main font-bold mb-4">고객지원</h4>
                         <ul className="space-y-2 text-sm">
-                            <li><Link to="/support" className="text-text-muted hover:text-white transition-colors">고객센터</Link></li>
-                            <li><a href="#" className="text-text-muted hover:text-white transition-colors">자주 묻는 질문</a></li>
-                            <li><a href="#" className="text-text-muted hover:text-white transition-colors">제휴 문의</a></li>
-                            <li><a href="#" className="text-text-muted hover:text-white transition-colors">광고 문의</a></li>
+                            <li><Link to="/support" className="text-text-muted hover:text-text-main transition-colors">고객센터</Link></li>
+                            <li><a href="#" className="text-text-muted hover:text-text-main transition-colors">자주 묻는 질문</a></li>
+                            <li><a href="#" className="text-text-muted hover:text-text-main transition-colors">제휴 문의</a></li>
+                            <li><a href="#" className="text-text-muted hover:text-text-main transition-colors">광고 문의</a></li>
                         </ul>
                     </div>
 
                     {/* Contact */}
                     <div>
-                        <h4 className="text-white font-bold mb-4">연락처</h4>
+                        <h4 className="text-text-main font-bold mb-4">연락처</h4>
                         <ul className="space-y-3 text-sm text-text-muted">
                             <li className="flex items-center gap-2">
                                 <Phone size={14} />
@@ -71,14 +71,14 @@ const Footer: React.FC = () => {
                 </div>
 
                 {/* Legal Links */}
-                <div className="pt-6 border-t border-white/5">
+                <div className="pt-6 border-t border-border">
                     <div className="flex flex-wrap justify-center gap-4 mb-4 text-sm">
-                        <a href="#" className="text-text-muted hover:text-white transition-colors">회사소개</a>
-                        <a href="#" className="text-white font-bold hover:text-primary transition-colors">이용약관</a>
-                        <a href="#" className="text-white font-bold hover:text-primary transition-colors">개인정보처리방침</a>
-                        <a href="#" className="text-text-muted hover:text-white transition-colors">청소년보호정책</a>
-                        <Link to="/advertiser/dashboard" className="text-text-muted hover:text-white transition-colors">광고주센터</Link>
-                        <Link to="/admin/dashboard" className="text-text-muted/50 hover:text-text-muted transition-colors">관리자</Link>
+                        <a href="#" className="text-text-muted hover:text-text-main transition-colors">회사소개</a>
+                        <a href="#" className="text-text-main font-bold hover:text-primary transition-colors">이용약관</a>
+                        <a href="#" className="text-text-main font-bold hover:text-primary transition-colors">개인정보처리방침</a>
+                        <a href="#" className="text-text-muted hover:text-text-main transition-colors">청소년보호정책</a>
+                        <Link to="/advertiser/dashboard" className="text-text-muted hover:text-text-main transition-colors">광고주센터</Link>
+                        <Link to="/admin/dashboard" className="text-text-light hover:text-text-muted transition-colors">관리자</Link>
                     </div>
 
                     {/* Company Info */}
