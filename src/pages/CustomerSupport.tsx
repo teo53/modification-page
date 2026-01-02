@@ -25,28 +25,28 @@ const CustomerSupport: React.FC = () => {
 
     return (
         <div className="container mx-auto px-4 py-8">
-            <h1 className="text-2xl font-bold text-white mb-8 text-center">고객센터</h1>
+            <h1 className="text-2xl font-bold text-text-main mb-8 text-center">고객센터</h1>
 
             {/* Tabs */}
             <div className="flex justify-center mb-8">
-                <div className="flex bg-accent rounded-lg p-1 border border-white/10">
+                <div className="flex bg-surface rounded-lg p-1 border border-border">
                     <button
                         onClick={() => setActiveTab('notice')}
-                        className={`px-6 py-2 rounded-md text-sm font-bold transition-colors flex items-center gap-2 ${activeTab === 'notice' ? 'bg-primary text-black' : 'text-text-muted hover:text-white'
+                        className={`px-6 py-2 rounded-md text-sm font-bold transition-colors flex items-center gap-2 ${activeTab === 'notice' ? 'bg-primary text-white' : 'text-text-muted hover:text-text-main'
                             }`}
                     >
                         <Megaphone size={16} /> 공지사항
                     </button>
                     <button
                         onClick={() => setActiveTab('event')}
-                        className={`px-6 py-2 rounded-md text-sm font-bold transition-colors flex items-center gap-2 ${activeTab === 'event' ? 'bg-secondary text-white' : 'text-text-muted hover:text-white'
+                        className={`px-6 py-2 rounded-md text-sm font-bold transition-colors flex items-center gap-2 ${activeTab === 'event' ? 'bg-primary text-white' : 'text-text-muted hover:text-text-main'
                             }`}
                     >
                         <Calendar size={16} /> 이벤트
                     </button>
                     <button
                         onClick={() => setActiveTab('faq')}
-                        className={`px-6 py-2 rounded-md text-sm font-bold transition-colors flex items-center gap-2 ${activeTab === 'faq' ? 'bg-white text-black' : 'text-text-muted hover:text-white'
+                        className={`px-6 py-2 rounded-md text-sm font-bold transition-colors flex items-center gap-2 ${activeTab === 'faq' ? 'bg-primary text-white' : 'text-text-muted hover:text-text-main'
                             }`}
                     >
                         <HelpCircle size={16} /> 자주 묻는 질문
@@ -55,16 +55,16 @@ const CustomerSupport: React.FC = () => {
             </div>
 
             {/* Content */}
-            <div className="max-w-3xl mx-auto bg-accent rounded-xl border border-white/5 p-6 min-h-[400px]">
+            <div className="max-w-3xl mx-auto bg-white rounded-xl border border-border p-6 min-h-[400px] shadow-sm">
                 {activeTab === 'notice' && (
                     <div className="space-y-4 animate-fade-in">
                         {notices.map((notice) => (
-                            <div key={notice.id} className="border-b border-white/5 pb-4 last:border-0 last:pb-0">
+                            <div key={notice.id} className="border-b border-border pb-4 last:border-0 last:pb-0">
                                 <div className="flex items-center justify-between mb-1">
                                     <span className="text-primary text-xs font-bold">NOTICE</span>
                                     <span className="text-text-muted text-xs">{notice.date}</span>
                                 </div>
-                                <h3 className="text-white hover:text-primary cursor-pointer transition-colors">{notice.title}</h3>
+                                <h3 className="text-text-main hover:text-primary cursor-pointer transition-colors">{notice.title}</h3>
                             </div>
                         ))}
                     </div>
@@ -73,18 +73,18 @@ const CustomerSupport: React.FC = () => {
                 {activeTab === 'event' && (
                     <div className="space-y-4 animate-fade-in">
                         {events.map((event) => (
-                            <div key={event.id} className="border-b border-white/5 pb-4 last:border-0 last:pb-0 flex items-center justify-between">
+                            <div key={event.id} className="border-b border-border pb-4 last:border-0 last:pb-0 flex items-center justify-between">
                                 <div>
                                     <div className="flex items-center gap-2 mb-1">
-                                        <span className={`text-xs font-bold px-2 py-0.5 rounded ${event.status === '진행중' ? 'bg-secondary/20 text-secondary' : 'bg-white/10 text-text-muted'
+                                        <span className={`text-xs font-bold px-2 py-0.5 rounded ${event.status === '진행중' ? 'bg-green-500/20 text-green-600' : 'bg-surface text-text-muted'
                                             }`}>
                                             {event.status}
                                         </span>
                                         <span className="text-text-muted text-xs">{event.period}</span>
                                     </div>
-                                    <h3 className="text-white font-bold">{event.title}</h3>
+                                    <h3 className="text-text-main font-bold">{event.title}</h3>
                                 </div>
-                                <button className="px-4 py-2 rounded bg-white/5 text-white text-sm hover:bg-white/10 transition-colors">
+                                <button className="px-4 py-2 rounded bg-surface text-text-main text-sm hover:bg-accent transition-colors border border-border">
                                     자세히
                                 </button>
                             </div>
@@ -95,19 +95,19 @@ const CustomerSupport: React.FC = () => {
                 {activeTab === 'faq' && (
                     <div className="space-y-2 animate-fade-in">
                         {faqs.map((faq) => (
-                            <div key={faq.id} className="border border-white/5 rounded-lg overflow-hidden">
+                            <div key={faq.id} className="border border-border rounded-lg overflow-hidden">
                                 <button
                                     onClick={() => setOpenFaq(openFaq === faq.id ? null : faq.id)}
-                                    className="w-full flex items-center justify-between p-4 bg-white/5 hover:bg-white/10 transition-colors text-left"
+                                    className="w-full flex items-center justify-between p-4 bg-surface hover:bg-accent transition-colors text-left"
                                 >
-                                    <span className="font-bold text-white flex items-center gap-2">
+                                    <span className="font-bold text-text-main flex items-center gap-2">
                                         <span className="text-primary">Q.</span> {faq.question}
                                     </span>
                                     {openFaq === faq.id ? <ChevronUp size={16} className="text-text-muted" /> : <ChevronDown size={16} className="text-text-muted" />}
                                 </button>
                                 {openFaq === faq.id && (
-                                    <div className="p-4 bg-black/20 text-text-muted text-sm leading-relaxed border-t border-white/5">
-                                        <span className="text-secondary font-bold mr-2">A.</span>
+                                    <div className="p-4 bg-accent text-text-muted text-sm leading-relaxed border-t border-border">
+                                        <span className="text-primary font-bold mr-2">A.</span>
                                         {faq.answer}
                                     </div>
                                 )}

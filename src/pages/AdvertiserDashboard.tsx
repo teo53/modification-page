@@ -45,7 +45,7 @@ const AdvertiserDashboard: React.FC = () => {
             <div className="min-h-screen bg-background flex items-center justify-center">
                 <div className="text-center">
                     <AlertCircle size={48} className="text-red-400 mx-auto mb-4" />
-                    <p className="text-white">로그인이 필요합니다.</p>
+                    <p className="text-text-main">로그인이 필요합니다.</p>
                     <Link to="/login" className="text-primary underline">로그인하기</Link>
                 </div>
             </div>
@@ -58,38 +58,38 @@ const AdvertiserDashboard: React.FC = () => {
                 <div className="grid lg:grid-cols-4 gap-6">
                     {/* Sidebar */}
                     <aside className="lg:col-span-1">
-                        <div className="bg-accent/30 rounded-xl border border-white/5 p-6 sticky top-20 space-y-6">
+                        <div className="bg-white rounded-xl border border-border p-6 sticky top-20 space-y-6 shadow-sm">
                             {/* User Stats */}
                             <div>
-                                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                                <h3 className="text-lg font-bold text-text-main mb-4 flex items-center gap-2">
                                     <div className="w-6 h-6 rounded bg-primary/20 flex items-center justify-center">
                                         <FileText className="text-primary" size={16} />
                                     </div>
                                     내 정보
                                 </h3>
                                 <div className="grid grid-cols-2 gap-3">
-                                    <div className="bg-background rounded-lg p-3 text-center">
+                                    <div className="bg-surface rounded-lg p-3 text-center">
                                         <div className="text-xs text-text-muted mb-1">게시글</div>
-                                        <div className="text-2xl font-bold text-white">{stats.total}</div>
+                                        <div className="text-2xl font-bold text-text-main">{stats.total}</div>
                                     </div>
-                                    <div className="bg-background rounded-lg p-3 text-center">
+                                    <div className="bg-surface rounded-lg p-3 text-center">
                                         <div className="text-xs text-text-muted mb-1">판매중</div>
-                                        <div className="text-2xl font-bold text-green-400">{stats.active}</div>
+                                        <div className="text-2xl font-bold text-green-500">{stats.active}</div>
                                     </div>
-                                    <div className="bg-background rounded-lg p-3 text-center">
+                                    <div className="bg-surface rounded-lg p-3 text-center">
                                         <div className="text-xs text-text-muted mb-1">대기중</div>
-                                        <div className="text-2xl font-bold text-yellow-400">{stats.pending}</div>
+                                        <div className="text-2xl font-bold text-yellow-500">{stats.pending}</div>
                                     </div>
-                                    <div className="bg-background rounded-lg p-3 text-center">
+                                    <div className="bg-surface rounded-lg p-3 text-center">
                                         <div className="text-xs text-text-muted mb-1">만료</div>
-                                        <div className="text-2xl font-bold text-blue-400">{stats.expired}</div>
+                                        <div className="text-2xl font-bold text-blue-500">{stats.expired}</div>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Category Filter */}
                             <div>
-                                <h4 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
+                                <h4 className="text-sm font-bold text-text-main mb-3 flex items-center gap-2">
                                     <div className="w-1 h-4 bg-primary rounded"></div>
                                     카테고리
                                 </h4>
@@ -99,8 +99,8 @@ const AdvertiserDashboard: React.FC = () => {
                                             key={cat}
                                             onClick={() => setSelectedCategory(cat)}
                                             className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${selectedCategory === cat
-                                                ? 'bg-primary text-black font-bold'
-                                                : 'bg-background text-text-muted hover:bg-white/5'
+                                                ? 'bg-primary text-white font-bold'
+                                                : 'bg-surface text-text-muted hover:bg-accent'
                                                 }`}
                                         >
                                             {cat}
@@ -111,7 +111,7 @@ const AdvertiserDashboard: React.FC = () => {
 
                             {/* Region Filter */}
                             <div>
-                                <h4 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
+                                <h4 className="text-sm font-bold text-text-main mb-3 flex items-center gap-2">
                                     <MapPin className="text-primary" size={16} />
                                     지역선택
                                 </h4>
@@ -121,8 +121,8 @@ const AdvertiserDashboard: React.FC = () => {
                                             key={region}
                                             onClick={() => setSelectedRegion(region)}
                                             className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${selectedRegion === region
-                                                ? 'bg-primary text-black font-bold'
-                                                : 'bg-background text-text-muted hover:bg-white/5'
+                                                ? 'bg-primary text-white font-bold'
+                                                : 'bg-surface text-text-muted hover:bg-accent'
                                                 }`}
                                         >
                                             {region}
@@ -132,20 +132,20 @@ const AdvertiserDashboard: React.FC = () => {
                             </div>
 
                             {/* Quick Actions */}
-                            <div className="space-y-2 pt-4 border-t border-white/10">
+                            <div className="space-y-2 pt-4 border-t border-border">
                                 <Link
                                     to="/support"
-                                    className="flex items-center gap-3 px-3 py-2 bg-background rounded-lg hover:bg-white/5 transition-colors"
+                                    className="flex items-center gap-3 px-3 py-2 bg-surface rounded-lg hover:bg-accent transition-colors"
                                 >
                                     <HelpCircle className="text-primary" size={20} />
-                                    <span className="text-white">Q&A</span>
+                                    <span className="text-text-main">Q&A</span>
                                 </Link>
                                 <Link
                                     to="/profile"
-                                    className="flex items-center gap-3 px-3 py-2 bg-background rounded-lg hover:bg-white/5 transition-colors"
+                                    className="flex items-center gap-3 px-3 py-2 bg-surface rounded-lg hover:bg-accent transition-colors"
                                 >
                                     <Settings className="text-primary" size={20} />
-                                    <span className="text-white">내 정보 수정</span>
+                                    <span className="text-text-main">내 정보 수정</span>
                                 </Link>
                             </div>
                         </div>
@@ -156,12 +156,12 @@ const AdvertiserDashboard: React.FC = () => {
                         {/* Header */}
                         <div className="flex items-center justify-between mb-6">
                             <div>
-                                <h1 className="text-3xl font-bold text-white mb-2">광고주 대시보드</h1>
+                                <h1 className="text-3xl font-bold text-text-main mb-2">광고주 대시보드</h1>
                                 <p className="text-text-muted">내 광고를 관리하고 성과를 확인하세요</p>
                             </div>
                             <Link
                                 to="/post-ad"
-                                className="bg-primary text-black font-bold px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2"
+                                className="bg-primary text-white font-bold px-6 py-3 rounded-lg hover:bg-primary-hover transition-colors flex items-center gap-2"
                             >
                                 <Plus size={20} />
                                 새 광고 등록
@@ -170,45 +170,45 @@ const AdvertiserDashboard: React.FC = () => {
 
                         {/* Stats Cards */}
                         <div className="grid md:grid-cols-4 gap-4 mb-8">
-                            <div className="bg-accent/30 rounded-xl border border-white/5 p-6">
+                            <div className="bg-white rounded-xl border border-border p-6 shadow-sm">
                                 <div className="flex items-center justify-between mb-2">
-                                    <TrendingUp className="text-green-400" size={24} />
-                                    <span className="text-xs text-green-400">+12%</span>
+                                    <TrendingUp className="text-green-500" size={24} />
+                                    <span className="text-xs text-green-500">+12%</span>
                                 </div>
-                                <div className="text-2xl font-bold text-white mb-1">2,847</div>
+                                <div className="text-2xl font-bold text-text-main mb-1">2,847</div>
                                 <div className="text-sm text-text-muted">총 조회수</div>
                             </div>
-                            <div className="bg-accent/30 rounded-xl border border-white/5 p-6">
+                            <div className="bg-white rounded-xl border border-border p-6 shadow-sm">
                                 <div className="flex items-center justify-between mb-2">
-                                    <Clock className="text-yellow-400" size={24} />
-                                    <span className="text-xs text-yellow-400">진행중</span>
+                                    <Clock className="text-yellow-500" size={24} />
+                                    <span className="text-xs text-yellow-500">진행중</span>
                                 </div>
-                                <div className="text-2xl font-bold text-white mb-1">{stats.active}</div>
+                                <div className="text-2xl font-bold text-text-main mb-1">{stats.active}</div>
                                 <div className="text-sm text-text-muted">활성 광고</div>
                             </div>
-                            <div className="bg-accent/30 rounded-xl border border-white/5 p-6">
+                            <div className="bg-white rounded-xl border border-border p-6 shadow-sm">
                                 <div className="flex items-center justify-between mb-2">
-                                    <CheckCircle className="text-blue-400" size={24} />
-                                    <span className="text-xs text-blue-400">만료</span>
+                                    <CheckCircle className="text-blue-500" size={24} />
+                                    <span className="text-xs text-blue-500">만료</span>
                                 </div>
-                                <div className="text-2xl font-bold text-white mb-1">{stats.expired}</div>
+                                <div className="text-2xl font-bold text-text-main mb-1">{stats.expired}</div>
                                 <div className="text-sm text-text-muted">만료된 광고</div>
                             </div>
-                            <div className="bg-accent/30 rounded-xl border border-white/5 p-6">
+                            <div className="bg-white rounded-xl border border-border p-6 shadow-sm">
                                 <div className="flex items-center justify-between mb-2">
                                     <DollarSign className="text-primary" size={24} />
                                     <span className="text-xs text-primary">조회수</span>
                                 </div>
-                                <div className="text-2xl font-bold text-white mb-1">{stats.totalViews}</div>
+                                <div className="text-2xl font-bold text-text-main mb-1">{stats.totalViews}</div>
                                 <div className="text-sm text-text-muted">총 조회수</div>
                             </div>
                         </div>
 
                         {/* My Ads List */}
                         <div>
-                            <h2 className="text-xl font-bold text-white mb-4">내 광고 목록</h2>
+                            <h2 className="text-xl font-bold text-text-main mb-4">내 광고 목록</h2>
                             {myAds.length === 0 ? (
-                                <div className="text-center py-12 bg-accent/30 rounded-xl border border-white/5">
+                                <div className="text-center py-12 bg-white rounded-xl border border-border shadow-sm">
                                     <FileText className="mx-auto mb-4 text-text-muted" size={48} />
                                     <p className="text-text-muted mb-4">등록된 광고가 없습니다.</p>
                                     <Link to="/post-ad" className="inline-flex items-center gap-2 bg-primary text-black font-bold px-6 py-2 rounded-lg">
@@ -229,12 +229,12 @@ const AdvertiserDashboard: React.FC = () => {
                                                 productType={ad.productType}
                                             />
                                             <div className="absolute top-2 right-2 flex gap-2">
-                                                <button className="bg-white/10 backdrop-blur-sm text-white px-3 py-1 rounded text-xs hover:bg-white/20 transition-colors">
+                                                <button className="bg-white/90 backdrop-blur-sm text-text-main px-3 py-1 rounded text-xs hover:bg-white transition-colors shadow-sm">
                                                     수정
                                                 </button>
                                                 <button
                                                     onClick={() => handleDeleteAd(ad.id)}
-                                                    className="bg-red-500/20 backdrop-blur-sm text-red-400 px-3 py-1 rounded text-xs hover:bg-red-500/30 transition-colors"
+                                                    className="bg-red-500/90 backdrop-blur-sm text-white px-3 py-1 rounded text-xs hover:bg-red-600 transition-colors"
                                                 >
                                                     삭제
                                                 </button>

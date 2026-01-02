@@ -1,12 +1,11 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Search, PenSquare, Heart, User } from 'lucide-react';
+import { Home, BarChart3, MapPin, MessageCircle, Users, User } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useApp } from '../../context/AppContext';
 
 interface NavItem {
   icon: React.ElementType;
-  activeIcon?: React.ElementType;
   label: string;
   path: string;
   badge?: number;
@@ -23,24 +22,28 @@ const BottomNavigation: React.FC = () => {
       path: '/',
     },
     {
-      icon: Search,
-      label: '검색',
-      path: '/search',
+      icon: BarChart3,
+      label: 'AI 추천',
+      path: '/search?filter=ai',
     },
     {
-      icon: PenSquare,
-      label: '등록',
-      path: '/post-ad',
+      icon: MapPin,
+      label: '알바지도',
+      path: '/search?view=map',
     },
     {
-      icon: Heart,
-      label: '찜',
-      path: '/favorites',
-      badge: state.favorites.length > 0 ? state.favorites.length : undefined,
+      icon: MessageCircle,
+      label: '채팅',
+      path: '/community',
+    },
+    {
+      icon: Users,
+      label: '커뮤니티',
+      path: '/community',
     },
     {
       icon: User,
-      label: state.isAuthenticated ? '마이' : '로그인',
+      label: '마이페이지',
       path: state.isAuthenticated ? '/mypage' : '/login',
     },
   ];
@@ -49,7 +52,9 @@ const BottomNavigation: React.FC = () => {
     if (path === '/') {
       return location.pathname === '/';
     }
-    return location.pathname.startsWith(path);
+    // Handle query params in path
+    const basePath = path.split('?')[0];
+    return location.pathname === basePath || location.pathname.startsWith(basePath + '/');
   };
 
   // Haptic feedback (if supported)
@@ -60,83 +65,51 @@ const BottomNavigation: React.FC = () => {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-background/98 backdrop-blur-xl border-t border-white/10 safe-area-pb">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-border safe-area-pb">
       <div className="flex items-stretch h-16">
-        {navItems.map((item, index) => {
+        {navItems.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.path);
 
-          // Special styling for center button
-          const isCenter = index === 2;
-
           return (
             <Link
-              key={item.path}
+              key={item.path + item.label}
               to={item.path}
               onClick={triggerHaptic}
-              className={`
-                relative flex-1 flex flex-col items-center justify-center
-                min-h-[64px] min-w-[64px]
-                transition-colors duration-200
-                ${isCenter ? '' : 'active:bg-white/5'}
-              `}
+              className="relative flex-1 flex flex-col items-center justify-center min-h-[64px] active:bg-accent transition-colors"
             >
-              {isCenter ? (
-                // Center FAB-style button
-                <motion.div
-                  whileTap={{ scale: 0.9 }}
-                  className="relative -mt-4"
-                >
-                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg shadow-primary/30">
-                    <Icon size={26} className="text-black" />
-                  </div>
-                  <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[10px] font-medium text-primary whitespace-nowrap">
-                    {item.label}
-                  </span>
-                </motion.div>
-              ) : (
-                // Regular nav items
-                <motion.div
-                  whileTap={{ scale: 0.85 }}
-                  className="flex flex-col items-center justify-center gap-1"
-                >
-                  <div className="relative">
-                    <Icon
-                      size={24}
-                      className={`transition-colors duration-200 ${
-                        active ? 'text-primary' : 'text-text-muted'
-                      }`}
-                      strokeWidth={active ? 2.5 : 2}
-                    />
-                    {/* Badge */}
-                    {item.badge && (
-                      <motion.span
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 flex items-center justify-center text-[10px] font-bold text-white bg-secondary rounded-full"
-                      >
-                        {item.badge > 99 ? '99+' : item.badge}
-                      </motion.span>
-                    )}
-                  </div>
-                  <span
-                    className={`text-[10px] font-medium transition-colors duration-200 ${
-                      active ? 'text-primary' : 'text-text-muted'
+              <motion.div
+                whileTap={{ scale: 0.9 }}
+                className="flex flex-col items-center justify-center gap-1"
+              >
+                <div className="relative">
+                  <Icon
+                    size={22}
+                    className={`transition-colors duration-200 ${
+                      active ? 'text-text-main' : 'text-text-muted'
                     }`}
-                  >
-                    {item.label}
-                  </span>
-
-                  {/* Active indicator */}
-                  {active && (
-                    <motion.div
-                      layoutId="bottomNavIndicator"
-                      className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-primary rounded-full"
-                      transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                    />
+                    strokeWidth={active ? 2.5 : 1.5}
+                    fill={active ? 'currentColor' : 'none'}
+                  />
+                  {/* Badge */}
+                  {item.badge && (
+                    <motion.span
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      className="absolute -top-1 -right-2 min-w-[16px] h-4 px-1 flex items-center justify-center text-[10px] font-bold text-white bg-primary rounded-full"
+                    >
+                      {item.badge > 99 ? '99+' : item.badge}
+                    </motion.span>
                   )}
-                </motion.div>
-              )}
+                </div>
+                <span
+                  className={`text-[10px] font-medium transition-colors duration-200 ${
+                    active ? 'text-text-main' : 'text-text-muted'
+                  }`}
+                >
+                  {item.label}
+                </span>
+              </motion.div>
             </Link>
           );
         })}

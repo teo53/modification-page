@@ -62,11 +62,11 @@ const Login: React.FC = () => {
         <div className="min-h-screen flex items-center justify-center py-12 px-4">
             <div className="max-w-md w-full space-y-8">
                 <div className="text-center">
-                    <h1 className="text-3xl font-bold text-white mb-2">로그인</h1>
+                    <h1 className="text-3xl font-bold text-text-main mb-2">로그인</h1>
                     <p className="text-text-muted">LunaAlba에 오신 것을 환영합니다</p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="mt-8 space-y-6 bg-accent rounded-xl p-8 border border-white/5">
+                <form onSubmit={handleSubmit} className="mt-8 space-y-6 bg-white rounded-xl p-8 border border-border shadow-sm">
                     {/* Error Message */}
                     {error && (
                         <div className="flex items-center gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400">
@@ -85,34 +85,34 @@ const Login: React.FC = () => {
 
                     <div className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium text-white mb-2">이메일</label>
+                            <label className="block text-sm font-medium text-text-main mb-2">이메일</label>
                             <div className="relative">
                                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
                                 <input
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full bg-background border border-white/10 rounded-lg py-3 pl-10 pr-4 text-white focus:border-primary outline-none"
+                                    className="w-full bg-surface border border-border rounded-lg py-3 pl-10 pr-4 text-text-main focus:border-primary outline-none"
                                     placeholder="이메일을 입력하세요"
                                 />
                             </div>
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-white mb-2">비밀번호</label>
+                            <label className="block text-sm font-medium text-text-main mb-2">비밀번호</label>
                             <div className="relative">
                                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
                                 <input
                                     type={showPassword ? 'text' : 'password'}
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full bg-background border border-white/10 rounded-lg py-3 pl-10 pr-12 text-white focus:border-primary outline-none"
+                                    className="w-full bg-surface border border-border rounded-lg py-3 pl-10 pr-12 text-text-main focus:border-primary outline-none"
                                     placeholder="비밀번호를 입력하세요"
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-white"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-main"
                                 >
                                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                 </button>
@@ -122,7 +122,7 @@ const Login: React.FC = () => {
 
                     <div className="flex items-center justify-between text-sm">
                         <label className="flex items-center gap-2 text-text-muted">
-                            <input type="checkbox" className="rounded border-white/20" />
+                            <input type="checkbox" className="rounded border-border" />
                             <span>로그인 상태 유지</span>
                         </label>
                         <a href="#" className="text-primary hover:underline">비밀번호 찾기</a>
@@ -131,7 +131,7 @@ const Login: React.FC = () => {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-primary text-black font-bold py-3 rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
+                        className="w-full bg-primary text-white font-bold py-3 rounded-lg hover:bg-primary-hover transition-colors disabled:opacity-50"
                     >
                         {loading ? '로그인 중...' : '로그인'}
                     </button>

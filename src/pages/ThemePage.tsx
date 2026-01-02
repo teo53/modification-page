@@ -55,11 +55,11 @@ interface StatCardProps {
     textColor?: string;
 }
 
-const StatCard: React.FC<StatCardProps> = ({ icon: Icon, iconColor, value, suffix = '', label, textColor = 'text-white' }) => {
+const StatCard: React.FC<StatCardProps> = ({ icon: Icon, iconColor, value, suffix = '', label, textColor = 'text-text-main' }) => {
     const animatedValue = useCountUp(value, 2000);
 
     return (
-        <div className="bg-accent/50 rounded-xl border border-white/5 p-6 text-center">
+        <div className="bg-white rounded-xl border border-border p-6 text-center shadow-sm">
             <Icon className={`${iconColor} w-8 h-8 mx-auto mb-2`} />
             <div className={`text-3xl md:text-4xl font-bold ${textColor} mb-2`}>
                 {animatedValue}{suffix}
@@ -133,7 +133,7 @@ const ThemePage: React.FC = () => {
         <div className="container mx-auto px-4 py-8">
             {/* 헤더 */}
             <div className="mb-12 text-center">
-                <h1 className="text-3xl font-bold text-white mb-4">테마별 알바</h1>
+                <h1 className="text-3xl font-bold text-text-main mb-4">테마별 알바</h1>
                 <p className="text-text-muted">원하는 조건의 일자리를 테마별로 쉽고 빠르게 찾아보세요.</p>
             </div>
 
@@ -161,7 +161,7 @@ const ThemePage: React.FC = () => {
                     label="만족도"
                     textColor="text-yellow-400"
                 />
-                <div className="bg-accent/50 rounded-xl border border-white/5 p-6 text-center">
+                <div className="bg-white rounded-xl border border-border p-6 text-center shadow-sm">
                     <Zap className="text-red-400 w-8 h-8 mx-auto mb-2" />
                     <div className="text-xl md:text-2xl font-bold text-red-400 mb-2 animate-pulse">실시간</div>
                     <div className="text-sm text-text-muted">업데이트</div>
@@ -170,7 +170,7 @@ const ThemePage: React.FC = () => {
 
             {/* 테마 그리드 */}
             <div className="mb-12">
-                <h2 className="text-xl font-bold text-white mb-4">테마 선택</h2>
+                <h2 className="text-xl font-bold text-text-main mb-4">테마 선택</h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                     {themes.map((theme) => {
                         const Icon = theme.icon;
@@ -182,15 +182,15 @@ const ThemePage: React.FC = () => {
                                 className={`
                                     p-4 rounded-xl border transition-all duration-300 flex flex-col items-center gap-2
                                     ${isActive
-                                        ? 'bg-primary/10 border-primary shadow-[0_0_15px_rgba(212,175,55,0.3)]'
-                                        : 'bg-accent border-white/5 hover:border-white/20 hover:bg-white/5'
+                                        ? 'bg-primary/10 border-primary shadow-[0_0_15px_rgba(255,107,53,0.2)]'
+                                        : 'bg-white border-border hover:border-primary/30 hover:bg-surface'
                                     }
                                 `}
                             >
-                                <div className={`p-3 rounded-full bg-black/30 ${theme.color}`}>
+                                <div className={`p-3 rounded-full bg-surface ${theme.color}`}>
                                     <Icon size={24} />
                                 </div>
-                                <span className={`font-bold text-sm ${isActive ? 'text-primary' : 'text-white'}`}>
+                                <span className={`font-bold text-sm ${isActive ? 'text-primary' : 'text-text-main'}`}>
                                     {theme.name}
                                 </span>
                             </button>
@@ -202,7 +202,7 @@ const ThemePage: React.FC = () => {
             {/* 결과 목록 */}
             <div className="mb-8">
                 <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                    <h2 className="text-xl font-bold text-text-main flex items-center gap-2">
                         <span className="text-primary">#{activeThemeData?.name}</span>
                         <span className="text-text-muted font-normal text-base">
                             추천 리스트 ({filteredAds.length}건)
@@ -236,7 +236,7 @@ const ThemePage: React.FC = () => {
                     <div className="text-center mt-8">
                         <button
                             onClick={() => setDisplayCount(prev => Math.min(prev + 12, filteredAds.length))}
-                            className="px-8 py-3 bg-primary text-black font-bold rounded-lg hover:bg-primary/90 transition-colors"
+                            className="px-8 py-3 bg-primary text-white font-bold rounded-lg hover:bg-primary-hover transition-colors"
                         >
                             더보기 ({filteredAds.length - displayCount}건)
                         </button>

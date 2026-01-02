@@ -61,7 +61,7 @@ const AppBar: React.FC<AppBarProps> = ({
         sticky top-0 z-40 h-14
         ${transparent
           ? 'bg-transparent'
-          : 'bg-background/95 backdrop-blur-lg border-b border-white/5'
+          : 'bg-white/95 backdrop-blur-lg border-b border-border'
         }
         safe-area-pt
       `}
@@ -73,16 +73,16 @@ const AppBar: React.FC<AppBarProps> = ({
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={handleBack}
-              className="w-11 h-11 flex items-center justify-center rounded-full hover:bg-white/10 active:bg-white/20 transition-colors -ml-2"
+              className="w-11 h-11 flex items-center justify-center rounded-full hover:bg-surface active:bg-accent transition-colors -ml-2"
               aria-label="뒤로가기"
             >
-              <ArrowLeft size={24} className="text-white" />
+              <ArrowLeft size={24} className="text-text-main" />
             </motion.button>
           ) : isHome ? (
             <Link to="/" className="flex items-center">
               <span className="text-xl font-bold">
-                <span className="text-white">Luna</span>
-                <span className="text-secondary">Alba</span>
+                <span className="text-primary">Luna</span>
+                <span className="text-text-main">Alba</span>
               </span>
             </Link>
           ) : null}
@@ -91,7 +91,7 @@ const AppBar: React.FC<AppBarProps> = ({
         {/* Center Section - Title or Search */}
         <div className="flex-1 flex items-center justify-center">
           {pageTitle && !isHome ? (
-            <h1 className="text-lg font-bold text-white truncate">
+            <h1 className="text-lg font-bold text-text-main truncate">
               {pageTitle}
             </h1>
           ) : isHome && showSearch ? (
@@ -101,7 +101,7 @@ const AppBar: React.FC<AppBarProps> = ({
             >
               <motion.div
                 whileTap={{ scale: 0.98 }}
-                className="flex items-center gap-3 h-10 px-4 rounded-full bg-accent/80 border border-white/10"
+                className="flex items-center gap-3 h-10 px-4 rounded-full bg-surface border border-border"
               >
                 <Search size={18} className="text-text-muted flex-shrink-0" />
                 <span className="text-text-muted text-sm truncate">
@@ -119,12 +119,12 @@ const AppBar: React.FC<AppBarProps> = ({
               {isHome && (
                 <motion.button
                   whileTap={{ scale: 0.9 }}
-                  className="relative w-11 h-11 flex items-center justify-center rounded-full hover:bg-white/10 active:bg-white/20 transition-colors"
+                  className="relative w-11 h-11 flex items-center justify-center rounded-full hover:bg-surface active:bg-accent transition-colors"
                   aria-label="알림"
                 >
-                  <Bell size={22} className="text-white" />
+                  <Bell size={22} className="text-text-main" />
                   {/* Notification Badge */}
-                  <span className="absolute top-2 right-2 w-2 h-2 bg-secondary rounded-full" />
+                  <span className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full" />
                 </motion.button>
               )}
             </>

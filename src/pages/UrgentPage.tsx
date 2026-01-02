@@ -34,10 +34,10 @@ const UrgentPage: React.FC = () => {
                             실시간 업데이트
                         </span>
                     </div>
-                    <h1 className="text-4xl font-bold text-white mb-4">
+                    <h1 className="text-4xl font-bold text-text-main mb-4">
                         오늘의 <span className="text-red-500">급구</span> 알바
                     </h1>
-                    <p className="text-gray-300 max-w-2xl">
+                    <p className="text-text-muted max-w-2xl">
                         사장님들이 급하게 찾고 계신 일자리입니다.
                         지금 지원하면 채용 확률 200%! 망설이지 말고 지원해보세요.
                     </p>
@@ -53,7 +53,7 @@ const UrgentPage: React.FC = () => {
                             px-4 py-2 rounded-full whitespace-nowrap transition-colors
                             ${i === 0
                                 ? 'bg-red-600 text-white font-bold'
-                                : 'bg-accent text-text-muted hover:text-white hover:bg-white/10'
+                                : 'bg-white text-text-muted border border-border hover:text-text-main hover:bg-surface'
                             }
                         `}
                     >

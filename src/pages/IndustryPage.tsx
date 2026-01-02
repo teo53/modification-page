@@ -60,9 +60,9 @@ const StatCard: React.FC<StatCardProps> = ({ icon: Icon, iconColor, value, suffi
     const displayValue = format ? format(animatedValue) : animatedValue;
 
     return (
-        <div className="bg-accent/50 rounded-xl border border-white/5 p-8 text-center">
+        <div className="bg-white rounded-xl border border-border p-8 text-center shadow-sm">
             <Icon className={`${iconColor} w-10 h-10 mx-auto mb-3`} />
-            <div className="text-4xl font-bold text-white mb-2">
+            <div className="text-4xl font-bold text-text-main mb-2">
                 {displayValue}{suffix}
             </div>
             <div className="text-sm text-text-muted">{label}</div>
@@ -156,7 +156,7 @@ const IndustryPage: React.FC = () => {
         <div className="container mx-auto px-4 py-8">
             {/* 헤더 */}
             <div className="mb-8 text-center">
-                <h1 className="text-3xl font-bold text-white mb-4">업종별 채용 정보</h1>
+                <h1 className="text-3xl font-bold text-text-main mb-4">업종별 채용 정보</h1>
                 <p className="text-text-muted mb-6">전국 1,666개 업소에서 당신을 기다립니다</p>
 
                 {/* 검색바 */}
@@ -167,7 +167,7 @@ const IndustryPage: React.FC = () => {
                             placeholder="업종명, 지역, 키워드로 검색..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full bg-accent border border-white/10 rounded-lg py-3 pl-12 pr-4 text-white focus:border-primary outline-none"
+                            className="w-full bg-white border border-border rounded-lg py-3 pl-12 pr-4 text-text-main focus:border-primary outline-none"
                         />
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={20} />
                     </div>
@@ -201,7 +201,7 @@ const IndustryPage: React.FC = () => {
 
             {/* 지역 선택 카드 */}
             <div className="mb-12">
-                <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <h2 className="text-xl font-bold text-text-main mb-4 flex items-center gap-2">
                     <MapPin className="text-primary" size={20} />
                     지역별 채용
                 </h2>
@@ -212,10 +212,10 @@ const IndustryPage: React.FC = () => {
                             onClick={() => setActiveRegion(activeRegion === region.name ? null : region.name)}
                             className={`p-4 rounded-xl border transition-all duration-300 text-center ${activeRegion === region.name
                                 ? 'bg-primary/20 border-primary'
-                                : `${region.color} bg-accent/30 hover:bg-accent/50`
+                                : `${region.color} bg-white hover:bg-surface`
                                 }`}
                         >
-                            <div className="text-lg font-bold text-white mb-1">{region.name}</div>
+                            <div className="text-lg font-bold text-text-main mb-1">{region.name}</div>
                             <div className="text-xs text-primary">{region.count}</div>
                             <div className="text-xs text-text-muted">{region.salary}</div>
                         </button>
@@ -225,7 +225,7 @@ const IndustryPage: React.FC = () => {
 
             {/* 업종 그리드 */}
             <div className="mb-12">
-                <h2 className="text-xl font-bold text-white mb-4">업종 선택</h2>
+                <h2 className="text-xl font-bold text-text-main mb-4">업종 선택</h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {industries.map((industry) => {
                         const Icon = industry.icon;
@@ -237,18 +237,18 @@ const IndustryPage: React.FC = () => {
                                 className={`
                                     p-6 rounded-xl border transition-all duration-300 flex flex-col items-center gap-3 group
                                     ${isActive
-                                        ? 'bg-primary/10 border-primary shadow-[0_0_15px_rgba(212,175,55,0.3)]'
-                                        : 'bg-accent border-white/5 hover:border-white/20 hover:bg-white/5'
+                                        ? 'bg-primary/10 border-primary shadow-[0_0_15px_rgba(255,107,53,0.2)]'
+                                        : 'bg-white border-border hover:border-primary/30 hover:bg-surface'
                                     }
                                 `}
                             >
                                 <div className={`
-                                    p-4 rounded-full bg-black/30 transition-transform duration-300 group-hover:scale-110
+                                    p-4 rounded-full bg-surface transition-transform duration-300 group-hover:scale-110
                                     ${industry.color}
                                 `}>
                                     <Icon size={28} />
                                 </div>
-                                <span className={`font-bold text-lg ${isActive ? 'text-primary' : 'text-white'}`}>
+                                <span className={`font-bold text-lg ${isActive ? 'text-primary' : 'text-text-main'}`}>
                                     {industry.name}
                                 </span>
                             </button>
@@ -260,7 +260,7 @@ const IndustryPage: React.FC = () => {
             {/* 결과 목록 */}
             <div className="mb-8">
                 <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                    <h2 className="text-xl font-bold text-text-main flex items-center gap-2">
                         <span className="text-primary">#{industries.find(i => i.id === activeIndustry)?.name}</span>
                         <span className="text-text-muted font-normal text-base">
                             {activeRegion ? `${activeRegion} 지역` : '전체'} ({filteredAds.length}건)
@@ -294,7 +294,7 @@ const IndustryPage: React.FC = () => {
                     <div className="text-center mt-8">
                         <button
                             onClick={() => setDisplayCount(prev => Math.min(prev + 16, filteredAds.length))}
-                            className="px-8 py-3 bg-primary text-black font-bold rounded-lg hover:bg-primary/90 transition-colors"
+                            className="px-8 py-3 bg-primary text-white font-bold rounded-lg hover:bg-primary-hover transition-colors"
                         >
                             더보기 ({filteredAds.length - displayCount}건)
                         </button>

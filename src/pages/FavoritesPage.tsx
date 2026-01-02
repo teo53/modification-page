@@ -29,13 +29,13 @@ const FavoritesPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background">
       {/* Header Info */}
-      <div className="px-4 py-6 border-b border-white/5">
+      <div className="px-4 py-6 border-b border-border bg-white">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-bold text-white flex items-center gap-2">
-              <Heart size={24} className="text-secondary" fill="currentColor" />
+            <h1 className="text-xl font-bold text-text-main flex items-center gap-2">
+              <Heart size={24} className="text-primary" fill="currentColor" />
               찜한 공고
             </h1>
             <p className="text-sm text-text-muted mt-1">
@@ -49,7 +49,7 @@ const FavoritesPage: React.FC = () => {
                   state.favorites.forEach(f => toggleFavorite(f.id));
                 }
               }}
-              className="text-sm text-text-muted hover:text-red-400 flex items-center gap-1"
+              className="text-sm text-text-muted hover:text-red-500 flex items-center gap-1"
             >
               <Trash2 size={16} />
               전체 삭제
@@ -60,7 +60,7 @@ const FavoritesPage: React.FC = () => {
 
       {/* Favorites List */}
       {favoriteAds.length > 0 ? (
-        <div className="divide-y divide-white/5">
+        <div className="divide-y divide-border">
           <AnimatePresence>
             {favoriteAds.map((ad: any) => (
               <motion.div
@@ -68,11 +68,11 @@ const FavoritesPage: React.FC = () => {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
-                className="relative"
+                className="relative bg-white"
               >
                 <Link
                   to={`/ad/${ad.id}`}
-                  className="flex gap-4 p-4 active:bg-white/5"
+                  className="flex gap-4 p-4 active:bg-accent"
                 >
                   {/* Thumbnail */}
                   <div className="w-20 h-20 rounded-xl overflow-hidden bg-accent flex-shrink-0">
@@ -86,7 +86,7 @@ const FavoritesPage: React.FC = () => {
 
                   {/* Info */}
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-white truncate pr-8">
+                    <h3 className="font-bold text-text-main truncate pr-8">
                       {ad.title}
                     </h3>
                     <p className="text-sm text-text-muted flex items-center gap-1 mt-1">
@@ -94,7 +94,7 @@ const FavoritesPage: React.FC = () => {
                       {ad.location}
                     </p>
                     <p className="text-primary font-bold mt-2">{ad.pay}</p>
-                    <p className="text-xs text-text-muted/60 flex items-center gap-1 mt-1">
+                    <p className="text-xs text-text-light flex items-center gap-1 mt-1">
                       <Clock size={12} />
                       {formatDate(ad.addedAt)}에 찜함
                     </p>
@@ -108,9 +108,9 @@ const FavoritesPage: React.FC = () => {
                     e.preventDefault();
                     toggleFavorite(String(ad.id));
                   }}
-                  className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-red-500/20"
+                  className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-accent hover:bg-red-50"
                 >
-                  <Heart size={20} className="text-secondary" fill="currentColor" />
+                  <Heart size={20} className="text-primary" fill="currentColor" />
                 </motion.button>
               </motion.div>
             ))}
@@ -118,11 +118,11 @@ const FavoritesPage: React.FC = () => {
         </div>
       ) : (
         /* Empty State */
-        <div className="flex flex-col items-center justify-center py-20 px-4">
+        <div className="flex flex-col items-center justify-center py-20 px-4 bg-white">
           <div className="w-24 h-24 rounded-full bg-accent flex items-center justify-center mb-6">
             <Heart size={40} className="text-text-muted" />
           </div>
-          <h2 className="text-lg font-bold text-white mb-2">
+          <h2 className="text-lg font-bold text-text-main mb-2">
             찜한 공고가 없습니다
           </h2>
           <p className="text-text-muted text-center mb-6">
@@ -131,7 +131,7 @@ const FavoritesPage: React.FC = () => {
           </p>
           <Link
             to="/search"
-            className="bg-primary text-black font-bold px-8 py-3 rounded-full"
+            className="bg-primary text-white font-bold px-8 py-3 rounded-full"
           >
             공고 둘러보기
           </Link>

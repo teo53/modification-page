@@ -121,7 +121,7 @@ const SearchResults: React.FC = () => {
 
     const handleFilterChange = (newFilters: typeof filters) => {
         setFilters(newFilters);
-        setDisplayCount(12); // 필터 변경 시 표시 개수 리셋
+        setDisplayCount(12);
     };
 
     const handleSearch = (e: React.FormEvent) => {
@@ -130,42 +130,43 @@ const SearchResults: React.FC = () => {
     };
 
     return (
-        <div className="pb-20">
+        <div className="pb-20 bg-background">
             {/* Search Header */}
-            <div className="container mx-auto px-4 py-8">
-                <h1 className="text-2xl font-bold text-white mb-4">검색 결과</h1>
-                <form onSubmit={handleSearch} className="flex gap-4">
-                    <div className="flex-1 relative">
-                        <input
-                            type="text"
-                            placeholder="지역, 업종, 키워드로 검색해보세요"
-                            className="w-full bg-accent border border-white/10 rounded-lg py-3 pl-12 pr-4 text-white focus:border-primary outline-none"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                        />
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={20} />
-                    </div>
-                    <button
-                        type="submit"
-                        className="bg-primary text-black px-6 rounded-lg font-bold hover:bg-primary/90 transition-colors"
-                    >
-                        검색
-                    </button>
-                    <button
-                        type="button"
-                        className="bg-accent border border-white/10 text-white px-4 rounded-lg flex items-center gap-2 hover:bg-white/5"
-                    >
-                        <Filter size={20} />
-                        필터
-                    </button>
-                </form>
+            <div className="bg-white border-b border-border">
+                <div className="container mx-auto px-4 py-6">
+                    <h1 className="text-xl font-bold text-text-main mb-4">검색 결과</h1>
+                    <form onSubmit={handleSearch} className="flex gap-2">
+                        <div className="flex-1 relative">
+                            <input
+                                type="text"
+                                placeholder="지역, 업종, 키워드로 검색해보세요"
+                                className="w-full bg-accent border border-border rounded-lg py-3 pl-12 pr-4 text-text-main focus:border-primary outline-none"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                            />
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={20} />
+                        </div>
+                        <button
+                            type="submit"
+                            className="bg-primary text-white px-6 rounded-lg font-bold hover:bg-primary-hover transition-colors"
+                        >
+                            검색
+                        </button>
+                        <button
+                            type="button"
+                            className="bg-accent border border-border text-text-main px-4 rounded-lg flex items-center gap-2 hover:bg-accent-dark"
+                        >
+                            <Filter size={20} />
+                        </button>
+                    </form>
+                </div>
             </div>
 
             {/* Horizontal Filter Bar */}
             <HorizontalFilterBar onFilterChange={handleFilterChange} />
 
             {/* Results Section */}
-            <div className="container mx-auto px-4">
+            <div className="container mx-auto px-4 py-4">
                 <div className="flex items-center justify-between mb-4">
                     <span className="text-text-muted">
                         총 <span className="text-primary font-bold">{filteredAds.length}</span>건의 검색결과
@@ -198,7 +199,7 @@ const SearchResults: React.FC = () => {
                     <div className="mt-8 flex justify-center">
                         <button
                             onClick={() => setDisplayCount(prev => Math.min(prev + 12, filteredAds.length))}
-                            className="bg-gradient-to-r from-primary/80 to-primary text-black px-8 py-3 rounded-lg font-bold hover:from-primary hover:to-primary/80 transition-all shadow-[0_0_20px_rgba(212,175,55,0.3)]"
+                            className="bg-primary text-white px-8 py-3 rounded-lg font-bold hover:bg-primary-hover transition-colors"
                         >
                             더보기 ({filteredAds.length - displayCount}건)
                         </button>
@@ -208,7 +209,7 @@ const SearchResults: React.FC = () => {
                 {filteredAds.length === 0 && (
                     <div className="text-center py-20">
                         <p className="text-text-muted text-lg">검색 결과가 없습니다.</p>
-                        <p className="text-text-muted/60 mt-2">다른 검색어나 필터를 시도해보세요.</p>
+                        <p className="text-text-light mt-2">다른 검색어나 필터를 시도해보세요.</p>
                     </div>
                 )}
             </div>

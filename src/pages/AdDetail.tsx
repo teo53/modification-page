@@ -54,11 +54,11 @@ const AdDetail: React.FC = () => {
     // If ad not found
     if (!ad) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
+            <div className="min-h-screen flex items-center justify-center bg-background">
                 <div className="text-center">
-                    <h2 className="text-xl font-bold text-white mb-2">공고를 찾을 수 없습니다</h2>
+                    <h2 className="text-xl font-bold text-text-main mb-2">공고를 찾을 수 없습니다</h2>
                     <p className="text-text-muted mb-4">삭제되었거나 존재하지 않는 공고입니다.</p>
-                    <Link to="/" className="bg-primary text-black px-6 py-2 rounded-lg font-bold">
+                    <Link to="/" className="bg-primary text-white px-6 py-2 rounded-lg font-bold">
                         홈으로 돌아가기
                     </Link>
                 </div>
@@ -67,14 +67,14 @@ const AdDetail: React.FC = () => {
     }
 
     return (
-        <div className="pb-24 md:pb-12">
+        <div className="pb-24 md:pb-12 bg-background">
             {/* Mobile Header */}
-            <div className="md:hidden sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-white/10 p-4 flex items-center justify-between">
-                <button onClick={() => navigate(-1)} className="text-white">
+            <div className="md:hidden sticky top-0 z-40 bg-white border-b border-border p-4 flex items-center justify-between">
+                <button onClick={() => navigate(-1)} className="text-text-main">
                     <ChevronLeft />
                 </button>
-                <span className="font-bold text-white">채용정보</span>
-                <button onClick={handleShare} className="text-white">
+                <span className="font-bold text-text-main">채용정보</span>
+                <button onClick={handleShare} className="text-text-main">
                     <Share2 size={20} />
                 </button>
             </div>
@@ -92,7 +92,7 @@ const AdDetail: React.FC = () => {
                                 className="w-full h-full object-cover"
                             />
                             {ad.isHot && (
-                                <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-red-500 text-white text-sm font-bold flex items-center gap-1">
+                                <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-badge-hot text-white text-sm font-bold flex items-center gap-1">
                                     <Zap size={14} /> 급구
                                 </span>
                             )}
@@ -113,22 +113,22 @@ const AdDetail: React.FC = () => {
                                             </span>
                                         )}
                                         {ad.productType === 'special' && (
-                                            <span className="px-2 py-1 rounded bg-purple-500/20 text-purple-400 text-xs font-bold">
+                                            <span className="px-2 py-1 rounded bg-purple-500/20 text-purple-600 text-xs font-bold">
                                                 SPECIAL
                                             </span>
                                         )}
                                         {ad.isNew && (
-                                            <span className="px-2 py-1 rounded bg-green-500/20 text-green-400 text-xs font-bold">
+                                            <span className="px-2 py-1 rounded bg-green-500/20 text-green-600 text-xs font-bold">
                                                 NEW
                                             </span>
                                         )}
                                         {ad.badges.map((badge, idx) => (
-                                            <span key={idx} className="px-2 py-1 rounded bg-white/10 text-text-muted text-xs">
+                                            <span key={idx} className="px-2 py-1 rounded bg-accent text-text-muted text-xs">
                                                 {badge}
                                             </span>
                                         ))}
                                     </div>
-                                    <h1 className="text-xl md:text-2xl font-bold text-white mb-2">
+                                    <h1 className="text-xl md:text-2xl font-bold text-text-main mb-2">
                                         {ad.title}
                                     </h1>
                                     <div className="flex items-center gap-2 text-text-muted">
@@ -139,17 +139,17 @@ const AdDetail: React.FC = () => {
                                 <motion.button
                                     whileTap={{ scale: 0.9 }}
                                     onClick={handleFavoriteClick}
-                                    className="p-3 rounded-full bg-accent hover:bg-secondary/20 transition-colors"
+                                    className="p-3 rounded-full bg-accent hover:bg-accent-dark transition-colors"
                                 >
                                     <Heart
                                         size={24}
-                                        className={isFav ? 'text-secondary' : 'text-white'}
+                                        className={isFav ? 'text-primary' : 'text-text-muted'}
                                         fill={isFav ? 'currentColor' : 'none'}
                                     />
                                 </motion.button>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-3 p-4 rounded-xl bg-accent border border-white/5">
+                            <div className="grid grid-cols-2 gap-3 p-4 rounded-xl bg-accent border border-border">
                                 <div className="space-y-1">
                                     <span className="text-xs text-text-muted flex items-center gap-1">
                                         <DollarSign size={12} /> 급여
@@ -160,28 +160,28 @@ const AdDetail: React.FC = () => {
                                     <span className="text-xs text-text-muted flex items-center gap-1">
                                         <Clock size={12} /> 근무시간
                                     </span>
-                                    <p className="text-white">협의</p>
+                                    <p className="text-text-main">협의</p>
                                 </div>
                                 <div className="space-y-1">
                                     <span className="text-xs text-text-muted flex items-center gap-1">
                                         <Calendar size={12} /> 근무요일
                                     </span>
-                                    <p className="text-white">협의 가능</p>
+                                    <p className="text-text-main">협의 가능</p>
                                 </div>
                                 <div className="space-y-1">
                                     <span className="text-xs text-text-muted">등록일</span>
-                                    <p className="text-white">{new Date().toLocaleDateString('ko-KR')}</p>
+                                    <p className="text-text-main">{new Date().toLocaleDateString('ko-KR')}</p>
                                 </div>
                             </div>
                         </div>
 
                         {/* Divider */}
-                        <hr className="border-white/10" />
+                        <hr className="border-border" />
 
                         {/* Description */}
-                        <div className="prose prose-invert max-w-none">
-                            <h3 className="text-lg font-bold text-white mb-4">상세모집요강</h3>
-                            <div className="bg-accent/30 p-5 rounded-xl border border-white/5 text-text-muted leading-relaxed whitespace-pre-line text-sm">
+                        <div>
+                            <h3 className="text-lg font-bold text-text-main mb-4">상세모집요강</h3>
+                            <div className="bg-accent p-5 rounded-xl border border-border text-text-muted leading-relaxed whitespace-pre-line text-sm">
                                 {`안녕하세요. ${ad.title.split(' ')[0]}에서 새로운 가족을 모십니다.
 
 📌 자격요건
@@ -206,8 +206,8 @@ const AdDetail: React.FC = () => {
 
                         {/* Location */}
                         <div className="space-y-4">
-                            <h3 className="text-lg font-bold text-white">위치 정보</h3>
-                            <div className="h-48 bg-accent rounded-xl flex items-center justify-center border border-white/5">
+                            <h3 className="text-lg font-bold text-text-main">위치 정보</h3>
+                            <div className="h-48 bg-accent rounded-xl flex items-center justify-center border border-border">
                                 <div className="text-center">
                                     <MapPin size={32} className="text-text-muted mx-auto mb-2" />
                                     <span className="text-text-muted">{ad.location}</span>
@@ -218,16 +218,16 @@ const AdDetail: React.FC = () => {
 
                     {/* Right Column: Sticky Contact (Desktop) */}
                     <div className="hidden md:block">
-                        <div className="sticky top-24 space-y-4 p-6 rounded-xl bg-accent border border-white/10">
+                        <div className="sticky top-24 space-y-4 p-6 rounded-xl bg-white border border-border shadow-sm">
                             <div className="text-center mb-4">
-                                <div className="w-20 h-20 bg-white/10 rounded-full mx-auto mb-3 overflow-hidden">
+                                <div className="w-20 h-20 bg-accent rounded-full mx-auto mb-3 overflow-hidden">
                                     <img src={ad.thumbnail} alt="" className="w-full h-full object-cover" />
                                 </div>
-                                <h3 className="text-lg font-bold text-white">{ad.title.split(' ')[0]}</h3>
+                                <h3 className="text-lg font-bold text-text-main">{ad.title.split(' ')[0]}</h3>
                                 <p className="text-sm text-text-muted">담당자: 매니저</p>
                             </div>
 
-                            <button className="w-full py-3 rounded-lg bg-primary text-black font-bold hover:bg-primary-hover transition-colors flex items-center justify-center gap-2">
+                            <button className="w-full py-3 rounded-lg bg-primary text-white font-bold hover:bg-primary-hover transition-colors flex items-center justify-center gap-2">
                                 <Phone size={20} />
                                 전화 문의
                             </button>
@@ -241,10 +241,10 @@ const AdDetail: React.FC = () => {
             </div>
 
             {/* Mobile Sticky Footer */}
-            <div className="md:hidden fixed bottom-0 left-0 right-0 p-4 bg-background border-t border-white/10 flex gap-2 z-50 safe-area-pb">
+            <div className="md:hidden fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-border flex gap-2 z-50 safe-area-pb">
                 <motion.button
                     whileTap={{ scale: 0.98 }}
-                    className="flex-1 py-3 rounded-lg bg-primary text-black font-bold flex items-center justify-center gap-2"
+                    className="flex-1 py-3 rounded-lg bg-primary text-white font-bold flex items-center justify-center gap-2"
                 >
                     <Phone size={20} />
                     전화하기
