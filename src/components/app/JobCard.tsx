@@ -53,7 +53,7 @@ const JobCard: React.FC<JobCardProps> = ({
       <Link to={`/ad/${id}`} onClick={handleCardClick}>
         <motion.div
           whileTap={{ scale: 0.98 }}
-          className="bg-accent rounded-2xl overflow-hidden border border-white/5 active:border-primary/30"
+          className="bg-white rounded-2xl overflow-hidden border border-border shadow-sm active:border-primary/30"
         >
           {/* Image */}
           <div className="relative aspect-[4/3]">
@@ -71,7 +71,7 @@ const JobCard: React.FC<JobCardProps> = ({
                 </span>
               )}
               {isNew && (
-                <span className="px-2 py-0.5 rounded-full bg-primary text-black text-xs font-bold">
+                <span className="px-2 py-0.5 rounded-full bg-primary text-white text-xs font-bold">
                   NEW
                 </span>
               )}
@@ -91,7 +91,7 @@ const JobCard: React.FC<JobCardProps> = ({
           </div>
           {/* Info */}
           <div className="p-3">
-            <h3 className="font-bold text-white text-sm line-clamp-1">{title}</h3>
+            <h3 className="font-bold text-text-main text-sm line-clamp-1">{title}</h3>
             <p className="text-xs text-text-muted flex items-center gap-1 mt-1">
               <MapPin size={12} />
               {location}
@@ -109,7 +109,7 @@ const JobCard: React.FC<JobCardProps> = ({
       <Link to={`/ad/${id}`} onClick={handleCardClick}>
         <motion.div
           whileTap={{ scale: 0.99 }}
-          className="flex gap-3 p-3 bg-accent rounded-xl border border-white/5 active:border-primary/30"
+          className="flex gap-3 p-3 bg-white rounded-xl border border-border shadow-sm active:border-primary/30"
         >
           {/* Image */}
           <div className="relative w-20 h-20 rounded-xl overflow-hidden flex-shrink-0">
@@ -128,7 +128,7 @@ const JobCard: React.FC<JobCardProps> = ({
           {/* Info */}
           <div className="flex-1 min-w-0 flex flex-col justify-center">
             <div className="flex items-start justify-between gap-2">
-              <h3 className="font-bold text-white text-sm line-clamp-1">{title}</h3>
+              <h3 className="font-bold text-text-main text-sm line-clamp-1">{title}</h3>
               {isNew && (
                 <span className="px-1.5 py-0.5 rounded bg-primary/20 text-primary text-[10px] font-bold flex-shrink-0">
                   N
@@ -165,7 +165,7 @@ const JobCard: React.FC<JobCardProps> = ({
       <Link to={`/ad/${id}`} onClick={handleCardClick}>
         <motion.div
           whileTap={{ scale: 0.98 }}
-          className="bg-accent rounded-2xl overflow-hidden border border-white/5"
+          className="bg-white rounded-2xl overflow-hidden border border-border shadow-sm"
         >
           {/* Image */}
           <div className="relative h-32">
@@ -219,7 +219,7 @@ const JobCard: React.FC<JobCardProps> = ({
       <Link to={`/ad/${id}`} onClick={handleCardClick}>
         <motion.div
           whileTap={{ scale: 0.98 }}
-          className="bg-accent rounded-xl overflow-hidden border border-white/5"
+          className="bg-white rounded-xl overflow-hidden border border-border shadow-sm"
         >
           <div className="aspect-[4/3]">
             <img
@@ -230,7 +230,7 @@ const JobCard: React.FC<JobCardProps> = ({
             />
           </div>
           <div className="p-2">
-            <h3 className="font-medium text-white text-xs line-clamp-1">{title}</h3>
+            <h3 className="font-medium text-text-main text-xs line-clamp-1">{title}</h3>
             <p className="text-primary font-bold text-xs mt-1">{pay}</p>
           </div>
         </motion.div>
