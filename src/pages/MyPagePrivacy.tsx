@@ -46,13 +46,13 @@ const MyPagePrivacy: React.FC = () => {
     }
 
     return (
-        <div className="min-h-screen pb-24">
+        <div className="min-h-screen pb-24 bg-background">
             {/* Header */}
-            <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-white/10 p-4 flex items-center gap-4">
-                <button onClick={() => navigate(-1)} className="text-white">
+            <div className="sticky top-0 z-40 bg-white border-b border-border p-4 flex items-center gap-4">
+                <button onClick={() => navigate(-1)} className="text-text-main">
                     <ChevronLeft size={24} />
                 </button>
-                <h1 className="text-lg font-bold text-white">개인정보 관리</h1>
+                <h1 className="text-lg font-bold text-text-main">개인정보 관리</h1>
             </div>
 
             <div className="p-4 space-y-6">
@@ -60,17 +60,17 @@ const MyPagePrivacy: React.FC = () => {
                 <div className="space-y-3">
                     <h2 className="text-sm font-bold text-text-muted px-1">공개 설정</h2>
 
-                    <div className="bg-accent rounded-xl p-4 border border-white/5">
+                    <div className="bg-white rounded-xl p-4 border border-border">
                         <div className="flex items-center gap-4">
                             <Eye size={22} className="text-primary" />
                             <div className="flex-1">
-                                <h3 className="font-medium text-white">프로필 공개</h3>
+                                <h3 className="font-medium text-text-main">프로필 공개</h3>
                                 <p className="text-sm text-text-muted">다른 사용자에게 프로필이 보입니다</p>
                             </div>
                             <button
                                 onClick={() => setPrivacySettings({ ...privacySettings, profileVisible: !privacySettings.profileVisible })}
                                 className={`w-12 h-7 rounded-full transition-colors relative ${
-                                    privacySettings.profileVisible ? 'bg-primary' : 'bg-white/20'
+                                    privacySettings.profileVisible ? 'bg-primary' : 'bg-border'
                                 }`}
                             >
                                 <motion.div
@@ -81,17 +81,17 @@ const MyPagePrivacy: React.FC = () => {
                         </div>
                     </div>
 
-                    <div className="bg-accent rounded-xl p-4 border border-white/5">
+                    <div className="bg-white rounded-xl p-4 border border-border">
                         <div className="flex items-center gap-4">
                             <Shield size={22} className="text-primary" />
                             <div className="flex-1">
-                                <h3 className="font-medium text-white">활동 기록 공개</h3>
+                                <h3 className="font-medium text-text-main">활동 기록 공개</h3>
                                 <p className="text-sm text-text-muted">최근 활동이 다른 사용자에게 보입니다</p>
                             </div>
                             <button
                                 onClick={() => setPrivacySettings({ ...privacySettings, activityVisible: !privacySettings.activityVisible })}
                                 className={`w-12 h-7 rounded-full transition-colors relative ${
-                                    privacySettings.activityVisible ? 'bg-primary' : 'bg-white/20'
+                                    privacySettings.activityVisible ? 'bg-primary' : 'bg-border'
                                 }`}
                             >
                                 <motion.div
@@ -112,12 +112,12 @@ const MyPagePrivacy: React.FC = () => {
                             localStorage.removeItem('searchHistory');
                             alert('검색 기록이 삭제되었습니다.');
                         }}
-                        className="w-full bg-accent rounded-xl p-4 border border-white/5 text-left"
+                        className="w-full bg-white rounded-xl p-4 border border-border text-left"
                     >
                         <div className="flex items-center gap-4">
                             <Trash2 size={22} className="text-text-muted" />
                             <div className="flex-1">
-                                <h3 className="font-medium text-white">검색 기록 삭제</h3>
+                                <h3 className="font-medium text-text-main">검색 기록 삭제</h3>
                                 <p className="text-sm text-text-muted">모든 검색 기록을 삭제합니다</p>
                             </div>
                         </div>
@@ -128,12 +128,12 @@ const MyPagePrivacy: React.FC = () => {
                             localStorage.removeItem('recentViews');
                             alert('최근 본 공고가 삭제되었습니다.');
                         }}
-                        className="w-full bg-accent rounded-xl p-4 border border-white/5 text-left"
+                        className="w-full bg-white rounded-xl p-4 border border-border text-left"
                     >
                         <div className="flex items-center gap-4">
                             <EyeOff size={22} className="text-text-muted" />
                             <div className="flex-1">
-                                <h3 className="font-medium text-white">최근 본 공고 삭제</h3>
+                                <h3 className="font-medium text-text-main">최근 본 공고 삭제</h3>
                                 <p className="text-sm text-text-muted">최근 본 공고 목록을 삭제합니다</p>
                             </div>
                         </div>
@@ -142,17 +142,17 @@ const MyPagePrivacy: React.FC = () => {
 
                 {/* Danger Zone */}
                 <div className="space-y-3">
-                    <h2 className="text-sm font-bold text-red-400 px-1">위험 구역</h2>
+                    <h2 className="text-sm font-bold text-red-500 px-1">위험 구역</h2>
 
                     <button
                         onClick={() => setShowDeleteConfirm(true)}
                         className="w-full bg-red-500/10 rounded-xl p-4 border border-red-500/20 text-left"
                     >
                         <div className="flex items-center gap-4">
-                            <AlertTriangle size={22} className="text-red-400" />
+                            <AlertTriangle size={22} className="text-red-500" />
                             <div className="flex-1">
-                                <h3 className="font-medium text-red-400">계정 삭제</h3>
-                                <p className="text-sm text-red-400/70">모든 데이터가 영구적으로 삭제됩니다</p>
+                                <h3 className="font-medium text-red-500">계정 삭제</h3>
+                                <p className="text-sm text-red-500/70">모든 데이터가 영구적으로 삭제됩니다</p>
                             </div>
                         </div>
                     </button>
@@ -160,11 +160,11 @@ const MyPagePrivacy: React.FC = () => {
             </div>
 
             {/* Save Button */}
-            <div className="fixed bottom-20 left-0 right-0 p-4 bg-background border-t border-white/10">
+            <div className="fixed bottom-20 left-0 right-0 p-4 bg-white border-t border-border">
                 <motion.button
                     whileTap={{ scale: 0.98 }}
                     onClick={handleSave}
-                    className="w-full bg-primary text-black font-bold py-4 rounded-xl flex items-center justify-center gap-2"
+                    className="w-full bg-primary text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2"
                 >
                     {saved ? (
                         <>
@@ -179,17 +179,17 @@ const MyPagePrivacy: React.FC = () => {
 
             {/* Delete Confirmation Modal */}
             {showDeleteConfirm && (
-                <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="bg-accent rounded-2xl p-6 max-w-sm w-full border border-white/10"
+                        className="bg-white rounded-2xl p-6 max-w-sm w-full border border-border shadow-xl"
                     >
                         <div className="text-center">
                             <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <AlertTriangle size={32} className="text-red-400" />
+                                <AlertTriangle size={32} className="text-red-500" />
                             </div>
-                            <h2 className="text-xl font-bold text-white mb-2">계정을 삭제하시겠습니까?</h2>
+                            <h2 className="text-xl font-bold text-text-main mb-2">계정을 삭제하시겠습니까?</h2>
                             <p className="text-text-muted mb-6">
                                 이 작업은 되돌릴 수 없습니다.<br />
                                 모든 데이터가 영구적으로 삭제됩니다.
@@ -197,7 +197,7 @@ const MyPagePrivacy: React.FC = () => {
                             <div className="flex gap-3">
                                 <button
                                     onClick={() => setShowDeleteConfirm(false)}
-                                    className="flex-1 py-3 rounded-xl bg-white/10 text-white font-medium"
+                                    className="flex-1 py-3 rounded-xl bg-surface text-text-main font-medium border border-border"
                                 >
                                     취소
                                 </button>

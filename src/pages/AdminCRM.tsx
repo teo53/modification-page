@@ -23,46 +23,46 @@ const AdminCRM: React.FC = () => {
 
     return (
         <div className="container mx-auto px-4 py-8">
-            <h1 className="text-2xl font-bold text-white mb-8">관리자 대시보드</h1>
+            <h1 className="text-2xl font-bold text-text-main mb-8">관리자 대시보드</h1>
 
             {/* Global Stats */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-                <div className="bg-accent p-6 rounded-xl border border-white/5">
+                <div className="bg-white p-6 rounded-xl border border-border shadow-sm">
                     <div className="flex items-center justify-between mb-4">
                         <span className="text-text-muted">총 회원수</span>
                         <Users className="text-blue-500" size={20} />
                     </div>
-                    <p className="text-3xl font-bold text-white">5,432</p>
+                    <p className="text-3xl font-bold text-text-main">5,432</p>
                     <span className="text-xs text-green-500 flex items-center gap-1 mt-2">
                         +125명 (오늘)
                     </span>
                 </div>
-                <div className="bg-accent p-6 rounded-xl border border-white/5">
+                <div className="bg-white p-6 rounded-xl border border-border shadow-sm">
                     <div className="flex items-center justify-between mb-4">
                         <span className="text-text-muted">월 매출</span>
                         <DollarSign className="text-primary" size={20} />
                     </div>
-                    <p className="text-3xl font-bold text-white">₩45.2M</p>
+                    <p className="text-3xl font-bold text-text-main">₩45.2M</p>
                     <span className="text-xs text-green-500 flex items-center gap-1 mt-2">
                         +12.5% (전월 대비)
                     </span>
                 </div>
-                <div className="bg-accent p-6 rounded-xl border border-white/5">
+                <div className="bg-white p-6 rounded-xl border border-border shadow-sm">
                     <div className="flex items-center justify-between mb-4">
                         <span className="text-text-muted">승인 대기 광고</span>
                         <Clock className="text-yellow-500" size={20} />
                     </div>
-                    <p className="text-3xl font-bold text-white">12</p>
+                    <p className="text-3xl font-bold text-text-main">12</p>
                     <span className="text-xs text-text-muted mt-2">
                         평균 처리 시간: 1.2시간
                     </span>
                 </div>
-                <div className="bg-accent p-6 rounded-xl border border-white/5">
+                <div className="bg-white p-6 rounded-xl border border-border shadow-sm">
                     <div className="flex items-center justify-between mb-4">
                         <span className="text-text-muted">신고 접수</span>
                         <AlertTriangle className="text-red-500" size={20} />
                     </div>
-                    <p className="text-3xl font-bold text-white">3</p>
+                    <p className="text-3xl font-bold text-text-main">3</p>
                     <span className="text-xs text-red-500 mt-2">
                         미처리 건수
                     </span>
@@ -74,8 +74,8 @@ const AdminCRM: React.FC = () => {
                 <div className="lg:col-span-2 space-y-8">
                     <div className="grid md:grid-cols-2 gap-8">
                         {/* Ad Type Distribution */}
-                        <div className="bg-accent p-6 rounded-xl border border-white/5">
-                            <h3 className="text-lg font-bold text-white mb-6">광고 상품 분포</h3>
+                        <div className="bg-white p-6 rounded-xl border border-border shadow-sm">
+                            <h3 className="text-lg font-bold text-text-main mb-6">광고 상품 분포</h3>
                             <div className="h-64">
                                 <ResponsiveContainer width="100%" height="100%">
                                     <PieChart>
@@ -93,8 +93,8 @@ const AdminCRM: React.FC = () => {
                                             ))}
                                         </Pie>
                                         <Tooltip
-                                            contentStyle={{ backgroundColor: '#1E1E1E', border: '1px solid #333' }}
-                                            itemStyle={{ color: '#fff' }}
+                                            contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #E5E5E5' }}
+                                            itemStyle={{ color: '#222' }}
                                         />
                                     </PieChart>
                                 </ResponsiveContainer>
@@ -110,19 +110,19 @@ const AdminCRM: React.FC = () => {
                         </div>
 
                         {/* Revenue Chart */}
-                        <div className="bg-accent p-6 rounded-xl border border-white/5">
-                            <h3 className="text-lg font-bold text-white mb-6">매출 현황</h3>
+                        <div className="bg-white p-6 rounded-xl border border-border shadow-sm">
+                            <h3 className="text-lg font-bold text-text-main mb-6">매출 현황</h3>
                             <div className="h-64">
                                 <ResponsiveContainer width="100%" height="100%">
                                     <BarChart data={revenueData}>
-                                        <CartesianGrid strokeDasharray="3 3" stroke="#333" />
+                                        <CartesianGrid strokeDasharray="3 3" stroke="#E5E5E5" />
                                         <XAxis dataKey="name" stroke="#888" />
                                         <YAxis stroke="#888" />
                                         <Tooltip
-                                            contentStyle={{ backgroundColor: '#1E1E1E', border: '1px solid #333' }}
-                                            itemStyle={{ color: '#fff' }}
+                                            contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #E5E5E5' }}
+                                            itemStyle={{ color: '#222' }}
                                         />
-                                        <Bar dataKey="amount" fill="#D4AF37" radius={[4, 4, 0, 0]} />
+                                        <Bar dataKey="amount" fill="#FF6B35" radius={[4, 4, 0, 0]} />
                                     </BarChart>
                                 </ResponsiveContainer>
                             </div>
@@ -130,10 +130,10 @@ const AdminCRM: React.FC = () => {
                     </div>
 
                     {/* Interactive Heatmap */}
-                    <div className="bg-accent p-6 rounded-xl border border-white/5">
+                    <div className="bg-white p-6 rounded-xl border border-border shadow-sm">
                         <div className="flex items-center justify-between mb-6">
                             <div>
-                                <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                                <h3 className="text-lg font-bold text-text-main flex items-center gap-2">
                                     광고 효율 히트맵 (Interactive Simulation)
                                     <span className="text-xs bg-primary/20 text-primary px-2 py-1 rounded-full">Live Demo</span>
                                 </h3>
@@ -143,14 +143,14 @@ const AdminCRM: React.FC = () => {
                             </div>
                             <button
                                 onClick={() => setHeatmapPoints([])}
-                                className="text-xs text-text-muted hover:text-white underline"
+                                className="text-xs text-text-muted hover:text-text-main underline"
                             >
                                 초기화
                             </button>
                         </div>
 
                         <div
-                            className="relative w-full aspect-[16/9] bg-[#111] rounded-lg border border-white/10 overflow-hidden p-4 cursor-crosshair select-none"
+                            className="relative w-full aspect-[16/9] bg-surface rounded-lg border border-border overflow-hidden p-4 cursor-crosshair select-none"
                             onClick={(e) => {
                                 const rect = e.currentTarget.getBoundingClientRect();
                                 const x = e.clientX - rect.left;
@@ -160,21 +160,21 @@ const AdminCRM: React.FC = () => {
                         >
                             {/* Website Wireframe Background */}
                             <div className="w-full h-full flex flex-col gap-4 opacity-50 pointer-events-none">
-                                <div className="h-12 w-full bg-white/5 rounded flex items-center px-4 justify-between">
-                                    <div className="w-24 h-4 bg-white/10 rounded"></div>
-                                    <div className="w-64 h-8 bg-white/10 rounded-full"></div>
-                                    <div className="w-32 h-8 bg-white/10 rounded"></div>
+                                <div className="h-12 w-full bg-border/50 rounded flex items-center px-4 justify-between">
+                                    <div className="w-24 h-4 bg-border rounded"></div>
+                                    <div className="w-64 h-8 bg-border rounded-full"></div>
+                                    <div className="w-32 h-8 bg-border rounded"></div>
                                 </div>
-                                <div className="h-48 w-full bg-white/5 rounded flex items-center justify-center">
-                                    <div className="w-1/2 h-8 bg-white/10 rounded"></div>
+                                <div className="h-48 w-full bg-border/50 rounded flex items-center justify-center">
+                                    <div className="w-1/2 h-8 bg-border rounded"></div>
                                 </div>
                                 <div className="grid grid-cols-4 gap-4 flex-1">
                                     {Array(8).fill(0).map((_, i) => (
-                                        <div key={i} className="bg-white/5 rounded h-full relative overflow-hidden">
-                                            <div className="w-full h-2/3 bg-white/5"></div>
+                                        <div key={i} className="bg-border/50 rounded h-full relative overflow-hidden">
+                                            <div className="w-full h-2/3 bg-border/30"></div>
                                             <div className="p-2 space-y-2">
-                                                <div className="w-3/4 h-3 bg-white/10 rounded"></div>
-                                                <div className="w-1/2 h-3 bg-white/10 rounded"></div>
+                                                <div className="w-3/4 h-3 bg-border rounded"></div>
+                                                <div className="w-1/2 h-3 bg-border rounded"></div>
                                             </div>
                                         </div>
                                     ))}
@@ -186,7 +186,7 @@ const AdminCRM: React.FC = () => {
                                 {heatmapPoints.map((point, i) => (
                                     <div
                                         key={i}
-                                        className="absolute rounded-full mix-blend-screen animate-pulse"
+                                        className="absolute rounded-full mix-blend-multiply animate-pulse"
                                         style={{
                                             left: point.x - 40,
                                             top: point.y - 40,
@@ -200,14 +200,14 @@ const AdminCRM: React.FC = () => {
                                 ))}
                                 {heatmapPoints.length === 0 && (
                                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                        <div className="bg-black/80 backdrop-blur px-4 py-2 rounded-full text-sm text-white border border-white/10 animate-bounce">
-                                            👆 화면을 클릭해보세요!
+                                        <div className="bg-white/90 backdrop-blur px-4 py-2 rounded-full text-sm text-text-main border border-border animate-bounce">
+                                            화면을 클릭해보세요!
                                         </div>
                                     </div>
                                 )}
                             </div>
 
-                            <div className="absolute top-4 right-4 bg-black/80 backdrop-blur px-3 py-1.5 rounded text-xs text-white border border-white/10 pointer-events-none">
+                            <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded text-xs text-text-main border border-border pointer-events-none">
                                 클릭 수: {heatmapPoints.length}
                             </div>
                         </div>
@@ -217,16 +217,16 @@ const AdminCRM: React.FC = () => {
                 {/* Side Column: Activity & Tasks */}
                 <div className="space-y-8">
                     {/* Pending Approvals */}
-                    <div className="bg-accent rounded-xl border border-white/5 overflow-hidden">
-                        <div className="p-4 border-b border-white/5 flex justify-between items-center">
-                            <h3 className="font-bold text-white">승인 대기 목록</h3>
-                            <span className="bg-yellow-500/20 text-yellow-500 text-xs px-2 py-1 rounded-full">12건</span>
+                    <div className="bg-white rounded-xl border border-border shadow-sm overflow-hidden">
+                        <div className="p-4 border-b border-border flex justify-between items-center">
+                            <h3 className="font-bold text-text-main">승인 대기 목록</h3>
+                            <span className="bg-yellow-500/20 text-yellow-600 text-xs px-2 py-1 rounded-full">12건</span>
                         </div>
-                        <div className="divide-y divide-white/5">
+                        <div className="divide-y divide-border">
                             {[1, 2, 3].map((i) => (
-                                <div key={i} className="p-4 hover:bg-white/5 transition-colors">
+                                <div key={i} className="p-4 hover:bg-surface transition-colors">
                                     <div className="flex justify-between items-start mb-2">
-                                        <span className="text-sm font-medium text-white">강남 룸살롱 신규 오픈</span>
+                                        <span className="text-sm font-medium text-text-main">강남 룸살롱 신규 오픈</span>
                                         <span className="text-xs text-text-muted">10분 전</span>
                                     </div>
                                     <div className="flex items-center gap-2 mb-3">
@@ -234,7 +234,7 @@ const AdminCRM: React.FC = () => {
                                         <span className="text-xs text-text-muted">김사장님</span>
                                     </div>
                                     <div className="flex gap-2">
-                                        <button className="flex-1 bg-green-500/20 text-green-500 text-xs py-1.5 rounded hover:bg-green-500/30 flex items-center justify-center gap-1">
+                                        <button className="flex-1 bg-green-500/20 text-green-600 text-xs py-1.5 rounded hover:bg-green-500/30 flex items-center justify-center gap-1">
                                             <CheckCircle size={12} /> 승인
                                         </button>
                                         <button className="flex-1 bg-red-500/20 text-red-500 text-xs py-1.5 rounded hover:bg-red-500/30 flex items-center justify-center gap-1">
@@ -244,15 +244,15 @@ const AdminCRM: React.FC = () => {
                                 </div>
                             ))}
                         </div>
-                        <div className="p-3 text-center border-t border-white/5">
-                            <button className="text-xs text-text-muted hover:text-white">전체보기</button>
+                        <div className="p-3 text-center border-t border-border">
+                            <button className="text-xs text-text-muted hover:text-text-main">전체보기</button>
                         </div>
                     </div>
 
                     {/* Recent Activity Log */}
-                    <div className="bg-accent rounded-xl border border-white/5 overflow-hidden">
-                        <div className="p-4 border-b border-white/5">
-                            <h3 className="font-bold text-white">실시간 활동 로그</h3>
+                    <div className="bg-white rounded-xl border border-border shadow-sm overflow-hidden">
+                        <div className="p-4 border-b border-border">
+                            <h3 className="font-bold text-text-main">실시간 활동 로그</h3>
                         </div>
                         <div className="p-4 space-y-4">
                             {[
@@ -267,7 +267,7 @@ const AdminCRM: React.FC = () => {
                                             log.type === 'report' ? 'bg-red-500' : 'bg-green-500'
                                         }`} />
                                     <div>
-                                        <p className="text-sm text-white">{log.text}</p>
+                                        <p className="text-sm text-text-main">{log.text}</p>
                                         <span className="text-xs text-text-muted">{log.time}</span>
                                     </div>
                                 </div>
@@ -276,9 +276,9 @@ const AdminCRM: React.FC = () => {
                     </div>
 
                     {/* Reported Content */}
-                    <div className="bg-accent rounded-xl border border-white/5 overflow-hidden">
-                        <div className="p-4 border-b border-white/5 flex justify-between items-center">
-                            <h3 className="font-bold text-white">신고 관리</h3>
+                    <div className="bg-white rounded-xl border border-border shadow-sm overflow-hidden">
+                        <div className="p-4 border-b border-border flex justify-between items-center">
+                            <h3 className="font-bold text-text-main">신고 관리</h3>
                             <AlertTriangle size={16} className="text-red-500" />
                         </div>
                         <div className="p-4">
@@ -287,9 +287,9 @@ const AdminCRM: React.FC = () => {
                                     <MessageSquare size={14} className="text-red-500" />
                                     <span className="text-sm font-bold text-red-500">부적절한 게시글</span>
                                 </div>
-                                <p className="text-xs text-white mb-2">"여기 가지마세요 사장님이..."</p>
+                                <p className="text-xs text-text-main mb-2">"여기 가지마세요 사장님이..."</p>
                                 <div className="flex justify-end gap-2">
-                                    <button className="text-xs text-text-muted hover:text-white underline">상세보기</button>
+                                    <button className="text-xs text-text-muted hover:text-text-main underline">상세보기</button>
                                     <button className="text-xs bg-red-500 text-white px-2 py-1 rounded">삭제</button>
                                 </div>
                             </div>

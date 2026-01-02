@@ -65,13 +65,13 @@ const MyPageNotifications: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen pb-24">
+        <div className="min-h-screen pb-24 bg-background">
             {/* Header */}
-            <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-white/10 p-4 flex items-center gap-4">
-                <button onClick={() => navigate(-1)} className="text-white">
+            <div className="sticky top-0 z-40 bg-white border-b border-border p-4 flex items-center gap-4">
+                <button onClick={() => navigate(-1)} className="text-text-main">
                     <ChevronLeft size={24} />
                 </button>
-                <h1 className="text-lg font-bold text-white">알림 설정</h1>
+                <h1 className="text-lg font-bold text-text-main">알림 설정</h1>
             </div>
 
             <div className="p-4 space-y-3">
@@ -79,18 +79,18 @@ const MyPageNotifications: React.FC = () => {
                     <motion.div
                         key={setting.id}
                         whileTap={{ scale: 0.98 }}
-                        className="bg-accent rounded-xl p-4 border border-white/5"
+                        className="bg-white rounded-xl p-4 border border-border"
                     >
                         <div className="flex items-center gap-4">
                             <div className="text-primary">{setting.icon}</div>
                             <div className="flex-1">
-                                <h3 className="font-medium text-white">{setting.title}</h3>
+                                <h3 className="font-medium text-text-main">{setting.title}</h3>
                                 <p className="text-sm text-text-muted">{setting.description}</p>
                             </div>
                             <button
                                 onClick={() => toggleSetting(setting.id)}
                                 className={`w-12 h-7 rounded-full transition-colors relative ${
-                                    setting.enabled ? 'bg-primary' : 'bg-white/20'
+                                    setting.enabled ? 'bg-primary' : 'bg-border'
                                 }`}
                             >
                                 <motion.div
@@ -105,11 +105,11 @@ const MyPageNotifications: React.FC = () => {
             </div>
 
             {/* Save Button */}
-            <div className="fixed bottom-20 left-0 right-0 p-4 bg-background border-t border-white/10">
+            <div className="fixed bottom-20 left-0 right-0 p-4 bg-white border-t border-border">
                 <motion.button
                     whileTap={{ scale: 0.98 }}
                     onClick={handleSave}
-                    className="w-full bg-primary text-black font-bold py-4 rounded-xl flex items-center justify-center gap-2"
+                    className="w-full bg-primary text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2"
                 >
                     {saved ? (
                         <>

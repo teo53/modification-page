@@ -60,26 +60,26 @@ const MyPageEdit: React.FC = () => {
     if (!user) return null;
 
     return (
-        <div className="min-h-screen pb-24">
+        <div className="min-h-screen pb-24 bg-background">
             {/* Header */}
-            <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-white/10 p-4 flex items-center gap-4">
-                <button onClick={() => navigate(-1)} className="text-white">
+            <div className="sticky top-0 z-40 bg-white border-b border-border p-4 flex items-center gap-4">
+                <button onClick={() => navigate(-1)} className="text-text-main">
                     <ChevronLeft size={24} />
                 </button>
-                <h1 className="text-lg font-bold text-white">프로필 수정</h1>
+                <h1 className="text-lg font-bold text-text-main">프로필 수정</h1>
             </div>
 
             <div className="p-4">
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {/* Success/Error Messages */}
                     {success && (
-                        <div className="flex items-center gap-2 p-3 rounded-lg bg-green-500/10 border border-green-500/20 text-green-400">
+                        <div className="flex items-center gap-2 p-3 rounded-lg bg-green-500/10 border border-green-500/20 text-green-600">
                             <CheckCircle size={18} />
                             <span className="text-sm">{success}</span>
                         </div>
                     )}
                     {error && (
-                        <div className="flex items-center gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400">
+                        <div className="flex items-center gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-500">
                             <AlertCircle size={18} />
                             <span className="text-sm">{error}</span>
                         </div>
@@ -101,7 +101,7 @@ const MyPageEdit: React.FC = () => {
                                 type="email"
                                 value={user.email}
                                 disabled
-                                className="w-full bg-accent border border-white/10 rounded-lg py-3 pl-10 pr-4 text-text-muted cursor-not-allowed"
+                                className="w-full bg-surface border border-border rounded-lg py-3 pl-10 pr-4 text-text-muted cursor-not-allowed"
                             />
                         </div>
                         <p className="text-xs text-text-muted mt-1">이메일은 변경할 수 없습니다.</p>
@@ -109,14 +109,14 @@ const MyPageEdit: React.FC = () => {
 
                     {/* Name */}
                     <div>
-                        <label className="block text-sm font-medium text-white mb-2">이름</label>
+                        <label className="block text-sm font-medium text-text-main mb-2">이름</label>
                         <div className="relative">
                             <User className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
                             <input
                                 type="text"
                                 value={formData.name}
                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                className="w-full bg-background border border-white/10 rounded-lg py-3 pl-10 pr-4 text-white focus:border-primary outline-none"
+                                className="w-full bg-white border border-border rounded-lg py-3 pl-10 pr-4 text-text-main focus:border-primary outline-none"
                                 placeholder="이름"
                             />
                         </div>
@@ -124,26 +124,26 @@ const MyPageEdit: React.FC = () => {
 
                     {/* Nickname */}
                     <div>
-                        <label className="block text-sm font-medium text-white mb-2">닉네임</label>
+                        <label className="block text-sm font-medium text-text-main mb-2">닉네임</label>
                         <input
                             type="text"
                             value={formData.nickname}
                             onChange={(e) => setFormData({ ...formData, nickname: e.target.value })}
-                            className="w-full bg-background border border-white/10 rounded-lg py-3 px-4 text-white focus:border-primary outline-none"
+                            className="w-full bg-white border border-border rounded-lg py-3 px-4 text-text-main focus:border-primary outline-none"
                             placeholder="닉네임"
                         />
                     </div>
 
                     {/* Phone */}
                     <div>
-                        <label className="block text-sm font-medium text-white mb-2">연락처</label>
+                        <label className="block text-sm font-medium text-text-main mb-2">연락처</label>
                         <div className="relative">
                             <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
                             <input
                                 type="tel"
                                 value={formData.phone}
                                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                className="w-full bg-background border border-white/10 rounded-lg py-3 pl-10 pr-4 text-white focus:border-primary outline-none"
+                                className="w-full bg-white border border-border rounded-lg py-3 pl-10 pr-4 text-text-main focus:border-primary outline-none"
                                 placeholder="010-0000-0000"
                             />
                         </div>
@@ -154,10 +154,10 @@ const MyPageEdit: React.FC = () => {
                         whileTap={{ scale: 0.98 }}
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-primary text-black font-bold py-4 rounded-xl flex items-center justify-center gap-2 disabled:opacity-50"
+                        className="w-full bg-primary text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 disabled:opacity-50"
                     >
                         {loading ? (
-                            <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                         ) : (
                             <>
                                 <Save size={20} />

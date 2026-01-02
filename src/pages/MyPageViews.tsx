@@ -34,18 +34,18 @@ const MyPageViews: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen pb-24">
+        <div className="min-h-screen pb-24 bg-background">
             {/* Header */}
-            <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-white/10 p-4 flex items-center gap-4">
-                <button onClick={() => navigate(-1)} className="text-white">
+            <div className="sticky top-0 z-40 bg-white border-b border-border p-4 flex items-center gap-4">
+                <button onClick={() => navigate(-1)} className="text-text-main">
                     <ChevronLeft size={24} />
                 </button>
-                <h1 className="text-lg font-bold text-white">최근 본 공고</h1>
+                <h1 className="text-lg font-bold text-text-main">최근 본 공고</h1>
                 <span className="text-sm text-text-muted ml-auto">{recentViewAds.length}개</span>
             </div>
 
             {recentViewAds.length > 0 ? (
-                <div className="divide-y divide-white/5">
+                <div className="divide-y divide-border">
                     <AnimatePresence>
                         {recentViewAds.map((ad: any) => (
                             <motion.div
@@ -56,7 +56,7 @@ const MyPageViews: React.FC = () => {
                             >
                                 <Link
                                     to={`/ad/${ad.id}`}
-                                    className="flex gap-4 p-4 active:bg-white/5"
+                                    className="flex gap-4 p-4 active:bg-surface bg-white"
                                 >
                                     {/* Thumbnail */}
                                     <div className="w-20 h-20 rounded-xl overflow-hidden bg-accent flex-shrink-0">
@@ -70,7 +70,7 @@ const MyPageViews: React.FC = () => {
 
                                     {/* Info */}
                                     <div className="flex-1 min-w-0">
-                                        <h3 className="font-bold text-white truncate">
+                                        <h3 className="font-bold text-text-main truncate">
                                             {ad.title}
                                         </h3>
                                         <p className="text-sm text-text-muted flex items-center gap-1 mt-1">
@@ -91,10 +91,10 @@ const MyPageViews: React.FC = () => {
             ) : (
                 /* Empty State */
                 <div className="flex flex-col items-center justify-center py-20 px-4">
-                    <div className="w-24 h-24 rounded-full bg-accent flex items-center justify-center mb-6">
+                    <div className="w-24 h-24 rounded-full bg-surface flex items-center justify-center mb-6">
                         <Clock size={40} className="text-text-muted" />
                     </div>
-                    <h2 className="text-lg font-bold text-white mb-2">
+                    <h2 className="text-lg font-bold text-text-main mb-2">
                         최근 본 공고가 없습니다
                     </h2>
                     <p className="text-text-muted text-center mb-6">
@@ -102,7 +102,7 @@ const MyPageViews: React.FC = () => {
                     </p>
                     <Link
                         to="/search"
-                        className="bg-primary text-black font-bold px-8 py-3 rounded-full"
+                        className="bg-primary text-white font-bold px-8 py-3 rounded-full"
                     >
                         공고 둘러보기
                     </Link>

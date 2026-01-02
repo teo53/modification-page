@@ -86,7 +86,7 @@ const BottomNavigation: React.FC = () => {
                   <Icon
                     size={22}
                     className={`transition-colors duration-200 ${
-                      active ? 'text-text-main' : 'text-text-muted'
+                      active ? 'text-primary' : 'text-text-muted'
                     }`}
                     strokeWidth={active ? 2.5 : 1.5}
                     fill={active ? 'currentColor' : 'none'}
@@ -104,7 +104,7 @@ const BottomNavigation: React.FC = () => {
                 </div>
                 <span
                   className={`text-[10px] font-medium transition-colors duration-200 ${
-                    active ? 'text-text-main' : 'text-text-muted'
+                    active ? 'text-primary' : 'text-text-muted'
                   }`}
                 >
                   {item.label}
