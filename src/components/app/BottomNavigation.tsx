@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, BarChart3, MapPin, MessageCircle, Users, User } from 'lucide-react';
+import { Home, BarChart3, MapPin, MessageCircle, User } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useApp } from '../../context/AppContext';
 
@@ -22,28 +22,23 @@ const BottomNavigation: React.FC = () => {
       path: '/',
     },
     {
-      icon: BarChart3,
-      label: 'AI 추천',
-      path: '/search?filter=ai',
-    },
-    {
       icon: MapPin,
-      label: '알바지도',
-      path: '/search?view=map',
+      label: '지역별',
+      path: '/search',
     },
     {
       icon: MessageCircle,
-      label: '채팅',
-      path: '/community',
-    },
-    {
-      icon: Users,
       label: '커뮤니티',
       path: '/community',
     },
     {
+      icon: BarChart3,
+      label: '테마별',
+      path: '/theme',
+    },
+    {
       icon: User,
-      label: '마이페이지',
+      label: 'MY',
       path: state.isAuthenticated ? '/mypage' : '/login',
     },
   ];

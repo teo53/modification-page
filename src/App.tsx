@@ -12,6 +12,7 @@ const AdvertiserDashboard = lazy(() => import('./pages/AdvertiserDashboard'));
 const AdminCRM = lazy(() => import('./pages/AdminCRM'));
 const CommunityPage = lazy(() => import('./pages/CommunityPage'));
 const CommunityPostDetail = lazy(() => import('./pages/CommunityPostDetail'));
+const CommunityWrite = lazy(() => import('./pages/CommunityWrite'));
 const SearchResults = lazy(() => import('./pages/SearchResults'));
 const CustomerSupport = lazy(() => import('./pages/CustomerSupport'));
 const Login = lazy(() => import('./pages/Login'));
@@ -119,6 +120,14 @@ function App() {
               element={
                 <Suspense fallback={<PageLoader />}>
                   <CommunityPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="community/write"
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <CommunityWrite />
                 </Suspense>
               }
             />

@@ -26,9 +26,9 @@ const CommunityPage: React.FC = () => {
         <div className="container mx-auto px-4 py-8">
             <div className="flex items-center justify-between mb-8">
                 <h1 className="text-2xl font-bold text-text-main">커뮤니티</h1>
-                <button className="bg-primary text-white font-bold px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors">
+                <Link to="/community/write" className="bg-primary text-white font-bold px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors">
                     글쓰기
-                </button>
+                </Link>
             </div>
 
             {/* Category Tabs */}

@@ -8,6 +8,8 @@ import {
 import { useApp } from '../context/AppContext';
 import { allAds, vipAds, specialAds } from '../data/mockAds';
 import PullToRefresh from '../components/app/PullToRefresh';
+import TextAdsList from '../components/home/TextAdsList';
+import CommunityPreview from '../components/home/CommunityPreview';
 
 // Quick menu items with lucide icons
 const quickMenuItems = [
@@ -171,7 +173,7 @@ const Home: React.FC = () => {
 
         {/* Mission Banner */}
         <section className="px-4 py-3">
-          <div className="bg-orange-50 rounded-xl p-4 flex items-center justify-between">
+          <div className="bg-primary/10 rounded-xl p-4 flex items-center justify-between">
             <div>
               <p className="text-text-main font-bold">매일 미션 참여하고</p>
               <p className="text-text-muted text-sm">현금처럼 쓸 수 있는 포인트 받자!</p>
@@ -322,6 +324,12 @@ const Home: React.FC = () => {
             ))}
           </div>
         </section>
+
+        {/* Text Ads Section */}
+        <TextAdsList />
+
+        {/* Community Preview Section */}
+        <CommunityPreview />
 
         {/* Recent Views - Only if has history */}
         {state.recentViews.length > 0 && (
