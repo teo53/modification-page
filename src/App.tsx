@@ -1,58 +1,214 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Layout from './components/layout/Layout';
+import { AppProvider } from './context/AppContext';
+import AppLayout from './components/app/AppLayout';
 
-import Home from './pages/Home';
+// Lazy load pages for code splitting
+const Home = lazy(() => import('./pages/Home'));
+const AdDetail = lazy(() => import('./pages/AdDetail'));
+const PostAd = lazy(() => import('./pages/PostAd'));
+const AdvertiserDashboard = lazy(() => import('./pages/AdvertiserDashboard'));
+const AdminCRM = lazy(() => import('./pages/AdminCRM'));
+const CommunityPage = lazy(() => import('./pages/CommunityPage'));
+const CommunityPostDetail = lazy(() => import('./pages/CommunityPostDetail'));
+const SearchResults = lazy(() => import('./pages/SearchResults'));
+const CustomerSupport = lazy(() => import('./pages/CustomerSupport'));
+const Login = lazy(() => import('./pages/Login'));
+const Signup = lazy(() => import('./pages/Signup'));
+const ThemePage = lazy(() => import('./pages/ThemePage'));
+const UrgentPage = lazy(() => import('./pages/UrgentPage'));
+const IndustryPage = lazy(() => import('./pages/IndustryPage'));
+const NotFound = lazy(() => import('./pages/NotFound'));
+const FavoritesPage = lazy(() => import('./pages/FavoritesPage'));
+const MyPage = lazy(() => import('./pages/MyPage'));
 
-import AdDetail from './pages/AdDetail';
-
-import PostAd from './pages/PostAd';
-
-import AdvertiserDashboard from './pages/AdvertiserDashboard';
-import AdminCRM from './pages/AdminCRM';
-
-import CommunityPage from './pages/CommunityPage';
-import CommunityPostDetail from './pages/CommunityPostDetail';
-
-import SearchResults from './pages/SearchResults';
-
-import CustomerSupport from './pages/CustomerSupport';
-
-import Login from './pages/Login';
-import Signup from './pages/Signup';
-import ThemePage from './pages/ThemePage';
-import UrgentPage from './pages/UrgentPage';
-import IndustryPage from './pages/IndustryPage';
-import NotFound from './pages/NotFound';
+// Page loader
+const PageLoader = () => (
+  <div className="flex items-center justify-center min-h-[60vh]">
+    <div className="flex flex-col items-center gap-4">
+      <div className="w-10 h-10 border-3 border-primary border-t-transparent rounded-full animate-spin" />
+      <span className="text-text-muted text-sm">로딩중...</span>
+    </div>
+  </div>
+);
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="/ad/:id" element={<AdDetail />} />
-          <Route path="/post-ad" element={<PostAd />} />
-          <Route path="/theme" element={<ThemePage />} />
-          <Route path="/theme/:category" element={<ThemePage />} />
-          <Route path="/industry" element={<IndustryPage />} />
-          <Route path="/industry/:type" element={<IndustryPage />} />
-          {/* <Route path="/region/:location" element={<RegionPage />} /> */}
-          <Route path="/search" element={<SearchResults />} />
-          <Route path="/community" element={<CommunityPage />} />
-          <Route path="/community/post/:id" element={<CommunityPostDetail />} />
-          <Route path="/advertiser/dashboard" element={<AdvertiserDashboard />} />
+    <AppProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<AppLayout />}>
+            {/* Main Routes */}
+            <Route
+              index
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <Home />
+                </Suspense>
+              }
+            />
+            <Route
+              path="ad/:id"
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <AdDetail />
+                </Suspense>
+              }
+            />
+            <Route
+              path="search"
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <SearchResults />
+                </Suspense>
+              }
+            />
 
-          {/* Admin Routes */}
-          {/* <Route path="/admin/dashboard" element={<AdminDashboard />} /> */}
-          <Route path="/admin/crm" element={<AdminCRM />} />
-          <Route path="urgent" element={<UrgentPage />} />
-          <Route path="login" element={<Login />} />
-          <Route path="signup" element={<Signup />} />
-          <Route path="support" element={<CustomerSupport />} />
-          <Route path="*" element={<NotFound />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+            {/* Category Routes */}
+            <Route
+              path="theme"
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <ThemePage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="theme/:category"
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <ThemePage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="industry"
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <IndustryPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="industry/:type"
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <IndustryPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="urgent"
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <UrgentPage />
+                </Suspense>
+              }
+            />
+
+            {/* Community Routes */}
+            <Route
+              path="community"
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <CommunityPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="community/post/:id"
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <CommunityPostDetail />
+                </Suspense>
+              }
+            />
+
+            {/* User Routes */}
+            <Route
+              path="login"
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <Login />
+                </Suspense>
+              }
+            />
+            <Route
+              path="signup"
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <Signup />
+                </Suspense>
+              }
+            />
+            <Route
+              path="favorites"
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <FavoritesPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="mypage"
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <MyPage />
+                </Suspense>
+              }
+            />
+
+            {/* Advertiser Routes */}
+            <Route
+              path="post-ad"
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <PostAd />
+                </Suspense>
+              }
+            />
+            <Route
+              path="advertiser/dashboard"
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <AdvertiserDashboard />
+                </Suspense>
+              }
+            />
+
+            {/* Admin Routes */}
+            <Route
+              path="admin/crm"
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <AdminCRM />
+                </Suspense>
+              }
+            />
+
+            {/* Support */}
+            <Route
+              path="support"
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <CustomerSupport />
+                </Suspense>
+              }
+            />
+
+            {/* 404 */}
+            <Route
+              path="*"
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <NotFound />
+                </Suspense>
+              }
+            />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </AppProvider>
   );
 }
 
