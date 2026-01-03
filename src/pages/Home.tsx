@@ -2,14 +2,16 @@ import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
-  MapPin, Clock, Target, Calendar, Bell, Briefcase, Building2,
-  ChevronRight, ChevronDown, Search, Menu, Flame, Star, FileText, Gift
+  MapPin, Clock, Target, Calendar, Bell, Briefcase,
+  ChevronRight, ChevronDown, Search, Menu, Flame, FileText, Gift, Crown, Sparkles
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { allAds, vipAds, specialAds } from '../data/mockAds';
 import PullToRefresh from '../components/app/PullToRefresh';
 import TextAdsList from '../components/home/TextAdsList';
 import CommunityPreview from '../components/home/CommunityPreview';
+import SectionHeader from '../components/ui/SectionHeader';
+import PremiumAdCard from '../components/home/PremiumAdCard';
 
 // Quick menu items with lucide icons
 const quickMenuItems = [
@@ -21,12 +23,12 @@ const quickMenuItems = [
 
 // Brand section
 const brands = [
-  { id: 1, name: '쿠팡', initial: 'C' },
-  { id: 2, name: 'CU', initial: 'CU' },
-  { id: 3, name: '스타벅스', initial: 'S' },
-  { id: 4, name: '맥도날드', initial: 'M' },
-  { id: 5, name: '올리브영', initial: 'O' },
-  { id: 6, name: 'GS25', initial: 'G' },
+  { id: 1, name: '쿠팡', initial: 'C', color: 'bg-blue-500' },
+  { id: 2, name: 'CU', initial: 'CU', color: 'bg-green-500' },
+  { id: 3, name: '스타벅스', initial: 'S', color: 'bg-green-600' },
+  { id: 4, name: '맥도날드', initial: 'M', color: 'bg-red-500' },
+  { id: 5, name: '올리브영', initial: 'O', color: 'bg-yellow-500' },
+  { id: 6, name: 'GS25', initial: 'G', color: 'bg-blue-600' },
 ];
 
 // Location options
@@ -184,66 +186,72 @@ const Home: React.FC = () => {
           </div>
         </section>
 
-        {/* Hot Jobs Section */}
+        {/* ============ PREMIUM ADS SECTION ============ */}
+        <div className="mt-4 mb-2">
+          <div className="h-2 bg-surface" />
+        </div>
+
+        {/* VIP Premium Ads - Top Tier */}
         <section className="py-4">
-          <div className="flex items-center justify-between px-4 mb-3">
-            <h2 className="text-lg font-bold text-text-main flex items-center gap-2">
-              <Flame size={20} className="text-primary" />
-              적극 채용 중인 공고
-              <span className="text-xs font-normal text-white bg-text-light px-2 py-0.5 rounded">AD</span>
-            </h2>
-            <span className="text-sm text-text-muted">1 / {Math.ceil(vipAds.length / 2)}</span>
-          </div>
-          <div className="flex gap-3 overflow-x-auto px-4 pb-2 scrollbar-hide">
-            {vipAds.slice(0, 4).map((ad) => (
-              <Link key={ad.id} to={`/ad/${ad.id}`} className="flex-shrink-0 w-[200px]">
-                <motion.div
-                  whileTap={{ scale: 0.98 }}
-                  className="bg-card rounded-xl border border-border overflow-hidden"
-                >
-                  {/* Company Logo Area */}
-                  <div className="h-16 bg-accent flex items-center justify-center relative">
-                    <Building2 size={28} className="text-text-muted" />
-                    {ad.isHot && (
-                      <span className="absolute top-2 right-2 bg-badge-hot text-white text-xs px-2 py-0.5 rounded font-bold">
-                        HOT
-                      </span>
-                    )}
-                  </div>
-                  <div className="p-3">
-                    <p className="text-xs text-text-muted mb-1 truncate">
-                      #{ad.badges.slice(0, 2).join(' #')}
-                    </p>
-                    <h3 className="font-bold text-text-main text-sm mb-2 line-clamp-2 min-h-[40px]">
-                      {ad.title}
-                    </h3>
-                    <p className="text-xs text-text-muted">{ad.location}</p>
-                    <p className="text-primary font-bold text-sm mt-1">{ad.pay}</p>
-                  </div>
-                </motion.div>
-              </Link>
+          <SectionHeader
+            icon={Crown}
+            title="VIP 프리미엄 공고"
+            subtitle="검증된 고수익 채용정보"
+            badge="AD"
+            badgeColor="vip"
+            variant="premium"
+            pagination={{ current: 1, total: Math.ceil(vipAds.length / 4) }}
+          />
+          <div className="flex gap-4 overflow-x-auto px-4 pb-3 scrollbar-hide">
+            {vipAds.slice(0, 6).map((ad, idx) => (
+              <PremiumAdCard key={ad.id} ad={ad} variant="medium" showRank={idx + 1} />
             ))}
           </div>
         </section>
 
-        {/* Brand Section */}
-        <section className="py-4 bg-surface">
-          <div className="flex items-center justify-between px-4 mb-3">
-            <h2 className="text-lg font-bold text-text-main flex items-center gap-2">
-              <Briefcase size={20} className="text-primary" />
-              경력에 도움되는 브랜드 공고
-            </h2>
-            <ChevronRight size={20} className="text-text-muted" />
+        {/* Section Divider */}
+        <div className="h-2 bg-surface" />
+
+        {/* Special Ads Section - with images */}
+        <section className="py-4">
+          <SectionHeader
+            icon={Sparkles}
+            title="SPECIAL 추천 공고"
+            subtitle="오늘의 특별 채용"
+            badge="SPECIAL"
+            badgeColor="special"
+            variant="highlighted"
+            showMore
+            moreLink="/search?type=special"
+          />
+          <div className="px-4 space-y-3">
+            {specialAds.slice(0, 4).map((ad) => (
+              <PremiumAdCard key={ad.id} ad={ad} variant="compact" />
+            ))}
           </div>
+        </section>
+
+        {/* Section Divider */}
+        <div className="h-2 bg-surface" />
+
+        {/* Brand Section */}
+        <section className="py-4">
+          <SectionHeader
+            icon={Briefcase}
+            title="브랜드 공고"
+            subtitle="경력에 도움되는 대기업/프랜차이즈"
+            showMore
+            moreLink="/search?type=brand"
+          />
           <div className="grid grid-cols-3 gap-3 px-4">
             {brands.map((brand) => (
               <Link key={brand.id} to={`/search?brand=${brand.name}`}>
                 <motion.div
                   whileTap={{ scale: 0.98 }}
-                  className="bg-card rounded-xl p-4 text-center border border-border"
+                  className="bg-card rounded-xl p-4 text-center border border-border hover:border-primary/30 transition-colors"
                 >
-                  <div className="w-12 h-12 bg-accent rounded-full flex items-center justify-center mx-auto mb-2">
-                    <span className="text-lg font-bold text-text-main">{brand.initial}</span>
+                  <div className={`w-12 h-12 ${brand.color} rounded-full flex items-center justify-center mx-auto mb-2`}>
+                    <span className="text-lg font-bold text-white">{brand.initial}</span>
                   </div>
                   <p className="text-sm font-medium text-text-main">{brand.name}</p>
                 </motion.div>
@@ -252,38 +260,57 @@ const Home: React.FC = () => {
           </div>
         </section>
 
+        {/* Section Divider */}
+        <div className="h-2 bg-surface" />
+
         {/* Real-time Job Listings */}
         <section className="py-4">
-          <div className="flex items-center gap-2 px-4 mb-3">
-            <FileText size={18} className="text-primary" />
-            <button className="flex items-center gap-1 font-bold text-text-main">
-              {selectedLocation}
-              <ChevronDown size={16} />
-            </button>
-            <span className="text-text-main font-bold">실시간 공고</span>
-          </div>
-          <div className="divide-y divide-border">
+          <SectionHeader
+            icon={FileText}
+            title={`${selectedLocation} 실시간 공고`}
+            subtitle="방금 올라온 최신 채용정보"
+            showMore
+            moreLink="/search"
+          />
+          <div className="divide-y divide-border mx-4 rounded-xl border border-border overflow-hidden">
             {recentAds.map((ad) => (
               <Link key={ad.id} to={`/ad/${ad.id}`}>
                 <motion.div
-                  whileTap={{ backgroundColor: '#f5f5f5' }}
-                  className="px-4 py-4 bg-card"
+                  whileTap={{ backgroundColor: 'rgba(0,0,0,0.02)' }}
+                  className="flex gap-3 p-3 bg-card"
                 >
-                  <div className="flex justify-between items-start mb-1">
-                    <p className="text-xs text-text-muted truncate flex-1">
-                      {ad.badges.slice(0, 2).join(' · ')}
-                    </p>
-                    <span className="text-xs text-text-light ml-2">{formatTimeAgo()}</span>
+                  {/* Thumbnail */}
+                  <div className="w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden bg-accent">
+                    <img
+                      src={ad.thumbnail}
+                      alt={ad.title}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                      }}
+                    />
                   </div>
-                  <h3 className="font-bold text-text-main mb-2 line-clamp-1">
-                    {ad.title}
-                  </h3>
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm text-text-muted">{ad.location}</p>
-                    <p className="font-bold">
-                      <span className="text-primary">월</span>
-                      <span className="text-text-main ml-1">{ad.pay.replace('시급 ', '').replace('일급 ', '')}</span>
-                    </p>
+                  {/* Content */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between mb-1">
+                      <div className="flex gap-1">
+                        {ad.productType === 'vip' && (
+                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-primary text-white font-bold">VIP</span>
+                        )}
+                        {ad.isHot && (
+                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-red-500 text-white font-bold">HOT</span>
+                        )}
+                      </div>
+                      <span className="text-[10px] text-text-light">{formatTimeAgo()}</span>
+                    </div>
+                    <h3 className="font-bold text-text-main text-sm line-clamp-1 mb-1">
+                      {ad.title}
+                    </h3>
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs text-text-muted">{ad.location}</p>
+                      <p className="text-sm font-bold text-primary">{ad.pay}</p>
+                    </div>
                   </div>
                 </motion.div>
               </Link>
@@ -291,86 +318,113 @@ const Home: React.FC = () => {
           </div>
         </section>
 
-        {/* Special Ads Section */}
-        <section className="py-4 bg-surface">
-          <div className="flex items-center justify-between px-4 mb-3">
-            <h2 className="text-lg font-bold text-text-main flex items-center gap-2">
-              <Star size={20} className="text-primary" />
-              특별한 공고 모아보기
-              <span className="text-xs font-normal text-white bg-text-light px-2 py-0.5 rounded">AD</span>
-            </h2>
-            <span className="text-sm text-text-muted">1 / {Math.ceil(specialAds.length / 4)}</span>
-          </div>
-          <div className="space-y-3 px-4">
-            {specialAds.slice(0, 4).map((ad) => (
-              <Link key={ad.id} to={`/ad/${ad.id}`}>
+        {/* Section Divider */}
+        <div className="h-2 bg-surface" />
+
+        {/* Hot Jobs Section - Urgent */}
+        <section className="py-4 bg-red-500/5">
+          <SectionHeader
+            icon={Flame}
+            title="급구! 지금 바로 출근"
+            subtitle="사장님이 급하게 찾는 알바"
+            badge="HOT"
+            badgeColor="hot"
+            showMore
+            moreLink="/urgent"
+          />
+          <div className="flex gap-3 overflow-x-auto px-4 pb-2 scrollbar-hide">
+            {allAds.filter(ad => ad.isHot).slice(0, 6).map((ad) => (
+              <Link key={ad.id} to={`/ad/${ad.id}`} className="flex-shrink-0 w-[160px]">
                 <motion.div
-                  whileTap={{ scale: 0.99 }}
-                  className="bg-card rounded-xl p-4 border border-border"
+                  whileTap={{ scale: 0.98 }}
+                  className="bg-card rounded-xl border-2 border-red-500/30 overflow-hidden"
                 >
-                  <p className="text-xs text-text-muted mb-1">
-                    #{ad.badges.join(' #')}
-                  </p>
-                  <h3 className="font-bold text-text-main mb-2">{ad.title}</h3>
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm text-text-muted">{ad.location}</p>
-                    <p className="font-bold">
-                      <span className="text-primary">월</span>
-                      <span className="text-text-main ml-1">{ad.pay.replace('시급 ', '').replace('일급 ', '')}</span>
-                    </p>
+                  <div className="relative h-24">
+                    <img
+                      src={ad.thumbnail}
+                      alt={ad.title}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                      }}
+                    />
+                    <div className="absolute top-2 left-2 flex items-center gap-1 px-1.5 py-0.5 rounded bg-red-500 text-white text-[10px] font-bold animate-pulse">
+                      <Flame size={10} />
+                      급구
+                    </div>
+                  </div>
+                  <div className="p-2">
+                    <h4 className="text-xs font-bold text-text-main line-clamp-2 min-h-[32px]">{ad.title}</h4>
+                    <p className="text-[10px] text-text-muted mt-1">{ad.location}</p>
+                    <p className="text-xs font-bold text-red-500 mt-1">{ad.pay}</p>
                   </div>
                 </motion.div>
               </Link>
             ))}
           </div>
         </section>
+
+        {/* Section Divider */}
+        <div className="h-2 bg-surface" />
 
         {/* Text Ads Section */}
         <TextAdsList />
+
+        {/* Section Divider */}
+        <div className="h-2 bg-surface" />
 
         {/* Community Preview Section */}
         <CommunityPreview />
 
         {/* Recent Views - Only if has history */}
         {state.recentViews.length > 0 && (
-          <section className="py-4">
-            <div className="flex items-center justify-between px-4 mb-3">
-              <h2 className="text-lg font-bold text-text-main flex items-center gap-2">
-                <Clock size={18} className="text-primary" />
-                최근 본 공고
-              </h2>
-              <Link to="/mypage/views" className="text-sm text-primary flex items-center">
-                전체보기 <ChevronRight size={16} />
-              </Link>
-            </div>
-            <div className="flex gap-3 overflow-x-auto px-4 pb-2 scrollbar-hide">
-              {state.recentViews.slice(0, 5).map((view) => {
-                const ad = allAds.find(a => String(a.id) === view.id);
-                if (!ad) return null;
-                return (
-                  <Link key={view.id} to={`/ad/${ad.id}`} className="flex-shrink-0 w-[150px]">
-                    <div className="bg-card rounded-xl border border-border overflow-hidden">
-                      <div className="h-20 bg-accent flex items-center justify-center">
-                        <Building2 size={24} className="text-text-muted" />
+          <>
+            <div className="h-2 bg-surface" />
+            <section className="py-4">
+              <SectionHeader
+                icon={Clock}
+                title="최근 본 공고"
+                showMore
+                moreLink="/mypage/views"
+              />
+              <div className="flex gap-3 overflow-x-auto px-4 pb-2 scrollbar-hide">
+                {state.recentViews.slice(0, 5).map((view) => {
+                  const ad = allAds.find(a => String(a.id) === view.id);
+                  if (!ad) return null;
+                  return (
+                    <Link key={view.id} to={`/ad/${ad.id}`} className="flex-shrink-0 w-[150px]">
+                      <div className="bg-card rounded-xl border border-border overflow-hidden">
+                        <div className="h-20 bg-accent overflow-hidden">
+                          <img
+                            src={ad.thumbnail}
+                            alt={ad.title}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.style.display = 'none';
+                            }}
+                          />
+                        </div>
+                        <div className="p-2">
+                          <h4 className="text-xs font-medium text-text-main truncate">{ad.title}</h4>
+                          <p className="text-xs text-primary mt-1">{ad.pay}</p>
+                        </div>
                       </div>
-                      <div className="p-2">
-                        <h4 className="text-xs font-medium text-text-main truncate">{ad.title}</h4>
-                        <p className="text-xs text-primary mt-1">{ad.pay}</p>
-                      </div>
-                    </div>
-                  </Link>
-                );
-              })}
-            </div>
-          </section>
+                    </Link>
+                  );
+                })}
+              </div>
+            </section>
+          </>
         )}
 
         {/* View More Button */}
-        <div className="px-4 py-4">
+        <div className="px-4 py-6">
           <Link to="/search">
             <motion.button
               whileTap={{ scale: 0.98 }}
-              className="w-full py-4 rounded-xl bg-accent border border-border text-text-main font-medium"
+              className="w-full py-4 rounded-xl bg-primary text-white font-bold text-lg"
             >
               더 많은 공고 보기
             </motion.button>
