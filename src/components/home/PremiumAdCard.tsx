@@ -12,6 +12,34 @@ interface PremiumAdCardProps {
 
 const PremiumAdCard: React.FC<PremiumAdCardProps> = ({ ad, variant = 'medium', showRank }) => {
     const tierConfig = {
+        diamond: {
+            border: 'border-2 border-cyan-400',
+            glow: 'shadow-[0_0_25px_rgba(34,211,238,0.4)]',
+            badge: 'DIAMOND',
+            badgeClass: 'bg-gradient-to-r from-cyan-400 to-cyan-300 text-black',
+            icon: Diamond,
+        },
+        sapphire: {
+            border: 'border-2 border-blue-500',
+            glow: 'shadow-[0_0_25px_rgba(59,130,246,0.4)]',
+            badge: 'SAPPHIRE',
+            badgeClass: 'bg-gradient-to-r from-blue-500 to-blue-400 text-white',
+            icon: Diamond,
+        },
+        ruby: {
+            border: 'border-2 border-red-500',
+            glow: 'shadow-[0_0_25px_rgba(239,68,68,0.4)]',
+            badge: 'RUBY',
+            badgeClass: 'bg-gradient-to-r from-red-500 to-red-400 text-white',
+            icon: Diamond,
+        },
+        gold: {
+            border: 'border-2 border-yellow-500',
+            glow: 'shadow-[0_0_25px_rgba(234,179,8,0.4)]',
+            badge: 'GOLD',
+            badgeClass: 'bg-gradient-to-r from-yellow-500 to-amber-400 text-black',
+            icon: Crown,
+        },
         vip: {
             border: 'border-2 border-primary',
             glow: 'shadow-[0_0_20px_rgba(255,107,53,0.3)]',

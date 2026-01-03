@@ -13,7 +13,7 @@ export interface Advertisement {
     badges: string[];
     isNew: boolean;
     isHot: boolean;
-    productType: 'vip' | 'special' | 'premium' | 'general';
+    productType: 'diamond' | 'sapphire' | 'ruby' | 'gold' | 'vip' | 'special' | 'premium' | 'general';
     price: string;
     duration: string;
 }
@@ -49,11 +49,33 @@ const PAYS = [
 ];
 
 // Convert scraped ads to Advertisement format
-const convertToAd = (scrapedAd: any, productType: 'vip' | 'special' | 'premium' | 'general'): Advertisement => {
+const convertToAd = (scrapedAd: any, productType: Advertisement['productType']): Advertisement => {
     const titleIndex = (scrapedAd.id - 1) % TITLES.length;
     const locationIndex = (scrapedAd.id - 1) % LOCATIONS.length;
     const badgeIndex = (scrapedAd.id - 1) % BADGES_LIST.length;
     const payIndex = (scrapedAd.id - 1) % PAYS.length;
+
+    const priceMap: Record<string, string> = {
+        diamond: '500,000원',
+        sapphire: '400,000원',
+        ruby: '350,000원',
+        gold: '300,000원',
+        vip: '250,000원',
+        special: '150,000원',
+        premium: '100,000원',
+        general: '50,000원',
+    };
+
+    const durationMap: Record<string, string> = {
+        diamond: '30일',
+        sapphire: '30일',
+        ruby: '30일',
+        gold: '30일',
+        vip: '30일',
+        special: '15일',
+        premium: '7일',
+        general: '7일',
+    };
 
     return {
         id: scrapedAd.id,
@@ -66,22 +88,31 @@ const convertToAd = (scrapedAd: any, productType: 'vip' | 'special' | 'premium' 
         isNew: scrapedAd.id % 3 === 0,
         isHot: scrapedAd.id % 5 === 0,
         productType,
-        price: productType === 'vip' ? '300,000원' : productType === 'special' ? '150,000원' : '50,000원',
-        duration: productType === 'vip' ? '30일' : productType === 'special' ? '15일' : '7일',
+        price: priceMap[productType] || '50,000원',
+        duration: durationMap[productType] || '7일',
     };
 };
 
-// VIP Premium Ads (first 12 scraped ads)
-export const vipAds: Advertisement[] = scrapedAdsData.slice(0, 12).map(ad => convertToAd(ad, 'vip'));
+// Jewel Tier Ads (Top Premium - first 12 ads split into tiers)
+export const diamondAds: Advertisement[] = scrapedAdsData.slice(0, 3).map(ad => convertToAd(ad, 'diamond'));
+export const sapphireAds: Advertisement[] = scrapedAdsData.slice(3, 6).map(ad => convertToAd(ad, 'sapphire'));
+export const rubyAds: Advertisement[] = scrapedAdsData.slice(6, 9).map(ad => convertToAd(ad, 'ruby'));
+export const goldAds: Advertisement[] = scrapedAdsData.slice(9, 12).map(ad => convertToAd(ad, 'gold'));
+
+// VIP Premium Ads (next 12 scraped ads)
+export const vipAds: Advertisement[] = scrapedAdsData.slice(12, 24).map(ad => convertToAd(ad, 'vip'));
 
 // Special Ads (next 24 scraped ads)
-export const specialAds: Advertisement[] = scrapedAdsData.slice(12, 36).map(ad => convertToAd(ad, 'special'));
+export const specialAds: Advertisement[] = scrapedAdsData.slice(24, 48).map(ad => convertToAd(ad, 'special'));
 
 // Regular Ads (remaining scraped ads)
-export const regularAds: Advertisement[] = scrapedAdsData.slice(36).map(ad => convertToAd(ad, 'general'));
+export const regularAds: Advertisement[] = scrapedAdsData.slice(48).map(ad => convertToAd(ad, 'general'));
+
+// All jewel ads combined (for top section)
+export const jewelAds = [...diamondAds, ...sapphireAds, ...rubyAds, ...goldAds];
 
 // All ads combined
-export const allAds = [...vipAds, ...specialAds, ...regularAds];
+export const allAds = [...jewelAds, ...vipAds, ...specialAds, ...regularAds];
 
 // Helper function to get ad by ID
 export const getAdById = (id: number): Advertisement | undefined => {

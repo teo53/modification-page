@@ -12,6 +12,7 @@ import TextAdsList from '../components/home/TextAdsList';
 import CommunityPreview from '../components/home/CommunityPreview';
 import SectionHeader from '../components/ui/SectionHeader';
 import PremiumAdCard from '../components/home/PremiumAdCard';
+import JewelAdSection from '../components/home/JewelAdSection';
 
 // Quick menu items with lucide icons
 const quickMenuItems = [
@@ -186,12 +187,10 @@ const Home: React.FC = () => {
           </div>
         </section>
 
-        {/* ============ PREMIUM ADS SECTION ============ */}
-        <div className="mt-4 mb-2">
-          <div className="h-2 bg-surface" />
-        </div>
+        {/* ============ JEWEL PREMIUM ADS - TOP TIER ============ */}
+        <JewelAdSection />
 
-        {/* VIP Premium Ads - Top Tier */}
+        {/* VIP Premium Ads */}
         <section className="py-4">
           <SectionHeader
             icon={Crown}
