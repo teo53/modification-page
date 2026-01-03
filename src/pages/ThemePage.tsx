@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
+import { useParams } from 'react-router-dom';
 import { Star, Coffee, Clock, Calendar, DollarSign, Heart, Music, GlassWater, Home, Sparkles, Users, Shield, Zap, Gift } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import AdCard from '../components/ad/AdCard';
@@ -73,7 +74,7 @@ const StatCard: React.FC<StatCardProps> = ({ icon: Icon, iconColor, value, suffi
 const themes = [
     { id: 'high-pay', name: '고소득', icon: DollarSign, color: 'text-yellow-400', keywords: ['VIP', '고수입', '100,000', '120,000'] },
     { id: 'same-day', name: '당일지급', icon: Clock, color: 'text-blue-400', keywords: ['당일지급', '당일'] },
-    { id: 'weekend', name: '주말알바', icon: Calendar, color: 'text-green-400', keywords: ['주말', '토요일', '일요일'] },
+    { id: 'short', name: '단기알바', icon: Calendar, color: 'text-green-400', keywords: ['단기', '주말', '토요일', '일요일', '1일'] },
     { id: 'beginner', name: '초보환영', icon: Heart, color: 'text-pink-400', keywords: ['초보환영', '초보가능', '초보', '신입환영'] },
     { id: 'lodging', name: '숙소제공', icon: Home, color: 'text-purple-400', keywords: ['숙소지원', '숙소제공', '숙소'] },
     { id: 'no-alcohol', name: '술강요X', icon: GlassWater, color: 'text-cyan-400', keywords: ['술강요없음', '술X'] },
@@ -92,9 +93,20 @@ const SORT_OPTIONS = [
 ];
 
 const ThemePage: React.FC = () => {
+    const { category } = useParams<{ category: string }>();
     const [activeTheme, setActiveTheme] = useState('high-pay');
     const [sortOrder, setSortOrder] = useState('latest');
     const [displayCount, setDisplayCount] = useState(24);
+
+    // Read URL category parameter on mount
+    useEffect(() => {
+        if (category) {
+            const matchedTheme = themes.find(t => t.id === category);
+            if (matchedTheme) {
+                setActiveTheme(category);
+            }
+        }
+    }, [category]);
 
     // 필터링된 광고 목록
     const filteredAds = useMemo(() => {
