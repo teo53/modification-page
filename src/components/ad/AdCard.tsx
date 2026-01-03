@@ -63,6 +63,11 @@ const AdCard: React.FC<AdCardProps> = ({
                             src={image}
                             alt={title}
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                            onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.style.display = 'none';
+                                target.parentElement?.classList.add('bg-gradient-to-br', 'from-surface', 'to-accent');
+                            }}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
                     </>

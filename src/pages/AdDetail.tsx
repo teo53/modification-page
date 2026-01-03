@@ -90,6 +90,10 @@ const AdDetail: React.FC = () => {
                                 src={ad.thumbnail}
                                 alt={ad.title}
                                 className="w-full h-full object-cover"
+                                onError={(e) => {
+                                    const target = e.target as HTMLImageElement;
+                                    target.style.display = 'none';
+                                }}
                             />
                             {ad.isHot && (
                                 <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-badge-hot text-white text-sm font-bold flex items-center gap-1">
