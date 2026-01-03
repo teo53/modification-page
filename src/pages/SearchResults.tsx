@@ -1,20 +1,44 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Search, Filter } from 'lucide-react';
 import AdCard from '../components/ad/AdCard';
 import SelectionGroup from '../components/ui/SelectionGroup';
 import HorizontalFilterBar from '../components/ui/HorizontalFilterBar';
-import { allAds } from '../data/mockAds';
+import { allAds, jewelAds, vipAds, specialAds } from '../data/mockAds';
 
 const SearchResults: React.FC = () => {
+    const [searchParams] = useSearchParams();
     const [sortOrder, setSortOrder] = useState('latest');
     const [displayCount, setDisplayCount] = useState(12);
-    const [searchQuery, setSearchQuery] = useState('강남');
+    const [searchQuery, setSearchQuery] = useState('');
+    const [tierFilter, setTierFilter] = useState<string | null>(null);
     const [filters, setFilters] = useState({
         region: 'all',
         industry: 'all',
         salary: 'all',
         type: 'all'
     });
+
+    // Read URL query parameters on mount
+    useEffect(() => {
+        const type = searchParams.get('type');
+        const brand = searchParams.get('brand');
+        const tier = searchParams.get('tier');
+
+        if (brand) {
+            setSearchQuery(brand);
+        }
+        if (type) {
+            if (type === 'special') {
+                setTierFilter('special');
+            } else {
+                setFilters(prev => ({ ...prev, type }));
+            }
+        }
+        if (tier) {
+            setTierFilter(tier);
+        }
+    }, [searchParams]);
 
     const SORT_OPTIONS = [
         { label: '최신순', value: 'latest' },
@@ -24,7 +48,17 @@ const SearchResults: React.FC = () => {
 
     // 필터링 및 정렬된 광고 목록
     const filteredAds = useMemo(() => {
-        let results = [...allAds];
+        // Start with tier-filtered ads if tier is set
+        let results: typeof allAds;
+        if (tierFilter === 'jewel') {
+            results = [...jewelAds];
+        } else if (tierFilter === 'vip') {
+            results = [...vipAds];
+        } else if (tierFilter === 'special') {
+            results = [...specialAds];
+        } else {
+            results = [...allAds];
+        }
 
         // 검색어 필터
         if (searchQuery) {
@@ -117,7 +151,7 @@ const SearchResults: React.FC = () => {
         }
 
         return results.length > 0 ? results : allAds.slice(0, 12);
-    }, [searchQuery, filters, sortOrder]);
+    }, [searchQuery, filters, sortOrder, tierFilter]);
 
     const handleFilterChange = (newFilters: typeof filters) => {
         setFilters(newFilters);

@@ -1,11 +1,30 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { MessageSquare, ThumbsUp, Eye } from 'lucide-react';
 
 import communityData from '../data/community_data.json';
 
 const CommunityPage: React.FC = () => {
+    const [searchParams] = useSearchParams();
     const [selectedCategory, setSelectedCategory] = useState('전체');
+
+    // Map URL category params to Korean category names
+    useEffect(() => {
+        const categoryParam = searchParams.get('category');
+        if (categoryParam) {
+            const categoryMap: { [key: string]: string } = {
+                'job': '구인구직',
+                'review': '업소후기',
+                'region': '지역정보',
+                'qna': '질문답변',
+                'free': '자유게시판'
+            };
+            const mappedCategory = categoryMap[categoryParam];
+            if (mappedCategory) {
+                setSelectedCategory(mappedCategory);
+            }
+        }
+    }, [searchParams]);
 
     const categories = [
         { id: '전체', label: '전체' },
