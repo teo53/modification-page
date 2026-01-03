@@ -1,13 +1,37 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, ThumbsUp, MessageSquare, Eye, Share2 } from 'lucide-react';
 import communityData from '../data/community_data.json';
+import { getPostById, toggleLike, isPostLiked, incrementViews } from '../utils/communityStorage';
 
 const CommunityPostDetail: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
+    const [liked, setLiked] = useState(false);
+    const [likeCount, setLikeCount] = useState(0);
 
-    const post = communityData.find(p => p.id === Number(id));
+    // Try to find in user posts first, then static data
+    const userPost = getPostById(Number(id));
+    const staticPost = communityData.find(p => p.id === Number(id));
+    const post = userPost || staticPost;
+
+    useEffect(() => {
+        if (userPost) {
+            incrementViews(userPost.id);
+            setLiked(isPostLiked(userPost.id));
+            setLikeCount(userPost.likes);
+        } else if (staticPost) {
+            setLikeCount(staticPost.likes);
+        }
+    }, [id]);
+
+    const handleLike = () => {
+        if (userPost) {
+            const newLikes = toggleLike(userPost.id);
+            setLikeCount(newLikes);
+            setLiked(!liked);
+        }
+    };
 
     if (!post) {
         return (
@@ -69,6 +93,20 @@ const CommunityPostDetail: React.FC = () => {
                     </div>
                 </div>
 
+                {/* Images (for user posts) */}
+                {userPost?.images && userPost.images.length > 0 && (
+                    <div className="grid grid-cols-2 gap-2 mb-6">
+                        {userPost.images.map((img, idx) => (
+                            <img
+                                key={idx}
+                                src={img}
+                                alt={`image ${idx + 1}`}
+                                className="w-full rounded-lg object-cover max-h-64"
+                            />
+                        ))}
+                    </div>
+                )}
+
                 {/* Content */}
                 <div className="text-text-main whitespace-pre-wrap leading-relaxed">
                     {post.content}
@@ -76,9 +114,16 @@ const CommunityPostDetail: React.FC = () => {
 
                 {/* Action Buttons */}
                 <div className="flex items-center gap-3 mt-8 pt-6 border-t border-border">
-                    <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-surface hover:bg-accent text-text-main transition-colors">
+                    <button
+                        onClick={handleLike}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                            liked
+                                ? 'bg-primary/20 text-primary'
+                                : 'bg-surface hover:bg-accent text-text-main'
+                        }`}
+                    >
                         <ThumbsUp size={18} />
-                        <span>추천 {post.likes}</span>
+                        <span>추천 {likeCount}</span>
                     </button>
                     <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-surface hover:bg-accent text-text-main transition-colors">
                         <Share2 size={18} />

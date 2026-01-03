@@ -1,12 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { MessageSquare, ThumbsUp, Eye } from 'lucide-react';
 
 import communityData from '../data/community_data.json';
+import { getUserPosts } from '../utils/communityStorage';
 
 const CommunityPage: React.FC = () => {
     const [searchParams] = useSearchParams();
     const [selectedCategory, setSelectedCategory] = useState('전체');
+    const [userPosts, setUserPosts] = useState(getUserPosts());
+
+    // Refresh user posts on mount
+    useEffect(() => {
+        setUserPosts(getUserPosts());
+    }, []);
 
     // Map URL category params to Korean category names
     useEffect(() => {
@@ -35,9 +42,15 @@ const CommunityPage: React.FC = () => {
         { id: '자유게시판', label: '자유게시판' },
     ];
 
+    // Merge user posts with static data (user posts first)
+    const allPosts = useMemo(() => {
+        const staticPosts = communityData.map(p => ({ ...p, isUserPost: false }));
+        return [...userPosts, ...staticPosts];
+    }, [userPosts]);
+
     const filteredPosts = selectedCategory === '전체'
-        ? communityData
-        : communityData.filter(p => p.category === selectedCategory);
+        ? allPosts
+        : allPosts.filter(p => p.category === selectedCategory);
 
     const displayPosts = filteredPosts.slice(0, 50);
 
@@ -75,9 +88,16 @@ const CommunityPage: React.FC = () => {
                         className={`block p-4 rounded-xl border transition-all hover:bg-surface bg-card border-border`}
                     >
                         <div className="flex items-center justify-between mb-2">
-                            <span className={`text-xs font-bold px-2 py-1 rounded bg-surface text-text-muted`}>
-                                {post.category}
-                            </span>
+                            <div className="flex items-center gap-2">
+                                <span className={`text-xs font-bold px-2 py-1 rounded bg-surface text-text-muted`}>
+                                    {post.category}
+                                </span>
+                                {post.isUserPost && (
+                                    <span className="text-xs font-bold px-2 py-1 rounded bg-primary/20 text-primary">
+                                        NEW
+                                    </span>
+                                )}
+                            </div>
                             <span className="text-xs text-text-muted">{post.date}</span>
                         </div>
 

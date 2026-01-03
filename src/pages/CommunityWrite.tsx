@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, Camera, X, Send } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { createPost } from '../utils/communityStorage';
 
 const categories = [
     { id: '구인구직', label: '구인구직', description: '구인/구직 관련 글' },
@@ -62,8 +63,13 @@ const CommunityWrite: React.FC = () => {
 
         setIsSubmitting(true);
 
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        // Save post to localStorage
+        createPost({
+            title: formData.title.trim(),
+            content: formData.content.trim(),
+            category: formData.category,
+            images: images.length > 0 ? images : undefined,
+        });
 
         setShowSuccess(true);
         setTimeout(() => {

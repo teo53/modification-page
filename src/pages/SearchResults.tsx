@@ -1,17 +1,20 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Search, Filter } from 'lucide-react';
+import { Search, Filter, Clock } from 'lucide-react';
 import AdCard from '../components/ad/AdCard';
 import SelectionGroup from '../components/ui/SelectionGroup';
 import HorizontalFilterBar from '../components/ui/HorizontalFilterBar';
 import { allAds, jewelAds, vipAds, specialAds } from '../data/mockAds';
+import { useApp } from '../context/AppContext';
 
 const SearchResults: React.FC = () => {
     const [searchParams] = useSearchParams();
+    const { state, addSearchHistory, dispatch } = useApp();
     const [sortOrder, setSortOrder] = useState('latest');
     const [displayCount, setDisplayCount] = useState(12);
     const [searchQuery, setSearchQuery] = useState('');
     const [tierFilter, setTierFilter] = useState<string | null>(null);
+    const [showHistory, setShowHistory] = useState(false);
     const [filters, setFilters] = useState({
         region: 'all',
         industry: 'all',
@@ -39,6 +42,16 @@ const SearchResults: React.FC = () => {
             setTierFilter(tier);
         }
     }, [searchParams]);
+
+    const handleHistoryClick = (query: string) => {
+        setSearchQuery(query);
+        setShowHistory(false);
+        setDisplayCount(12);
+    };
+
+    const clearHistory = () => {
+        dispatch({ type: 'CLEAR_SEARCH_HISTORY' });
+    };
 
     const SORT_OPTIONS = [
         { label: '최신순', value: 'latest' },
@@ -160,6 +173,10 @@ const SearchResults: React.FC = () => {
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
+        if (searchQuery.trim()) {
+            addSearchHistory(searchQuery.trim());
+        }
+        setShowHistory(false);
         setDisplayCount(12);
     };
 
@@ -177,8 +194,39 @@ const SearchResults: React.FC = () => {
                                 className="w-full bg-accent border border-border rounded-lg py-3 pl-12 pr-4 text-text-main focus:border-primary outline-none"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
+                                onFocus={() => setShowHistory(true)}
                             />
                             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={20} />
+
+                            {/* Search History Dropdown */}
+                            {showHistory && state.searchHistory.length > 0 && (
+                                <div className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-lg shadow-lg z-50 max-h-64 overflow-y-auto">
+                                    <div className="flex items-center justify-between p-3 border-b border-border">
+                                        <span className="text-sm font-bold text-text-main flex items-center gap-2">
+                                            <Clock size={14} />
+                                            최근 검색어
+                                        </span>
+                                        <button
+                                            type="button"
+                                            onClick={clearHistory}
+                                            className="text-xs text-text-muted hover:text-primary"
+                                        >
+                                            전체 삭제
+                                        </button>
+                                    </div>
+                                    {state.searchHistory.slice(0, 10).map((item, idx) => (
+                                        <button
+                                            key={idx}
+                                            type="button"
+                                            onClick={() => handleHistoryClick(item.query)}
+                                            className="w-full text-left px-4 py-2 text-text-main hover:bg-surface transition-colors flex items-center gap-2"
+                                        >
+                                            <Clock size={14} className="text-text-muted" />
+                                            {item.query}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                         <button
                             type="submit"
