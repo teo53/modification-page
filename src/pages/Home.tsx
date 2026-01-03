@@ -63,7 +63,7 @@ const Home: React.FC = () => {
 
   return (
     <PullToRefresh onRefresh={handleRefresh} isRefreshing={isRefreshing}>
-      <div ref={containerRef} className="min-h-screen bg-background pb-4">
+      <div ref={containerRef} className="min-h-screen bg-background">
         {/* Header */}
         <header className="sticky top-0 z-50 bg-card border-b border-border">
           <div className="flex items-center justify-between px-4 py-3">

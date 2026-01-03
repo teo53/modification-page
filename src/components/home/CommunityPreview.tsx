@@ -30,7 +30,7 @@ const CommunityPreview: React.FC = () => {
                         {communityPosts.slice(0, 5).map((post) => (
                             <Link
                                 key={post.id}
-                                to={`/community/${post.id}`}
+                                to={`/community/post/${post.id}`}
                                 className="block group"
                             >
                                 <div className="flex items-start justify-between gap-3">

@@ -78,7 +78,7 @@ const Footer: React.FC = () => {
                         <a href="#" className="text-text-main font-bold hover:text-primary transition-colors">개인정보처리방침</a>
                         <a href="#" className="text-text-muted hover:text-text-main transition-colors">청소년보호정책</a>
                         <Link to="/advertiser/dashboard" className="text-text-muted hover:text-text-main transition-colors">광고주센터</Link>
-                        <Link to="/admin/dashboard" className="text-text-light hover:text-text-muted transition-colors">관리자</Link>
+                        <Link to="/admin/crm" className="text-text-light hover:text-text-muted transition-colors">관리자</Link>
                     </div>
 
                     {/* Company Info */}
