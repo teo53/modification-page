@@ -85,6 +85,8 @@ const PremiumAdCard: React.FC<PremiumAdCardProps> = ({ ad, variant = 'medium', s
                         <img
                             src={ad.thumbnail}
                             alt={ad.title}
+                            loading="lazy"
+                            decoding="async"
                             className="w-full h-full object-cover"
                             onError={(e) => {
                                 const target = e.target as HTMLImageElement;
@@ -157,6 +159,8 @@ const PremiumAdCard: React.FC<PremiumAdCardProps> = ({ ad, variant = 'medium', s
                         <img
                             src={ad.thumbnail}
                             alt={ad.title}
+                            loading="lazy"
+                            decoding="async"
                             className="w-full h-full object-cover"
                             onError={(e) => {
                                 const target = e.target as HTMLImageElement;
@@ -204,6 +208,8 @@ const PremiumAdCard: React.FC<PremiumAdCardProps> = ({ ad, variant = 'medium', s
                     <img
                         src={ad.thumbnail}
                         alt={ad.title}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover"
                         onError={(e) => {
                             const target = e.target as HTMLImageElement;

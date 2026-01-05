@@ -80,6 +80,8 @@ const JewelAdCard: React.FC<JewelAdCardProps> = ({ ad, index }) => {
                     <img
                         src={ad.thumbnail}
                         alt={ad.title}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover"
                         onError={(e) => {
                             const target = e.target as HTMLImageElement;

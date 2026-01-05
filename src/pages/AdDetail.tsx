@@ -69,12 +69,20 @@ const AdDetail: React.FC = () => {
     return (
         <div className="pb-24 md:pb-12 bg-background">
             {/* Mobile Header */}
-            <div className="md:hidden sticky top-0 z-40 bg-card border-b border-border p-4 flex items-center justify-between">
-                <button onClick={() => navigate(-1)} className="text-text-main">
-                    <ChevronLeft />
+            <div className="md:hidden sticky top-0 z-40 bg-card border-b border-border px-2 py-2 flex items-center justify-between">
+                <button
+                    onClick={() => navigate(-1)}
+                    className="w-10 h-10 flex items-center justify-center text-text-main rounded-lg hover:bg-surface focus-visible:ring-2 focus-visible:ring-primary"
+                    aria-label="뒤로 가기"
+                >
+                    <ChevronLeft size={24} />
                 </button>
                 <span className="font-bold text-text-main">채용정보</span>
-                <button onClick={handleShare} className="text-text-main">
+                <button
+                    onClick={handleShare}
+                    className="w-10 h-10 flex items-center justify-center text-text-main rounded-lg hover:bg-surface focus-visible:ring-2 focus-visible:ring-primary"
+                    aria-label="공유하기"
+                >
                     <Share2 size={20} />
                 </button>
             </div>
@@ -231,11 +239,19 @@ const AdDetail: React.FC = () => {
                                 <p className="text-sm text-text-muted">담당자: 매니저</p>
                             </div>
 
-                            <button className="w-full py-3 rounded-lg bg-primary text-white font-bold hover:bg-primary-hover transition-colors flex items-center justify-center gap-2">
+                            <button
+                                onClick={() => window.location.href = 'tel:010-1234-5678'}
+                                className="w-full h-12 rounded-xl bg-primary text-white font-bold hover:bg-primary-hover transition-colors flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
+                                aria-label="전화 문의하기"
+                            >
                                 <Phone size={20} />
                                 전화 문의
                             </button>
-                            <button className="w-full py-3 rounded-lg bg-[#FAE100] text-[#371D1E] font-bold hover:bg-[#FCE840] transition-colors flex items-center justify-center gap-2">
+                            <button
+                                onClick={() => window.open('https://pf.kakao.com/_xample', '_blank')}
+                                className="w-full h-12 rounded-xl bg-[#FAE100] text-[#371D1E] font-bold hover:bg-[#FCE840] transition-colors flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-yellow-500"
+                                aria-label="카카오톡 문의하기"
+                            >
                                 <MessageCircle size={20} />
                                 카카오톡 문의
                             </button>
@@ -245,17 +261,21 @@ const AdDetail: React.FC = () => {
             </div>
 
             {/* Mobile Sticky Footer */}
-            <div className="md:hidden fixed bottom-0 left-0 right-0 p-4 bg-card border-t border-border flex gap-2 z-50 safe-area-pb">
+            <div className="md:hidden fixed bottom-0 left-0 right-0 p-3 bg-card border-t border-border flex gap-2 z-50 safe-area-pb">
                 <motion.button
                     whileTap={{ scale: 0.98 }}
-                    className="flex-1 py-3 rounded-lg bg-primary text-white font-bold flex items-center justify-center gap-2"
+                    onClick={() => window.location.href = 'tel:010-1234-5678'}
+                    className="flex-1 h-12 rounded-xl bg-primary text-white font-bold flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
+                    aria-label="전화 문의하기"
                 >
                     <Phone size={20} />
                     전화하기
                 </motion.button>
                 <motion.button
                     whileTap={{ scale: 0.98 }}
-                    className="flex-1 py-3 rounded-lg bg-[#FAE100] text-[#371D1E] font-bold flex items-center justify-center gap-2"
+                    onClick={() => window.open('https://pf.kakao.com/_xample', '_blank')}
+                    className="flex-1 h-12 rounded-xl bg-[#FAE100] text-[#371D1E] font-bold flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-yellow-500"
+                    aria-label="카카오톡 문의하기"
                 >
                     <MessageCircle size={20} />
                     카톡문의

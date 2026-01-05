@@ -62,6 +62,8 @@ const AdCard: React.FC<AdCardProps> = ({
                         <img
                             src={image}
                             alt={title}
+                            loading="lazy"
+                            decoding="async"
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                             onError={(e) => {
                                 const target = e.target as HTMLImageElement;
@@ -90,7 +92,11 @@ const AdCard: React.FC<AdCardProps> = ({
                     ))}
                 </div>
 
-                <button className="absolute top-2 right-2 p-1.5 rounded-full bg-black/30 text-white/70 hover:bg-secondary hover:text-white transition-colors">
+                <button
+                    className="absolute top-1 right-1 w-8 h-8 rounded-full bg-black/30 text-white/70 hover:bg-secondary hover:text-white transition-colors flex items-center justify-center focus-visible:ring-2 focus-visible:ring-primary"
+                    aria-label="관심 공고 추가"
+                    onClick={(e) => e.preventDefault()}
+                >
                     <Heart size={16} />
                 </button>
             </div>

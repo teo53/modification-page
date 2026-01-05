@@ -60,18 +60,26 @@ const Home: React.FC = () => {
       <div ref={containerRef} className="min-h-screen bg-background">
         {/* Header */}
         <header className="sticky top-0 z-50 bg-card border-b border-border">
-          <div className="flex items-center justify-between px-4 py-3">
-            <h1 className="text-lg font-bold">
+          <div className="flex items-center justify-between px-3 py-2">
+            <Link to="/" className="text-lg font-bold" aria-label="홈으로 이동">
               <span className="text-primary">Luna</span>
               <span className="text-text-main">Alba</span>
-            </h1>
-            <div className="flex items-center gap-4">
-              <Link to="/search">
+            </Link>
+            <div className="flex items-center gap-1">
+              <Link
+                to="/search"
+                className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-surface focus-visible:ring-2 focus-visible:ring-primary"
+                aria-label="검색"
+              >
                 <Search size={22} className="text-text-main" />
               </Link>
-              <button>
+              <Link
+                to="/mypage"
+                className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-surface focus-visible:ring-2 focus-visible:ring-primary"
+                aria-label="메뉴"
+              >
                 <Menu size={22} className="text-text-main" />
-              </button>
+              </Link>
             </div>
           </div>
 
@@ -79,7 +87,10 @@ const Home: React.FC = () => {
           <div className="px-4 pb-3">
             <button
               onClick={() => setShowLocationDropdown(!showLocationDropdown)}
-              className="flex items-center gap-1 text-sm"
+              className="flex items-center gap-1 text-sm h-9 px-2 -ml-2 rounded-lg hover:bg-surface focus-visible:ring-2 focus-visible:ring-primary"
+              aria-label="지역 선택"
+              aria-expanded={showLocationDropdown}
+              aria-haspopup="listbox"
             >
               <MapPin size={16} className="text-primary" />
               <span className="text-text-main font-medium">{selectedLocation}</span>
@@ -91,16 +102,20 @@ const Home: React.FC = () => {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="absolute left-4 right-4 mt-2 bg-card rounded-xl shadow-lg border border-border z-50"
+                role="listbox"
+                aria-label="지역 목록"
               >
                 {locations.map((loc) => (
                   <button
                     key={loc}
+                    role="option"
+                    aria-selected={selectedLocation === loc}
                     onClick={() => {
                       setSelectedLocation(loc);
                       setShowLocationDropdown(false);
                     }}
-                    className={`w-full px-4 py-3 text-left text-sm border-b border-border last:border-0 ${
-                      selectedLocation === loc ? 'text-primary font-medium' : 'text-text-main'
+                    className={`w-full h-12 px-4 text-left text-sm border-b border-border last:border-0 focus-visible:bg-surface ${
+                      selectedLocation === loc ? 'text-primary font-medium bg-primary/5' : 'text-text-main'
                     }`}
                   >
                     {loc}
