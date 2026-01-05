@@ -18,12 +18,16 @@ const Signup: React.FC = () => {
     const [isBusinessVerified, setIsBusinessVerified] = useState(false);
     const [businessCertificate, setBusinessCertificate] = useState<File | null>(null);
 
+    // Adult verification state
+    const [isAdultVerified, setIsAdultVerified] = useState(false);
+
     // Agreement states
     const [allAgreed, setAllAgreed] = useState(false);
     const [agreements, setAgreements] = useState({
         terms: false,
         privacy: false,
-        marketing: false
+        marketing: false,
+        adult: false
     });
     const [expandedTerms, setExpandedTerms] = useState<string | null>(null);
 
@@ -66,14 +70,17 @@ const Signup: React.FC = () => {
         setAgreements({
             terms: checked,
             privacy: checked,
-            marketing: checked
+            marketing: checked,
+            adult: checked
         });
+        if (checked) setIsAdultVerified(true);
     };
 
     const handleAgreementChange = (key: keyof typeof agreements, checked: boolean) => {
         const newAgreements = { ...agreements, [key]: checked };
         setAgreements(newAgreements);
-        setAllAgreed(newAgreements.terms && newAgreements.privacy && newAgreements.marketing);
+        setAllAgreed(newAgreements.terms && newAgreements.privacy && newAgreements.marketing && newAgreements.adult);
+        if (key === 'adult') setIsAdultVerified(checked);
     };
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -125,8 +132,14 @@ const Signup: React.FC = () => {
             return;
         }
 
-        if (!agreements.terms || !agreements.privacy) {
+        if (!agreements.terms || !agreements.privacy || !agreements.adult) {
             setError('필수 약관에 동의해주세요.');
+            setLoading(false);
+            return;
+        }
+
+        if (!isAdultVerified) {
+            setError('만 19세 이상 성인인증이 필요합니다.');
             setLoading(false);
             return;
         }
@@ -179,10 +192,24 @@ const Signup: React.FC = () => {
     return (
         <div className="min-h-screen flex items-center justify-center py-12 px-4">
             <div className="max-w-lg w-full space-y-8">
+                {/* 19+ Age Restriction Notice */}
+                <div className="bg-red-500/10 border-2 border-red-500/30 rounded-xl p-4">
+                    <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 bg-red-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <span className="text-white font-black text-lg">19</span>
+                        </div>
+                        <div>
+                            <p className="text-red-400 font-bold text-sm">청소년 이용 불가 서비스</p>
+                            <p className="text-text-muted text-xs mt-0.5">본 서비스는 만 19세 이상의 성인만 이용 가능합니다.</p>
+                            <p className="text-text-muted text-xs">회원가입 시 성인인증이 필수입니다.</p>
+                        </div>
+                    </div>
+                </div>
+
                 {/* Header */}
                 <div className="text-center">
-                    <h1 className="text-3xl font-bold text-text-main mb-2">회원가입</h1>
-                    <p className="text-text-muted">LunaAlba의 회원이 되어주세요</p>
+                    <h1 className="text-2xl font-bold text-text-main mb-2">회원가입</h1>
+                    <p className="text-text-muted text-sm">LunaAlba의 회원이 되어주세요</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="mt-8 space-y-6 bg-card rounded-xl p-8 border border-border shadow-sm">
@@ -493,6 +520,28 @@ const Signup: React.FC = () => {
                                 />
                                 <span className="text-text-muted flex-1">마케팅 정보 수신 동의 <span className="text-text-light">(선택)</span></span>
                             </label>
+
+                            {/* Adult Verification - Required */}
+                            <div className="rounded-lg border-2 border-red-500/30 bg-red-500/5 overflow-hidden">
+                                <label className="flex items-center gap-3 p-3 cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        checked={agreements.adult}
+                                        onChange={(e) => handleAgreementChange('adult', e.target.checked)}
+                                        className="w-5 h-5 rounded border-red-500 bg-card accent-red-500"
+                                    />
+                                    <div className="flex items-center gap-2 flex-1">
+                                        <div className="w-6 h-6 bg-red-500 rounded flex items-center justify-center flex-shrink-0">
+                                            <span className="text-white font-black text-xs">19</span>
+                                        </div>
+                                        <span className="text-text-main font-medium">만 19세 이상 성인입니다 <span className="text-red-400">*</span></span>
+                                    </div>
+                                </label>
+                                <div className="px-3 pb-3 text-xs text-text-muted bg-red-500/5">
+                                    본 서비스는 청소년보호법에 의거, 만 19세 이상의 성인만 이용할 수 있습니다.
+                                    허위 사실 입력 시 법적 책임이 따를 수 있습니다.
+                                </div>
+                            </div>
                         </div>
                     </div>
 

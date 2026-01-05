@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AppProvider } from './context/AppContext';
 import { ThemeProvider } from './context/ThemeContext';
 import AppLayout from './components/app/AppLayout';
+import AgeGate from './components/app/AgeGate';
 
 // Lazy load pages for code splitting
 const Home = lazy(() => import('./pages/Home'));
@@ -43,8 +44,9 @@ function App() {
   return (
     <ThemeProvider>
       <AppProvider>
-        <BrowserRouter>
-        <Routes>
+        <AgeGate>
+          <BrowserRouter>
+          <Routes>
           <Route path="/" element={<AppLayout />}>
             {/* Main Routes */}
             <Route
@@ -262,8 +264,9 @@ function App() {
               }
             />
           </Route>
-        </Routes>
-        </BrowserRouter>
+          </Routes>
+          </BrowserRouter>
+        </AgeGate>
       </AppProvider>
     </ThemeProvider>
   );

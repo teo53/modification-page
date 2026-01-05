@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
-  MapPin, Clock, Target, Calendar, Bell, Briefcase,
+  MapPin, Clock, Target, Calendar, Bell,
   ChevronRight, ChevronDown, Search, Menu, Flame, FileText, Gift, Crown, Sparkles
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
@@ -22,15 +22,6 @@ const quickMenuItems = [
   { id: 'urgent', Icon: Bell, label: '급구', path: '/urgent' },
 ];
 
-// Brand section
-const brands = [
-  { id: 1, name: '쿠팡', initial: 'C', color: 'bg-blue-500' },
-  { id: 2, name: 'CU', initial: 'CU', color: 'bg-green-500' },
-  { id: 3, name: '스타벅스', initial: 'S', color: 'bg-green-600' },
-  { id: 4, name: '맥도날드', initial: 'M', color: 'bg-red-500' },
-  { id: 5, name: '올리브영', initial: 'O', color: 'bg-yellow-500' },
-  { id: 6, name: 'GS25', initial: 'G', color: 'bg-blue-600' },
-];
 
 // Location options
 const locations = ['서울 전체', '강남구', '마포구', '송파구', '강서구', '서초구'];
@@ -226,35 +217,6 @@ const Home: React.FC = () => {
           <div className="px-4 space-y-3">
             {specialAds.slice(0, 4).map((ad) => (
               <PremiumAdCard key={ad.id} ad={ad} variant="compact" />
-            ))}
-          </div>
-        </section>
-
-        {/* Section Divider */}
-        <div className="h-2 bg-surface" />
-
-        {/* Brand Section */}
-        <section className="py-4">
-          <SectionHeader
-            icon={Briefcase}
-            title="브랜드 공고"
-            subtitle="경력에 도움되는 대기업/프랜차이즈"
-            showMore
-            moreLink="/search?type=brand"
-          />
-          <div className="grid grid-cols-3 gap-3 px-4">
-            {brands.map((brand) => (
-              <Link key={brand.id} to={`/search?brand=${brand.name}`}>
-                <motion.div
-                  whileTap={{ scale: 0.98 }}
-                  className="bg-card rounded-xl p-4 text-center border border-border hover:border-primary/30 transition-colors"
-                >
-                  <div className={`w-12 h-12 ${brand.color} rounded-full flex items-center justify-center mx-auto mb-2`}>
-                    <span className="text-lg font-bold text-white">{brand.initial}</span>
-                  </div>
-                  <p className="text-sm font-medium text-text-main">{brand.name}</p>
-                </motion.div>
-              </Link>
             ))}
           </div>
         </section>

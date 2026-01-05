@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { MapPin, Clock, DollarSign, Gem, ChevronRight } from 'lucide-react';
+import { MapPin, DollarSign, Gem, ChevronRight } from 'lucide-react';
 import { jewelAds } from '../../data/mockAds';
 import type { Advertisement } from '../../data/mockAds';
 
@@ -55,16 +55,16 @@ const JewelAdCard: React.FC<JewelAdCardProps> = ({ ad, index }) => {
     const config = jewelConfig[tier] || jewelConfig.gold;
 
     return (
-        <Link to={`/ad/${ad.id}`} className="block flex-shrink-0 w-[280px]">
+        <Link to={`/ad/${ad.id}`} className="block flex-shrink-0 w-[200px]">
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 whileTap={{ scale: 0.98 }}
-                className={`relative rounded-2xl overflow-hidden ${config.glow} border-2 ${config.border}`}
+                className={`relative rounded-xl overflow-hidden ${config.glow} border-2 ${config.border}`}
             >
                 {/* Shimmer Effect */}
-                <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden rounded-2xl">
+                <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden rounded-xl">
                     <div className={`absolute inset-0 bg-gradient-to-r ${config.gradient} opacity-20`} />
                     <div
                         className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
@@ -76,7 +76,7 @@ const JewelAdCard: React.FC<JewelAdCardProps> = ({ ad, index }) => {
                 </div>
 
                 {/* Image */}
-                <div className="relative h-40">
+                <div className="relative h-28">
                     <img
                         src={ad.thumbnail}
                         alt={ad.title}
@@ -107,31 +107,13 @@ const JewelAdCard: React.FC<JewelAdCardProps> = ({ ad, index }) => {
                 </div>
 
                 {/* Content */}
-                <div className={`p-4 bg-gradient-to-b from-black to-gray-900`}>
-                    <h3 className="font-bold text-white text-sm line-clamp-2 min-h-[40px] mb-2">
+                <div className={`p-3 bg-gradient-to-b from-black to-gray-900`}>
+                    <h3 className="font-bold text-white text-xs line-clamp-2 min-h-[32px] mb-1">
                         {ad.title}
                     </h3>
-                    <div className="space-y-1">
-                        <div className="flex items-center gap-1.5 text-gray-400 text-xs">
-                            <MapPin size={12} className={config.iconColor} />
-                            <span>{ad.location}</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 text-gray-400 text-xs">
-                            <Clock size={12} className={config.iconColor} />
-                            <span>협의가능</span>
-                        </div>
-                    </div>
-
-                    {/* Tags */}
-                    <div className="flex gap-1.5 mt-3 flex-wrap">
-                        {ad.badges.slice(0, 3).map((badge, i) => (
-                            <span
-                                key={i}
-                                className={`px-2 py-0.5 rounded-full text-[10px] ${config.bg} ${config.textColor} border ${config.border}/30`}
-                            >
-                                #{badge}
-                            </span>
-                        ))}
+                    <div className="flex items-center gap-1 text-gray-400 text-[10px]">
+                        <MapPin size={10} className={config.iconColor} />
+                        <span className="truncate">{ad.location}</span>
                     </div>
                 </div>
             </motion.div>

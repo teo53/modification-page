@@ -194,13 +194,13 @@ const PremiumAdCard: React.FC<PremiumAdCardProps> = ({ ad, variant = 'medium', s
 
     // Medium (default)
     return (
-        <Link to={`/ad/${ad.id}`} className="block flex-shrink-0 w-[220px]">
+        <Link to={`/ad/${ad.id}`} className="block flex-shrink-0 w-[160px]">
             <motion.div
                 whileTap={{ scale: 0.98 }}
                 className={`rounded-xl overflow-hidden ${config.border} ${config.glow} bg-card h-full`}
             >
                 {/* Image */}
-                <div className="relative h-32">
+                <div className="relative h-24">
                     <img
                         src={ad.thumbnail}
                         alt={ad.title}
@@ -238,14 +238,11 @@ const PremiumAdCard: React.FC<PremiumAdCardProps> = ({ ad, variant = 'medium', s
                 </div>
 
                 {/* Content */}
-                <div className="p-3">
-                    <p className="text-[10px] text-text-muted mb-1 truncate">
-                        #{ad.badges.slice(0, 2).join(' #')}
-                    </p>
-                    <h3 className="font-bold text-text-main text-sm line-clamp-2 min-h-[40px] mb-1">
+                <div className="p-2">
+                    <h3 className="font-bold text-text-main text-xs line-clamp-2 min-h-[32px] mb-1">
                         {ad.title}
                     </h3>
-                    <p className="text-xs text-text-muted flex items-center gap-1">
+                    <p className="text-[10px] text-text-muted flex items-center gap-1 truncate">
                         <MapPin size={10} />
                         {ad.location}
                     </p>

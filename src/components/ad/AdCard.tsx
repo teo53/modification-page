@@ -56,7 +56,7 @@ const AdCard: React.FC<AdCardProps> = ({
             )}
         >
             {/* Image Section */}
-            <div className={cn("relative overflow-hidden", (isDiamond || isSapphire || isRuby || isGold || isVip) ? "h-48" : "h-40")}>
+            <div className={cn("relative overflow-hidden", (isDiamond || isSapphire || isRuby || isGold || isVip) ? "h-32" : "h-28")}>
                 {image ? (
                     <>
                         <img
@@ -96,33 +96,33 @@ const AdCard: React.FC<AdCardProps> = ({
             </div>
 
             {/* Content Section */}
-            <div className="p-3">
+            <div className="p-2">
                 <h3 className={cn(
-                    "font-bold truncate mb-1",
-                    isDiamond ? "text-lg text-cyan-600" :
-                        isSapphire ? "text-lg text-blue-600" :
-                            isRuby ? "text-lg text-red-600" :
-                                isGold ? "text-lg text-yellow-600" :
-                                    isVip ? "text-lg text-primary" :
-                                        isSpecial ? "text-base text-purple-600" :
-                                            "text-sm text-text-main"
+                    "font-bold line-clamp-2 mb-1",
+                    isDiamond ? "text-sm text-cyan-600" :
+                        isSapphire ? "text-sm text-blue-600" :
+                            isRuby ? "text-sm text-red-600" :
+                                isGold ? "text-sm text-yellow-600" :
+                                    isVip ? "text-sm text-primary" :
+                                        isSpecial ? "text-xs text-purple-600" :
+                                            "text-xs text-text-main"
                 )}>
                     {title}
                 </h3>
 
-                <div className="flex items-center gap-1 text-xs text-text-muted mb-2">
-                    <MapPin size={12} />
+                <div className="flex items-center gap-1 text-[10px] text-text-muted mb-1">
+                    <MapPin size={10} />
                     <span className="truncate">{location}</span>
                 </div>
 
-                <div className="flex items-center justify-between mt-2">
-                    <div className="flex items-center gap-1 text-text-main font-bold">
-                        <DollarSign size={14} className="text-primary" />
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-0.5 text-text-main font-bold text-xs">
+                        <DollarSign size={12} className="text-primary" />
                         <span>{pay}</span>
                     </div>
                     {(isDiamond || isSapphire || isRuby || isGold || isVip) && (
                         <span className={cn(
-                            "text-[10px] text-black px-2 py-0.5 rounded-full font-bold",
+                            "text-[8px] text-black px-1.5 py-0.5 rounded-full font-bold",
                             isDiamond && "bg-cyan-400",
                             isSapphire && "bg-blue-500 text-white",
                             isRuby && "bg-red-500 text-white",
