@@ -6,6 +6,15 @@ on:
   pull_request:
     branches: [ main, master ]
   workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Build type (debug/release)'
+        required: true
+        default: 'debug'
+        type: choice
+        options:
+          - debug
+          - release
 
 jobs:
   build:
@@ -45,13 +54,56 @@ jobs:
       - name: Make Gradle wrapper executable
         run: chmod +x android/gradlew
 
-      - name: Build APK
+      - name: Auto-increment version code
+        run: |
+          VERSION_FILE="android/app/version.properties"
+          if [ -f "$VERSION_FILE" ]; then
+            CURRENT=$(grep VERSION_CODE "$VERSION_FILE" | cut -d'=' -f2)
+            NEXT=$((CURRENT + 1))
+            echo "VERSION_CODE=$NEXT" > "$VERSION_FILE"
+            echo "Version code incremented to $NEXT"
+          fi
+
+      - name: Decode Keystore (Release only)
+        if: github.event.inputs.build_type == 'release' && github.event_name == 'workflow_dispatch'
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/release-key.jks
+          echo "storeFile=release-key.jks" > android/keystore.properties
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> android/keystore.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/keystore.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/keystore.properties
+
+      - name: Build Debug APK
+        if: github.event.inputs.build_type != 'release' || github.event_name != 'workflow_dispatch'
         working-directory: android
         run: ./gradlew assembleDebug --stacktrace
 
-      - name: Upload APK artifact
+      - name: Build Release APK
+        if: github.event.inputs.build_type == 'release' && github.event_name == 'workflow_dispatch'
+        working-directory: android
+        run: ./gradlew assembleRelease --stacktrace
+
+      - name: Upload Debug APK
+        if: github.event.inputs.build_type != 'release' || github.event_name != 'workflow_dispatch'
         uses: actions/upload-artifact@v4
         with:
           name: LunaAlba-debug
           path: android/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 30
+
+      - name: Upload Release APK
+        if: github.event.inputs.build_type == 'release' && github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: LunaAlba-release
+          path: android/app/build/outputs/apk/release/app-release.apk
+          retention-days: 90
+
+      - name: Commit version increment
+        if: success()
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add android/app/version.properties
+          git diff --staged --quiet || git commit -m "chore: Auto-increment version code [skip ci]"
+          git push || true
