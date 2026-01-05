@@ -51,6 +51,15 @@ const AdDetail: React.FC = () => {
         }
     };
 
+    // Handle back navigation - go to previous page or home if no history
+    const handleBack = () => {
+        if (window.history.length > 1) {
+            navigate(-1);
+        } else {
+            navigate('/');
+        }
+    };
+
     // If ad not found
     if (!ad) {
         return (
@@ -71,7 +80,7 @@ const AdDetail: React.FC = () => {
             {/* Mobile Header */}
             <div className="md:hidden sticky top-0 z-40 bg-card border-b border-border px-2 py-2 flex items-center justify-between">
                 <button
-                    onClick={() => navigate(-1)}
+                    onClick={handleBack}
                     className="w-10 h-10 flex items-center justify-center text-text-main rounded-lg hover:bg-surface focus-visible:ring-2 focus-visible:ring-primary"
                     aria-label="뒤로 가기"
                 >

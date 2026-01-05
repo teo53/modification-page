@@ -9,8 +9,8 @@ export default {
       colors: {
         background: '#111111',
         primary: {
-          DEFAULT: '#D4AF37', // Gold
-          hover: '#B5952F',
+          DEFAULT: '#E5C04B', // Bright Gold
+          hover: '#D4AF37',
         },
         secondary: {
           DEFAULT: '#FF007F', // Pink

@@ -1,47 +1,34 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { MapPin, DollarSign, Gem, ChevronRight } from 'lucide-react';
+import { MapPin, Gem, ChevronRight, Calendar } from 'lucide-react';
 import { jewelAds } from '../../data/mockAds';
 import type { Advertisement } from '../../data/mockAds';
 
-// Jewel tier configuration
+// Jewel tier configuration - simplified without glow effects
 const jewelConfig = {
     diamond: {
         name: 'DIAMOND',
-        gradient: 'from-cyan-400 via-cyan-300 to-cyan-500',
         border: 'border-cyan-400',
-        glow: 'shadow-[0_0_30px_rgba(34,211,238,0.4)]',
-        bg: 'bg-gradient-to-r from-cyan-500/20 to-cyan-400/10',
+        bg: 'bg-cyan-400',
         textColor: 'text-cyan-400',
-        iconColor: 'text-cyan-300',
     },
     sapphire: {
         name: 'SAPPHIRE',
-        gradient: 'from-blue-500 via-blue-400 to-blue-600',
         border: 'border-blue-500',
-        glow: 'shadow-[0_0_25px_rgba(59,130,246,0.4)]',
-        bg: 'bg-gradient-to-r from-blue-500/20 to-blue-400/10',
+        bg: 'bg-blue-500',
         textColor: 'text-blue-400',
-        iconColor: 'text-blue-300',
     },
     ruby: {
         name: 'RUBY',
-        gradient: 'from-red-500 via-red-400 to-red-600',
         border: 'border-red-500',
-        glow: 'shadow-[0_0_25px_rgba(239,68,68,0.4)]',
-        bg: 'bg-gradient-to-r from-red-500/20 to-red-400/10',
+        bg: 'bg-red-500',
         textColor: 'text-red-400',
-        iconColor: 'text-red-300',
     },
     gold: {
         name: 'GOLD',
-        gradient: 'from-yellow-500 via-amber-400 to-yellow-600',
         border: 'border-yellow-500',
-        glow: 'shadow-[0_0_25px_rgba(234,179,8,0.4)]',
-        bg: 'bg-gradient-to-r from-yellow-500/20 to-amber-400/10',
+        bg: 'bg-yellow-500',
         textColor: 'text-yellow-400',
-        iconColor: 'text-yellow-300',
     },
 };
 
@@ -54,29 +41,14 @@ const JewelAdCard: React.FC<JewelAdCardProps> = ({ ad, index }) => {
     const tier = ad.productType as keyof typeof jewelConfig;
     const config = jewelConfig[tier] || jewelConfig.gold;
 
-    return (
-        <Link to={`/ad/${ad.id}`} className="block flex-shrink-0 w-[200px]">
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                whileTap={{ scale: 0.98 }}
-                className={`relative rounded-xl overflow-hidden ${config.glow} border-2 ${config.border}`}
-            >
-                {/* Shimmer Effect */}
-                <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden rounded-xl">
-                    <div className={`absolute inset-0 bg-gradient-to-r ${config.gradient} opacity-20`} />
-                    <div
-                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-                        style={{
-                            animation: 'shimmer 3s ease-in-out infinite',
-                            backgroundSize: '200% 100%',
-                        }}
-                    />
-                </div>
+    // Mock ad duration (days running)
+    const daysRunning = Math.floor(Math.random() * 30) + 1;
 
+    return (
+        <Link to={`/ad/${ad.id}`} className="block">
+            <div className={`relative rounded-xl overflow-hidden border-2 ${config.border} bg-card`}>
                 {/* Image */}
-                <div className="relative h-28">
+                <div className="relative h-24">
                     <img
                         src={ad.thumbnail}
                         alt={ad.title}
@@ -88,82 +60,81 @@ const JewelAdCard: React.FC<JewelAdCardProps> = ({ ad, index }) => {
                             target.style.display = 'none';
                         }}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
 
                     {/* Tier Badge */}
-                    <div className={`absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gradient-to-r ${config.gradient} text-black text-xs font-black`}>
-                        <Gem size={12} />
+                    <div className={`absolute top-2 left-2 flex items-center gap-1 px-2 py-0.5 rounded ${config.bg} text-black text-[10px] font-black`}>
+                        <Gem size={10} />
                         {config.name}
                     </div>
 
                     {/* Rank */}
-                    <div className={`absolute top-3 right-3 w-7 h-7 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center ${config.textColor} font-bold text-sm border ${config.border}`}>
+                    <div className={`absolute top-2 right-2 w-6 h-6 rounded-full bg-black/60 flex items-center justify-center ${config.textColor} font-bold text-xs`}>
                         {index + 1}
                     </div>
 
                     {/* Pay Overlay */}
-                    <div className="absolute bottom-3 right-3 flex items-center gap-1 px-2 py-1 rounded-full bg-black/70 backdrop-blur-sm">
-                        <DollarSign size={12} className={config.iconColor} />
+                    <div className="absolute bottom-2 right-2 bg-black/70 px-2 py-0.5 rounded">
                         <span className="text-white text-xs font-bold">{ad.pay}</span>
                     </div>
                 </div>
 
                 {/* Content */}
-                <div className={`p-3 bg-gradient-to-b from-black to-gray-900`}>
-                    <h3 className="font-bold text-white text-xs line-clamp-2 min-h-[32px] mb-1">
+                <div className="p-2 bg-card">
+                    <h3 className="font-bold text-text-main text-xs line-clamp-2 min-h-[32px] mb-1">
                         {ad.title}
                     </h3>
-                    <div className="flex items-center gap-1 text-gray-400 text-[10px]">
-                        <MapPin size={10} className={config.iconColor} />
+                    <div className="flex items-center gap-1 text-text-muted text-[10px] mb-1">
+                        <MapPin size={10} />
                         <span className="truncate">{ad.location}</span>
                     </div>
+                    {/* Ad Duration */}
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1 text-text-light text-[9px]">
+                            <Calendar size={9} />
+                            <span>{daysRunning}일째 광고중</span>
+                        </div>
+                        <span className="text-[8px] text-text-light bg-surface px-1 py-0.5 rounded">AD</span>
+                    </div>
                 </div>
-            </motion.div>
+            </div>
         </Link>
     );
 };
 
 const JewelAdSection: React.FC = () => {
     return (
-        <section className="py-4 bg-gradient-to-b from-black via-gray-900 to-background">
+        <section className="py-4 bg-surface">
             {/* Section Header */}
-            <div className="px-4 mb-4">
+            <div className="px-4 mb-3">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                        <div className="p-2 rounded-xl bg-gradient-to-r from-cyan-500/20 via-blue-500/20 to-purple-500/20 border border-cyan-500/30">
-                            <Gem size={20} className="text-cyan-400" />
+                        <div className="p-2 rounded-lg bg-cyan-500/20">
+                            <Gem size={18} className="text-cyan-400" />
                         </div>
                         <div>
-                            <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                            <h2 className="text-base font-bold text-text-main flex items-center gap-2">
                                 PREMIUM JEWEL
-                                <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-gradient-to-r from-cyan-500 to-blue-500 text-white">
+                                <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-cyan-500 text-white">
                                     TOP
                                 </span>
                             </h2>
-                            <p className="text-xs text-gray-400">최상위 프리미엄 광고</p>
+                            <p className="text-[10px] text-text-muted">최상위 프리미엄 광고</p>
                         </div>
                     </div>
-                    <Link to="/search?tier=jewel" className="flex items-center text-sm text-gray-400 hover:text-white transition-colors">
+                    <Link to="/search?tier=jewel" className="flex items-center text-xs text-text-muted">
                         전체보기
-                        <ChevronRight size={16} />
+                        <ChevronRight size={14} />
                     </Link>
                 </div>
             </div>
 
-            {/* Jewel Cards Horizontal Scroll */}
-            <div className="flex gap-4 overflow-x-auto px-4 pb-4 scrollbar-hide">
-                {jewelAds.map((ad, idx) => (
+            {/* Jewel Cards - 2 Column Grid */}
+            <div className="px-4 grid grid-cols-2 gap-3">
+                {jewelAds.slice(0, 6).map((ad, idx) => (
                     <JewelAdCard key={ad.id} ad={ad} index={idx} />
                 ))}
             </div>
-
-            {/* Shimmer Animation CSS */}
-            <style>{`
-                @keyframes shimmer {
-                    0% { background-position: 200% 0; }
-                    100% { background-position: -200% 0; }
-                }
-            `}</style>
         </section>
     );
 };

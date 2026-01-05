@@ -196,7 +196,7 @@ const Home: React.FC = () => {
         {/* ============ JEWEL PREMIUM ADS - TOP TIER ============ */}
         <JewelAdSection />
 
-        {/* VIP Premium Ads */}
+        {/* VIP Premium Ads - 2 Column Grid */}
         <section className="py-4">
           <SectionHeader
             icon={Crown}
@@ -205,11 +205,10 @@ const Home: React.FC = () => {
             badge="AD"
             badgeColor="vip"
             variant="premium"
-            pagination={{ current: 1, total: Math.ceil(vipAds.length / 4) }}
           />
-          <div className="flex gap-4 overflow-x-auto px-4 pb-3 scrollbar-hide">
+          <div className="px-4 grid grid-cols-2 gap-3">
             {vipAds.slice(0, 6).map((ad, idx) => (
-              <PremiumAdCard key={ad.id} ad={ad} variant="medium" showRank={idx + 1} />
+              <PremiumAdCard key={ad.id} ad={ad} variant="grid" showRank={idx + 1} />
             ))}
           </div>
         </section>
@@ -217,7 +216,7 @@ const Home: React.FC = () => {
         {/* Section Divider */}
         <div className="h-2 bg-surface" />
 
-        {/* Special Ads Section - with images */}
+        {/* Special Ads Section - 2 Column Grid */}
         <section className="py-4">
           <SectionHeader
             icon={Sparkles}
@@ -229,9 +228,9 @@ const Home: React.FC = () => {
             showMore
             moreLink="/search?type=special"
           />
-          <div className="px-4 space-y-3">
-            {specialAds.slice(0, 4).map((ad) => (
-              <PremiumAdCard key={ad.id} ad={ad} variant="compact" />
+          <div className="px-4 grid grid-cols-2 gap-3">
+            {specialAds.slice(0, 6).map((ad, idx) => (
+              <PremiumAdCard key={ad.id} ad={ad} variant="grid" showRank={idx + 1} />
             ))}
           </div>
         </section>
@@ -297,7 +296,7 @@ const Home: React.FC = () => {
         {/* Section Divider */}
         <div className="h-2 bg-surface" />
 
-        {/* Hot Jobs Section - Urgent */}
+        {/* Hot Jobs Section - Urgent - 2 Column Grid */}
         <section className="py-4 bg-red-500/5">
           <SectionHeader
             icon={Flame}
@@ -308,34 +307,39 @@ const Home: React.FC = () => {
             showMore
             moreLink="/urgent"
           />
-          <div className="flex gap-3 overflow-x-auto px-4 pb-2 scrollbar-hide">
+          <div className="px-4 grid grid-cols-2 gap-3">
             {allAds.filter(ad => ad.isHot).slice(0, 6).map((ad) => (
-              <Link key={ad.id} to={`/ad/${ad.id}`} className="flex-shrink-0 w-[160px]">
-                <motion.div
-                  whileTap={{ scale: 0.98 }}
-                  className="bg-card rounded-xl border-2 border-red-500/30 overflow-hidden"
-                >
+              <Link key={ad.id} to={`/ad/${ad.id}`}>
+                <div className="bg-card rounded-xl border-2 border-red-500/30 overflow-hidden">
                   <div className="relative h-24">
                     <img
                       src={ad.thumbnail}
                       alt={ad.title}
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
                         target.style.display = 'none';
                       }}
                     />
-                    <div className="absolute top-2 left-2 flex items-center gap-1 px-1.5 py-0.5 rounded bg-red-500 text-white text-[10px] font-bold animate-pulse">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    <div className="absolute top-2 left-2 flex items-center gap-1 px-1.5 py-0.5 rounded bg-red-500 text-white text-[10px] font-bold">
                       <Flame size={10} />
                       급구
+                    </div>
+                    <div className="absolute bottom-2 right-2 bg-black/70 px-2 py-0.5 rounded">
+                      <span className="text-white text-xs font-bold">{ad.pay}</span>
                     </div>
                   </div>
                   <div className="p-2">
                     <h4 className="text-xs font-bold text-text-main line-clamp-2 min-h-[32px]">{ad.title}</h4>
-                    <p className="text-[10px] text-text-muted mt-1">{ad.location}</p>
-                    <p className="text-xs font-bold text-red-500 mt-1">{ad.pay}</p>
+                    <div className="flex items-center justify-between mt-1">
+                      <p className="text-[10px] text-text-muted truncate">{ad.location}</p>
+                      <span className="text-[8px] text-text-light bg-surface px-1 py-0.5 rounded">AD</span>
+                    </div>
                   </div>
-                </motion.div>
+                </div>
               </Link>
             ))}
           </div>

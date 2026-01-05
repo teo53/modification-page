@@ -1,12 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { MapPin, Zap, Crown, Sparkles, Diamond } from 'lucide-react';
+import { MapPin, Crown, Sparkles, Diamond, Calendar } from 'lucide-react';
 import type { Advertisement } from '../../data/mockAds';
 
 interface PremiumAdCardProps {
     ad: Advertisement;
-    variant?: 'large' | 'medium' | 'compact';
+    variant?: 'large' | 'medium' | 'compact' | 'grid';
     showRank?: number;
 }
 
@@ -14,56 +13,48 @@ const PremiumAdCard: React.FC<PremiumAdCardProps> = ({ ad, variant = 'medium', s
     const tierConfig = {
         diamond: {
             border: 'border-2 border-cyan-400',
-            glow: 'shadow-[0_0_25px_rgba(34,211,238,0.4)]',
             badge: 'DIAMOND',
-            badgeClass: 'bg-gradient-to-r from-cyan-400 to-cyan-300 text-black',
+            badgeClass: 'bg-cyan-400 text-black',
             icon: Diamond,
         },
         sapphire: {
             border: 'border-2 border-blue-500',
-            glow: 'shadow-[0_0_25px_rgba(59,130,246,0.4)]',
             badge: 'SAPPHIRE',
-            badgeClass: 'bg-gradient-to-r from-blue-500 to-blue-400 text-white',
+            badgeClass: 'bg-blue-500 text-white',
             icon: Diamond,
         },
         ruby: {
             border: 'border-2 border-red-500',
-            glow: 'shadow-[0_0_25px_rgba(239,68,68,0.4)]',
             badge: 'RUBY',
-            badgeClass: 'bg-gradient-to-r from-red-500 to-red-400 text-white',
+            badgeClass: 'bg-red-500 text-white',
             icon: Diamond,
         },
         gold: {
             border: 'border-2 border-yellow-500',
-            glow: 'shadow-[0_0_25px_rgba(234,179,8,0.4)]',
             badge: 'GOLD',
-            badgeClass: 'bg-gradient-to-r from-yellow-500 to-amber-400 text-black',
+            badgeClass: 'bg-yellow-500 text-black',
             icon: Crown,
         },
         vip: {
             border: 'border-2 border-primary',
-            glow: 'shadow-[0_0_20px_rgba(255,107,53,0.3)]',
             badge: 'VIP',
-            badgeClass: 'bg-gradient-to-r from-primary to-orange-400 text-white',
+            badgeClass: 'bg-primary text-white',
             icon: Crown,
         },
         special: {
             border: 'border-2 border-purple-500',
-            glow: 'shadow-[0_0_20px_rgba(168,85,247,0.3)]',
             badge: 'SPECIAL',
-            badgeClass: 'bg-gradient-to-r from-purple-500 to-pink-500 text-white',
+            badgeClass: 'bg-purple-500 text-white',
             icon: Sparkles,
         },
         premium: {
             border: 'border-2 border-blue-500',
-            glow: 'shadow-[0_0_15px_rgba(59,130,246,0.2)]',
             badge: 'PREMIUM',
-            badgeClass: 'bg-gradient-to-r from-blue-500 to-cyan-400 text-white',
+            badgeClass: 'bg-blue-500 text-white',
             icon: Diamond,
         },
         general: {
             border: 'border border-border',
-            glow: '',
             badge: '',
             badgeClass: '',
             icon: null,
@@ -73,13 +64,78 @@ const PremiumAdCard: React.FC<PremiumAdCardProps> = ({ ad, variant = 'medium', s
     const config = tierConfig[ad.productType] || tierConfig.general;
     const TierIcon = config.icon;
 
+    // Mock ad duration (days running)
+    const daysRunning = Math.floor(Math.random() * 30) + 1;
+
+    // Grid variant - clean, no sparkle, 2-column optimized
+    if (variant === 'grid') {
+        return (
+            <Link to={`/ad/${ad.id}`} className="block">
+                <div className={`rounded-xl overflow-hidden ${config.border} bg-card`}>
+                    {/* Image */}
+                    <div className="relative h-24">
+                        <img
+                            src={ad.thumbnail}
+                            alt={ad.title}
+                            loading="lazy"
+                            decoding="async"
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.src = '/placeholder-ad.jpg';
+                                target.onerror = null;
+                            }}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+
+                        {/* Tier Badge */}
+                        {config.badge && (
+                            <div className={`absolute top-2 left-2 flex items-center gap-1 px-2 py-0.5 rounded ${config.badgeClass} text-[10px] font-bold`}>
+                                {TierIcon && <TierIcon size={10} />}
+                                {config.badge}
+                            </div>
+                        )}
+
+                        {/* Rank */}
+                        {showRank && (
+                            <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/60 flex items-center justify-center text-white font-bold text-xs">
+                                {showRank}
+                            </div>
+                        )}
+
+                        {/* Pay overlay */}
+                        <div className="absolute bottom-2 right-2 bg-black/70 px-2 py-0.5 rounded">
+                            <span className="text-white text-xs font-bold">{ad.pay}</span>
+                        </div>
+                    </div>
+
+                    {/* Content */}
+                    <div className="p-2">
+                        <h3 className="font-bold text-text-main text-xs line-clamp-2 min-h-[32px] mb-1">
+                            {ad.title}
+                        </h3>
+                        <div className="flex items-center gap-1 text-text-muted text-[10px] mb-1">
+                            <MapPin size={10} />
+                            <span className="truncate">{ad.location}</span>
+                        </div>
+                        {/* Ad Duration & AD indicator */}
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-1 text-text-light text-[9px]">
+                                <Calendar size={9} />
+                                <span>{daysRunning}일째 광고중</span>
+                            </div>
+                            <span className="text-[8px] text-text-light bg-surface px-1 py-0.5 rounded">AD</span>
+                        </div>
+                    </div>
+                </div>
+            </Link>
+        );
+    }
+
     if (variant === 'large') {
         return (
             <Link to={`/ad/${ad.id}`} className="block">
-                <motion.div
-                    whileTap={{ scale: 0.98 }}
-                    className={`relative rounded-2xl overflow-hidden ${config.border} ${config.glow} bg-card`}
-                >
+                <div className={`relative rounded-2xl overflow-hidden ${config.border} bg-card`}>
                     {/* Image */}
                     <div className="relative h-48">
                         <img
@@ -101,14 +157,6 @@ const PremiumAdCard: React.FC<PremiumAdCardProps> = ({ ad, variant = 'medium', s
                             <div className={`absolute top-3 left-3 flex items-center gap-1 px-2.5 py-1 rounded-full ${config.badgeClass} text-xs font-bold`}>
                                 {TierIcon && <TierIcon size={12} />}
                                 {config.badge}
-                            </div>
-                        )}
-
-                        {/* HOT Badge */}
-                        {ad.isHot && (
-                            <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 rounded-full bg-red-500 text-white text-xs font-bold animate-pulse">
-                                <Zap size={12} fill="currentColor" />
-                                급구
                             </div>
                         )}
 
@@ -142,7 +190,7 @@ const PremiumAdCard: React.FC<PremiumAdCardProps> = ({ ad, variant = 'medium', s
                             </span>
                         ))}
                     </div>
-                </motion.div>
+                </div>
             </Link>
         );
     }
@@ -150,10 +198,7 @@ const PremiumAdCard: React.FC<PremiumAdCardProps> = ({ ad, variant = 'medium', s
     if (variant === 'compact') {
         return (
             <Link to={`/ad/${ad.id}`} className="block">
-                <motion.div
-                    whileTap={{ scale: 0.98 }}
-                    className={`flex gap-3 p-3 rounded-xl ${config.border} ${config.glow} bg-card`}
-                >
+                <div className={`flex gap-3 p-3 rounded-xl ${config.border} bg-card`}>
                     {/* Thumbnail */}
                     <div className="relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden">
                         <img
@@ -189,9 +234,12 @@ const PremiumAdCard: React.FC<PremiumAdCardProps> = ({ ad, variant = 'medium', s
                             {ad.title}
                         </h3>
                         <p className="text-xs text-text-muted mb-1">{ad.location}</p>
-                        <p className="text-sm font-bold text-primary">{ad.pay}</p>
+                        <div className="flex items-center justify-between">
+                            <p className="text-sm font-bold text-primary">{ad.pay}</p>
+                            <span className="text-[8px] text-text-light bg-surface px-1 py-0.5 rounded">AD</span>
+                        </div>
                     </div>
-                </motion.div>
+                </div>
             </Link>
         );
     }
@@ -199,10 +247,7 @@ const PremiumAdCard: React.FC<PremiumAdCardProps> = ({ ad, variant = 'medium', s
     // Medium (default)
     return (
         <Link to={`/ad/${ad.id}`} className="block flex-shrink-0 w-[160px]">
-            <motion.div
-                whileTap={{ scale: 0.98 }}
-                className={`rounded-xl overflow-hidden ${config.border} ${config.glow} bg-card h-full`}
-            >
+            <div className={`rounded-xl overflow-hidden ${config.border} bg-card h-full`}>
                 {/* Image */}
                 <div className="relative h-24">
                     <img
@@ -227,16 +272,6 @@ const PremiumAdCard: React.FC<PremiumAdCardProps> = ({ ad, variant = 'medium', s
                         </div>
                     )}
 
-                    {/* HOT/NEW */}
-                    <div className="absolute top-2 right-2 flex gap-1">
-                        {ad.isHot && (
-                            <span className="px-1.5 py-0.5 rounded bg-red-500 text-white text-[10px] font-bold">HOT</span>
-                        )}
-                        {ad.isNew && (
-                            <span className="px-1.5 py-0.5 rounded bg-blue-500 text-white text-[10px] font-bold">NEW</span>
-                        )}
-                    </div>
-
                     {/* Pay overlay */}
                     <div className="absolute bottom-2 right-2 bg-black/60 backdrop-blur-sm px-2 py-1 rounded text-white text-xs font-bold">
                         {ad.pay}
@@ -253,7 +288,7 @@ const PremiumAdCard: React.FC<PremiumAdCardProps> = ({ ad, variant = 'medium', s
                         {ad.location}
                     </p>
                 </div>
-            </motion.div>
+            </div>
         </Link>
     );
 };

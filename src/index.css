@@ -2,11 +2,11 @@
 
 @theme {
   /* Base colors - shared between themes */
-  --color-primary: #FF6B35;
-  --color-primary-hover: #E55A2B;
-  --color-secondary: #FF6B35;
-  --color-secondary-hover: #E55A2B;
-  --color-salary: #FF6B35;
+  --color-primary: #E5C04B;
+  --color-primary-hover: #D4AF37;
+  --color-secondary: #E5C04B;
+  --color-secondary-hover: #D4AF37;
+  --color-salary: #E5C04B;
   --color-badge-hot: #FF4444;
   --color-badge-new: #22C55E;
   --color-badge-ad: #CCCCCC;

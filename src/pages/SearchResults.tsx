@@ -59,6 +59,18 @@ const SearchResults: React.FC = () => {
         { label: '인기순', value: 'popular' },
     ];
 
+    // Tier priority for sorting (higher = more premium)
+    const tierPriority: { [key: string]: number } = {
+        'diamond': 100,
+        'sapphire': 90,
+        'ruby': 80,
+        'gold': 70,
+        'vip': 60,
+        'special': 50,
+        'premium': 40,
+        'general': 10,
+    };
+
     // 필터링 및 정렬된 광고 목록
     const filteredAds = useMemo(() => {
         // Start with tier-filtered ads if tier is set
@@ -152,16 +164,23 @@ const SearchResults: React.FC = () => {
             }
         }
 
-        // 정렬
-        if (sortOrder === 'pay') {
-            results.sort((a, b) => {
+        // 정렬 - Always sort by tier first (paid ads first), then by selected criteria
+        results.sort((a, b) => {
+            // First, sort by tier priority (paid ads first)
+            const aTier = tierPriority[a.productType] || 10;
+            const bTier = tierPriority[b.productType] || 10;
+            if (aTier !== bTier) return bTier - aTier;
+
+            // Then sort by selected criteria
+            if (sortOrder === 'pay') {
                 const aPay = parseInt(a.pay.replace(/[^0-9]/g, '')) || 0;
                 const bPay = parseInt(b.pay.replace(/[^0-9]/g, '')) || 0;
                 return bPay - aPay;
-            });
-        } else if (sortOrder === 'popular') {
-            results.sort((a, b) => (b.isHot ? 1 : 0) - (a.isHot ? 1 : 0));
-        }
+            } else if (sortOrder === 'popular') {
+                return (b.isHot ? 1 : 0) - (a.isHot ? 1 : 0);
+            }
+            return 0;
+        });
 
         return results.length > 0 ? results : allAds.slice(0, 12);
     }, [searchQuery, filters, sortOrder, tierFilter]);
@@ -260,7 +279,7 @@ const SearchResults: React.FC = () => {
                     />
                 </div>
 
-                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
                     {filteredAds.slice(0, displayCount).map((ad) => (
                         <AdCard
                             key={ad.id}
@@ -269,10 +288,11 @@ const SearchResults: React.FC = () => {
                             location={ad.location}
                             pay={ad.pay}
                             image={ad.thumbnail}
-                            badges={ad.badges}
+                            badges={ad.badges.slice(0, 2)}
                             isNew={ad.isNew}
                             isHot={ad.isHot}
-                            variant={ad.productType === 'vip' ? 'vip' : ad.productType === 'special' ? 'special' : 'regular'}
+                            productType={ad.productType}
+                            variant={ad.productType === 'diamond' ? 'diamond' : ad.productType === 'sapphire' ? 'sapphire' : ad.productType === 'ruby' ? 'ruby' : ad.productType === 'gold' ? 'gold' : ad.productType === 'vip' ? 'vip' : ad.productType === 'special' ? 'special' : 'regular'}
                         />
                     ))}
                 </div>
