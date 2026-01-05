@@ -5,14 +5,14 @@
 
     <!-- PWA Meta Tags -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover" />
-    <meta name="theme-color" content="#111111" />
-    <meta name="background-color" content="#111111" />
+    <meta name="theme-color" content="#3a3a3a" />
+    <meta name="background-color" content="#3a3a3a" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="LunaAlba" />
     <meta name="application-name" content="LunaAlba" />
-    <meta name="msapplication-TileColor" content="#111111" />
+    <meta name="msapplication-TileColor" content="#3a3a3a" />
     <meta name="msapplication-TileImage" content="/icons/icon-144x144.png" />
 
     <!-- SEO Meta Tags -->
@@ -98,7 +98,7 @@
 
       #app-loader .loader-text {
         margin-top: 20px;
-        color: #D4AF37;
+        color: #ffffff;
         font-family: 'Noto Sans KR', sans-serif;
         font-size: 18px;
         font-weight: 600;
@@ -114,21 +114,21 @@
     <!-- App Loading Screen -->
     <div id="app-loader">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-        <defs>
-          <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:#1a1a2e"/>
-            <stop offset="100%" style="stop-color:#111111"/>
-          </linearGradient>
-          <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:#D4AF37"/>
-            <stop offset="100%" style="stop-color:#B5952F"/>
-          </linearGradient>
-        </defs>
-        <circle cx="256" cy="220" r="120" fill="url(#gold)"/>
-        <circle cx="310" cy="190" r="90" fill="url(#bg)"/>
-        <circle cx="150" cy="150" r="8" fill="#D4AF37" opacity="0.9"/>
-        <circle cx="380" cy="120" r="6" fill="#D4AF37" opacity="0.8"/>
-        <circle cx="420" cy="200" r="5" fill="#D4AF37" opacity="0.7"/>
+        <!-- Crescent Moon -->
+        <path d="M130,380 C80,320 70,220 100,150 C130,80 190,30 270,30 C200,60 160,120 160,200 C160,280 200,340 270,380 C200,400 150,400 130,380Z" fill="white"/>
+        <!-- Cat silhouette -->
+        <g transform="translate(200, 180)">
+          <ellipse cx="80" cy="140" rx="65" ry="50" fill="white"/>
+          <path d="M20,140 Q-20,100 -30,60 Q-35,30 -20,10" stroke="white" stroke-width="35" fill="none" stroke-linecap="round"/>
+          <circle cx="100" cy="60" r="42" fill="white"/>
+          <path d="M65,30 L72,0 L88,25 Z" fill="white"/>
+          <path d="M105,25 L125,-5 L135,22 Z" fill="white"/>
+          <path d="M145,130 Q175,100 170,60" stroke="white" stroke-width="16" fill="none" stroke-linecap="round"/>
+        </g>
+        <!-- Star -->
+        <g transform="translate(380, 100)">
+          <path d="M0,-30 L4,-8 L26,-4 L4,0 L0,22 L-4,0 L-26,-4 L-4,-8 Z" fill="white"/>
+        </g>
       </svg>
       <div class="loader-text">LunaAlba</div>
     </div>
