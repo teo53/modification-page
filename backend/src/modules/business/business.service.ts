@@ -4,6 +4,7 @@
 // =============================================================================
 
 import { Injectable, Logger, BadRequestException } from '@nestjs/common';
+import { WebhookService } from '../webhook/webhook.service';
 
 interface BusinessValidationResult {
     valid: boolean;
@@ -16,6 +17,8 @@ interface BusinessValidationResult {
 @Injectable()
 export class BusinessService {
     private readonly logger = new Logger(BusinessService.name);
+
+    constructor(private readonly webhookService: WebhookService) { }
 
     /**
      * 사업자등록번호 형식 검증 (하이픈 제거 후 10자리)
@@ -79,26 +82,30 @@ export class BusinessService {
 
         if (!isValid) {
             this.logger.warn(`Invalid business number checksum: ${normalized}`);
-            return {
+            const result = {
                 valid: false,
                 businessNumber: normalized,
                 status: '확인불가',
                 taxType: '-',
                 message: '유효하지 않은 사업자등록번호입니다. 번호를 다시 확인해주세요.',
             };
+            this.webhookService.sendWebhook('user.business.failed', result);
+            return result;
         }
 
         // 체크섬 유효 - 형식상 올바른 번호
         // 실제 사업자 상태는 국세청 API 연동 시 확인 가능
         this.logger.log(`Valid business number format: ${normalized}`);
 
-        return {
+        const result = {
             valid: true,
             businessNumber: normalized,
             status: '형식 검증 완료',
             taxType: '확인 필요',
             message: '사업자등록번호 형식이 올바릅니다.',
         };
+        this.webhookService.sendWebhook('user.business.verified', result);
+        return result;
     }
 
     /**

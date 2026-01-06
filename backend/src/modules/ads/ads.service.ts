@@ -14,6 +14,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { CreateAdDto } from './dto/create-ad.dto';
 import { QueryAdDto } from './dto/query-ad.dto';
 import { AdStatus, AdHistoryAction, UserRole } from '@prisma/client';
+import { WebhookService } from '../webhook/webhook.service';
 
 interface PaginatedResult<T> {
     data: T[];
@@ -31,7 +32,10 @@ interface PaginatedResult<T> {
 export class AdsService {
     private readonly logger = new Logger(AdsService.name);
 
-    constructor(private prisma: PrismaService) { }
+    constructor(
+        private prisma: PrismaService,
+        private readonly webhookService: WebhookService,
+    ) { }
 
     // ============================================
     // 광고 목록 조회
@@ -301,6 +305,9 @@ export class AdsService {
 
         this.logger.log(`New ad created: ${ad.id} by user ${userId}`);
 
+        // Webhook 전송
+        this.webhookService.sendWebhook('ad.created', ad);
+
         return ad;
     }
 
@@ -473,7 +480,14 @@ export class AdsService {
             ipAddress,
         );
 
-        // TODO: 알림 발송
+        // 알림 발송 및 Webhook
+        this.webhookService.sendWebhook('ad.status.changed', {
+            id,
+            status: AdStatus.ACTIVE,
+            user: { id: ad.userId },
+            adminId,
+            timestamp: new Date(),
+        });
 
         return updatedAd;
     }
@@ -506,7 +520,15 @@ export class AdsService {
             ipAddress,
         );
 
-        // TODO: 알림 발송
+        // 알림 발송 및 Webhook
+        this.webhookService.sendWebhook('ad.status.changed', {
+            id,
+            status: AdStatus.REJECTED,
+            reason,
+            user: { id: ad.userId },
+            adminId,
+            timestamp: new Date(),
+        });
 
         return updatedAd;
     }
