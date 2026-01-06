@@ -102,11 +102,12 @@ export const createAdWithApi = async (
             success: false,
             message: response.error || response.data?.message || '광고 등록에 실패했습니다.'
         };
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Create ad error:', error);
 
         // 백엔드 검증 에러 메시지 추출
-        const backendMessage = error.response?.data?.message;
+        const err = error as { response?: { data?: { message?: string | string[] } }; message?: string };
+        const backendMessage = err.response?.data?.message;
 
         if (backendMessage) {
             return {
@@ -119,7 +120,7 @@ export const createAdWithApi = async (
 
         return {
             success: false,
-            message: error.message || '서버 연결에 실패했습니다.'
+            message: err.message || '서버 연결에 실패했습니다.'
         };
     }
 };
@@ -144,11 +145,12 @@ export const updateAdWithApi = async (
             success: false,
             message: response.error || response.data?.message || '광고 수정에 실패했습니다.'
         };
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Update ad error:', error);
 
         // 백엔드 검증 에러 메시지 추출
-        const backendMessage = error.response?.data?.message;
+        const err = error as { response?: { data?: { message?: string | string[] } }; message?: string };
+        const backendMessage = err.response?.data?.message;
 
         if (backendMessage) {
             return {
@@ -159,7 +161,7 @@ export const updateAdWithApi = async (
             };
         }
 
-        return { success: false, message: error.message || '서버 연결에 실패했습니다.' };
+        return { success: false, message: err.message || '서버 연결에 실패했습니다.' };
     }
 };
 

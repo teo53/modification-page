@@ -2,6 +2,8 @@
 // Tracks user behavior: clicks, scrolls, page views, ad interactions
 // Data is stored in localStorage for Admin CRM analysis
 
+import { safeLocalStorageGet } from './safeJson';
+
 export interface HeatmapPoint {
     x: number;
     y: number;
@@ -73,17 +75,13 @@ export const getSessionId = (): string => {
 
 // Get all analytics data
 export const getAnalyticsData = (): AnalyticsData => {
-    const stored = localStorage.getItem(ANALYTICS_KEY);
-    if (stored) {
-        return JSON.parse(stored);
-    }
-    return {
+    return safeLocalStorageGet<AnalyticsData>(ANALYTICS_KEY, {
         clicks: [],
         scrolls: [],
         pageViews: [],
         adInteractions: [],
         lastUpdated: new Date().toISOString()
-    };
+    });
 };
 
 // Save analytics data
@@ -306,21 +304,11 @@ export const AnalyticsService = {
     },
 
     getClicks: (): HeatmapPoint[] => {
-        try {
-            const data = localStorage.getItem(CLICK_STORAGE_KEY);
-            return data ? JSON.parse(data) : [];
-        } catch {
-            return [];
-        }
+        return safeLocalStorageGet<HeatmapPoint[]>(CLICK_STORAGE_KEY, []);
     },
 
     getScrolls: (): ScrollData[] => {
-        try {
-            const data = localStorage.getItem(SCROLL_STORAGE_KEY);
-            return data ? JSON.parse(data) : [];
-        } catch {
-            return [];
-        }
+        return safeLocalStorageGet<ScrollData[]>(SCROLL_STORAGE_KEY, []);
     },
 
     clearData: () => {

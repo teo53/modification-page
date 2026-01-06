@@ -4,6 +4,7 @@
 import React, { useState } from 'react';
 import { Flag, X, AlertTriangle, Send } from 'lucide-react';
 import { getCurrentUser } from '../../utils/auth';
+import { safeLocalStorageGet, safeLocalStorageSet } from '../../utils/safeJson';
 
 interface ReportButtonProps {
     targetType: 'ad' | 'post' | 'comment' | 'user';
@@ -49,7 +50,7 @@ const ReportButton: React.FC<ReportButtonProps> = ({
 
         try {
             // 신고 데이터 저장 (localStorage에 임시 저장 - 나중에 API로 교체)
-            const reports = JSON.parse(localStorage.getItem('lunaalba_reports') || '[]');
+            const reports = safeLocalStorageGet<Array<Record<string, unknown>>>('lunaalba_reports', []);
             const newReport = {
                 id: Date.now().toString(),
                 targetType,
@@ -64,15 +65,17 @@ const ReportButton: React.FC<ReportButtonProps> = ({
                 status: 'pending', // pending, reviewed, dismissed, actioned
             };
             reports.push(newReport);
-            localStorage.setItem('lunaalba_reports', JSON.stringify(reports));
+            safeLocalStorageSet('lunaalba_reports', reports);
 
             setIsSuccess(true);
-            setTimeout(() => {
+            // Cleanup timeout on unmount to prevent memory leak
+            const timeoutId = setTimeout(() => {
                 setIsModalOpen(false);
                 setIsSuccess(false);
                 setSelectedReason('');
                 setAdditionalInfo('');
             }, 2000);
+            return () => clearTimeout(timeoutId);
         } catch (error) {
             console.error('Report submission error:', error);
             alert('신고 접수 중 오류가 발생했습니다.');
@@ -232,24 +235,33 @@ const ReportButton: React.FC<ReportButtonProps> = ({
 
 export default ReportButton;
 
+interface ReportData {
+    id: string;
+    status: string;
+    adminNote?: string;
+    reviewedAt?: string;
+}
+
 // 신고 목록 조회 함수 (관리자용)
-export const getReports = () => {
-    return JSON.parse(localStorage.getItem('lunaalba_reports') || '[]');
+// eslint-disable-next-line react-refresh/only-export-components
+export const getReports = (): ReportData[] => {
+    return safeLocalStorageGet<ReportData[]>('lunaalba_reports', []);
 };
 
 // 신고 상태 업데이트 (관리자용)
+// eslint-disable-next-line react-refresh/only-export-components
 export const updateReportStatus = (
     reportId: string,
     status: 'reviewed' | 'dismissed' | 'actioned',
     adminNote?: string
 ) => {
     const reports = getReports();
-    const index = reports.findIndex((r: any) => r.id === reportId);
+    const index = reports.findIndex((r: ReportData) => r.id === reportId);
     if (index !== -1) {
         reports[index].status = status;
         reports[index].adminNote = adminNote;
         reports[index].reviewedAt = new Date().toISOString();
-        localStorage.setItem('lunaalba_reports', JSON.stringify(reports));
+        safeLocalStorageSet('lunaalba_reports', reports);
         return { success: true, message: '신고 상태가 업데이트되었습니다.' };
     }
     return { success: false, message: '신고를 찾을 수 없습니다.' };

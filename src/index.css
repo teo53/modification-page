@@ -25,6 +25,16 @@ body {
   word-break: keep-all;
   overflow-wrap: break-word;
   -webkit-text-size-adjust: 100%;
+  /* 모바일 스크롤 버그 수정: overscroll 동작 제어 */
+  overscroll-behavior: none;
+  overscroll-behavior-y: none;
+}
+
+/* 모바일 스크롤 안정성 개선 */
+html {
+  scroll-behavior: smooth;
+  /* iOS Safari 스크롤 개선 */
+  -webkit-overflow-scrolling: touch;
 }
 
 /* ===== Global Button & Interactive Element Styles ===== */

@@ -47,15 +47,22 @@ export const DataModeProvider: React.FC<{ children: ReactNode }> = ({ children }
         window.addEventListener('crmModeChange', handleCrmModeChange as EventListener);
 
         // Check periodically for login state changes and CRM mode changes
+        // Reduced frequency to prevent excessive re-renders
         const interval = setInterval(() => {
             checkAdmin();
-            // Sync with CRM mode
+            // Sync with CRM mode - only update if value actually changed
             const crmMode = localStorage.getItem(CRM_MODE_KEY);
             if (crmMode) {
                 const shouldUseSample = crmMode !== 'operational';
-                setUseSampleDataState(shouldUseSample);
+                setUseSampleDataState(prev => {
+                    // Only update if different to prevent unnecessary re-renders
+                    if (prev !== shouldUseSample) {
+                        return shouldUseSample;
+                    }
+                    return prev;
+                });
             }
-        }, 1000);
+        }, 5000); // Increased from 1s to 5s
 
         return () => {
             clearInterval(interval);
@@ -82,6 +89,7 @@ export const DataModeProvider: React.FC<{ children: ReactNode }> = ({ children }
     );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useDataMode = (): DataModeContextType => {
     const context = useContext(DataModeContext);
     if (!context) {

@@ -88,9 +88,9 @@ const AdCard: React.FC<AdCardProps> = ({
     const linkProps = isEditMode ? {} : { to: `/ad/${id}` };
 
     return (
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         <Component
-            {...linkProps as any}
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {...(linkProps as any)}
             onClick={handleClick}
             className={cn(
                 "block group relative overflow-hidden rounded-xl bg-accent transition-all duration-300",
@@ -140,8 +140,11 @@ const AdCard: React.FC<AdCardProps> = ({
                     ))}
                 </div>
 
-                <button className="absolute top-2 right-2 p-1.5 rounded-full bg-black/30 text-white/70 hover:bg-secondary hover:text-white transition-colors z-10">
-                    <Heart size={16} />
+                <button
+                    className="absolute top-2 right-2 p-1.5 rounded-full bg-black/30 text-white/70 hover:bg-secondary hover:text-white transition-colors z-10"
+                    aria-label="즐겨찾기에 추가"
+                >
+                    <Heart size={16} aria-hidden="true" />
                 </button>
             </div>
 
