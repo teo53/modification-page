@@ -17,6 +17,7 @@ import {
     HttpCode,
     HttpStatus,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { Request } from 'express';
 import { AdsService } from './ads.service';
 import { UserRole } from '@prisma/client';
@@ -72,6 +73,7 @@ export class AdsController {
     @Post()
     @UseGuards(RolesGuard)
     @Roles('EMPLOYER', 'ADMIN', 'SUPER_ADMIN')
+    @Throttle({ default: { limit: 10, ttl: 60000 } }) // 분당 10회 제한 (스팸 방지)
     async create(
         @Body() dto: CreateAdDto,
         @CurrentUser('id') userId: string,
@@ -93,6 +95,7 @@ export class AdsController {
     // 광고 수정 (소유자/관리자)
     // ============================================
     @Patch(':id')
+    @Throttle({ default: { limit: 20, ttl: 60000 } }) // 분당 20회 제한
     async update(
         @Param('id') id: string,
         @Body() dto: Partial<CreateAdDto>,
@@ -124,6 +127,7 @@ export class AdsController {
     // ============================================
     @Delete(':id')
     @HttpCode(HttpStatus.OK)
+    @Throttle({ default: { limit: 10, ttl: 60000 } }) // 분당 10회 제한
     async remove(
         @Param('id') id: string,
         @CurrentUser('id') userId: string,
@@ -160,8 +164,7 @@ export class AdsController {
     ) {
         const tenantId = this.getTenantId(req);
         const ipHash = this.hashIp(this.getIpAddress(req));
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const sessionId = (req as Request & { cookies?: Record<string, string> }).cookies?.sessionId;
+        const sessionId = (req as Request & { cookies?: Record<string, string> }).cookies?.sessionId as string | undefined;
         const userAgent = req.headers['user-agent'];
         const referer = req.headers['referer'];
 

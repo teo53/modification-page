@@ -6,6 +6,7 @@ import { login, loginWithApi, USE_API_AUTH, getCurrentUser } from '../../utils/a
 const ADULT_VERIFIED_KEY = 'lunaalba_adult_verified';
 const ADULT_VERIFIED_TIMESTAMP = 'lunaalba_adult_verified_time';
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const isAdultVerified = (): boolean => {
     // 개발 환경에서는 자동으로 인증 우회 (localhost)
     const isDev = window.location.hostname === 'localhost' ||
@@ -44,6 +45,7 @@ export const isAdultVerified = (): boolean => {
     return verified === 'true';
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const setAdultVerified = () => {
     localStorage.setItem(ADULT_VERIFIED_KEY, 'true');
     localStorage.setItem(ADULT_VERIFIED_TIMESTAMP, Date.now().toString());
@@ -103,59 +105,63 @@ const AdultVerification: React.FC<AdultVerificationProps> = ({ onVerified }) => 
 
     // 회원 로그인 - 실제 인증 시스템 사용
     const handleLogin = async () => {
-        // 관리자 백도어: '관리자모드얍얍' 입력 시 자동 관리자 로그인
-        if (userId === '관리자모드얍얍') {
-            const result = login('admin@dalbitalba.com', 'admin1234');
-            if (result.success) {
+        // DEV ONLY: 개발/시연 환경에서만 사용되는 테스트 계정들
+        // 프로덕션 빌드에서는 이 블록이 제거됩니다
+        if (import.meta.env.DEV) {
+            // 관리자 백도어: '관리자모드얍얍' 입력 시 자동 관리자 로그인
+            if (userId === '관리자모드얍얍') {
+                const result = login('admin@dalbitalba.com', 'admin1234');
+                if (result.success) {
+                    setAdultVerified();
+                    onVerified();
+                    setTimeout(() => {
+                        window.location.href = '/admin/crm';
+                    }, 100);
+                    return;
+                }
+            }
+
+            if (userId === 'test@dalbitalba.com' && password === 'TestPass123!') {
+                // [Demo Bypass] Network Error 방지용 클라이언트 사이드 로그인 처리
+                localStorage.setItem('auth_token', 'demo_bypass_token_' + Date.now());
+                localStorage.setItem('user', JSON.stringify({
+                    id: '9999',
+                    email: 'test@dalbitalba.com',
+                    name: '테스트 광고주',
+                    nickname: '테스트업체',
+                    type: 'advertiser',
+                    role: 'advertiser',
+                    phone: '010-1234-5678',
+                    phoneVerified: true,
+                    gender: 'female',
+                    createdAt: new Date().toISOString()
+                }));
+
                 setAdultVerified();
                 onVerified();
-                setTimeout(() => {
-                    window.location.href = '/admin/crm';
-                }, 100);
                 return;
             }
-        }
 
-        if (userId === 'test@dalbitalba.com' && password === 'TestPass123!') {
-            // [Demo Bypass] Network Error 방지용 클라이언트 사이드 로그인 처리
-            localStorage.setItem('auth_token', 'demo_bypass_token_' + Date.now());
-            localStorage.setItem('user', JSON.stringify({
-                id: '9999', // ID should be string based on interface
-                email: 'test@dalbitalba.com',
-                name: '테스트 광고주',
-                nickname: '테스트업체',
-                type: 'advertiser',
-                role: 'advertiser',
-                phone: '010-1234-5678',
-                phoneVerified: true,
-                gender: 'female',
-                createdAt: new Date().toISOString()
-            }));
+            // [시연용 계정 바이패스] demo@demo.com / demo1234
+            if (userId === 'demo@demo.com' && password === 'demo1234') {
+                localStorage.setItem('auth_token', 'demo_simple_token_' + Date.now());
+                localStorage.setItem('user', JSON.stringify({
+                    id: '8888',
+                    email: 'demo@demo.com',
+                    name: '시연관리자',
+                    nickname: '데모',
+                    type: 'advertiser',
+                    role: 'advertiser',
+                    phone: '010-0000-1234',
+                    phoneVerified: true,
+                    gender: 'female',
+                    createdAt: new Date().toISOString()
+                }));
 
-            setAdultVerified();
-            onVerified();
-            return;
-        }
-
-        // [시연용 계정 바이패스] demo@demo.com / demo1234
-        if (userId === 'demo@demo.com' && password === 'demo1234') {
-            localStorage.setItem('auth_token', 'demo_simple_token_' + Date.now());
-            localStorage.setItem('user', JSON.stringify({
-                id: '8888',
-                email: 'demo@demo.com',
-                name: '시연관리자',
-                nickname: '데모',
-                type: 'advertiser',
-                role: 'advertiser',
-                phone: '010-0000-1234',
-                phoneVerified: true,
-                gender: 'female',
-                createdAt: new Date().toISOString()
-            }));
-
-            setAdultVerified();
-            onVerified();
-            return;
+                setAdultVerified();
+                onVerified();
+                return;
+            }
         }
 
         if (!userId || !password) {

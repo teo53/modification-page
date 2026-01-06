@@ -60,7 +60,7 @@ export const disableDevToolsShortcuts = () => {
 
 // Detect DevTools open (basic detection)
 let devToolsOpen = false;
-export const detectDevTools = (callback?: () => void) => {
+export const detectDevTools = (callback?: () => void): (() => void) => {
     const threshold = 160;
 
     const check = () => {
@@ -82,8 +82,11 @@ export const detectDevTools = (callback?: () => void) => {
         }
     };
 
-    setInterval(check, 1000);
+    const intervalId = setInterval(check, 1000);
     check();
+
+    // Return cleanup function
+    return () => clearInterval(intervalId);
 };
 
 // Disable text selection for protected content
@@ -93,10 +96,13 @@ export const disableTextSelection = () => {
 };
 
 // Clear console periodically
-export const clearConsolePeriodically = () => {
-    setInterval(() => {
+export const clearConsolePeriodically = (): (() => void) => {
+    const intervalId = setInterval(() => {
         console.clear();
     }, 2000);
+
+    // Return cleanup function
+    return () => clearInterval(intervalId);
 };
 
 // Anti-debugging: debugger trap (DISABLED - security risk)
