@@ -99,19 +99,16 @@ export const clearConsolePeriodically = () => {
     }, 2000);
 };
 
-// Anti-debugging: debugger trap
+// Anti-debugging: debugger trap (DISABLED - security risk)
+// WARNING: This function was disabled because:
+// 1. document.body.innerHTML manipulation creates XSS vulnerabilities
+// 2. Breaks React application state completely
+// 3. Ineffective as security measure (easily bypassed)
 export const enableDebuggerTrap = () => {
-    // This will pause if DevTools is open
-    setInterval(() => {
-        const start = performance.now();
-        // eslint-disable-next-line no-debugger
-        debugger;
-        const end = performance.now();
-        if (end - start > 100) {
-            // DevTools is open
-            document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#000;color:#fff;font-size:24px;">접근이 제한되었습니다.</div>';
-        }
-    }, 1000);
+    // Intentionally disabled for security reasons
+    if (import.meta.env.DEV) {
+        console.warn('[Security] enableDebuggerTrap is disabled - do not use in production');
+    }
 };
 
 // Initialize all security measures (configurable)

@@ -28,3 +28,6 @@ scraper/.env
 **/.env
 .env
 backend/.env
+backend/.env.production
+backend/.env.local
+backend/.env.*.local

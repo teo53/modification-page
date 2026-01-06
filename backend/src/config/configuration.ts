@@ -19,7 +19,13 @@ export default () => ({
 
     // JWT 설정
     jwt: {
-        secret: process.env.JWT_SECRET || 'change-this-secret',
+        secret: (() => {
+            const secret = process.env.JWT_SECRET;
+            if (!secret && process.env.NODE_ENV === 'production') {
+                throw new Error('JWT_SECRET environment variable must be set in production');
+            }
+            return secret || 'dev-only-secret-change-in-production';
+        })(),
         accessExpiration: process.env.JWT_ACCESS_EXPIRATION || '15m',
         refreshExpiration: process.env.JWT_REFRESH_EXPIRATION || '7d',
     },

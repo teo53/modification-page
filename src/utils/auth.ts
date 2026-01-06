@@ -3,6 +3,7 @@
 // Now with optional API backend integration
 
 import { hashSync, hashAsync } from './hash';
+import { safeLocalStorageGet } from './safeJson';
 
 // Re-export API functions for use when backend is available
 export {
@@ -42,8 +43,7 @@ const hashPasswordSync = hashSync;
 
 // Get all users
 export const getUsers = (): User[] => {
-    const data = localStorage.getItem(USERS_KEY);
-    return data ? JSON.parse(data) : [];
+    return safeLocalStorageGet<User[]>(USERS_KEY, []);
 };
 
 // Save users
@@ -53,7 +53,7 @@ const saveUsers = (users: User[]) => {
 
 // Get hashed passwords storage
 const getPasswordStore = (): Record<string, string> => {
-    return JSON.parse(localStorage.getItem(PASSWORDS_KEY) || '{}');
+    return safeLocalStorageGet<Record<string, string>>(PASSWORDS_KEY, {});
 };
 
 // Sign up (async for proper hashing)
@@ -126,7 +126,7 @@ export const signup = (
     localStorage.setItem(PASSWORDS_KEY, JSON.stringify(passwords));
 
     // Also migrate from old plain text storage if exists
-    const oldPasswords = JSON.parse(localStorage.getItem('lunaalba_passwords') || '{}');
+    const oldPasswords = safeLocalStorageGet<Record<string, string>>('lunaalba_passwords', {});
     if (Object.keys(oldPasswords).length > 0) {
         // Migrate old passwords
         for (const [id, pwd] of Object.entries(oldPasswords)) {
@@ -162,7 +162,7 @@ export const login = (email: string, password: string): { success: boolean; mess
     // Check against hashed password
     if (passwords[user.id] !== hashedInput) {
         // Fallback: check old plain text storage for migration
-        const oldPasswords = JSON.parse(localStorage.getItem('lunaalba_passwords') || '{}');
+        const oldPasswords = safeLocalStorageGet<Record<string, string>>('lunaalba_passwords', {});
         if (oldPasswords[user.id] === password) {
             // Migrate to hashed
             passwords[user.id] = hashedInput;
@@ -187,14 +187,7 @@ export const logout = () => {
 
 // Get current user
 export const getCurrentUser = (): User | null => {
-    const data = localStorage.getItem(CURRENT_USER_KEY);
-    try {
-        return data ? JSON.parse(data) : null;
-    } catch (e) {
-        console.error('Failed to parse user data:', e);
-        localStorage.removeItem(CURRENT_USER_KEY);
-        return null;
-    }
+    return safeLocalStorageGet<User | null>(CURRENT_USER_KEY, null);
 };
 
 // Check if logged in
@@ -210,7 +203,7 @@ export const isAdvertiser = (): boolean => {
 
 // Migrate all existing plain text passwords to hashed
 export const migratePasswords = () => {
-    const oldPasswords = JSON.parse(localStorage.getItem('lunaalba_passwords') || '{}');
+    const oldPasswords = safeLocalStorageGet<Record<string, string>>('lunaalba_passwords', {});
     if (Object.keys(oldPasswords).length === 0) return;
 
     const hashedPasswords = getPasswordStore();
