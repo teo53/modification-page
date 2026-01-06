@@ -4,6 +4,7 @@ import Layout from './components/layout/Layout';
 import ErrorBoundary from './components/ErrorBoundary';
 import AdultVerification, { isAdultVerified } from './components/auth/AdultVerification';
 import { ToastProvider } from './components/common/Toast';
+import { ThemeProvider } from './contexts/ThemeContext';
 import { seedTestAccounts } from './utils/testAccounts';
 
 import Home from './pages/Home';
@@ -55,9 +56,10 @@ function App() {
   }
 
   return (
-    <ToastProvider>
-      <ErrorBoundary>
-        <BrowserRouter>
+    <ThemeProvider defaultTheme="dark">
+      <ToastProvider>
+        <ErrorBoundary>
+          <BrowserRouter>
           <Routes>
             <Route path="/" element={<Layout />}>
               <Route index element={<Home />} />
@@ -99,9 +101,10 @@ function App() {
           </Routes>
           {/* 관리자 전용 플로팅 패널 */}
           <AdminFloatingPanel />
-        </BrowserRouter>
-      </ErrorBoundary>
-    </ToastProvider>
+          </BrowserRouter>
+        </ErrorBoundary>
+      </ToastProvider>
+    </ThemeProvider>
   );
 }
 
