@@ -123,23 +123,54 @@ export class FilesService {
     // ============================================
     // 업로드용 서명 생성 (클라이언트 직접 업로드용)
     // ============================================
-    generateSignature(folder: string): any {
+    generateSignature(folder: string): {
+        signature: string;
+        timestamp: number;
+        folder: string;
+    } {
+        // 폴더 경로 검증 (경로 traversal 공격 방지)
+        const sanitizedFolder = this.sanitizeFolderPath(folder);
+
         const timestamp = Math.round(new Date().getTime() / 1000);
 
         const signature = cloudinary.utils.api_sign_request(
             {
                 timestamp,
-                folder: `queenalba/${folder}`,
+                folder: `queenalba/${sanitizedFolder}`,
             },
             this.configService.get('cloudinary.apiSecret') || '',
         );
 
+        // 보안: apiKey는 클라이언트에 노출하지 않음
+        // cloudName과 apiKey는 프론트엔드 환경변수(VITE_CLOUDINARY_*)에서 설정
         return {
             signature,
             timestamp,
-            cloudName: this.configService.get('cloudinary.cloudName'),
-            apiKey: this.configService.get('cloudinary.apiKey'),
-            folder: `queenalba/${folder}`,
+            folder: `queenalba/${sanitizedFolder}`,
         };
+    }
+
+    // ============================================
+    // 폴더 경로 sanitization (경로 traversal 방지)
+    // ============================================
+    private sanitizeFolderPath(folder: string): string {
+        // 경로 traversal 공격 방지
+        let sanitized = folder
+            .replace(/\.\./g, '')       // ../ 제거
+            .replace(/\/\//g, '/')      // 중복 슬래시 제거
+            .replace(/^\//, '')          // 시작 슬래시 제거
+            .replace(/[^a-zA-Z0-9_\-/]/g, ''); // 허용된 문자만 유지
+
+        // 최대 길이 제한
+        if (sanitized.length > 50) {
+            sanitized = sanitized.substring(0, 50);
+        }
+
+        // 빈 문자열이면 기본값 사용
+        if (!sanitized) {
+            sanitized = 'uploads';
+        }
+
+        return sanitized;
     }
 }

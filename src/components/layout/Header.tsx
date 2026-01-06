@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Menu, User, LogIn, PenSquare, LogOut, LayoutDashboard, X, Phone, MessageCircle } from 'lucide-react';
+import { Search, Menu, User, LogIn, PenSquare, LogOut, LayoutDashboard, X, Phone, MessageCircle, Sun, Moon } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getCurrentUser, logout, isAdvertiser } from '../../utils/auth';
 import { detectSqlInjection } from '../../utils/validation';
+import { useTheme } from '../../contexts/ThemeContext';
 
 // 사이트 통계 (실제로는 API에서 가져옴)
 const siteStats = {
@@ -14,6 +15,7 @@ const siteStats = {
 
 const Header: React.FC = () => {
     const navigate = useNavigate();
+    const { theme, toggleTheme } = useTheme();
     const [user, setUser] = useState(getCurrentUser());
     const [showUserMenu, setShowUserMenu] = useState(false);
     const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -183,8 +185,22 @@ const Header: React.FC = () => {
                         <span>광고등록</span>
                     </Link>
 
+                    {/* Theme Toggle Button */}
                     <button
-                        className="md:hidden text-white"
+                        onClick={toggleTheme}
+                        className="w-9 h-9 flex items-center justify-center rounded-full border border-primary/50 hover:border-primary hover:bg-primary/10 transition-all duration-300"
+                        aria-label={`${theme === 'dark' ? '라이트' : '다크'} 모드로 전환`}
+                        title={`${theme === 'dark' ? '라이트' : '다크'} 모드로 전환`}
+                    >
+                        {theme === 'dark' ? (
+                            <Sun size={18} className="text-primary" />
+                        ) : (
+                            <Moon size={18} className="text-primary" />
+                        )}
+                    </button>
+
+                    <button
+                        className="md:hidden text-theme-text-primary"
                         onClick={() => setShowMobileMenu(!showMobileMenu)}
                     >
                         {showMobileMenu ? <X size={24} /> : <Menu size={24} />}

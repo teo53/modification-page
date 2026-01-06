@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./styles/themes/index.css";
 
 @theme {
   --color-background: #111111;
@@ -229,4 +230,464 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background-color: rgba(212, 175, 55, 0.5);
+}
+
+/* =============================================================================
+ * ☀️ LIGHT MODE GLOBAL OVERRIDES
+ * 라이트 모드 전역 스타일 오버라이드
+ * 다크 모드와 완전히 분리된 라이트 모드 스타일
+ * ============================================================================= */
+
+/* ===== 기본 배경 및 텍스트 ===== */
+[data-theme="light"] {
+  background-color: #FFFFFF;
+  color: #1F2937;
+}
+
+/* bg-background 클래스 오버라이드 */
+[data-theme="light"] .bg-background {
+  background-color: #FFFFFF !important;
+}
+
+/* bg-accent 클래스 오버라이드 */
+[data-theme="light"] .bg-accent {
+  background-color: #F8F9FA !important;
+}
+
+/* ===== 텍스트 컬러 오버라이드 ===== */
+[data-theme="light"] .text-white {
+  color: #1F2937 !important;
+}
+
+[data-theme="light"] .text-text-main {
+  color: #1F2937 !important;
+}
+
+[data-theme="light"] .text-text-muted {
+  color: #6B7280 !important;
+}
+
+[data-theme="light"] .text-gray-100 {
+  color: #374151 !important;
+}
+
+[data-theme="light"] .text-gray-200 {
+  color: #4B5563 !important;
+}
+
+[data-theme="light"] .text-gray-300 {
+  color: #6B7280 !important;
+}
+
+[data-theme="light"] .text-gray-400 {
+  color: #9CA3AF !important;
+}
+
+[data-theme="light"] .text-gray-500 {
+  color: #6B7280 !important;
+}
+
+/* ===== 테두리 오버라이드 ===== */
+[data-theme="light"] .border-gray-700,
+[data-theme="light"] .border-gray-800 {
+  border-color: #E5E7EB !important;
+}
+
+[data-theme="light"] .border-accent {
+  border-color: #E5E7EB !important;
+}
+
+[data-theme="light"] .border-primary {
+  border-color: #B8860B !important;
+}
+
+[data-theme="light"] .divide-gray-700 > * + *,
+[data-theme="light"] .divide-gray-800 > * + * {
+  border-color: #E5E7EB !important;
+}
+
+/* ===== 네비게이션 바 ===== */
+[data-theme="light"] nav,
+[data-theme="light"] header {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border-color: #E5E7EB !important;
+}
+
+[data-theme="light"] nav a,
+[data-theme="light"] header a {
+  color: #1F2937;
+}
+
+[data-theme="light"] nav a:hover,
+[data-theme="light"] header a:hover {
+  color: #B8860B;
+}
+
+/* ===== 푸터 ===== */
+[data-theme="light"] footer {
+  background-color: #F8F9FA !important;
+  border-color: #E5E7EB !important;
+  color: #4B5563;
+}
+
+/* ===== 입력 필드 ===== */
+[data-theme="light"] input,
+[data-theme="light"] textarea,
+[data-theme="light"] select {
+  background-color: #FFFFFF !important;
+  border-color: #D1D5DB !important;
+  color: #1F2937 !important;
+}
+
+[data-theme="light"] input::placeholder,
+[data-theme="light"] textarea::placeholder {
+  color: #9CA3AF !important;
+}
+
+[data-theme="light"] input:focus,
+[data-theme="light"] textarea:focus,
+[data-theme="light"] select:focus {
+  border-color: #B8860B !important;
+  box-shadow: 0 0 0 2px rgba(184, 134, 11, 0.15) !important;
+  outline: none;
+}
+
+/* ===== 버튼 ===== */
+[data-theme="light"] .bg-primary {
+  background-color: #B8860B !important;
+  color: #FFFFFF !important;
+}
+
+[data-theme="light"] .bg-primary:hover {
+  background-color: #996515 !important;
+}
+
+[data-theme="light"] .hover\:bg-primary:hover {
+  background-color: #B8860B !important;
+}
+
+[data-theme="light"] .bg-secondary {
+  background-color: #DB2777 !important;
+}
+
+[data-theme="light"] .bg-secondary:hover {
+  background-color: #BE185D !important;
+}
+
+/* ===== 모달/드롭다운 ===== */
+[data-theme="light"] .fixed.inset-0.bg-black\/50,
+[data-theme="light"] .fixed.inset-0.bg-black\/70 {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+[data-theme="light"] [class*="bg-"][class*="rounded"][class*="shadow"] {
+  background-color: #FFFFFF;
+  border: 1px solid #E5E7EB;
+}
+
+/* ===== 호버 상태 ===== */
+[data-theme="light"] .hover\:bg-accent:hover {
+  background-color: #F3F4F6 !important;
+}
+
+[data-theme="light"] .hover\:bg-gray-800:hover {
+  background-color: #F3F4F6 !important;
+}
+
+[data-theme="light"] .hover\:bg-primary\/10:hover {
+  background-color: rgba(184, 134, 11, 0.1) !important;
+}
+
+/* ===== 스크롤바 - Light Mode ===== */
+[data-theme="light"] ::-webkit-scrollbar {
+  width: 8px;
+}
+
+[data-theme="light"] ::-webkit-scrollbar-track {
+  background-color: #F1F3F5;
+}
+
+[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background-color: rgba(184, 134, 11, 0.4);
+  border-radius: 9999px;
+}
+
+[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
+  background-color: #B8860B;
+}
+
+[data-theme="light"] .custom-scrollbar::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+[data-theme="light"] .custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(184, 134, 11, 0.3);
+}
+
+[data-theme="light"] .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(184, 134, 11, 0.5);
+}
+
+/* ===== 검색 결과 / 리스트 ===== */
+[data-theme="light"] .bg-gray-900 {
+  background-color: #F8F9FA !important;
+}
+
+[data-theme="light"] .bg-gray-800 {
+  background-color: #FFFFFF !important;
+  border: 1px solid #E5E7EB;
+}
+
+/* ===== 카드 그림자 ===== */
+[data-theme="light"] .shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+}
+
+[data-theme="light"] .shadow-md {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* ===== 링 (포커스 링) ===== */
+[data-theme="light"] .ring-primary {
+  --tw-ring-color: #B8860B !important;
+}
+
+[data-theme="light"] .ring-primary\/50 {
+  --tw-ring-color: rgba(184, 134, 11, 0.5) !important;
+}
+
+/* ===== 그라데이션 수정 ===== */
+[data-theme="light"] .bg-gradient-to-b.from-black {
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.9), transparent) !important;
+}
+
+[data-theme="light"] .bg-gradient-to-t.from-black {
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.9), transparent) !important;
+}
+
+/* ===== 추가 라이트 모드 텍스트/배경 오버라이드 ===== */
+
+/* white 투명도 배경 → 회색 배경으로 변환 */
+[data-theme="light"] .bg-white\/5 {
+  background-color: rgba(0, 0, 0, 0.03) !important;
+}
+
+[data-theme="light"] .bg-white\/10 {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+[data-theme="light"] .bg-white\/20 {
+  background-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+[data-theme="light"] .bg-white\/30 {
+  background-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* white 투명도 테두리 → 회색 테두리로 변환 */
+[data-theme="light"] .border-white\/5 {
+  border-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+[data-theme="light"] .border-white\/10 {
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+[data-theme="light"] .border-white\/20 {
+  border-color: rgba(0, 0, 0, 0.15) !important;
+}
+
+/* hover:text-white → 다크 텍스트로 변환 */
+[data-theme="light"] .hover\:text-white:hover {
+  color: #1F2937 !important;
+}
+
+/* hover:bg-white/xx → 다크 투명 배경으로 */
+[data-theme="light"] .hover\:bg-white\/5:hover {
+  background-color: rgba(0, 0, 0, 0.03) !important;
+}
+
+[data-theme="light"] .hover\:bg-white\/10:hover {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+[data-theme="light"] .hover\:bg-white\/20:hover {
+  background-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* text-muted 투명도 변형 */
+[data-theme="light"] .text-text-muted\/50 {
+  color: rgba(75, 85, 99, 0.7) !important;
+}
+
+[data-theme="light"] .text-text-muted\/70 {
+  color: rgba(75, 85, 99, 0.85) !important;
+}
+
+/* 섹션 제목 - 흰색 텍스트 */
+[data-theme="light"] h1.text-white,
+[data-theme="light"] h2.text-white,
+[data-theme="light"] h3.text-white,
+[data-theme="light"] h4.text-white {
+  color: #1F2937 !important;
+}
+
+/* 로고 - 라이트 모드용 로고로 교체 필요 (임시로 필터 적용) */
+[data-theme="light"] img[alt*="달빛알바"],
+[data-theme="light"] img[alt*="logo"] {
+  filter: brightness(0.3) saturate(1.2);
+}
+
+/* 플레이스홀더 텍스트 */
+[data-theme="light"] .placeholder-text-muted::placeholder {
+  color: #9CA3AF !important;
+}
+
+/* ===== 상태 배지 컬러 ===== */
+[data-theme="light"] .text-green-400 {
+  color: #059669 !important;
+}
+
+[data-theme="light"] .text-yellow-400,
+[data-theme="light"] .text-yellow-500 {
+  color: #B45309 !important;
+}
+
+[data-theme="light"] .text-red-400 {
+  color: #DC2626 !important;
+}
+
+[data-theme="light"] .text-red-300 {
+  color: #EF4444 !important;
+}
+
+[data-theme="light"] .text-cyan-400 {
+  color: #0891B2 !important;
+}
+
+/* 상태 배지 배경 */
+[data-theme="light"] .bg-yellow-500\/20 {
+  background-color: rgba(180, 83, 9, 0.15) !important;
+}
+
+[data-theme="light"] .bg-green-500\/20 {
+  background-color: rgba(5, 150, 105, 0.15) !important;
+}
+
+[data-theme="light"] .bg-red-500\/10,
+[data-theme="light"] .bg-red-900\/20 {
+  background-color: rgba(220, 38, 38, 0.08) !important;
+}
+
+[data-theme="light"] .border-red-500\/30 {
+  border-color: rgba(220, 38, 38, 0.3) !important;
+}
+
+/* ===== 모바일 메뉴 ===== */
+[data-theme="light"] .md\:hidden.bg-accent {
+  background-color: #FFFFFF !important;
+  border-color: #E5E7EB !important;
+}
+
+/* ===== 드롭다운 메뉴 ===== */
+[data-theme="light"] .absolute.bg-accent {
+  background-color: #FFFFFF !important;
+  border: 1px solid #E5E7EB !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* ===== 검색바 ===== */
+[data-theme="light"] input.bg-accent {
+  background-color: #F3F4F6 !important;
+  border-color: #D1D5DB !important;
+}
+
+[data-theme="light"] input.bg-accent:focus {
+  background-color: #FFFFFF !important;
+  border-color: #B8860B !important;
+}
+
+/* ===== 데스크톱 네비게이션 바 ===== */
+[data-theme="light"] nav.bg-accent\/50 {
+  background-color: rgba(248, 249, 250, 0.8) !important;
+}
+
+[data-theme="light"] .hover\:border-primary:hover {
+  border-color: #B8860B !important;
+}
+
+/* ===== 푸터 특별 처리 ===== */
+[data-theme="light"] footer.bg-accent\/50 {
+  background-color: #F8F9FA !important;
+}
+
+[data-theme="light"] footer .text-white {
+  color: #1F2937 !important;
+}
+
+[data-theme="light"] footer .text-text-muted {
+  color: #6B7280 !important;
+}
+
+[data-theme="light"] footer .hover\:text-white:hover {
+  color: #1F2937 !important;
+}
+
+/* ===== 아이콘 색상 ===== */
+[data-theme="light"] .text-text-muted svg {
+  color: inherit;
+}
+
+/* ===== 포커스 링 투명도 조절 ===== */
+[data-theme="light"] .focus\:border-primary:focus {
+  border-color: #B8860B !important;
+}
+
+/* ===== 광고주/관리자 버튼 ===== */
+[data-theme="light"] .text-primary\/70 {
+  color: rgba(153, 101, 21, 0.8) !important;
+}
+
+[data-theme="light"] .text-cyan-400\/70 {
+  color: rgba(8, 145, 178, 0.8) !important;
+}
+
+/* ===== 사용자 프로필 아이콘 배경 ===== */
+[data-theme="light"] .bg-primary\/20 {
+  background-color: rgba(184, 134, 11, 0.15) !important;
+}
+
+/* ===== 검색 아이콘 ===== */
+[data-theme="light"] button.text-text-muted:hover {
+  color: #B8860B !important;
+}
+
+/* ===== black 투명도 오버레이 (모달 배경 등) ===== */
+[data-theme="light"] .bg-black\/50 {
+  background-color: rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme="light"] .bg-black\/70 {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+[data-theme="light"] .bg-black\/80 {
+  background-color: rgba(0, 0, 0, 0.6) !important;
+}
+
+/* ===== 인라인 스타일 오버라이드 (백업) ===== */
+[data-theme="light"] [style*="background-color: rgb(17, 17, 17)"],
+[data-theme="light"] [style*="background-color:#111111"],
+[data-theme="light"] [style*="background: rgb(17, 17, 17)"] {
+  background-color: #FFFFFF !important;
+}
+
+/* ===== 광고등록 버튼 (항상 동일) ===== */
+[data-theme="light"] .bg-primary.text-black {
+  background-color: #B8860B !important;
+  color: #FFFFFF !important;
+}
+
+[data-theme="light"] .hover\:bg-primary-hover:hover {
+  background-color: #996515 !important;
 }

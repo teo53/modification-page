@@ -236,7 +236,7 @@ describe('CommunityService', () => {
             const result = await service.createPost('tenant-1', anonDto, undefined, '127.0.0.1');
 
             expect(result).toBeDefined();
-            expect(bcrypt.hash).toHaveBeenCalledWith('secret123', 10);
+            expect(bcrypt.hash).toHaveBeenCalledWith('secret123', 12);
         });
 
         it('should hash IP address for anonymous posts', async () => {
