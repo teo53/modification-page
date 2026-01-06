@@ -1,0 +1,36 @@
+{
+  "mcpServers": {
+    "dart-mcp-server": {
+      "command": "dart",
+      "args": [
+        "mcp-server"
+      ],
+      "env": {}
+    },
+    "github-mcp-server": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "GITHUB_PERSONAL_ACCESS_TOKEN",
+        "ghcr.io/github/github-mcp-server"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "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"
+      }
+    },
+    "cloud-sql-mysql-admin": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@toolbox-sdk/server",
+        "--prebuilt",
+        "cloud-sql-mysql-admin",
+        "--stdio"
+      ],
+      "env": {}
+    }
+  }
+}

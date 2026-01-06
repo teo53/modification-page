@@ -1,0 +1,73 @@
+{
+    "mcpServers": {
+        "github-mcp-server": {
+            "command": "docker",
+            "args": [
+                "run",
+                "-i",
+                "--rm",
+                "-e",
+                "GITHUB_PERSONAL_ACCESS_TOKEN",
+                "ghcr.io/github/github-mcp-server"
+            ],
+            "env": {
+                "GITHUB_PERSONAL_ACCESS_TOKEN": "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"
+            }
+        },
+        "supabase": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@supabase/mcp-server-supabase@latest",
+                "--access-token",
+                "sbp_04a56e4541e03e9418662172ab75d7e32ee0a5e3"
+            ],
+            "env": {}
+        },
+        "postgres": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-postgres",
+                "postgresql://postgres:5TWsJOMLqEzNrLc1@db.pmlsxpwklnuaihfwwuqs.supabase.co:5432/postgres"
+            ],
+            "env": {}
+        },
+        "filesystem": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-filesystem",
+                "C:/modification-page-refactor-code-structure (3)/modification-page-latest"
+            ],
+            "env": {}
+        },
+        "fetch": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-fetch"
+            ],
+            "env": {}
+        },
+        "memory": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-memory"
+            ],
+            "env": {}
+        },
+        "vercel": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@vercel/sdk",
+                "mcp"
+            ],
+            "env": {
+                "VERCEL_TOKEN": "cMFAceB5eS0X0Vn6W9bL7z7Y"
+            }
+        }
+    }
+}
