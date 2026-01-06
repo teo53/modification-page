@@ -8,7 +8,6 @@ import {
     IsOptional,
     IsString,
     IsBoolean,
-    IsNumber,
     IsArray,
     MaxLength,
     IsObject,
@@ -18,7 +17,6 @@ import {
     IsInt,
     IsIn,
     IsUrl,
-    ValidateIf,
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 

@@ -11,7 +11,6 @@ import {
     HttpStatus,
     Req,
     Res,
-    UseGuards,
     Get,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
@@ -23,7 +22,6 @@ import { LoginDto } from './dto/login.dto';
 import { SendVerificationCodeDto, VerifyCodeDto } from './dto/phone-verification.dto';
 import { Public } from '../../common/decorators/public.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { ConfigService } from '@nestjs/config';
 
 @Controller('auth')
@@ -110,8 +108,7 @@ export class AuthController {
         @Req() req: Request,
         @Res({ passthrough: true }) res: Response,
     ) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const refreshToken = req.cookies?.refreshToken;
+        const refreshToken = req.cookies?.refreshToken as string | undefined;
 
         if (!refreshToken) {
             return {
@@ -148,8 +145,7 @@ export class AuthController {
         @Req() req: Request,
         @Res({ passthrough: true }) res: Response,
     ) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const refreshToken = req.cookies?.refreshToken;
+        const refreshToken = req.cookies?.refreshToken as string | undefined;
 
         await this.authService.logout(refreshToken);
 

@@ -11,16 +11,11 @@ import {
     UseInterceptors,
     UploadedFile,
     UploadedFiles,
-    Body,
     Query,
     Get,
 } from '@nestjs/common';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { FilesService } from './files.service';
-import { CurrentUser } from '../../common/decorators/current-user.decorator';
-import { Roles } from '../../common/decorators/roles.decorator';
-import { RolesGuard } from '../../common/guards/roles.guard';
-import { UseGuards } from '@nestjs/common';
 
 @Controller('files')
 export class FilesController {

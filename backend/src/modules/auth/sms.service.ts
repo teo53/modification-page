@@ -195,8 +195,10 @@ export class SmsService {
     // ============================================
     // 인증 상태 확인
     // ============================================
-    isPhoneVerified(phone: string): boolean {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    isPhoneVerified(_phone: string): boolean {
         // 실제로는 DB에서 확인해야 하지만, 세션/토큰 기반으로 처리
+        // TODO: DB 기반 인증 상태 확인 구현 시 _phone 매개변수 활용
         return false;
     }
 }
