@@ -14,6 +14,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { CreatePostDto, PostCategoryDto } from './dto/create-post.dto';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { PostCategory } from '@prisma/client';
+import { WebhookService } from '../webhook/webhook.service';
 
 interface QueryOptions {
     category?: PostCategoryDto;
@@ -26,7 +27,10 @@ interface QueryOptions {
 export class CommunityService {
     private readonly logger = new Logger(CommunityService.name);
 
-    constructor(private prisma: PrismaService) { }
+    constructor(
+        private prisma: PrismaService,
+        private readonly webhookService: WebhookService,
+    ) { }
 
     // ============================================
     // 게시글 목록 조회
@@ -166,6 +170,9 @@ export class CommunityService {
         });
 
         this.logger.log(`New post created: ${post.id}`);
+
+        // Webhook 전송
+        this.webhookService.sendWebhook('post.created', post);
 
         return post;
     }
@@ -319,7 +326,15 @@ export class CommunityService {
             data: { commentCount: { increment: 1 } },
         });
 
-        // TODO: 알림 발송
+        // 알림 발송 및 Webhook
+        this.webhookService.sendWebhook('comment.created', {
+            id: comment.id,
+            postId,
+            content: comment.content,
+            userId: comment.userId,
+            authorName: comment.authorName,
+            createdAt: comment.createdAt,
+        });
 
         return comment;
     }

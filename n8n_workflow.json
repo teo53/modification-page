@@ -1,0 +1,194 @@
+{
+    "name": "Backend Event Router",
+    "nodes": [
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "webhook",
+                "options": {}
+            },
+            "name": "Webhook",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1,
+            "position": [
+                460,
+                300
+            ],
+            "webhookId": "ac82782e-uuid-placeholder"
+        },
+        {
+            "parameters": {
+                "dataType": "string",
+                "value1": "={{ $json.event }}",
+                "rules": {
+                    "rules": [
+                        {
+                            "value2": "user.signup"
+                        },
+                        {
+                            "value2": "user.business.verified"
+                        },
+                        {
+                            "value2": "user.business.failed"
+                        },
+                        {
+                            "value2": "ad.created"
+                        },
+                        {
+                            "value2": "ad.status.changed"
+                        },
+                        {
+                            "value2": "post.created"
+                        },
+                        {
+                            "value2": "comment.created"
+                        }
+                    ]
+                }
+            },
+            "name": "Route by Event",
+            "type": "n8n-nodes-base.switch",
+            "typeVersion": 1,
+            "position": [
+                680,
+                300
+            ]
+        },
+        {
+            "parameters": {},
+            "name": "Log: User Signup",
+            "type": "n8n-nodes-base.noOp",
+            "typeVersion": 1,
+            "position": [
+                940,
+                140
+            ]
+        },
+        {
+            "parameters": {},
+            "name": "Log: Biz Verified",
+            "type": "n8n-nodes-base.noOp",
+            "typeVersion": 1,
+            "position": [
+                940,
+                240
+            ]
+        },
+        {
+            "parameters": {},
+            "name": "Log: Biz Failed",
+            "type": "n8n-nodes-base.noOp",
+            "typeVersion": 1,
+            "position": [
+                940,
+                340
+            ]
+        },
+        {
+            "parameters": {},
+            "name": "Log: Ad Created",
+            "type": "n8n-nodes-base.noOp",
+            "typeVersion": 1,
+            "position": [
+                940,
+                440
+            ]
+        },
+        {
+            "parameters": {},
+            "name": "Log: Ad Status Changed",
+            "type": "n8n-nodes-base.noOp",
+            "typeVersion": 1,
+            "position": [
+                940,
+                540
+            ]
+        },
+        {
+            "parameters": {},
+            "name": "Log: Post Created",
+            "type": "n8n-nodes-base.noOp",
+            "typeVersion": 1,
+            "position": [
+                940,
+                640
+            ]
+        },
+        {
+            "parameters": {},
+            "name": "Log: Comment Created",
+            "type": "n8n-nodes-base.noOp",
+            "typeVersion": 1,
+            "position": [
+                940,
+                740
+            ]
+        }
+    ],
+    "connections": {
+        "Webhook": {
+            "main": [
+                [
+                    {
+                        "node": "Route by Event",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Route by Event": {
+            "main": [
+                [
+                    {
+                        "node": "Log: User Signup",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Log: Biz Verified",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Log: Biz Failed",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Log: Ad Created",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Log: Ad Status Changed",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Log: Post Created",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Log: Comment Created",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

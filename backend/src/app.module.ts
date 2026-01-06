@@ -23,6 +23,7 @@ import { FilesModule } from './modules/files/files.module';
 import { HealthModule } from './modules/health/health.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { BusinessModule } from './modules/business/business.module';
+import { WebhookModule } from './modules/webhook/webhook.module';
 
 
 // Guards & Filters
@@ -56,6 +57,7 @@ import { AllExceptionsFilter } from './common/filters/http-exception.filter';
     HealthModule,
     AdminModule,
     BusinessModule,
+    WebhookModule,
   ],
   providers: [
     // 글로벌 Validation Pipe

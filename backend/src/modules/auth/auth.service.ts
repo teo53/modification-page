@@ -18,6 +18,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { SignupDto, SignupUserType } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
 import { UserRole } from '@prisma/client';
+import { WebhookService } from '../webhook/webhook.service';
 
 interface JwtPayload {
     sub: string;
@@ -53,6 +54,7 @@ export class AuthService {
         private prisma: PrismaService,
         private jwtService: JwtService,
         private configService: ConfigService,
+        private webhookService: WebhookService,
     ) { }
 
     // ============================================
