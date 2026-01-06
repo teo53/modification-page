@@ -10,6 +10,8 @@ import {
     Logger,
 } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
+import * as crypto from 'crypto';
+import * as xss from 'xss';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreatePostDto, PostCategoryDto } from './dto/create-post.dto';
 import { CreateCommentDto } from './dto/create-comment.dto';
@@ -22,11 +24,60 @@ interface QueryOptions {
     search?: string;
 }
 
+// XSS 필터 옵션 - 안전한 HTML 태그만 허용
+const xssOptions: xss.IFilterXSSOptions = {
+    whiteList: {
+        p: ['style', 'class'],
+        br: [],
+        strong: ['style', 'class'],
+        b: ['style', 'class'],
+        em: ['style', 'class'],
+        i: ['style', 'class'],
+        u: ['style', 'class'],
+        s: ['style', 'class'],
+        h1: ['style', 'class'],
+        h2: ['style', 'class'],
+        h3: ['style', 'class'],
+        h4: ['style', 'class'],
+        ul: ['style', 'class'],
+        ol: ['style', 'class'],
+        li: ['style', 'class'],
+        blockquote: ['style', 'class'],
+        a: ['href', 'title', 'target', 'rel'],
+        img: ['src', 'alt', 'width', 'height'],
+        span: ['style', 'class'],
+        div: ['style', 'class'],
+    },
+    stripIgnoreTag: true,
+    stripIgnoreTagBody: ['script', 'style', 'iframe', 'object', 'embed'],
+    onTagAttr: (tag, name, value) => {
+        // href 속성에서 javascript: 프로토콜 차단
+        if (name === 'href' && value.toLowerCase().startsWith('javascript:')) {
+            return '';
+        }
+        // src 속성에서 data: 및 javascript: 프로토콜 차단
+        if (name === 'src') {
+            const lowerValue = value.toLowerCase();
+            if (lowerValue.startsWith('javascript:') || lowerValue.startsWith('data:text/html')) {
+                return '';
+            }
+        }
+        return undefined; // 기본 동작 유지
+    },
+};
+
 @Injectable()
 export class CommunityService {
     private readonly logger = new Logger(CommunityService.name);
 
     constructor(private prisma: PrismaService) { }
+
+    /**
+     * HTML 콘텐츠를 XSS 공격으로부터 보호하기 위해 sanitize
+     */
+    private sanitizeHtml(content: string): string {
+        return xss.filterXSS(content, xssOptions);
+    }
 
     // ============================================
     // 게시글 목록 조회
@@ -149,8 +200,11 @@ export class CommunityService {
         }
 
         const ipHash = ipAddress
-            ? require('crypto').createHash('sha256').update(ipAddress).digest('hex').substring(0, 16)
+            ? crypto.createHash('sha256').update(ipAddress).digest('hex').substring(0, 16)
             : undefined;
+
+        // XSS 방지를 위한 HTML sanitization
+        const sanitizedContent = this.sanitizeHtml(dto.content);
 
         const post = await this.prisma.communityPost.create({
             data: {
@@ -158,7 +212,7 @@ export class CommunityService {
                 userId: userId || null,
                 category: dto.category as PostCategory,
                 title: dto.title,
-                content: dto.content,
+                content: sanitizedContent,
                 authorName: userId ? null : (dto.authorName || '익명'),
                 authorIpHash: ipHash,
                 password: hashedPassword,
@@ -199,11 +253,14 @@ export class CommunityService {
             }
         }
 
+        // XSS 방지를 위한 HTML sanitization
+        const sanitizedContent = dto.content ? this.sanitizeHtml(dto.content) : undefined;
+
         return this.prisma.communityPost.update({
             where: { id },
             data: {
                 title: dto.title,
-                content: dto.content,
+                content: sanitizedContent,
             },
         });
     }
@@ -298,15 +355,18 @@ export class CommunityService {
         }
 
         const ipHash = ipAddress
-            ? require('crypto').createHash('sha256').update(ipAddress).digest('hex').substring(0, 16)
+            ? crypto.createHash('sha256').update(ipAddress).digest('hex').substring(0, 16)
             : undefined;
+
+        // XSS 방지를 위한 HTML sanitization (댓글도 HTML 허용 시)
+        const sanitizedContent = this.sanitizeHtml(dto.content);
 
         const comment = await this.prisma.communityComment.create({
             data: {
                 postId,
                 userId: userId || null,
                 parentId: dto.parentId || null,
-                content: dto.content,
+                content: sanitizedContent,
                 authorName: userId ? null : (dto.authorName || '익명'),
                 authorIpHash: ipHash,
                 password: hashedPassword,

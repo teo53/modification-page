@@ -244,9 +244,8 @@ describe('FilesService', () => {
 
             expect(result).toHaveProperty('signature', 'mock-signature');
             expect(result).toHaveProperty('timestamp');
-            expect(result).toHaveProperty('cloudName', 'test-cloud');
-            expect(result).toHaveProperty('apiKey', 'test-api-key');
             expect(result).toHaveProperty('folder', 'queenalba/ads');
+            // cloudName과 apiKey는 보안상 응답에서 제외됨
         });
 
         it('should create different folders for different inputs', () => {

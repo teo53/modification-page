@@ -80,11 +80,7 @@ export class AdsService {
 
         // 정렬
         const orderBy: any = {};
-        if (sortBy === 'priority') {
-            orderBy.sortPriority = 'desc';
-        } else {
-            orderBy[sortBy] = sortOrder.toLowerCase();
-        }
+        orderBy[sortBy] = sortOrder.toLowerCase();
 
         // 데이터 조회
         const data = await this.prisma.ad.findMany({

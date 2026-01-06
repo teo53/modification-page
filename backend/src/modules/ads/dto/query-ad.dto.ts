@@ -3,9 +3,22 @@
 // 🏷️  광고 조회 쿼리 DTO
 // =============================================================================
 
-import { IsOptional, IsString, IsNumber, IsEnum, Min, Max } from 'class-validator';
+import { IsOptional, IsString, IsNumber, Min, Max, IsIn } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
-import { AdStatus } from '@prisma/client';
+
+// 허용된 정렬 필드 목록 (SQL Injection 방지)
+export const ALLOWED_SORT_FIELDS = [
+    'createdAt',
+    'updatedAt',
+    'viewCount',
+    'clickCount',
+    'applyCount',
+    'sortPriority',
+    'salaryAmount',
+    'title',
+] as const;
+
+export type AllowedSortField = (typeof ALLOWED_SORT_FIELDS)[number];
 
 export class QueryAdDto {
     @IsOptional()
@@ -47,10 +60,16 @@ export class QueryAdDto {
 
     @IsOptional()
     @IsString()
-    sortBy?: string = 'createdAt';
+    @IsIn(ALLOWED_SORT_FIELDS, {
+        message: `정렬 필드는 다음 중 하나여야 합니다: ${ALLOWED_SORT_FIELDS.join(', ')}`,
+    })
+    sortBy?: AllowedSortField = 'createdAt';
 
     @IsOptional()
     @IsString()
+    @IsIn(['ASC', 'DESC', 'asc', 'desc'], {
+        message: '정렬 순서는 ASC 또는 DESC여야 합니다.',
+    })
     @Transform(({ value }) => value?.toUpperCase())
     sortOrder?: 'ASC' | 'DESC' = 'DESC';
 }

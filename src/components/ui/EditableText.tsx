@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { useContentEditor } from '../../contexts/ContentEditorContext';
 
 interface EditableTextProps<T extends React.ElementType = 'span'> {
@@ -22,24 +22,30 @@ const EditableText = <T extends React.ElementType = 'span'>({
     multiline = false,
     as
 }: EditableTextProps<T> & React.ComponentPropsWithoutRef<T>) => {
-    const { getContent, updateContent } = sectionId && itemId && field ? useContentEditor() : { getContent: () => initialValue, updateContent: () => { } };
+    // Hook을 항상 호출 (React Hooks 규칙 준수)
+    const contentEditor = useContentEditor();
 
     // Safety check: if no IDs provided, just behave like normal text
     const shouldEdit = isEditMode && sectionId && itemId && field;
+
+    // 조건에 따라 context 함수 또는 fallback 사용
+    const getContent = shouldEdit
+        ? contentEditor.getContent
+        : () => initialValue;
 
     const value = shouldEdit ? getContent(sectionId!, itemId!, field!, initialValue) : initialValue;
     const [isFocused, setIsFocused] = useState(false);
     const contentRef = useRef<HTMLElement>(null);
 
-    const handleBlur = (e: React.FocusEvent<HTMLElement>) => {
+    const handleBlur = useCallback(() => {
         setIsFocused(false);
         if (shouldEdit && contentRef.current) {
             const newValue = contentRef.current.innerText;
             if (newValue !== value) {
-                updateContent(sectionId!, itemId!, field!, newValue);
+                contentEditor.updateContent(sectionId!, itemId!, field!, newValue);
             }
         }
-    };
+    }, [shouldEdit, value, contentEditor, sectionId, itemId, field]);
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
         if (!multiline && e.key === 'Enter') {
@@ -51,18 +57,16 @@ const EditableText = <T extends React.ElementType = 'span'>({
     const Component = as || 'span';
 
     if (!shouldEdit) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return <Component className={className}>{value}</Component>;
     }
 
     // Styling for edit mode
     const editStyle = `
-        relative outline-none transition-all duration-200 
+        relative outline-none transition-all duration-200
         ${isFocused ? 'ring-2 ring-yellow-500/50 bg-white/10 rounded min-w-[20px] px-1' : 'hover:ring-1 hover:ring-white/30 hover:bg-white/5 rounded px-1 -mx-1'}
     `;
 
     return (
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         <Component
             ref={contentRef}
             contentEditable
