@@ -4,6 +4,7 @@ import { AppProvider } from './context/AppContext';
 import { ThemeProvider } from './context/ThemeContext';
 import AppLayout from './components/app/AppLayout';
 import AgeGate from './components/app/AgeGate';
+import BackHandler from './components/app/BackHandler';
 
 // Lazy load pages for code splitting
 const Home = lazy(() => import('./pages/Home'));
@@ -47,6 +48,7 @@ function App() {
       <AppProvider>
         <AgeGate>
           <BrowserRouter>
+          <BackHandler />
           <Routes>
           <Route path="/" element={<AppLayout />}>
             {/* Main Routes */}
