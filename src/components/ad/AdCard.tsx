@@ -38,8 +38,9 @@ const AdCard: React.FC<AdCardProps> = ({
     const isPremium = variant === 'premium' || productType === 'premium';
     const isPaid = isDiamond || isSapphire || isRuby || isGold || isVip || isSpecial || isPremium;
 
-    // Mock ad duration (days running)
-    const daysRunning = Math.floor(Math.random() * 30) + 1;
+    // Stable ad duration based on ID (not random)
+    const numericId = typeof id === 'string' ? parseInt(id, 10) || 1 : id;
+    const daysRunning = ((numericId * 7) % 28) + 3;
 
     return (
         <Link

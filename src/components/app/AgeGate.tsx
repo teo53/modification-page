@@ -8,17 +8,11 @@ interface AgeGateProps {
 }
 
 const AgeGate: React.FC<AgeGateProps> = ({ children }) => {
-    const [isVerified, setIsVerified] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        // Check if user is logged in - logged in users have completed adult verification
+    // Initialize state based on current user (computed once)
+    const [isVerified, setIsVerified] = useState(() => {
         const user = getCurrentUser();
-        if (user) {
-            setIsVerified(true);
-        }
-        setIsLoading(false);
-    }, []);
+        return !!user;
+    });
 
     // Listen for storage changes (login/logout from other tabs or login redirect)
     useEffect(() => {
@@ -41,14 +35,6 @@ const AgeGate: React.FC<AgeGateProps> = ({ children }) => {
         // Redirect to a safe page
         window.location.href = 'https://www.google.com';
     };
-
-    if (isLoading) {
-        return (
-            <div className="min-h-screen bg-background flex items-center justify-center">
-                <div className="w-10 h-10 border-3 border-primary border-t-transparent rounded-full animate-spin" />
-            </div>
-        );
-    }
 
     if (isVerified) {
         return <>{children}</>;

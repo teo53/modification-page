@@ -6,6 +6,30 @@ interface SplashScreenProps {
   minimumDuration?: number;
 }
 
+// Pre-computed star positions (stable, not random)
+const STAR_POSITIONS = [
+  { left: 5, top: 10, delay: 0.1 },
+  { left: 15, top: 25, delay: 0.3 },
+  { left: 25, top: 5, delay: 0.5 },
+  { left: 35, top: 75, delay: 0.7 },
+  { left: 45, top: 15, delay: 0.9 },
+  { left: 55, top: 85, delay: 1.1 },
+  { left: 65, top: 35, delay: 1.3 },
+  { left: 75, top: 55, delay: 1.5 },
+  { left: 85, top: 20, delay: 1.7 },
+  { left: 95, top: 70, delay: 1.9 },
+  { left: 10, top: 60, delay: 0.2 },
+  { left: 20, top: 90, delay: 0.4 },
+  { left: 30, top: 40, delay: 0.6 },
+  { left: 40, top: 80, delay: 0.8 },
+  { left: 50, top: 30, delay: 1.0 },
+  { left: 60, top: 65, delay: 1.2 },
+  { left: 70, top: 8, delay: 1.4 },
+  { left: 80, top: 45, delay: 1.6 },
+  { left: 90, top: 95, delay: 1.8 },
+  { left: 8, top: 50, delay: 0.15 },
+];
+
 const SplashScreen: React.FC<SplashScreenProps> = ({
   onComplete,
   minimumDuration = 2000
@@ -44,7 +68,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({
         >
           {/* Background Stars */}
           <div className="absolute inset-0 overflow-hidden">
-            {[...Array(20)].map((_, i) => (
+            {STAR_POSITIONS.map((star, i) => (
               <motion.div
                 key={i}
                 className="absolute w-1 h-1 bg-primary/40 rounded-full"
@@ -53,11 +77,11 @@ const SplashScreen: React.FC<SplashScreenProps> = ({
                 transition={{
                   duration: 2,
                   repeat: Infinity,
-                  delay: Math.random() * 2,
+                  delay: star.delay,
                 }}
                 style={{
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
+                  left: `${star.left}%`,
+                  top: `${star.top}%`,
                 }}
               />
             ))}

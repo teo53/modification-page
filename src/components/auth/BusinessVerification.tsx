@@ -107,7 +107,7 @@ const BusinessVerification: React.FC<BusinessVerificationProps> = ({
                 setError('유효하지 않은 사업자등록번호입니다.');
                 onVerified(false);
             }
-        } catch (err) {
+        } catch {
             setError('사업자 확인 중 오류가 발생했습니다.');
             onVerified(false);
         } finally {

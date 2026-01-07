@@ -13,15 +13,19 @@ interface BeforeInstallPromptEvent extends Event {
 const PWAInstallPrompt: React.FC = () => {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showPrompt, setShowPrompt] = useState(false);
-  const [isIOS, setIsIOS] = useState(false);
-  const [isInstalled, setIsInstalled] = useState(false);
+  // Compute initial iOS and installed state directly
+  const [isIOS] = useState(() => {
+    if (typeof navigator === 'undefined') return false;
+    return /iPhone|iPad|iPod/.test(navigator.userAgent) && !(window as Window & { MSStream?: unknown }).MSStream;
+  });
+  const [isInstalled] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia('(display-mode: standalone)').matches;
+  });
 
   useEffect(() => {
-    // Check if already installed as PWA
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-      setIsInstalled(true);
-      return;
-    }
+    // Already installed, do nothing
+    if (isInstalled) return;
 
     // Check if dismissed before
     const dismissed = localStorage.getItem('pwa-install-dismissed');
@@ -33,11 +37,7 @@ const PWAInstallPrompt: React.FC = () => {
       }
     }
 
-    // Detect iOS
-    const isIOSDevice = /iPhone|iPad|iPod/.test(navigator.userAgent) && !(window as Window & { MSStream?: unknown }).MSStream;
-    setIsIOS(isIOSDevice);
-
-    if (isIOSDevice) {
+    if (isIOS) {
       // Show iOS install instructions after a delay
       setTimeout(() => setShowPrompt(true), 5000);
       return;
@@ -54,16 +54,17 @@ const PWAInstallPrompt: React.FC = () => {
     window.addEventListener('beforeinstallprompt', handleBeforeInstall);
 
     // Listen for app installed event
-    window.addEventListener('appinstalled', () => {
-      setIsInstalled(true);
+    const handleAppInstalled = () => {
       setShowPrompt(false);
       setDeferredPrompt(null);
-    });
+    };
+    window.addEventListener('appinstalled', handleAppInstalled);
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
+      window.removeEventListener('appinstalled', handleAppInstalled);
     };
-  }, []);
+  }, [isIOS, isInstalled]);
 
   const handleInstall = async () => {
     if (!deferredPrompt) return;

@@ -64,8 +64,8 @@ const PremiumAdCard: React.FC<PremiumAdCardProps> = ({ ad, variant = 'medium', s
     const config = tierConfig[ad.productType] || tierConfig.general;
     const TierIcon = config.icon;
 
-    // Mock ad duration (days running)
-    const daysRunning = Math.floor(Math.random() * 30) + 1;
+    // Stable ad duration based on ID (not random)
+    const daysRunning = ((ad.id * 7) % 28) + 3;
 
     // Grid variant - clean, no sparkle, 2-column optimized
     if (variant === 'grid') {

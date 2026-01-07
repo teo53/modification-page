@@ -6,13 +6,30 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
-// Auto-increment version code from file
+// Version management from file - NO auto-increment during read
+// Version is incremented only by explicit task or CI/CD
 def versionPropsFile = file('version.properties')
 def versionBuild = 1
 if (versionPropsFile.canRead()) {
     def versionProps = new Properties()
     versionProps.load(new FileInputStream(versionPropsFile))
-    versionBuild = versionProps['VERSION_CODE'].toInteger() + 1
+    versionBuild = versionProps['VERSION_CODE'].toInteger()
+}
+
+// Task to increment version (run manually or via CI)
+task incrementVersion {
+    doLast {
+        def propsFile = file('version.properties')
+        def props = new Properties()
+        if (propsFile.canRead()) {
+            props.load(new FileInputStream(propsFile))
+        }
+        def currentVersion = props['VERSION_CODE']?.toInteger() ?: 0
+        def newVersion = currentVersion + 1
+        props['VERSION_CODE'] = newVersion.toString()
+        props.store(propsFile.newWriter(), "Auto-incremented version")
+        println "Version incremented: ${currentVersion} -> ${newVersion}"
+    }
 }
 
 android {
