@@ -71,7 +71,12 @@ const PullToRefresh: React.FC<PullToRefreshProps> = ({
     <div
       ref={containerRef}
       className="relative overflow-y-auto overflow-x-hidden"
-      style={{ touchAction: 'pan-y' }}
+      style={{
+        touchAction: 'pan-y',
+        WebkitOverflowScrolling: 'touch',
+        overscrollBehavior: 'none',
+        overscrollBehaviorY: 'none',
+      }}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

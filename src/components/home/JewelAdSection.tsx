@@ -1,34 +1,39 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, Gem, ChevronRight, Calendar } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { MapPin, Gem, Calendar } from 'lucide-react';
 import { jewelAds } from '../../data/mockAds';
 import type { Advertisement } from '../../data/mockAds';
 
-// Jewel tier configuration - simplified without glow effects
+// Jewel tier configuration with glow effects
 const jewelConfig = {
     diamond: {
         name: 'DIAMOND',
         border: 'border-cyan-400',
         bg: 'bg-cyan-400',
         textColor: 'text-cyan-400',
+        glow: 'shadow-[0_0_20px_rgba(34,211,238,0.4)]',
     },
     sapphire: {
         name: 'SAPPHIRE',
         border: 'border-blue-500',
         bg: 'bg-blue-500',
         textColor: 'text-blue-400',
+        glow: 'shadow-[0_0_20px_rgba(59,130,246,0.4)]',
     },
     ruby: {
         name: 'RUBY',
         border: 'border-red-500',
         bg: 'bg-red-500',
         textColor: 'text-red-400',
+        glow: 'shadow-[0_0_20px_rgba(239,68,68,0.4)]',
     },
     gold: {
         name: 'GOLD',
         border: 'border-yellow-500',
         bg: 'bg-yellow-500',
         textColor: 'text-yellow-400',
+        glow: 'shadow-[0_0_20px_rgba(234,179,8,0.4)]',
     },
 };
 
@@ -46,7 +51,14 @@ const JewelAdCard: React.FC<JewelAdCardProps> = ({ ad, index }) => {
 
     return (
         <Link to={`/ad/${ad.id}`} className="block">
-            <div className={`relative rounded-xl overflow-hidden border-2 ${config.border} bg-card`}>
+            <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 }}
+                className={`relative rounded-xl overflow-hidden border-2 ${config.border} ${config.glow} bg-card`}
+            >
                 {/* Image */}
                 <div className="relative h-24">
                     <img
@@ -97,7 +109,7 @@ const JewelAdCard: React.FC<JewelAdCardProps> = ({ ad, index }) => {
                         <span className="text-[8px] text-text-light bg-surface px-1 py-0.5 rounded">AD</span>
                     </div>
                 </div>
-            </div>
+            </motion.div>
         </Link>
     );
 };
@@ -107,31 +119,25 @@ const JewelAdSection: React.FC = () => {
         <section className="py-4 bg-surface">
             {/* Section Header */}
             <div className="px-4 mb-3">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                        <div className="p-2 rounded-lg bg-cyan-500/20">
-                            <Gem size={18} className="text-cyan-400" />
-                        </div>
-                        <div>
-                            <h2 className="text-base font-bold text-text-main flex items-center gap-2">
-                                PREMIUM JEWEL
-                                <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-cyan-500 text-white">
-                                    TOP
-                                </span>
-                            </h2>
-                            <p className="text-[10px] text-text-muted">최상위 프리미엄 광고</p>
-                        </div>
+                <div className="flex items-center gap-2">
+                    <div className="p-2 rounded-lg bg-cyan-500/20">
+                        <Gem size={18} className="text-cyan-400" />
                     </div>
-                    <Link to="/search?tier=jewel" className="flex items-center text-xs text-text-muted">
-                        전체보기
-                        <ChevronRight size={14} />
-                    </Link>
+                    <div>
+                        <h2 className="text-base font-bold text-text-main flex items-center gap-2">
+                            PREMIUM JEWEL
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-cyan-500 text-white">
+                                TOP
+                            </span>
+                        </h2>
+                        <p className="text-[10px] text-text-muted">최상위 프리미엄 광고 {jewelAds.length}개</p>
+                    </div>
                 </div>
             </div>
 
-            {/* Jewel Cards - 2 Column Grid */}
+            {/* Jewel Cards - 2 Column Grid - Show ALL jewel ads */}
             <div className="px-4 grid grid-cols-2 gap-3">
-                {jewelAds.slice(0, 6).map((ad, idx) => (
+                {jewelAds.map((ad, idx) => (
                     <JewelAdCard key={ad.id} ad={ad} index={idx} />
                 ))}
             </div>

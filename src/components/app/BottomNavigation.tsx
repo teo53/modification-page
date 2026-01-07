@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, BarChart3, MapPin, MessageCircle, User } from 'lucide-react';
+import { Home, MapPin, MessageCircle, User, FileText } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useApp } from '../../context/AppContext';
 
@@ -27,14 +27,14 @@ const BottomNavigation: React.FC = () => {
       path: '/search',
     },
     {
+      icon: FileText,
+      label: '구직글',
+      path: '/job-seekers',
+    },
+    {
       icon: MessageCircle,
       label: '커뮤니티',
       path: '/community',
-    },
-    {
-      icon: BarChart3,
-      label: '테마별',
-      path: '/theme',
     },
     {
       icon: User,

@@ -21,6 +21,7 @@ const Signup = lazy(() => import('./pages/Signup'));
 const ThemePage = lazy(() => import('./pages/ThemePage'));
 const UrgentPage = lazy(() => import('./pages/UrgentPage'));
 const IndustryPage = lazy(() => import('./pages/IndustryPage'));
+const JobSeekersPage = lazy(() => import('./pages/JobSeekersPage'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const FavoritesPage = lazy(() => import('./pages/FavoritesPage'));
 const MyPage = lazy(() => import('./pages/MyPage'));
@@ -112,6 +113,16 @@ function App() {
               element={
                 <Suspense fallback={<PageLoader />}>
                   <UrgentPage />
+                </Suspense>
+              }
+            />
+
+            {/* Job Seekers Routes */}
+            <Route
+              path="job-seekers"
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <JobSeekersPage />
                 </Suspense>
               }
             />

@@ -1,9 +1,9 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   MapPin, Clock, Target, Calendar, Bell,
-  ChevronRight, ChevronDown, Search, Menu, Flame, FileText, Gift, Crown, Sparkles
+  ChevronRight, ChevronDown, Flame, FileText, Gift, Crown, Sparkles
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { allAds, vipAds, specialAds } from '../data/mockAds';
@@ -13,6 +13,7 @@ import CommunityPreview from '../components/home/CommunityPreview';
 import SectionHeader from '../components/ui/SectionHeader';
 import PremiumAdCard from '../components/home/PremiumAdCard';
 import JewelAdSection from '../components/home/JewelAdSection';
+import FloatingActionButton from '../components/ui/FloatingActionButton';
 
 // Quick menu items with lucide icons
 const quickMenuItems = [
@@ -44,6 +45,14 @@ const Home: React.FC = () => {
   // Get featured and recent ads
   const recentAds = allAds.slice(0, 8);
 
+  // Auto-play banner carousel
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setBannerIndex((prev) => (prev + 1) % banners.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [banners.length]);
+
   const handleRefresh = async () => {
     setIsRefreshing(true);
     await new Promise(resolve => setTimeout(resolve, 1500));
@@ -57,92 +66,73 @@ const Home: React.FC = () => {
 
   return (
     <PullToRefresh onRefresh={handleRefresh} isRefreshing={isRefreshing}>
-      <div ref={containerRef} className="min-h-screen bg-background">
-        {/* Header */}
-        <header className="sticky top-0 z-50 bg-card border-b border-border">
-          <div className="flex items-center justify-between px-3 py-2">
-            <Link to="/" className="text-lg font-bold" aria-label="홈으로 이동">
-              <span className="text-primary">Luna</span>
-              <span className="text-text-main">Alba</span>
-            </Link>
-            <div className="flex items-center gap-1">
-              <Link
-                to="/search"
-                className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-surface focus-visible:ring-2 focus-visible:ring-primary"
-                aria-label="검색"
-              >
-                <Search size={22} className="text-text-main" />
-              </Link>
-              <Link
-                to="/mypage"
-                className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-surface focus-visible:ring-2 focus-visible:ring-primary"
-                aria-label="메뉴"
-              >
-                <Menu size={22} className="text-text-main" />
-              </Link>
-            </div>
-          </div>
+      <div ref={containerRef} className="min-h-screen bg-background" style={{ overscrollBehavior: 'none' }}>
+        {/* Location Selector - Compact version (AppBar handles logo) */}
+        <div className="sticky top-14 z-40 bg-card border-b border-border px-4 py-2">
+          <button
+            onClick={() => setShowLocationDropdown(!showLocationDropdown)}
+            className="flex items-center gap-1 text-sm h-9 px-2 -ml-2 rounded-lg hover:bg-surface focus-visible:ring-2 focus-visible:ring-primary"
+            aria-label="지역 선택"
+            aria-expanded={showLocationDropdown}
+            aria-haspopup="listbox"
+          >
+            <MapPin size={16} className="text-primary" />
+            <span className="text-text-main font-medium">{selectedLocation}</span>
+            <ChevronDown size={16} className="text-text-muted" />
+          </button>
 
-          {/* Location Selector */}
-          <div className="px-4 pb-3">
-            <button
-              onClick={() => setShowLocationDropdown(!showLocationDropdown)}
-              className="flex items-center gap-1 text-sm h-9 px-2 -ml-2 rounded-lg hover:bg-surface focus-visible:ring-2 focus-visible:ring-primary"
-              aria-label="지역 선택"
-              aria-expanded={showLocationDropdown}
-              aria-haspopup="listbox"
+          {showLocationDropdown && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="absolute left-4 right-4 mt-2 bg-card rounded-xl shadow-lg border border-border z-50"
+              role="listbox"
+              aria-label="지역 목록"
             >
-              <MapPin size={16} className="text-primary" />
-              <span className="text-text-main font-medium">{selectedLocation}</span>
-              <ChevronDown size={16} className="text-text-muted" />
-            </button>
-
-            {showLocationDropdown && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="absolute left-4 right-4 mt-2 bg-card rounded-xl shadow-lg border border-border z-50"
-                role="listbox"
-                aria-label="지역 목록"
-              >
-                {locations.map((loc) => (
-                  <button
-                    key={loc}
-                    role="option"
-                    aria-selected={selectedLocation === loc}
-                    onClick={() => {
-                      setSelectedLocation(loc);
-                      setShowLocationDropdown(false);
-                    }}
-                    className={`w-full h-12 px-4 text-left text-sm border-b border-border last:border-0 focus-visible:bg-surface ${
-                      selectedLocation === loc ? 'text-primary font-medium bg-primary/5' : 'text-text-main'
-                    }`}
-                  >
-                    {loc}
-                  </button>
-                ))}
-              </motion.div>
-            )}
-          </div>
-        </header>
+              {locations.map((loc) => (
+                <button
+                  key={loc}
+                  role="option"
+                  aria-selected={selectedLocation === loc}
+                  onClick={() => {
+                    setSelectedLocation(loc);
+                    setShowLocationDropdown(false);
+                  }}
+                  className={`w-full h-12 px-4 text-left text-sm border-b border-border last:border-0 focus-visible:bg-surface ${
+                    selectedLocation === loc ? 'text-primary font-medium bg-primary/5' : 'text-text-main'
+                  }`}
+                >
+                  {loc}
+                </button>
+              ))}
+            </motion.div>
+          )}
+        </div>
 
         {/* Hero Banner Carousel */}
         <section className="px-4 py-4">
           <div className="relative rounded-2xl overflow-hidden">
-            <motion.div
-              className={`bg-gradient-to-r ${banners[bannerIndex].bg} p-6 min-h-[160px]`}
-              key={bannerIndex}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-            >
-              <p className="text-white/80 text-sm mb-1">올 겨울 든든하게 보낼</p>
-              <h2 className="text-white text-2xl font-bold mb-4">
-                {banners[bannerIndex].title}
-              </h2>
-              <button className="bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm">
-                {banners[bannerIndex].subtitle}
-              </button>
-            </motion.div>
+            <AnimatePresence mode="wait">
+              <motion.div
+                className={`bg-gradient-to-r ${banners[bannerIndex].bg} p-6 min-h-[160px]`}
+                key={bannerIndex}
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -50 }}
+                transition={{ duration: 0.3 }}
+              >
+                <p className="text-white/80 text-sm mb-1">올 겨울 든든하게 보낼</p>
+                <h2 className="text-white text-2xl font-bold mb-4">
+                  {banners[bannerIndex].title}
+                </h2>
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm"
+                >
+                  {banners[bannerIndex].subtitle}
+                </motion.button>
+              </motion.div>
+            </AnimatePresence>
             <div className="absolute bottom-3 right-3 bg-black/30 text-white text-xs px-2 py-1 rounded-full">
               {bannerIndex + 1} / {banners.length}
             </div>
@@ -153,8 +143,8 @@ const Home: React.FC = () => {
               <button
                 key={idx}
                 onClick={() => setBannerIndex(idx)}
-                className={`w-2 h-2 rounded-full transition-colors ${
-                  idx === bannerIndex ? 'bg-primary' : 'bg-border'
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  idx === bannerIndex ? 'bg-primary w-6' : 'bg-border w-2'
                 }`}
               />
             ))}
@@ -411,12 +401,15 @@ const Home: React.FC = () => {
           </Link>
         </div>
 
+        {/* Floating Action Button */}
+        <FloatingActionButton />
+
         {/* Scroll to Top Button */}
         <motion.button
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="fixed bottom-24 right-4 w-12 h-12 bg-card rounded-full shadow-lg border border-border flex items-center justify-center z-40"
+          className="fixed bottom-24 left-4 w-12 h-12 bg-card rounded-full shadow-lg border border-border flex items-center justify-center z-40"
         >
           <ChevronRight size={20} className="text-primary rotate-[-90deg]" />
         </motion.button>

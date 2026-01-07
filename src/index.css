@@ -58,6 +58,31 @@ body {
   background-color: var(--color-background);
   color: var(--color-text-main);
   transition: background-color 0.3s ease, color 0.3s ease;
+  /* Prevent overscroll bounce on iOS */
+  overscroll-behavior: none;
+  overscroll-behavior-y: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Prevent iOS bounce on html and body */
+html, body {
+  overscroll-behavior: none;
+  overscroll-behavior-y: none;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Main app container should scroll */
+#root {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: none;
+  overscroll-behavior-y: none;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Custom Scrollbar - Dark */
@@ -172,4 +197,40 @@ html {
   input, select, textarea {
     font-size: 16px !important;
   }
+}
+
+/* Shimmer animation for loading states */
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite linear;
+}
+
+/* Glow pulse animation */
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(229, 192, 75, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(229, 192, 75, 0.6);
+  }
+}
+
+.animate-glow {
+  animation: glow-pulse 2s infinite ease-in-out;
+}
+
+/* Gradient text for premium badges */
+.text-gradient-gold {
+  background: linear-gradient(135deg, #E5C04B 0%, #FFD700 50%, #E5C04B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
