@@ -36,28 +36,36 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
 
-  <!-- Microsoft Clarity - 실제 Project ID를 입력하면 자동 활성화됩니다 -->
-  <!-- 1. https://clarity.microsoft.com 에서 프로젝트 생성 -->
-  <!-- 2. 아래 CLARITY_PROJECT_ID를 실제 ID로 교체 -->
+  <!-- Microsoft Clarity - Set VITE_CLARITY_ID in .env -->
   <script type="text/javascript">
-    (function (c, l, a, r, i, t, y) {
-      c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
-      t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
-      y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
-    })(window, document, "clarity", "script", "upekygy0jj");
+    (function () {
+      var clarityId = '%VITE_CLARITY_ID%';
+      if (clarityId && clarityId !== '' && !clarityId.startsWith('%')) {
+        (function (c, l, a, r, i, t, y) {
+          c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+          t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+          y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", clarityId);
+      }
+    })();
   </script>
 
-  <!-- Google Analytics 4 (Optional) -->
-  <!-- Get your Measurement ID from https://analytics.google.com -->
-  <!--
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-XXXXXXXXXX');
-    </script>
-    -->
+  <!-- Google Analytics 4 - Set VITE_GA_ID in .env -->
+  <script type="text/javascript">
+    (function () {
+      var gaId = '%VITE_GA_ID%';
+      if (gaId && gaId !== '' && !gaId.startsWith('%')) {
+        var script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=' + gaId;
+        document.head.appendChild(script);
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', gaId);
+      }
+    })();
+  </script>
 </head>
 
 <body>

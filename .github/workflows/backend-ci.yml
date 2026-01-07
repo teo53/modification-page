@@ -6,11 +6,13 @@ on:
     paths:
       - 'apps/api/**'
       - 'packages/types/**'
+      - 'pnpm-lock.yaml'
   pull_request:
     branches: [main, develop]
     paths:
       - 'apps/api/**'
       - 'packages/types/**'
+      - 'pnpm-lock.yaml'
 
 jobs:
   test:
