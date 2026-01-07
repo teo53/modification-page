@@ -16,6 +16,7 @@ export interface Advertisement {
     productType: 'diamond' | 'sapphire' | 'ruby' | 'gold' | 'vip' | 'special' | 'premium' | 'general';
     price: string;
     duration: string;
+    startDate: string; // 광고 시작일 (ISO string)
 }
 
 // Titles for ad variety
@@ -47,6 +48,26 @@ const PAYS = [
     '시급 50,000원', '일급 300,000원', '시급 120,000원', '일급 600,000원',
     '시급 70,000원', '일급 350,000원', '협의 후 결정'
 ];
+
+// Generate a past date for ad start date (based on product type and ID)
+const generateStartDate = (id: number, productType: string): string => {
+    const now = new Date();
+    // Higher tier ads run longer (more established advertisers)
+    const baseDays: Record<string, number> = {
+        diamond: 60,  // 다이아몬드: 오래된 광고주
+        sapphire: 45,
+        ruby: 30,
+        gold: 20,
+        vip: 15,
+        special: 10,
+        premium: 5,
+        general: 3,
+    };
+    // Add variation based on ad ID
+    const daysAgo = (baseDays[productType] || 7) + ((id * 3) % 20);
+    const startDate = new Date(now.getTime() - daysAgo * 24 * 60 * 60 * 1000);
+    return startDate.toISOString();
+};
 
 // Convert scraped ads to Advertisement format
 const convertToAd = (scrapedAd: any, productType: Advertisement['productType']): Advertisement => {
@@ -90,6 +111,7 @@ const convertToAd = (scrapedAd: any, productType: Advertisement['productType']):
         productType,
         price: priceMap[productType] || '50,000원',
         duration: durationMap[productType] || '7일',
+        startDate: generateStartDate(scrapedAd.id, productType),
     };
 };
 
@@ -117,4 +139,13 @@ export const allAds = [...jewelAds, ...vipAds, ...specialAds, ...regularAds];
 // Helper function to get ad by ID
 export const getAdById = (id: number): Advertisement | undefined => {
     return allAds.find(ad => ad.id === id);
+};
+
+// Helper function to calculate days running from startDate
+export const getDaysRunning = (startDate: string): number => {
+    const start = new Date(startDate);
+    const now = new Date();
+    const diffTime = Math.abs(now.getTime() - start.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
 };

@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { MapPin, Gem, Calendar } from 'lucide-react';
-import { jewelAds } from '../../data/mockAds';
+import { jewelAds, getDaysRunning } from '../../data/mockAds';
 import type { Advertisement } from '../../data/mockAds';
 
 // Jewel tier configuration with glow effects
@@ -46,8 +46,8 @@ const JewelAdCard: React.FC<JewelAdCardProps> = ({ ad, index }) => {
     const tier = ad.productType as keyof typeof jewelConfig;
     const config = jewelConfig[tier] || jewelConfig.gold;
 
-    // Stable ad duration based on ad ID (not random)
-    const daysRunning = ((ad.id * 3) % 25) + 5; // 5-30일 범위
+    // Calculate actual days running from ad start date
+    const daysRunning = getDaysRunning(ad.startDate);
 
     return (
         <Link to={`/ad/${ad.id}`} className="block">
