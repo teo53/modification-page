@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { ArrowLeft, Camera, X, Send, LogIn, UserPlus } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -17,13 +17,8 @@ const CommunityWrite: React.FC = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const initialCategory = searchParams.get('category') || '자유게시판';
-    const [user, setUser] = useState(getCurrentUser());
-
-    // Check login status
-    useEffect(() => {
-        const currentUser = getCurrentUser();
-        setUser(currentUser);
-    }, []);
+    // Initialize user directly (no setState in useEffect)
+    const [user] = useState(() => getCurrentUser());
 
     const [formData, setFormData] = useState({
         category: initialCategory,

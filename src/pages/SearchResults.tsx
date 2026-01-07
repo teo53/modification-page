@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Search, Filter, Clock } from 'lucide-react';
 import AdCard from '../components/ad/AdCard';
@@ -7,41 +7,46 @@ import HorizontalFilterBar from '../components/ui/HorizontalFilterBar';
 import { allAds, jewelAds, vipAds, specialAds } from '../data/mockAds';
 import { useApp } from '../context/AppContext';
 
+// Tier priority for sorting (higher = more premium) - defined outside component
+const TIER_PRIORITY: { [key: string]: number } = {
+    'diamond': 100,
+    'sapphire': 90,
+    'ruby': 80,
+    'gold': 70,
+    'vip': 60,
+    'special': 50,
+    'premium': 40,
+    'general': 10,
+};
+
 const SearchResults: React.FC = () => {
     const [searchParams] = useSearchParams();
     const { state, addSearchHistory, dispatch } = useApp();
-    const [sortOrder, setSortOrder] = useState('latest');
-    const [displayCount, setDisplayCount] = useState(12);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [tierFilter, setTierFilter] = useState<string | null>(null);
-    const [showHistory, setShowHistory] = useState(false);
-    const [filters, setFilters] = useState({
-        region: 'all',
-        industry: 'all',
-        salary: 'all',
-        type: 'all'
-    });
 
-    // Read URL query parameters on mount
-    useEffect(() => {
+    // Read URL params to initialize state (no useEffect needed)
+    const initialSearchValues = useMemo(() => {
         const type = searchParams.get('type');
         const brand = searchParams.get('brand');
         const tier = searchParams.get('tier');
 
-        if (brand) {
-            setSearchQuery(brand);
-        }
-        if (type) {
-            if (type === 'special') {
-                setTierFilter('special');
-            } else {
-                setFilters(prev => ({ ...prev, type }));
+        return {
+            searchQuery: brand || '',
+            tierFilter: tier || (type === 'special' ? 'special' : null),
+            filters: {
+                region: 'all',
+                industry: 'all',
+                salary: 'all',
+                type: type && type !== 'special' ? type : 'all'
             }
-        }
-        if (tier) {
-            setTierFilter(tier);
-        }
+        };
     }, [searchParams]);
+
+    const [sortOrder, setSortOrder] = useState('latest');
+    const [displayCount, setDisplayCount] = useState(12);
+    const [searchQuery, setSearchQuery] = useState(initialSearchValues.searchQuery);
+    const [tierFilter] = useState<string | null>(initialSearchValues.tierFilter);
+    const [showHistory, setShowHistory] = useState(false);
+    const [filters, setFilters] = useState(initialSearchValues.filters);
 
     const handleHistoryClick = (query: string) => {
         setSearchQuery(query);
@@ -58,18 +63,6 @@ const SearchResults: React.FC = () => {
         { label: '급여높은순', value: 'pay' },
         { label: '인기순', value: 'popular' },
     ];
-
-    // Tier priority for sorting (higher = more premium)
-    const tierPriority: { [key: string]: number } = {
-        'diamond': 100,
-        'sapphire': 90,
-        'ruby': 80,
-        'gold': 70,
-        'vip': 60,
-        'special': 50,
-        'premium': 40,
-        'general': 10,
-    };
 
     // 필터링 및 정렬된 광고 목록
     const filteredAds = useMemo(() => {
@@ -167,8 +160,8 @@ const SearchResults: React.FC = () => {
         // 정렬 - Always sort by tier first (paid ads first), then by selected criteria
         results.sort((a, b) => {
             // First, sort by tier priority (paid ads first)
-            const aTier = tierPriority[a.productType] || 10;
-            const bTier = tierPriority[b.productType] || 10;
+            const aTier = TIER_PRIORITY[a.productType] || 10;
+            const bTier = TIER_PRIORITY[b.productType] || 10;
             if (aTier !== bTier) return bTier - aTier;
 
             // Then sort by selected criteria
@@ -275,7 +268,7 @@ const SearchResults: React.FC = () => {
                     <SelectionGroup
                         options={SORT_OPTIONS}
                         value={sortOrder}
-                        onChange={setSortOrder}
+                        onChange={(v) => setSortOrder(v as string)}
                     />
                 </div>
 

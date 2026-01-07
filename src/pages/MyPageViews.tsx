@@ -3,19 +3,24 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ChevronLeft, Clock, MapPin } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../context/AppContext';
-import { allAds } from '../data/mockAds';
+import { allAds, type Advertisement } from '../data/mockAds';
+
+// Extended type for viewed ads with timestamp
+interface ViewedAd extends Advertisement {
+    viewedAt: number;
+}
 
 const MyPageViews: React.FC = () => {
     const navigate = useNavigate();
     const { state } = useApp();
 
-    // Get recently viewed ads with full data
-    const recentViewAds = state.recentViews
+    // Get recently viewed ads with full data and proper typing
+    const recentViewAds: ViewedAd[] = state.recentViews
         .map(view => {
             const ad = allAds.find(a => String(a.id) === view.id);
             return ad ? { ...ad, viewedAt: view.viewedAt } : null;
         })
-        .filter(Boolean);
+        .filter((ad): ad is ViewedAd => ad !== null);
 
     const formatDate = (timestamp: number) => {
         const date = new Date(timestamp);
@@ -47,7 +52,7 @@ const MyPageViews: React.FC = () => {
             {recentViewAds.length > 0 ? (
                 <div className="divide-y divide-border">
                     <AnimatePresence>
-                        {recentViewAds.map((ad: any) => (
+                        {recentViewAds.map((ad) => (
                             <motion.div
                                 key={ad.id}
                                 initial={{ opacity: 0, x: -20 }}

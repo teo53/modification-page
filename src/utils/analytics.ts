@@ -61,7 +61,7 @@ export const AnalyticsService = {
         try {
             const data = localStorage.getItem(CLICK_STORAGE_KEY);
             return data ? JSON.parse(data) : [];
-        } catch (e) {
+        } catch {
             return [];
         }
     },
@@ -71,7 +71,7 @@ export const AnalyticsService = {
         try {
             const data = localStorage.getItem(SCROLL_STORAGE_KEY);
             return data ? JSON.parse(data) : [];
-        } catch (e) {
+        } catch {
             return [];
         }
     },

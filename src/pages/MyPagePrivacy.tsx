@@ -26,8 +26,9 @@ const MyPagePrivacy: React.FC = () => {
         if (!user) return;
 
         // Remove user from users list
-        const users = JSON.parse(localStorage.getItem('lunaalba_users') || '[]');
-        const filteredUsers = users.filter((u: any) => u.id !== user.id);
+        interface StoredUser { id: string; [key: string]: unknown }
+        const users: StoredUser[] = JSON.parse(localStorage.getItem('lunaalba_users') || '[]');
+        const filteredUsers = users.filter((u) => u.id !== user.id);
         localStorage.setItem('lunaalba_users', JSON.stringify(filteredUsers));
 
         // Remove password

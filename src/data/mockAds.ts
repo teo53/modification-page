@@ -3,6 +3,21 @@
 
 import scrapedAdsData from './scraped_ads.json';
 
+// Interface for scraped_ads.json data
+interface ScrapedAdJson {
+    id: number;
+    title: string;
+    original_title?: string;
+    thumbnail: string;
+    detail_images?: string[];
+    location: string;
+    pay: string;
+    phones?: string[];
+    content?: string;
+    url?: string;
+    scraped_at?: string;
+}
+
 export interface Advertisement {
     id: number;
     title: string;
@@ -70,7 +85,7 @@ const generateStartDate = (id: number, productType: string): string => {
 };
 
 // Convert scraped ads to Advertisement format
-const convertToAd = (scrapedAd: any, productType: Advertisement['productType']): Advertisement => {
+const convertToAd = (scrapedAd: ScrapedAdJson, productType: Advertisement['productType']): Advertisement => {
     const titleIndex = (scrapedAd.id - 1) % TITLES.length;
     const locationIndex = (scrapedAd.id - 1) % LOCATIONS.length;
     const badgeIndex = (scrapedAd.id - 1) % BADGES_LIST.length;

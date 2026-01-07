@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ChevronLeft, FileText, CheckCircle, XCircle, Hourglass, MapPin, DollarSign, Clock } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -66,11 +66,8 @@ const initializeApplications = () => {
 
 const MyPageApplications: React.FC = () => {
     const navigate = useNavigate();
-    const [applications, setApplications] = useState<Application[]>([]);
-
-    useEffect(() => {
-        setApplications(initializeApplications());
-    }, []);
+    // Initialize applications directly using useState initializer
+    const [applications] = useState<Application[]>(() => initializeApplications());
 
     const stats = {
         pending: applications.filter(a => a.status === 'pending').length,

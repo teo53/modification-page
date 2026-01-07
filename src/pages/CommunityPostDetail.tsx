@@ -1,29 +1,32 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, ThumbsUp, MessageSquare, Eye, Share2 } from 'lucide-react';
 import communityData from '../data/community_data.json';
 import { getPostById, toggleLike, isPostLiked, incrementViews } from '../utils/communityStorage';
 
-const CommunityPostDetail: React.FC = () => {
-    const { id } = useParams<{ id: string }>();
-    const navigate = useNavigate();
-    const [liked, setLiked] = useState(false);
-    const [likeCount, setLikeCount] = useState(0);
+interface PostDetailContentProps {
+    postId: string;
+}
 
-    // Try to find in user posts first, then static data
-    const userPost = getPostById(Number(id));
-    const staticPost = communityData.find(p => p.id === Number(id));
+// Inner component that resets when postId changes (via key)
+const PostDetailContent: React.FC<PostDetailContentProps> = ({ postId }) => {
+    const navigate = useNavigate();
+
+    // Get post data
+    const userPost = useMemo(() => getPostById(Number(postId)), [postId]);
+    const staticPost = useMemo(() => communityData.find(p => p.id === Number(postId)), [postId]);
     const post = userPost || staticPost;
 
+    // Initialize state based on current post (initializer runs once per mount)
+    const [liked, setLiked] = useState(() => userPost ? isPostLiked(userPost.id) : false);
+    const [likeCount, setLikeCount] = useState(() => post?.likes ?? 0);
+
+    // Side effect only (no setState)
     useEffect(() => {
         if (userPost) {
             incrementViews(userPost.id);
-            setLiked(isPostLiked(userPost.id));
-            setLikeCount(userPost.likes);
-        } else if (staticPost) {
-            setLikeCount(staticPost.likes);
         }
-    }, [id]);
+    }, [userPost]);
 
     const handleLike = () => {
         if (userPost) {
@@ -171,6 +174,27 @@ const CommunityPostDetail: React.FC = () => {
             </div>
         </div>
     );
+};
+
+// Wrapper component that uses key to force remount when id changes
+const CommunityPostDetail: React.FC = () => {
+    const { id } = useParams<{ id: string }>();
+
+    if (!id) {
+        return (
+            <div className="container mx-auto px-4 py-8">
+                <div className="text-center">
+                    <h2 className="text-2xl font-bold text-text-main mb-4">게시글을 찾을 수 없습니다</h2>
+                    <Link to="/community" className="text-primary hover:underline">
+                        커뮤니티로 돌아가기
+                    </Link>
+                </div>
+            </div>
+        );
+    }
+
+    // Key forces remount when id changes, resetting all state
+    return <PostDetailContent key={id} postId={id} />;
 };
 
 export default CommunityPostDetail;

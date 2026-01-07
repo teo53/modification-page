@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { Users, DollarSign, AlertTriangle, CheckCircle, XCircle, Clock, MessageSquare, ShieldX, LogIn } from 'lucide-react';
@@ -23,14 +23,10 @@ const revenueData = [
 const AdminCRM: React.FC = () => {
     const navigate = useNavigate();
     const [heatmapPoints, setHeatmapPoints] = React.useState<{ x: number, y: number, value: number }[]>([]);
-    const [user, setUser] = useState(getCurrentUser());
-    const [hasAccess, setHasAccess] = useState(false);
 
-    useEffect(() => {
-        const currentUser = getCurrentUser();
-        setUser(currentUser);
-        setHasAccess(currentUser?.role === 'admin');
-    }, []);
+    // Initialize user state directly (no useEffect needed)
+    const [user] = useState(() => getCurrentUser());
+    const hasAccess = user?.role === 'admin';
 
     // No access - not logged in
     if (!user) {

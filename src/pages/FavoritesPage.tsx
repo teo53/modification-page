@@ -3,18 +3,23 @@ import { Link } from 'react-router-dom';
 import { Heart, Trash2, MapPin, Clock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../context/AppContext';
-import { allAds } from '../data/mockAds';
+import { allAds, type Advertisement } from '../data/mockAds';
+
+// Extended type for favorited ads with addedAt timestamp
+interface FavoriteAd extends Advertisement {
+  addedAt: number;
+}
 
 const FavoritesPage: React.FC = () => {
   const { state, toggleFavorite } = useApp();
 
-  // Get favorited ads
-  const favoriteAds = state.favorites
+  // Get favorited ads with proper typing
+  const favoriteAds: FavoriteAd[] = state.favorites
     .map(fav => {
       const ad = allAds.find(a => String(a.id) === fav.id);
       return ad ? { ...ad, addedAt: fav.addedAt } : null;
     })
-    .filter(Boolean);
+    .filter((ad): ad is FavoriteAd => ad !== null);
 
   const formatDate = (timestamp: number) => {
     const date = new Date(timestamp);
@@ -62,7 +67,7 @@ const FavoritesPage: React.FC = () => {
       {favoriteAds.length > 0 ? (
         <div className="divide-y divide-border">
           <AnimatePresence>
-            {favoriteAds.map((ad: any) => (
+            {favoriteAds.map((ad) => (
               <motion.div
                 key={ad.id}
                 initial={{ opacity: 0, x: -20 }}

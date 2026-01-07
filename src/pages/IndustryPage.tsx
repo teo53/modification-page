@@ -269,7 +269,7 @@ const IndustryPage: React.FC = () => {
                     <SelectionGroup
                         options={SORT_OPTIONS}
                         value={sortOrder}
-                        onChange={setSortOrder}
+                        onChange={(v) => setSortOrder(v as string)}
                     />
                 </div>
 

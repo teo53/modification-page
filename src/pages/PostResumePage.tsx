@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -41,13 +41,8 @@ const locations = [
 
 const PostResumePage: React.FC = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState(getCurrentUser());
-
-  // Check login status
-  useEffect(() => {
-    const currentUser = getCurrentUser();
-    setUser(currentUser);
-  }, []);
+  // Initialize user directly (no useEffect needed)
+  const [user] = useState(() => getCurrentUser());
 
   const [formData, setFormData] = useState<ResumeFormData>({
     name: '',

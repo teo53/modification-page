@@ -45,7 +45,7 @@ const AdDetail: React.FC = () => {
                     text: `${ad.location} - ${ad.pay}`,
                     url: window.location.href
                 });
-            } catch (err) {
+            } catch {
                 console.log('Share cancelled');
             }
         }

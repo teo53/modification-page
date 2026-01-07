@@ -28,42 +28,31 @@ const locations = [
 
 const MyPageEdit: React.FC = () => {
   const navigate = useNavigate();
-  const user = getCurrentUser();
+  const [user] = useState(() => getCurrentUser());
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState<'basic' | 'profile'>('basic');
 
-  const [formData, setFormData] = useState({
-    name: '',
-    nickname: '',
-    phone: '',
-    age: '',
-    gender: '',
-    location: '',
-    desiredJob: [] as string[],
-    experience: '',
-    availableTime: [] as string[],
-    introduction: '',
-  });
+  // Initialize form data from user (using initializer function)
+  const [formData, setFormData] = useState(() => ({
+    name: user?.name || '',
+    nickname: user?.nickname || '',
+    phone: user?.phone || '',
+    age: user?.age || '',
+    gender: user?.gender || '',
+    location: user?.location || '',
+    desiredJob: user?.desiredJob || [] as string[],
+    experience: user?.experience || '',
+    availableTime: user?.availableTime || [] as string[],
+    introduction: user?.introduction || '',
+  }));
 
+  // Navigation check only (no setState)
   useEffect(() => {
     if (!user) {
       navigate('/login');
-      return;
     }
-    setFormData({
-      name: user.name || '',
-      nickname: user.nickname || '',
-      phone: user.phone || '',
-      age: user.age || '',
-      gender: user.gender || '',
-      location: user.location || '',
-      desiredJob: user.desiredJob || [],
-      experience: user.experience || '',
-      availableTime: user.availableTime || [],
-      introduction: user.introduction || '',
-    });
   }, [user, navigate]);
 
   const toggleJobCategory = (job: string) => {
@@ -93,8 +82,9 @@ const MyPageEdit: React.FC = () => {
       const updatedUser = { ...user, ...formData };
       localStorage.setItem('lunaalba_current_user', JSON.stringify(updatedUser));
 
-      const users = JSON.parse(localStorage.getItem('lunaalba_users') || '[]');
-      const index = users.findIndex((u: any) => u.id === user?.id);
+      interface StoredUser { id: string; [key: string]: unknown }
+      const users: StoredUser[] = JSON.parse(localStorage.getItem('lunaalba_users') || '[]');
+      const index = users.findIndex((u) => u.id === user?.id);
       if (index !== -1) {
         users[index] = { ...users[index], ...formData };
         localStorage.setItem('lunaalba_users', JSON.stringify(users));

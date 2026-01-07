@@ -6,12 +6,13 @@ import { getMyAds, getAdStats, deleteAd, type UserAd } from '../utils/adStorage'
 
 const AdvertiserDashboard: React.FC = () => {
     const navigate = useNavigate();
-    const [user, setUser] = useState(getCurrentUser());
-    const [myAds, setMyAds] = useState<UserAd[]>([]);
-    const [stats, setStats] = useState({ total: 0, active: 0, pending: 0, expired: 0, totalViews: 0, totalInquiries: 0 });
+    // Initialize state directly (no setState in useEffect)
+    const [user] = useState(() => getCurrentUser());
+    const [myAds, setMyAds] = useState<UserAd[]>(() => getMyAds());
+    const [stats, setStats] = useState(() => getAdStats());
     const [jumpUpCredits, setJumpUpCredits] = useState(5);
 
-    // Load user data and ads
+    // Navigation check only (no setState)
     useEffect(() => {
         const currentUser = getCurrentUser();
         if (!currentUser) {
@@ -22,9 +23,6 @@ const AdvertiserDashboard: React.FC = () => {
             navigate('/');
             return;
         }
-        setUser(currentUser);
-        setMyAds(getMyAds());
-        setStats(getAdStats());
     }, [navigate]);
 
     const handleDeleteAd = (adId: string) => {
@@ -35,7 +33,8 @@ const AdvertiserDashboard: React.FC = () => {
         }
     };
 
-    const handleJumpUp = (_adId: string) => {
+    const handleJumpUp = (adId: string) => {
+        void adId; // Used in future API call
         if (jumpUpCredits <= 0) {
             alert('점프업 크레딧이 부족합니다. 충전해주세요.');
             return;

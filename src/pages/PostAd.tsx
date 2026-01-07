@@ -25,11 +25,16 @@ const PostAd = () => {
     const [success, setSuccess] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const [isAuthorized, setIsAuthorized] = useState(false);
+    // Initialize authorization status directly
+    const [isAuthorized] = useState(() => {
+        const user = getCurrentUser();
+        return user?.type === 'advertiser';
+    });
 
     // Multi-select products state with period extension (qty = number of periods)
     const [selectedProducts, setSelectedProducts] = useState<Record<string, { qty: number; startDate: string }>>({});
-    const [highlightSettings, setHighlightSettings] = useState<{ color: 'yellow' | 'pink' | 'green' | 'cyan'; text: string }>({ color: 'yellow', text: '' });
+    type HighlightColor = 'yellow' | 'pink' | 'green' | 'cyan' | 'blue' | 'purple' | 'orange' | 'indigo' | 'magenta';
+    const [highlightSettings, setHighlightSettings] = useState<{ color: HighlightColor; text: string }>({ color: 'yellow', text: '' });
     const [jumpUpSettings, setJumpUpSettings] = useState<{ enabled: boolean; interval: number; count: number }>({ enabled: false, interval: 1, count: 10 });
     const [hoveredProduct, setHoveredProduct] = useState<string | null>(null);
     const [adIcon, setAdIcon] = useState<string | null>(null);
@@ -110,21 +115,14 @@ const PostAd = () => {
         return '';
     }, [formData.images]);
 
-    // Auth Check Effect
+    // Auth Check Effect - navigation only (no setState)
     useEffect(() => {
         const user = getCurrentUser();
         if (!user) {
             alert('로그인이 필요한 서비스입니다.');
             navigate('/login');
-            return;
         }
-
-        if (user.type !== 'advertiser') {
-            setLoading(false); // Stop loading if it was true
-            return; // Stay on page but show access denied view (handled in render)
-        }
-
-        setIsAuthorized(true);
+        // If not advertiser, stay on page but show access denied view (handled in render)
     }, [navigate]);
 
     if (!isAuthorized && getCurrentUser()) {
@@ -160,7 +158,22 @@ const PostAd = () => {
 
 
 
-    const products = [
+    interface Product {
+        id: string;
+        name: string;
+        price: string;
+        priceNum: number;
+        duration: string;
+        durationDays: number;
+        color: string;
+        bg: string;
+        bgFill: string;
+        textColor: string;
+        features: string[];
+        description: string;
+    }
+
+    const products: Product[] = [
         {
             id: 'diamond',
             name: '다이아몬드',
@@ -275,7 +288,7 @@ const PostAd = () => {
         }
     ];
 
-    const handleInputChange = (field: keyof AdFormState, value: any) => {
+    const handleInputChange = <K extends keyof AdFormState>(field: K, value: AdFormState[K]) => {
         setFormData(prev => ({ ...prev, [field]: value }));
     };
 
@@ -682,15 +695,15 @@ const PostAd = () => {
                             <label className="text-sm font-medium text-text-muted">급여 조건</label>
                             <div className="bg-card/5 rounded-xl border border-white/10 p-4 space-y-4">
                                 <div className="flex flex-wrap gap-2">
-                                    {[
+                                    {([
                                         { id: 'hourly', label: '시급' },
                                         { id: 'daily', label: '일급' },
                                         { id: 'monthly', label: '월급' },
                                         { id: 'negotiable', label: '협의' }
-                                    ].map((type) => (
+                                    ] as const).map((type) => (
                                         <button
                                             key={type.id}
-                                            onClick={() => setFormData(prev => ({ ...prev, salary: { ...prev.salary, type: type.id as any } }))}
+                                            onClick={() => setFormData(prev => ({ ...prev, salary: { ...prev.salary, type: type.id } }))}
                                             className={`px-4 py-2 rounded-lg text-sm border transition-all ${formData.salary.type === type.id
                                                 ? 'bg-card text-black border-white font-bold'
                                                 : 'bg-black/20 border-white/10 text-text-muted hover:bg-card/5'
@@ -793,15 +806,15 @@ const PostAd = () => {
                             <div className="space-y-3">
                                 <label className="text-sm font-medium text-text-muted">근무 시간</label>
                                 <div className="grid grid-cols-2 gap-3">
-                                    {[
+                                    {([
                                         { id: 'day', label: '주간 (Day)' },
                                         { id: 'night', label: '야간 (Night)' },
                                         { id: 'full', label: '상주 (Full)' },
                                         { id: 'negotiable', label: '시간협의' }
-                                    ].map((time) => (
+                                    ] as const).map((time) => (
                                         <button
                                             key={time.id}
-                                            onClick={() => setFormData(prev => ({ ...prev, workHours: { ...prev.workHours, type: time.id as any } }))}
+                                            onClick={() => setFormData(prev => ({ ...prev, workHours: { ...prev.workHours, type: time.id } }))}
                                             className={`p-3 rounded-lg border text-sm transition-all ${formData.workHours.type === time.id
                                                 ? 'bg-primary/20 border-primary text-primary font-bold'
                                                 : 'bg-card/5 border-white/10 text-text-muted hover:bg-card/10'
@@ -837,8 +850,8 @@ const PostAd = () => {
                                     <div className="flex items-center justify-between">
                                         <label className="text-xs text-text-muted w-16">성별</label>
                                         <div className="flex gap-1 flex-1">
-                                            {[{ id: 'female', label: '여성' }, { id: 'male', label: '남성' }, { id: 'any', label: '무관' }].map(g => (
-                                                <button key={g.id} onClick={() => setFormData(p => ({ ...p, gender: g.id as any }))} className={`flex-1 py-1 text-xs rounded border ${formData.gender === g.id ? 'bg-card text-black border-white' : 'bg-transparent border-white/10 text-white/50'}`}>{g.label}</button>
+                                            {([{ id: 'female', label: '여성' }, { id: 'male', label: '남성' }, { id: 'any', label: '무관' }] as const).map(g => (
+                                                <button key={g.id} onClick={() => setFormData(p => ({ ...p, gender: g.id }))} className={`flex-1 py-1 text-xs rounded border ${formData.gender === g.id ? 'bg-card text-black border-white' : 'bg-transparent border-white/10 text-white/50'}`}>{g.label}</button>
                                             ))}
                                         </div>
                                     </div>
@@ -847,8 +860,8 @@ const PostAd = () => {
                                     <div className="flex items-center justify-between">
                                         <label className="text-xs text-text-muted w-16">경력</label>
                                         <div className="flex gap-1 flex-1">
-                                            {[{ id: 'novice', label: '초보' }, { id: 'experienced', label: '경력' }, { id: 'any', label: '무관' }].map(e => (
-                                                <button key={e.id} onClick={() => setFormData(p => ({ ...p, experience: e.id as any }))} className={`flex-1 py-1 text-xs rounded border ${formData.experience === e.id ? 'bg-card text-black border-white' : 'bg-transparent border-white/10 text-white/50'}`}>{e.label}</button>
+                                            {([{ id: 'novice', label: '초보' }, { id: 'experienced', label: '경력' }, { id: 'any', label: '무관' }] as const).map(e => (
+                                                <button key={e.id} onClick={() => setFormData(p => ({ ...p, experience: e.id }))} className={`flex-1 py-1 text-xs rounded border ${formData.experience === e.id ? 'bg-card text-black border-white' : 'bg-transparent border-white/10 text-white/50'}`}>{e.label}</button>
                                             ))}
                                         </div>
                                     </div>
@@ -1089,7 +1102,7 @@ const PostAd = () => {
                                     <span className="text-xs text-text-muted">제목 배경에 형광펜 효과를 적용합니다.</span>
                                 </div>
                                 <div className="grid grid-cols-4 md:grid-cols-8 gap-3">
-                                    {[
+                                    {([
                                         { id: 'blue', color: 'bg-blue-500' },
                                         { id: 'green', color: 'bg-green-500' },
                                         { id: 'cyan', color: 'bg-cyan-400' },
@@ -1098,7 +1111,7 @@ const PostAd = () => {
                                         { id: 'indigo', color: 'bg-indigo-600' },
                                         { id: 'pink', color: 'bg-pink-500' },
                                         { id: 'magenta', color: 'bg-fuchsia-500' },
-                                    ].map(item => (
+                                    ] as const).map(item => (
                                         <label key={item.id} className="cursor-pointer group">
                                             <div className="flex flex-col items-center gap-2">
                                                 <input
@@ -1106,7 +1119,6 @@ const PostAd = () => {
                                                     name="highlight"
                                                     className="accent-white mb-2"
                                                     checked={highlightSettings.color === item.id}
-                                                    // @ts-ignore
                                                     onChange={() => setHighlightSettings({ color: item.id, text: '' })}
                                                 />
                                                 <div className={`w-full h-8 ${item.color} rounded opacity-80 group-hover:opacity-100 transition-opacity`}></div>
@@ -1195,7 +1207,7 @@ const PostAd = () => {
                                                                     −
                                                                 </button>
                                                                 <span className={`w-12 text-center font-bold text-sm ${qty > 0 ? 'text-white' : 'text-white/30'}`}>
-                                                                    {qty > 0 ? (qty * (product as any).durationDays) + '일' : '0일'}
+                                                                    {qty > 0 ? (qty * product.durationDays) + '일' : '0일'}
                                                                 </span>
                                                                 <button
                                                                     onClick={() => {
@@ -1221,7 +1233,7 @@ const PostAd = () => {
                                                                 </span>
                                                             ))}
                                                         </div>
-                                                        <p className="text-xs text-text-muted/70">{(product as any).description}</p>
+                                                        <p className="text-xs text-text-muted/70">{product.description}</p>
                                                     </div>
 
                                                     {/* Preview Section */}
@@ -1231,8 +1243,8 @@ const PostAd = () => {
                                                             {['diamond', 'sapphire', 'ruby', 'gold', 'premium', 'vip', 'special'].includes(product.id) ? (
                                                                 <AdCard
                                                                     id="preview"
-                                                                    variant={product.id as any}
-                                                                    productType={product.id as any}
+                                                                    variant={product.id as 'vip' | 'special' | 'premium' | 'regular'}
+                                                                    productType={product.id as 'vip' | 'special' | 'premium' | 'general'}
                                                                     title={formData.title || '강남 퍼블릭 일반'}
                                                                     location={formData.address.roadAddress ? `${formData.address.roadAddress.slice(0, 10)}...` : '서울 강남구 청담동'}
                                                                     pay={formData.salary.amount || '일급 300,000원'}
@@ -1285,15 +1297,15 @@ const PostAd = () => {
                                                                     <div>
                                                                         <label className="text-xs text-text-muted block mb-1.5">색상 선택</label>
                                                                         <div className="flex gap-2">
-                                                                            {[
+                                                                            {([
                                                                                 { value: 'yellow', class: 'bg-yellow-500' },
                                                                                 { value: 'pink', class: 'bg-pink-500' },
                                                                                 { value: 'green', class: 'bg-green-500' },
                                                                                 { value: 'cyan', class: 'bg-cyan-400' }
-                                                                            ].map((c) => (
+                                                                            ] as const).map((c) => (
                                                                                 <button
                                                                                     key={c.value}
-                                                                                    onClick={() => setHighlightSettings(prev => ({ ...prev, color: c.value as any }))}
+                                                                                    onClick={() => setHighlightSettings(prev => ({ ...prev, color: c.value }))}
                                                                                     className={`w-8 h-8 rounded-full ${c.class} transition-transform hover:scale-110 ${highlightSettings.color === c.value ? 'ring-2 ring-white scale-110' : 'opacity-50 hover:opacity-100'}`}
                                                                                 />
                                                                             ))}
@@ -1344,7 +1356,7 @@ const PostAd = () => {
                                                                 />
                                                             </div>
                                                             <div className="text-sm text-text-muted">
-                                                                총 {(product as any).durationDays * qty}일 노출
+                                                                총 {product.durationDays * qty}일 노출
                                                             </div>
                                                             <div className="ml-auto text-right">
                                                                 <span className="text-sm text-text-muted">소계: </span>
@@ -1442,12 +1454,12 @@ const PostAd = () => {
                                                             <div className="flex justify-between items-start">
                                                                 <div>
                                                                     <span className="text-white font-medium">{product.name}</span>
-                                                                    <span className="text-text-muted ml-2">{(product as any).durationDays * qty}일</span>
+                                                                    <span className="text-text-muted ml-2">{product.durationDays * qty}일</span>
                                                                 </div>
                                                                 <span className="text-white font-medium">{(priceNum * qty).toLocaleString()}원</span>
                                                             </div>
                                                             <div className="text-xs text-text-muted mt-0.5">
-                                                                {startDate} 시작 · {(product as any).durationDays * qty}일 ({product.duration} × {qty}회)
+                                                                {startDate} 시작 · {product.durationDays * qty}일 ({product.duration} × {qty}회)
                                                             </div>
                                                         </div>
                                                     );

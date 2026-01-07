@@ -14,7 +14,7 @@ export interface UserAd {
     description: string;
     contact: string;
     highlightConfig?: {
-        color: 'yellow' | 'pink' | 'green' | 'cyan';
+        color: 'yellow' | 'pink' | 'green' | 'cyan' | 'blue' | 'purple' | 'orange' | 'indigo' | 'magenta';
         text: string; // The specific substring to highlight
     };
     jumpUpConfig?: {

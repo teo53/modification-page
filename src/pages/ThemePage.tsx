@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { Star, Coffee, Clock, Calendar, DollarSign, Heart, Music, GlassWater, Home, Sparkles, Users, Shield, Zap, Gift } from 'lucide-react';
 import AdCard from '../components/ad/AdCard';
@@ -29,19 +29,21 @@ const SORT_OPTIONS = [
 
 const ThemePage: React.FC = () => {
     const { category } = useParams<{ category: string }>();
-    const [activeThemes, setActiveThemes] = useState<string[]>(['high-pay']);
-    const [sortOrder, setSortOrder] = useState('latest');
-    const [displayCount, setDisplayCount] = useState(24);
 
-    // Read URL category parameter on mount
-    useEffect(() => {
+    // Initialize active themes from URL param (no useEffect needed)
+    const initialTheme = useMemo(() => {
         if (category) {
             const matchedTheme = themes.find(t => t.id === category);
             if (matchedTheme) {
-                setActiveThemes([category]);
+                return [category];
             }
         }
+        return ['high-pay'];
     }, [category]);
+
+    const [activeThemes, setActiveThemes] = useState<string[]>(initialTheme);
+    const [sortOrder, setSortOrder] = useState('latest');
+    const [displayCount, setDisplayCount] = useState(24);
 
     // Toggle theme selection (multi-select support)
     const toggleTheme = (themeId: string) => {
@@ -169,7 +171,7 @@ const ThemePage: React.FC = () => {
                         <SelectionGroup
                             options={SORT_OPTIONS}
                             value={sortOrder}
-                            onChange={setSortOrder}
+                            onChange={(v) => setSortOrder(v as string)}
                         />
                     </div>
                     <div className="flex flex-wrap gap-1">
