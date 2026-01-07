@@ -40,15 +40,21 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Clean and install dependencies
-        run: |
-          npm cache clean --force
-          rm -rf node_modules
-          npm ci
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build shared types
+        run: pnpm --filter @lunaalba/types build
 
       - name: Build web assets
+        working-directory: apps/web
         run: |
-          npm run build
+          pnpm build
           echo "Build completed at: $(date)" > dist/build-info.txt
           echo "Commit: $(git rev-parse HEAD)" >> dist/build-info.txt
 
@@ -65,14 +71,15 @@ jobs:
         uses: android-actions/setup-android@v3
 
       - name: Sync Capacitor
+        working-directory: apps/mobile
         run: npx cap sync android
 
       - name: Make Gradle wrapper executable
-        run: chmod +x android/gradlew
+        run: chmod +x apps/mobile/android/gradlew
 
       - name: Auto-increment version code
         run: |
-          VERSION_FILE="android/app/version.properties"
+          VERSION_FILE="apps/mobile/android/app/version.properties"
           if [ -f "$VERSION_FILE" ]; then
             CURRENT=$(grep VERSION_CODE "$VERSION_FILE" | cut -d'=' -f2)
             NEXT=$((CURRENT + 1))
@@ -83,20 +90,20 @@ jobs:
       - name: Decode Keystore (Release only)
         if: github.event.inputs.build_type == 'release' && github.event_name == 'workflow_dispatch'
         run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/release-key.jks
-          echo "storeFile=release-key.jks" > android/keystore.properties
-          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> android/keystore.properties
-          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/keystore.properties
-          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/keystore.properties
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > apps/mobile/android/app/release-key.jks
+          echo "storeFile=release-key.jks" > apps/mobile/android/keystore.properties
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> apps/mobile/android/keystore.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> apps/mobile/android/keystore.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> apps/mobile/android/keystore.properties
 
       - name: Build Debug APK
         if: github.event.inputs.build_type != 'release' || github.event_name != 'workflow_dispatch'
-        working-directory: android
+        working-directory: apps/mobile/android
         run: ./gradlew assembleDebug --stacktrace
 
       - name: Build Release APK
         if: github.event.inputs.build_type == 'release' && github.event_name == 'workflow_dispatch'
-        working-directory: android
+        working-directory: apps/mobile/android
         run: ./gradlew assembleRelease --stacktrace
 
       - name: Upload Debug APK
@@ -104,20 +111,20 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: LunaAlba-debug
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          path: apps/mobile/android/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 30
 
       - name: Create debug keystore for signing
         if: github.event.inputs.build_type != 'release' || github.event_name != 'workflow_dispatch'
         run: |
-          keytool -genkey -v -keystore android/app/debug.keystore \
+          keytool -genkey -v -keystore apps/mobile/android/app/debug.keystore \
             -storepass android -alias androiddebugkey -keypass android \
             -keyalg RSA -keysize 2048 -validity 10000 \
             -dname "CN=Android Debug,O=Android,C=US"
 
       - name: Build signed Release APK
         if: github.event.inputs.build_type != 'release' || github.event_name != 'workflow_dispatch'
-        working-directory: android
+        working-directory: apps/mobile/android
         run: |
           ./gradlew assembleRelease \
             -Pandroid.injected.signing.store.file=$(pwd)/app/debug.keystore \
@@ -130,7 +137,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: LunaAlba-release-signed
-          path: android/app/build/outputs/apk/release/app-release.apk
+          path: apps/mobile/android/app/build/outputs/apk/release/app-release.apk
           retention-days: 30
 
       - name: Upload Release APK
@@ -138,7 +145,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: LunaAlba-release
-          path: android/app/build/outputs/apk/release/app-release.apk
+          path: apps/mobile/android/app/build/outputs/apk/release/app-release.apk
           retention-days: 90
 
       - name: Commit version increment
@@ -146,6 +153,6 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add android/app/version.properties
+          git add apps/mobile/android/app/version.properties
           git diff --staged --quiet || git commit -m "chore: Auto-increment version code [skip ci]"
           git push || true
