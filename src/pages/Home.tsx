@@ -23,9 +23,17 @@ const quickMenuItems = [
   { id: 'urgent', Icon: Bell, label: '급구', path: '/urgent' },
 ];
 
-
 // Location options
 const locations = ['서울 전체', '강남구', '마포구', '송파구', '강서구', '서초구'];
+
+// Banner data - defined outside component to prevent recreation
+const banners = [
+  { id: 1, title: '겨울 단기 알바 모음', subtitle: '나와 가까운 알바 더 쉽게 찾자!', bg: 'from-orange-400 to-orange-500' },
+  { id: 2, title: '신입 환영 채용중', subtitle: '경력 무관, 지금 바로 지원하세요!', bg: 'from-blue-400 to-blue-500' },
+  { id: 3, title: '주말 알바 특집', subtitle: '토/일 가능한 알바 모아보기', bg: 'from-purple-400 to-purple-500' },
+];
+const BANNER_COUNT = banners.length;
+const BANNER_INTERVAL = 4000; // 4 seconds
 
 const Home: React.FC = () => {
   const { state } = useApp();
@@ -35,23 +43,16 @@ const Home: React.FC = () => {
   const [bannerIndex, setBannerIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Banner data
-  const banners = [
-    { id: 1, title: '겨울 단기 알바 모음', subtitle: '나와 가까운 알바 더 쉽게 찾자!', bg: 'from-orange-400 to-orange-500' },
-    { id: 2, title: '신입 환영 채용중', subtitle: '경력 무관, 지금 바로 지원하세요!', bg: 'from-blue-400 to-blue-500' },
-    { id: 3, title: '주말 알바 특집', subtitle: '토/일 가능한 알바 모아보기', bg: 'from-purple-400 to-purple-500' },
-  ];
-
   // Get featured and recent ads
   const recentAds = allAds.slice(0, 8);
 
   // Auto-play banner carousel
   useEffect(() => {
     const interval = setInterval(() => {
-      setBannerIndex((prev) => (prev + 1) % banners.length);
-    }, 4000);
+      setBannerIndex((prev) => (prev + 1) % BANNER_COUNT);
+    }, BANNER_INTERVAL);
     return () => clearInterval(interval);
-  }, [banners.length]);
+  }, []);
 
   const handleRefresh = async () => {
     setIsRefreshing(true);

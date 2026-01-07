@@ -1,74 +1,97 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { App } from '@capacitor/app';
 import { motion, AnimatePresence } from 'framer-motion';
+import { createPortal } from 'react-dom';
+
+const TOAST_DURATION = 2000; // 2 seconds
 
 const BackHandler: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [showExitToast, setShowExitToast] = useState(false);
-  const [exitPressedOnce, setExitPressedOnce] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const exitPressedRef = useRef(false);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Clean up timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   const handleBackButton = useCallback(() => {
-    // If we're on the home page, show exit confirmation
-    if (location.pathname === '/') {
-      if (exitPressedOnce) {
-        // Second press - exit app
+    const isHomePage = location.pathname === '/';
+
+    if (isHomePage) {
+      if (exitPressedRef.current) {
+        // Second press within timeout - exit app
         App.exitApp();
       } else {
-        // First press - show toast
-        setExitPressedOnce(true);
-        setShowExitToast(true);
+        // First press - show toast and set flag
+        exitPressedRef.current = true;
+        setShowToast(true);
 
-        // Reset after 2 seconds
-        setTimeout(() => {
-          setExitPressedOnce(false);
-          setShowExitToast(false);
-        }, 2000);
+        // Clear any existing timeout
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+        }
+
+        // Reset after TOAST_DURATION
+        timeoutRef.current = setTimeout(() => {
+          exitPressedRef.current = false;
+          setShowToast(false);
+        }, TOAST_DURATION);
       }
     } else {
       // Not on home page - navigate back
       navigate(-1);
     }
-  }, [location.pathname, exitPressedOnce, navigate]);
+  }, [location.pathname, navigate]);
 
   useEffect(() => {
     // Register back button listener for Capacitor (Android)
-    const backButtonListener = App.addListener('backButton', () => {
-      // We handle all back navigation ourselves
+    let listenerHandle: { remove: () => void } | null = null;
+
+    App.addListener('backButton', () => {
       handleBackButton();
+    }).then((handle) => {
+      listenerHandle = handle;
     });
 
-    // Also handle browser back button for web testing
-    const handlePopState = (e: PopStateEvent) => {
-      if (location.pathname === '/') {
-        e.preventDefault();
-        handleBackButton();
+    return () => {
+      if (listenerHandle) {
+        listenerHandle.remove();
       }
     };
+  }, [handleBackButton]);
 
-    window.addEventListener('popstate', handlePopState);
-
-    return () => {
-      backButtonListener.then(listener => listener.remove());
-      window.removeEventListener('popstate', handlePopState);
-    };
-  }, [handleBackButton, location.pathname]);
-
-  return (
+  // Render toast using portal for proper z-index stacking
+  const toast = (
     <AnimatePresence>
-      {showExitToast && (
+      {showToast && (
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 50 }}
-          className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[100] px-6 py-3 bg-gray-800 text-white text-sm font-medium rounded-full shadow-lg"
+          initial={{ opacity: 0, y: 50, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 30, scale: 0.95 }}
+          transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+          className="fixed bottom-28 left-1/2 -translate-x-1/2 z-[9999] px-5 py-3 bg-gray-900/95 backdrop-blur-sm text-white text-sm font-medium rounded-xl shadow-2xl border border-white/10"
         >
-          뒤로가기를 한번 더 누르면 앱이 종료됩니다
+          <div className="flex items-center gap-2">
+            <span className="text-base">👆</span>
+            <span>뒤로가기를 한번 더 누르면 종료됩니다</span>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>
   );
+
+  // Use portal to ensure toast renders at document body level
+  return typeof document !== 'undefined'
+    ? createPortal(toast, document.body)
+    : null;
 };
 
 export default BackHandler;
