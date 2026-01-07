@@ -1,0 +1,176 @@
+/* =============================================================================
+ * 🌙 DARK MODE THEME - 다크 모드 테마 정의
+ * =============================================================================
+ * 이 파일은 다크 모드 전용 컬러 시스템입니다.
+ * 라이트 모드와 완전히 분리되어 서로 영향을 주지 않습니다.
+ * ============================================================================= */
+
+[data-theme="dark"] {
+  /* ===== 기본 배경 컬러 ===== */
+  --theme-bg-primary: #111111;           /* 메인 배경 */
+  --theme-bg-secondary: #1E1E1E;         /* 보조 배경 (카드, 섹션) */
+  --theme-bg-tertiary: #0A0A0A;          /* 서브 배경 (모달, 드롭다운) */
+  --theme-bg-elevated: #252525;          /* 강조 배경 (호버 상태) */
+  --theme-bg-overlay: rgba(0, 0, 0, 0.8); /* 오버레이 */
+
+  /* ===== 표면 컬러 (카드, 패널) ===== */
+  --theme-surface-primary: #1E1E1E;
+  --theme-surface-secondary: #252525;
+  --theme-surface-tertiary: #2D2D2D;
+  --theme-surface-hover: #333333;
+  --theme-surface-active: #3D3D3D;
+
+  /* ===== 테두리 컬러 ===== */
+  --theme-border-primary: #333333;
+  --theme-border-secondary: #404040;
+  --theme-border-tertiary: #555555;
+  --theme-border-focus: #D4AF37;
+  --theme-border-error: #EF4444;
+
+  /* ===== 텍스트 컬러 ===== */
+  --theme-text-primary: #FFFFFF;         /* 주요 텍스트 */
+  --theme-text-secondary: #CCCCCC;       /* 보조 텍스트 */
+  --theme-text-tertiary: #999999;        /* 힌트, 비활성 텍스트 */
+  --theme-text-disabled: #666666;        /* 비활성 상태 */
+  --theme-text-inverse: #111111;         /* 반전 텍스트 (밝은 배경 위) */
+  --theme-text-link: #D4AF37;            /* 링크 텍스트 */
+  --theme-text-link-hover: #FFD700;      /* 링크 호버 */
+
+  /* ===== 브랜드 컬러 - 골드 (Primary) ===== */
+  --theme-primary: #D4AF37;
+  --theme-primary-light: #E5C45A;
+  --theme-primary-dark: #B5952F;
+  --theme-primary-hover: #B5952F;
+  --theme-primary-active: #8B7323;
+  --theme-primary-muted: rgba(212, 175, 55, 0.2);
+  --theme-primary-bg: rgba(212, 175, 55, 0.1);
+  --theme-primary-text: #111111;         /* 골드 배경 위 텍스트 */
+
+  /* ===== 브랜드 컬러 - 핑크 (Secondary) ===== */
+  --theme-secondary: #FF007F;
+  --theme-secondary-light: #FF4DA6;
+  --theme-secondary-dark: #D9006C;
+  --theme-secondary-hover: #D9006C;
+  --theme-secondary-active: #B30059;
+  --theme-secondary-muted: rgba(255, 0, 127, 0.2);
+  --theme-secondary-bg: rgba(255, 0, 127, 0.1);
+  --theme-secondary-text: #FFFFFF;       /* 핑크 배경 위 텍스트 */
+
+  /* ===== 시멘틱 컬러 - 성공 ===== */
+  --theme-success: #10B981;
+  --theme-success-light: #34D399;
+  --theme-success-dark: #059669;
+  --theme-success-bg: rgba(16, 185, 129, 0.1);
+  --theme-success-text: #FFFFFF;
+
+  /* ===== 시멘틱 컬러 - 경고 ===== */
+  --theme-warning: #F59E0B;
+  --theme-warning-light: #FBBF24;
+  --theme-warning-dark: #D97706;
+  --theme-warning-bg: rgba(245, 158, 11, 0.1);
+  --theme-warning-text: #111111;
+
+  /* ===== 시멘틱 컬러 - 오류 ===== */
+  --theme-error: #EF4444;
+  --theme-error-light: #F87171;
+  --theme-error-dark: #DC2626;
+  --theme-error-bg: rgba(239, 68, 68, 0.1);
+  --theme-error-text: #FFFFFF;
+
+  /* ===== 시멘틱 컬러 - 정보 ===== */
+  --theme-info: #3B82F6;
+  --theme-info-light: #60A5FA;
+  --theme-info-dark: #2563EB;
+  --theme-info-bg: rgba(59, 130, 246, 0.1);
+  --theme-info-text: #FFFFFF;
+
+  /* ===== 프리미엄 등급 컬러 ===== */
+  --theme-vip-primary: #D4AF37;
+  --theme-vip-secondary: #FFD700;
+  --theme-vip-glow: rgba(212, 175, 55, 0.35);
+  --theme-vip-border: linear-gradient(135deg, #D4AF37, #8B6914, #FFD700, #B8860B, #D4AF37);
+
+  --theme-diamond-primary: #00CED1;
+  --theme-diamond-secondary: #40E0D0;
+  --theme-diamond-glow: rgba(0, 206, 209, 0.3);
+  --theme-diamond-border: linear-gradient(135deg, #00CED1, #20B2AA, #40E0D0, #00CED1);
+
+  --theme-special-primary: #FF007F;
+  --theme-special-secondary: #FF69B4;
+  --theme-special-glow: rgba(255, 0, 127, 0.2);
+  --theme-special-border: linear-gradient(135deg, #FF007F, #FF1493, #FF69B4, #FF007F);
+
+  /* ===== 그림자 ===== */
+  --theme-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --theme-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.5);
+  --theme-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
+  --theme-shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.5);
+  --theme-shadow-glow-primary: 0 0 20px rgba(212, 175, 55, 0.35);
+  --theme-shadow-glow-secondary: 0 0 15px rgba(255, 0, 127, 0.25);
+
+  /* ===== 입력 필드 ===== */
+  --theme-input-bg: #1E1E1E;
+  --theme-input-border: #333333;
+  --theme-input-border-focus: #D4AF37;
+  --theme-input-text: #FFFFFF;
+  --theme-input-placeholder: #666666;
+  --theme-input-disabled-bg: #252525;
+  --theme-input-disabled-text: #555555;
+
+  /* ===== 버튼 ===== */
+  --theme-button-primary-bg: #D4AF37;
+  --theme-button-primary-text: #111111;
+  --theme-button-primary-hover: #B5952F;
+  --theme-button-secondary-bg: transparent;
+  --theme-button-secondary-text: #D4AF37;
+  --theme-button-secondary-border: #D4AF37;
+  --theme-button-secondary-hover-bg: rgba(212, 175, 55, 0.1);
+  --theme-button-ghost-hover: rgba(255, 255, 255, 0.1);
+
+  /* ===== 스크롤바 ===== */
+  --theme-scrollbar-track: #1E1E1E;
+  --theme-scrollbar-thumb: rgba(212, 175, 55, 0.5);
+  --theme-scrollbar-thumb-hover: #D4AF37;
+
+  /* ===== 네비게이션 ===== */
+  --theme-nav-bg: rgba(17, 17, 17, 0.95);
+  --theme-nav-border: #333333;
+  --theme-nav-item-hover: rgba(212, 175, 55, 0.1);
+  --theme-nav-item-active: rgba(212, 175, 55, 0.2);
+
+  /* ===== 모달/드롭다운 ===== */
+  --theme-modal-bg: #1E1E1E;
+  --theme-modal-overlay: rgba(0, 0, 0, 0.7);
+  --theme-dropdown-bg: #1E1E1E;
+  --theme-dropdown-hover: #252525;
+  --theme-dropdown-border: #333333;
+
+  /* ===== 테이블 ===== */
+  --theme-table-header-bg: #1E1E1E;
+  --theme-table-row-bg: transparent;
+  --theme-table-row-hover: #252525;
+  --theme-table-row-stripe: #1A1A1A;
+  --theme-table-border: #333333;
+
+  /* ===== 배지/태그 ===== */
+  --theme-badge-default-bg: #333333;
+  --theme-badge-default-text: #CCCCCC;
+  --theme-tag-bg: rgba(212, 175, 55, 0.15);
+  --theme-tag-text: #D4AF37;
+  --theme-tag-border: rgba(212, 175, 55, 0.3);
+
+  /* ===== 토스트/알림 ===== */
+  --theme-toast-bg: #252525;
+  --theme-toast-border: #333333;
+  --theme-toast-text: #FFFFFF;
+
+  /* ===== 스켈레톤 로딩 ===== */
+  --theme-skeleton-base: #252525;
+  --theme-skeleton-highlight: #333333;
+
+  /* ===== 기타 ===== */
+  --theme-divider: #333333;
+  --theme-backdrop-blur: blur(8px);
+  --theme-code-bg: #0A0A0A;
+  --theme-code-text: #E5C45A;
+}

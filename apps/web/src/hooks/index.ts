@@ -1,0 +1,1 @@
+export { useInfiniteContent } from './useInfiniteContent';
