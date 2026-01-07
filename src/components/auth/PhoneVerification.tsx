@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Phone, Shield, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { useToast } from '../common/Toast';
 
 interface PhoneVerificationProps {
     phone: string;
@@ -21,6 +22,14 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+    // Toast hook (graceful fallback if not available)
+    let toast: { showDemoCode: (code: string) => void; showToast: (toast: any) => void } | null = null;
+    try {
+        toast = useToast();
+    } catch {
+        // Toast not available, will use alert fallback
+    }
 
     // Timer countdown
     useEffect(() => {
@@ -61,20 +70,73 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
         setLoading(true);
         setError('');
 
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        const apiUrl = import.meta.env.VITE_API_URL;
+        let useDemoMode = !apiUrl;
 
-        const code = generateCode();
-        setSentCode(code);
-        setTimer(180); // 3 minutes
-        setStep('code');
+        // 백엔드 API가 설정된 경우 API 호출 시도
+        if (apiUrl) {
+            try {
+                const response = await fetch(`${apiUrl}/auth/phone/send-code`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone: phone.replace(/\D/g, '') }),
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    setTimer(180); // 3 minutes
+                    setStep('code');
+
+                    // 데모 모드인 경우 코드 표시
+                    if (data.demoCode) {
+                        setSentCode(data.demoCode);
+                        if (import.meta.env.DEV) {
+                            console.log(`[DEMO] 인증번호: ${data.demoCode}`);
+                        }
+                        // Toast로 인증번호 표시
+                        if (toast) {
+                            toast.showDemoCode(data.demoCode);
+                        } else {
+                            navigator.clipboard?.writeText(data.demoCode);
+                            alert(`[테스트 모드] 인증번호: ${data.demoCode}\n\n클립보드에 복사되었습니다.`);
+                        }
+                    }
+                    setLoading(false);
+                    return; // API 성공 시 여기서 종료
+                } else {
+                    setError(data.message || '인증번호 발송에 실패했습니다.');
+                    setLoading(false);
+                    return;
+                }
+            } catch (err) {
+                console.warn('SMS API 연결 실패, 데모 모드로 전환:', err);
+                useDemoMode = true; // API 실패 시 데모 모드로 폴백
+            }
+        }
+
+        // 프론트엔드 데모 모드 (백엔드 없거나 연결 실패 시)
+        if (useDemoMode) {
+            await new Promise(resolve => setTimeout(resolve, 800));
+
+            const code = generateCode();
+            setSentCode(code);
+            setTimer(180);
+            setStep('code');
+
+            if (import.meta.env.DEV) {
+                console.log(`[DEMO] 인증번호: ${code}`);
+            }
+            // Toast로 인증번호 표시
+            if (toast) {
+                toast.showDemoCode(code);
+            } else {
+                navigator.clipboard?.writeText(code);
+                alert(`[데모 모드] 인증번호: ${code}\n\n클립보드에 복사되었습니다.\n실제 서비스에서는 SMS로 전송됩니다.`);
+            }
+        }
+
         setLoading(false);
-
-        // In demo mode, show the code in console
-        console.log(`[DEMO] 인증번호: ${code}`);
-
-        // For demo purposes, show an alert with the code
-        alert(`[데모 모드] 인증번호: ${code}\n\n실제 서비스에서는 SMS로 전송됩니다.`);
     };
 
     // Handle code input
@@ -110,14 +172,42 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
         setLoading(true);
         setError('');
 
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 800));
+        const apiUrl = import.meta.env.VITE_API_URL;
 
-        if (enteredCode === sentCode) {
-            setStep('verified');
-            onVerified(true);
+        // 백엔드 API가 설정된 경우 API 호출
+        if (apiUrl) {
+            try {
+                const response = await fetch(`${apiUrl}/auth/phone/verify-code`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        phone: phone.replace(/\D/g, ''),
+                        code: enteredCode
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    setStep('verified');
+                    onVerified(true);
+                } else {
+                    setError(data.message || '인증번호가 일치하지 않습니다.');
+                }
+            } catch (err) {
+                console.error('Verify API Error:', err);
+                setError('서버 연결에 실패했습니다. 잠시 후 다시 시도해주세요.');
+            }
         } else {
-            setError('인증번호가 일치하지 않습니다.');
+            // 프론트엔드 데모 모드 (백엔드 없음)
+            await new Promise(resolve => setTimeout(resolve, 800));
+
+            if (enteredCode === sentCode) {
+                setStep('verified');
+                onVerified(true);
+            } else {
+                setError('인증번호가 일치하지 않습니다.');
+            }
         }
 
         setLoading(false);
@@ -155,7 +245,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                     <button
                         type="button"
                         onClick={resetVerification}
-                        className="text-xs text-text-muted hover:text-text-main transition-colors"
+                        className="text-xs text-text-muted hover:text-white transition-colors"
                     >
                         재인증
                     </button>
@@ -187,7 +277,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                                 type="tel"
                                 value={phone}
                                 onChange={handlePhoneChange}
-                                className="w-full bg-card border border-border rounded-lg py-3 pl-10 pr-4 text-text-main focus:border-primary outline-none transition-colors"
+                                className="w-full bg-background border border-white/10 rounded-lg py-3 pl-10 pr-4 text-white focus:border-primary outline-none transition-colors"
                                 placeholder="010-0000-0000"
                                 maxLength={13}
                             />
@@ -196,7 +286,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                             type="button"
                             onClick={sendCode}
                             disabled={loading || phone.replace(/\D/g, '').length < 10}
-                            className="px-4 py-3 bg-primary text-white font-bold rounded-lg hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 whitespace-nowrap"
+                            className="px-4 py-3 bg-primary text-black font-bold rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 whitespace-nowrap"
                         >
                             {loading ? (
                                 <Loader2 size={18} className="animate-spin" />
@@ -213,7 +303,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
 
             {step === 'code' && (
                 <div className="space-y-4">
-                    <div className="bg-surface rounded-lg p-4 border border-border">
+                    <div className="bg-accent/50 rounded-lg p-4 border border-white/10">
                         <div className="flex items-center justify-between mb-3">
                             <span className="text-sm text-text-muted">인증번호 입력</span>
                             <span className={`text-sm font-mono ${timer < 60 ? 'text-red-400' : 'text-primary'}`}>
@@ -232,7 +322,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                                     value={digit}
                                     onChange={(e) => handleCodeChange(index, e.target.value)}
                                     onKeyDown={(e) => handleKeyDown(index, e)}
-                                    className="w-12 h-14 text-center text-2xl font-bold bg-card border border-border rounded-lg text-text-main focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                                    className="w-12 h-14 text-center text-2xl font-bold bg-background border border-white/20 rounded-lg text-white focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
                                     maxLength={1}
                                 />
                             ))}
@@ -243,7 +333,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                                 type="button"
                                 onClick={verifyCode}
                                 disabled={loading || verificationCode.join('').length !== 6}
-                                className="flex-1 py-3 bg-primary text-white font-bold rounded-lg hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                className="flex-1 py-3 bg-primary text-black font-bold rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                             >
                                 {loading ? (
                                     <Loader2 size={18} className="animate-spin" />
@@ -258,7 +348,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                                 type="button"
                                 onClick={sendCode}
                                 disabled={loading || timer > 150}
-                                className="px-4 py-3 bg-surface text-text-main rounded-lg hover:bg-border transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                                className="px-4 py-3 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
                             >
                                 재전송
                             </button>
@@ -276,7 +366,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                     <button
                         type="button"
                         onClick={resetVerification}
-                        className="w-full text-center text-sm text-text-muted hover:text-text-main transition-colors py-2"
+                        className="w-full text-center text-sm text-text-muted hover:text-white transition-colors py-2"
                     >
                         ← 휴대폰 번호 변경
                     </button>

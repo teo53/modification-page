@@ -70,32 +70,54 @@ const BusinessVerification: React.FC<BusinessVerificationProps> = ({
         setError('');
 
         try {
-            // 공공데이터포털 사업자 상태 조회 API
-            // 실제 서비스에서는 백엔드 프록시를 통해 호출해야 함
             const cleanNumber = businessNumber.replace(/\D/g, '');
+            const apiUrl = import.meta.env.VITE_API_URL;
 
-            // Demo mode: Simulate API response
-            // 실제 연동 시 아래 주석 해제하고 API 호출
-            /*
-            const response = await fetch('/api/business/verify', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ businessNumber: cleanNumber }),
-            });
-            const data = await response.json();
-            */
+            // 백엔드 API가 설정된 경우 API 호출
+            if (apiUrl) {
+                try {
+                    const response = await fetch(`${apiUrl}/business/validate`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ businessNumber: cleanNumber }),
+                    });
 
-            // Demo simulation
-            await new Promise(resolve => setTimeout(resolve, 1500));
+                    const data = await response.json();
 
-            // Demo: Validate based on checksum algorithm (간이 검증)
+                    if (data.success) {
+                        setVerificationResult({
+                            valid: true,
+                            status: data.data.status,
+                            taxType: data.data.taxType
+                        });
+                        onVerified(true);
+                    } else {
+                        setVerificationResult({
+                            valid: false,
+                            status: '확인불가',
+                            taxType: '-'
+                        });
+                        setError(data.message || '유효하지 않은 사업자등록번호입니다.');
+                        onVerified(false);
+                    }
+                    return;
+                } catch (err) {
+                    if (import.meta.env.DEV) {
+                        console.log('API 호출 실패, 로컬 검증으로 대체:', err);
+                    }
+                    // API 실패 시 로컬 검증으로 폴백
+                }
+            }
+
+            // 로컬 검증 (API 없거나 실패 시)
+            await new Promise(resolve => setTimeout(resolve, 500));
             const isValidChecksum = validateBusinessNumberChecksum(cleanNumber);
 
             if (isValidChecksum) {
                 setVerificationResult({
                     valid: true,
-                    status: '계속사업자',
-                    taxType: '일반과세자'
+                    status: '형식 검증 완료',
+                    taxType: '확인 필요'
                 });
                 onVerified(true);
             } else {
@@ -107,7 +129,7 @@ const BusinessVerification: React.FC<BusinessVerificationProps> = ({
                 setError('유효하지 않은 사업자등록번호입니다.');
                 onVerified(false);
             }
-        } catch {
+        } catch (err) {
             setError('사업자 확인 중 오류가 발생했습니다.');
             onVerified(false);
         } finally {
@@ -175,7 +197,7 @@ const BusinessVerification: React.FC<BusinessVerificationProps> = ({
 
     return (
         <div className="space-y-6">
-            <h3 className="text-sm font-bold text-text-main flex items-center gap-2">
+            <h3 className="text-sm font-bold text-white flex items-center gap-2">
                 <Building2 size={16} className="text-primary" /> 사업자 정보
             </h3>
 
@@ -196,7 +218,7 @@ const BusinessVerification: React.FC<BusinessVerificationProps> = ({
                         type="text"
                         value={businessNumber}
                         onChange={handleBusinessNumberChange}
-                        className={`flex-1 bg-card border rounded-lg py-3 px-4 text-text-main focus:border-primary outline-none transition-colors ${isVerified ? 'border-green-500/50' : 'border-border'
+                        className={`flex-1 bg-background border rounded-lg py-3 px-4 text-white focus:border-primary outline-none transition-colors ${isVerified ? 'border-green-500/50' : 'border-white/10'
                             }`}
                         placeholder="000-00-00000"
                         maxLength={12}
@@ -207,7 +229,7 @@ const BusinessVerification: React.FC<BusinessVerificationProps> = ({
                             type="button"
                             onClick={verifyBusinessNumber}
                             disabled={loading || !isValidFormat(businessNumber)}
-                            className="px-4 py-3 bg-primary text-white font-bold rounded-lg hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 whitespace-nowrap"
+                            className="px-4 py-3 bg-primary text-black font-bold rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 whitespace-nowrap"
                         >
                             {loading ? (
                                 <Loader2 size={18} className="animate-spin" />
@@ -222,7 +244,7 @@ const BusinessVerification: React.FC<BusinessVerificationProps> = ({
                                 onVerified(false);
                                 setVerificationResult(null);
                             }}
-                            className="px-4 py-3 bg-surface text-text-main rounded-lg hover:bg-border transition-colors text-sm"
+                            className="px-4 py-3 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors text-sm"
                         >
                             재입력
                         </button>
@@ -233,8 +255,8 @@ const BusinessVerification: React.FC<BusinessVerificationProps> = ({
             {/* Verification Result */}
             {verificationResult && (
                 <div className={`p-4 rounded-lg border ${verificationResult.valid
-                        ? 'bg-green-500/10 border-green-500/30'
-                        : 'bg-red-500/10 border-red-500/30'
+                    ? 'bg-green-500/10 border-green-500/30'
+                    : 'bg-red-500/10 border-red-500/30'
                     }`}>
                     <div className="flex items-center gap-3">
                         {verificationResult.valid ? (
@@ -263,7 +285,7 @@ const BusinessVerification: React.FC<BusinessVerificationProps> = ({
                     type="text"
                     value={businessName}
                     onChange={(e) => onBusinessNameChange(e.target.value)}
-                    className="w-full bg-card border border-border rounded-lg py-3 px-4 text-text-main focus:border-primary outline-none transition-colors"
+                    className="w-full bg-background border border-white/10 rounded-lg py-3 px-4 text-white focus:border-primary outline-none transition-colors"
                     placeholder="사업자등록증에 기재된 상호명"
                 />
             </div>
@@ -276,9 +298,9 @@ const BusinessVerification: React.FC<BusinessVerificationProps> = ({
 
                 {!certificate ? (
                     <label className="block cursor-pointer">
-                        <div className="border-2 border-dashed border-border rounded-xl p-6 text-center hover:border-primary/50 transition-colors">
+                        <div className="border-2 border-dashed border-white/20 rounded-xl p-6 text-center hover:border-primary/50 transition-colors">
                             <Upload className="mx-auto text-text-muted mb-3" size={32} />
-                            <p className="text-sm text-text-main mb-1">사업자등록증을 업로드하세요</p>
+                            <p className="text-sm text-white mb-1">사업자등록증을 업로드하세요</p>
                             <p className="text-xs text-text-muted">JPG, PNG, GIF, PDF (최대 10MB)</p>
                         </div>
                         <input
@@ -289,7 +311,7 @@ const BusinessVerification: React.FC<BusinessVerificationProps> = ({
                         />
                     </label>
                 ) : (
-                    <div className="relative bg-surface rounded-xl p-4 border border-border">
+                    <div className="relative bg-white/5 rounded-xl p-4 border border-white/10">
                         <button
                             type="button"
                             onClick={removeCertificate}
@@ -303,10 +325,10 @@ const BusinessVerification: React.FC<BusinessVerificationProps> = ({
                                 <img
                                     src={certificatePreview}
                                     alt="사업자등록증"
-                                    className="w-24 h-32 object-cover rounded-lg border border-border"
+                                    className="w-24 h-32 object-cover rounded-lg border border-white/10"
                                 />
                                 <div className="flex-1">
-                                    <p className="text-text-main font-medium text-sm truncate">{certificate.name}</p>
+                                    <p className="text-white font-medium text-sm truncate">{certificate.name}</p>
                                     <p className="text-xs text-text-muted mt-1">
                                         {(certificate.size / 1024 / 1024).toFixed(2)} MB
                                     </p>
@@ -322,7 +344,7 @@ const BusinessVerification: React.FC<BusinessVerificationProps> = ({
                                     <FileText className="text-primary" size={24} />
                                 </div>
                                 <div className="flex-1">
-                                    <p className="text-text-main font-medium text-sm truncate">{certificate.name}</p>
+                                    <p className="text-white font-medium text-sm truncate">{certificate.name}</p>
                                     <p className="text-xs text-text-muted mt-1">
                                         PDF 파일 • {(certificate.size / 1024 / 1024).toFixed(2)} MB
                                     </p>

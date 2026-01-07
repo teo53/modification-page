@@ -6,6 +6,7 @@ import SelectionGroup from '../components/ui/SelectionGroup';
 import { allAds } from '../data/mockAds';
 
 // 숫자 카운트업 애니메이션 훅
+// 숫자 카운트업 애니메이션 훅
 const useCountUp = (end: number, duration: number = 2000) => {
     const [count, setCount] = useState(0);
     const countRef = useRef(0);
@@ -18,6 +19,11 @@ const useCountUp = (end: number, duration: number = 2000) => {
         const animate = () => {
             const now = Date.now();
             const progress = Math.min((now - startTime) / duration, 1);
+
+            if (progress === 1) {
+                setCount(end);
+                return;
+            }
 
             // easeOutExpo 이징 함수
             const easeProgress = 1 - Math.pow(2, -10 * progress);
@@ -60,9 +66,9 @@ const StatCard: React.FC<StatCardProps> = ({ icon: Icon, iconColor, value, suffi
     const displayValue = format ? format(animatedValue) : animatedValue;
 
     return (
-        <div className="bg-card rounded-xl border border-border p-8 text-center shadow-sm">
+        <div className="bg-accent/50 rounded-xl border border-white/5 p-8 text-center">
             <Icon className={`${iconColor} w-10 h-10 mx-auto mb-3`} />
-            <div className="text-4xl font-bold text-text-main mb-2">
+            <div className="text-4xl font-bold text-white mb-2">
                 {displayValue}{suffix}
             </div>
             <div className="text-sm text-text-muted">{label}</div>
@@ -84,14 +90,21 @@ const industries = [
 
 // 지역 데이터
 const regions = [
-    { name: '서울', count: '320개', salary: '시급 90,000원', color: 'border-blue-500/30' },
-    { name: '경기', count: '180개', salary: '시급 75,000원', color: 'border-green-500/30' },
-    { name: '부산', count: '95개', salary: '시급 70,000원', color: 'border-purple-500/30' },
-    { name: '인천', count: '65개', salary: '시급 68,000원', color: 'border-cyan-500/30' },
-    { name: '대구', count: '45개', salary: '시급 65,000원', color: 'border-yellow-500/30' },
-    { name: '대전', count: '35개', salary: '시급 62,000원', color: 'border-red-500/30' },
-    { name: '광주', count: '30개', salary: '시급 60,000원', color: 'border-pink-500/30' },
-    { name: '제주', count: '25개', salary: '시급 58,000원', color: 'border-orange-500/30' },
+    { name: '서울', count: '0개', salary: '시급 90,000원', color: 'border-blue-500/30', subAreas: ['강남', '강북', '신촌', '홍대', '이태원', '압구정', '청담', '논현'] },
+    { name: '경기', count: '0개', salary: '시급 75,000원', color: 'border-green-500/30', subAreas: ['수원', '성남', '용인', '부천', '안양', '고양', '의정부', '평택'] },
+    { name: '인천', count: '0개', salary: '시급 68,000원', color: 'border-cyan-500/30', subAreas: ['부평', '구월', '송도', '연수', '남동', '계양'] },
+    { name: '부산', count: '0개', salary: '시급 70,000원', color: 'border-purple-500/30', subAreas: ['해운대', '서면', '남포동', '센텀시티', '광안리'] },
+    { name: '대구', count: '0개', salary: '시급 65,000원', color: 'border-yellow-500/30', subAreas: ['동성로', '수성구', '달서구', '북구'] },
+    { name: '대전', count: '0개', salary: '시급 62,000원', color: 'border-red-500/30', subAreas: ['둔산', '유성', '대덕구', '중구'] },
+    { name: '광주', count: '0개', salary: '시급 60,000원', color: 'border-pink-500/30', subAreas: ['상무', '충장로', '광산구', '북구'] },
+    { name: '울산', count: '0개', salary: '시급 65,000원', color: 'border-teal-500/30', subAreas: ['삼산', '성남', '무거'] },
+    { name: '세종', count: '0개', salary: '시급 63,000원', color: 'border-indigo-500/30', subAreas: ['나성', '도담', '어진'] },
+    { name: '강원', count: '0개', salary: '시급 58,000원', color: 'border-lime-500/30', subAreas: ['춘천', '원주', '강릉', '속초'] },
+    { name: '충청', count: '0개', salary: '시급 60,000원', color: 'border-amber-500/30', subAreas: ['청주', '천안', '아산', '충주'] },
+    { name: '전라', count: '0개', salary: '시급 58,000원', color: 'border-emerald-500/30', subAreas: ['전주', '목포', '여수', '익산'] },
+    { name: '경상', count: '0개', salary: '시급 62,000원', color: 'border-fuchsia-500/30', subAreas: ['창원', '포항', '구미', '김해'] },
+    { name: '제주', count: '0개', salary: '시급 58,000원', color: 'border-orange-500/30', subAreas: ['제주시', '서귀포', '애월', '중문'] },
+    { name: '기타', count: '0개', salary: '시급 0원', color: 'border-gray-500/30', subAreas: [] },
 ];
 
 const SORT_OPTIONS = [
@@ -101,6 +114,64 @@ const SORT_OPTIONS = [
 ];
 
 const IndustryPage: React.FC = () => {
+    // 광고주 등록 데이터도 함께 가져오기
+    const userAdsRaw = JSON.parse(localStorage.getItem('lunaalba_user_ads') || '[]');
+    const userAds = userAdsRaw
+        .filter((ad: any) => ad.status === 'active')
+        .map((ad: any) => ({
+            id: parseInt(ad.id),
+            title: ad.title,
+            location: ad.location,
+            pay: ad.salary,
+            thumbnail: '',
+            images: [],
+            badges: ad.themes || ['채용중'],
+            isNew: true,
+            isHot: false,
+            productType: ad.productType || 'general',
+            price: '협의',
+            duration: '30일',
+            industry: ad.industry || ''
+        }));
+
+    const adsData = [...userAds, ...allAds];
+
+    // 각 지역별 실제 공고 개수 계산 (중복 집계 방지)
+    const regionCounts = useMemo(() => {
+        const counts: { [key: string]: number } = {};
+
+        // 초기화
+        regions.forEach(r => counts[r.name] = 0);
+
+        adsData.forEach(ad => {
+            // Find the FIRST matching region to avoid double counting
+            const matchedRegion = regions.find(region => {
+                if (region.name === '기타') return false; // Skip 'other' in initial check
+
+                // Check main name
+                if (ad.location.includes(region.name)) return true;
+
+                // Check specific province mapping
+                if (region.name === '충청' && (ad.location.includes('충남') || ad.location.includes('충북') || ad.location.includes('충청'))) return true;
+                if (region.name === '전라' && (ad.location.includes('전남') || ad.location.includes('전북') || ad.location.includes('전라'))) return true;
+                if (region.name === '경상' && (ad.location.includes('경남') || ad.location.includes('경북') || ad.location.includes('경상'))) return true;
+
+                // Check subAreas
+                if (region.subAreas && region.subAreas.some(area => ad.location.includes(area))) return true;
+
+                return false;
+            });
+
+            if (matchedRegion) {
+                counts[matchedRegion.name] = (counts[matchedRegion.name] || 0) + 1;
+            } else {
+                counts['기타'] = (counts['기타'] || 0) + 1;
+            }
+        });
+
+        return counts;
+    }, [adsData]);
+
     const [activeIndustry, setActiveIndustry] = useState('room-salon');
     const [activeRegion, setActiveRegion] = useState<string | null>(null);
     const [sortOrder, setSortOrder] = useState('latest');
@@ -109,15 +180,20 @@ const IndustryPage: React.FC = () => {
 
     // 필터링된 광고 목록
     const filteredAds = useMemo(() => {
-        let results = [...allAds];
+        let results = [...adsData];
 
         // 업종 필터
         const industry = industries.find(i => i.id === activeIndustry);
         if (industry) {
             results = results.filter(ad =>
+                // 키워드 기반 검색 (기존)
                 industry.keywords.some(keyword =>
                     ad.title.toLowerCase().includes(keyword.toLowerCase())
-                )
+                ) ||
+                // industry 필드 기반 검색 (신규 - UserAd용)
+                (ad.industry && industry.keywords.some(keyword =>
+                    ad.industry.toLowerCase().includes(keyword.toLowerCase())
+                ))
             );
         }
 
@@ -146,18 +222,18 @@ const IndustryPage: React.FC = () => {
             results.sort((a, b) => (b.isHot ? 1 : 0) - (a.isHot ? 1 : 0));
         }
 
-        return results.length > 0 ? results : allAds.slice(0, 12);
-    }, [activeIndustry, activeRegion, sortOrder, searchQuery]);
+        return results.length > 0 ? results : adsData.slice(0, 12);
+    }, [activeIndustry, activeRegion, sortOrder, searchQuery, adsData]);
 
     // 실시간 통계
-    const hotAdsCount = allAds.filter(a => a.isHot).length;
+    const hotAdsCount = adsData.filter(a => a.isHot).length;
 
     return (
         <div className="container mx-auto px-4 py-8">
             {/* 헤더 */}
             <div className="mb-8 text-center">
-                <h1 className="text-3xl font-bold text-text-main mb-4">업종별 채용 정보</h1>
-                <p className="text-text-muted mb-6">전국 1,666개 업소에서 당신을 기다립니다</p>
+                <h1 className="text-3xl font-bold text-white mb-4">업종별 채용 정보</h1>
+                <p className="text-text-muted mb-6">전국 {adsData.length.toLocaleString()}개 업소에서 당신을 기다립니다</p>
 
                 {/* 검색바 */}
                 <div className="max-w-2xl mx-auto mb-8">
@@ -167,7 +243,7 @@ const IndustryPage: React.FC = () => {
                             placeholder="업종명, 지역, 키워드로 검색..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full bg-card border border-border rounded-lg py-3 pl-12 pr-4 text-text-main focus:border-primary outline-none"
+                            className="w-full bg-accent border border-white/10 rounded-lg py-3 pl-12 pr-4 text-white focus:border-primary outline-none"
                         />
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={20} />
                     </div>
@@ -179,7 +255,7 @@ const IndustryPage: React.FC = () => {
                 <StatCard
                     icon={Briefcase}
                     iconColor="text-yellow-400"
-                    value={allAds.length}
+                    value={adsData.length}
                     label="총 채용공고"
                 />
                 <StatCard
@@ -201,7 +277,7 @@ const IndustryPage: React.FC = () => {
 
             {/* 지역 선택 카드 */}
             <div className="mb-12">
-                <h2 className="text-xl font-bold text-text-main mb-4 flex items-center gap-2">
+                <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
                     <MapPin className="text-primary" size={20} />
                     지역별 채용
                 </h2>
@@ -212,11 +288,11 @@ const IndustryPage: React.FC = () => {
                             onClick={() => setActiveRegion(activeRegion === region.name ? null : region.name)}
                             className={`p-4 rounded-xl border transition-all duration-300 text-center ${activeRegion === region.name
                                 ? 'bg-primary/20 border-primary'
-                                : `${region.color} bg-card hover:bg-surface`
+                                : `${region.color} bg-accent/30 hover:bg-accent/50`
                                 }`}
                         >
-                            <div className="text-lg font-bold text-text-main mb-1">{region.name}</div>
-                            <div className="text-xs text-primary">{region.count}</div>
+                            <div className="text-lg font-bold text-white mb-1">{region.name}</div>
+                            <div className="text-xs text-primary">{regionCounts[region.name] || 0}개</div>
                             <div className="text-xs text-text-muted">{region.salary}</div>
                         </button>
                     ))}
@@ -225,7 +301,7 @@ const IndustryPage: React.FC = () => {
 
             {/* 업종 그리드 */}
             <div className="mb-12">
-                <h2 className="text-xl font-bold text-text-main mb-4">업종 선택</h2>
+                <h2 className="text-xl font-bold text-white mb-4">업종 선택</h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {industries.map((industry) => {
                         const Icon = industry.icon;
@@ -237,18 +313,18 @@ const IndustryPage: React.FC = () => {
                                 className={`
                                     p-6 rounded-xl border transition-all duration-300 flex flex-col items-center gap-3 group
                                     ${isActive
-                                        ? 'bg-primary/10 border-primary shadow-[0_0_15px_rgba(255,107,53,0.2)]'
-                                        : 'bg-card border-border hover:border-primary/30 hover:bg-surface'
+                                        ? 'bg-primary/10 border-primary shadow-[0_0_15px_rgba(212,175,55,0.3)]'
+                                        : 'bg-accent border-white/5 hover:border-white/20 hover:bg-white/5'
                                     }
                                 `}
                             >
                                 <div className={`
-                                    p-4 rounded-full bg-surface transition-transform duration-300 group-hover:scale-110
+                                    p-4 rounded-full bg-black/30 transition-transform duration-300 group-hover:scale-110
                                     ${industry.color}
                                 `}>
                                     <Icon size={28} />
                                 </div>
-                                <span className={`font-bold text-lg ${isActive ? 'text-primary' : 'text-text-main'}`}>
+                                <span className={`font-bold text-lg ${isActive ? 'text-primary' : 'text-white'}`}>
                                     {industry.name}
                                 </span>
                             </button>
@@ -260,7 +336,7 @@ const IndustryPage: React.FC = () => {
             {/* 결과 목록 */}
             <div className="mb-8">
                 <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-bold text-text-main flex items-center gap-2">
+                    <h2 className="text-xl font-bold text-white flex items-center gap-2">
                         <span className="text-primary">#{industries.find(i => i.id === activeIndustry)?.name}</span>
                         <span className="text-text-muted font-normal text-base">
                             {activeRegion ? `${activeRegion} 지역` : '전체'} ({filteredAds.length}건)
@@ -269,7 +345,7 @@ const IndustryPage: React.FC = () => {
                     <SelectionGroup
                         options={SORT_OPTIONS}
                         value={sortOrder}
-                        onChange={(v) => setSortOrder(v as string)}
+                        onChange={setSortOrder}
                     />
                 </div>
 
@@ -294,7 +370,7 @@ const IndustryPage: React.FC = () => {
                     <div className="text-center mt-8">
                         <button
                             onClick={() => setDisplayCount(prev => Math.min(prev + 16, filteredAds.length))}
-                            className="px-8 py-3 bg-primary text-white font-bold rounded-lg hover:bg-primary-hover transition-colors"
+                            className="px-8 py-3 bg-primary text-black font-bold rounded-lg hover:bg-primary/90 transition-colors"
                         >
                             더보기 ({filteredAds.length - displayCount}건)
                         </button>

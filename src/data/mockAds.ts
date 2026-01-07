@@ -1,22 +1,7 @@
-// Mock ad data using real crawled images from lunaalba.net
-// Updated to use 117 scraped ads from scraped_ads.json
+// Mock ad data using real crawled images from queenalba.net
+// Updated to use real scraped data from scraped_ads.json
 
 import scrapedAdsData from './scraped_ads.json';
-
-// Interface for scraped_ads.json data
-interface ScrapedAdJson {
-    id: number;
-    title: string;
-    original_title?: string;
-    thumbnail: string;
-    detail_images?: string[];
-    location: string;
-    pay: string;
-    phones?: string[];
-    content?: string;
-    url?: string;
-    scraped_at?: string;
-}
 
 export interface Advertisement {
     id: number;
@@ -28,139 +13,73 @@ export interface Advertisement {
     badges: string[];
     isNew: boolean;
     isHot: boolean;
-    productType: 'diamond' | 'sapphire' | 'ruby' | 'gold' | 'vip' | 'special' | 'premium' | 'general';
+    productType: 'vip' | 'special' | 'premium' | 'general';
     price: string;
     duration: string;
-    startDate: string; // 광고 시작일 (ISO string)
 }
 
-// Titles for ad variety
-const TITLES = [
-    '강남 하이퍼블릭 VIP 급구', '역삼 텐프로 VIP 모집', '신논현 룸 스페셜 채용',
-    '압구정 클럽 스페셜', '홍대 노래방 모집', '강남 퍼블릭 일반', '청담 라운지 VIP',
-    '논현 룸살롱 급구', '잠실 클럽 스페셜', '건대 퍼블릭 모집', '신사 하이퍼블릭',
-    '강남역 텐프로', '선릉 룸 VIP', '삼성 클럽 급구', '서초 라운지 스페셜',
-    '이태원 클럽 모집', '홍대 바 VIP', '신촌 노래방 급구', '강북 룸 스페샬',
-    '동대문 클럽 모집', '명동 라운지 VIP', '종로 퍼블릭 급구', '마포 룸 스페셜',
-    '용산 클럽 모집', '성수 하이퍼블릭 VIP'
-];
 
-const LOCATIONS = [
-    '서울 강남구', '서울 강남구 역삼동', '서울 강남구 신논현', '서울 강남구 압구정',
-    '서울 마포구 홍대', '서울 강남구 청담동', '서울 강남구 논현동', '서울 송파구 잠실',
-    '서울 광진구 건대입구', '서울 강남구 신사동', '서울 서초구', '서울 용산구 이태원',
-    '서울 마포구 신촌', '서울 동대문구', '서울 중구 명동', '서울 종로구', '서울 성동구 성수동'
-];
+// Convert scraped ads to Advertisement format - Using REAL scraped data
+const convertToAd = (scrapedAd: any, productType: 'vip' | 'special' | 'premium' | 'general'): Advertisement => {
+    // Use actual scraped data
+    const title = scrapedAd.title || scrapedAd.advertiser?.nickname || `광고 #${scrapedAd.id}`;
+    const location = scrapedAd.location || scrapedAd.advertiser?.work_location || '서울';
+    const pay = scrapedAd.pay || scrapedAd.recruitment?.salary || '협의';
 
-const BADGES_LIST = [
-    ['당일지급', '숙소지원'], ['경력우대', '급여협의'], ['초보환영', '교육가능'],
-    ['고수입', '유연근무'], ['초보가능'], ['당일지급'], ['VIP'], ['급구', '고수입'],
-    ['신입환영', '숙소제공'], ['경력자우대', '인센티브'], ['근무시간협의', '주휴수당']
-];
+    // Generate badges from job_type and salary
+    const badges: string[] = [];
+    const jobType = scrapedAd.recruitment?.job_type || '';
+    const salary = scrapedAd.recruitment?.salary || '';
 
-const PAYS = [
-    '시급 100,000원', '일급 500,000원', '시급 80,000원', '일급 400,000원',
-    '시급 50,000원', '일급 300,000원', '시급 120,000원', '일급 600,000원',
-    '시급 70,000원', '일급 350,000원', '협의 후 결정'
-];
+    // Add industry-based badges
+    if (jobType.includes('룸살롱') || jobType.includes('룸싸롱')) badges.push('룸');
+    if (jobType.includes('하이퍼블릭')) badges.push('하이퍼블릭');
+    if (jobType.includes('텐프로')) badges.push('텐프로');
+    if (jobType.includes('쩜오')) badges.push('쩜오');
+    if (jobType.includes('클럽')) badges.push('클럽');
+    if (jobType.includes('노래방')) badges.push('노래방');
+    if (jobType.includes('바')) badges.push('바');
 
-// Generate a past date for ad start date (based on product type and ID)
-const generateStartDate = (id: number, productType: string): string => {
-    const now = new Date();
-    // Higher tier ads run longer (more established advertisers)
-    const baseDays: Record<string, number> = {
-        diamond: 60,  // 다이아몬드: 오래된 광고주
-        sapphire: 45,
-        ruby: 30,
-        gold: 20,
-        vip: 15,
-        special: 10,
-        premium: 5,
-        general: 3,
-    };
-    // Add variation based on ad ID
-    const daysAgo = (baseDays[productType] || 7) + ((id * 3) % 20);
-    const startDate = new Date(now.getTime() - daysAgo * 24 * 60 * 60 * 1000);
-    return startDate.toISOString();
-};
+    // Add salary-based badges
+    if (salary && parseInt(salary.replace(/[^0-9]/g, '')) >= 1000000) badges.push('고수입');
 
-// Convert scraped ads to Advertisement format
-const convertToAd = (scrapedAd: ScrapedAdJson, productType: Advertisement['productType']): Advertisement => {
-    const titleIndex = (scrapedAd.id - 1) % TITLES.length;
-    const locationIndex = (scrapedAd.id - 1) % LOCATIONS.length;
-    const badgeIndex = (scrapedAd.id - 1) % BADGES_LIST.length;
-    const payIndex = (scrapedAd.id - 1) % PAYS.length;
+    // Add default badges if none
+    if (badges.length === 0) badges.push('채용중');
 
-    const priceMap: Record<string, string> = {
-        diamond: '500,000원',
-        sapphire: '400,000원',
-        ruby: '350,000원',
-        gold: '300,000원',
-        vip: '250,000원',
-        special: '150,000원',
-        premium: '100,000원',
-        general: '50,000원',
-    };
-
-    const durationMap: Record<string, string> = {
-        diamond: '30일',
-        sapphire: '30일',
-        ruby: '30일',
-        gold: '30일',
-        vip: '30일',
-        special: '15일',
-        premium: '7일',
-        general: '7일',
-    };
+    // Determine isNew/isHot based on views
+    const views = scrapedAd.advertiser?.views || 0;
+    const isHot = views > 10000;
+    const isNew = scrapedAd.id % 3 === 0;
 
     return {
         id: scrapedAd.id,
-        title: TITLES[titleIndex],
-        location: LOCATIONS[locationIndex],
-        pay: PAYS[payIndex],
-        thumbnail: scrapedAd.thumbnail,
-        images: scrapedAd.detail_images || [],
-        badges: BADGES_LIST[badgeIndex],
-        isNew: scrapedAd.id % 3 === 0,
-        isHot: scrapedAd.id % 5 === 0,
+        title,
+        location,
+        pay,
+        thumbnail: scrapedAd.thumbnail || scrapedAd.detail_images?.[0] || '',
+        images: scrapedAd.detail_images || scrapedAd.detail?.images || [],
+        badges,
+        isNew,
+        isHot,
         productType,
-        price: priceMap[productType] || '50,000원',
-        duration: durationMap[productType] || '7일',
-        startDate: generateStartDate(scrapedAd.id, productType),
+        price: productType === 'vip' ? '300,000원' : productType === 'special' ? '150,000원' : '50,000원',
+        duration: productType === 'vip' ? '30일' : productType === 'special' ? '15일' : '7일',
     };
 };
 
-// Jewel Tier Ads - Diamond:2, Sapphire:4, Ruby:6, Gold:8 (total 20)
-export const diamondAds: Advertisement[] = scrapedAdsData.slice(0, 2).map(ad => convertToAd(ad, 'diamond'));
-export const sapphireAds: Advertisement[] = scrapedAdsData.slice(2, 6).map(ad => convertToAd(ad, 'sapphire'));
-export const rubyAds: Advertisement[] = scrapedAdsData.slice(6, 12).map(ad => convertToAd(ad, 'ruby'));
-export const goldAds: Advertisement[] = scrapedAdsData.slice(12, 20).map(ad => convertToAd(ad, 'gold'));
-
-// VIP Premium Ads (next 12 scraped ads)
-export const vipAds: Advertisement[] = scrapedAdsData.slice(20, 32).map(ad => convertToAd(ad, 'vip'));
+// VIP Premium Ads (first 12 scraped ads)
+export const vipAds: Advertisement[] = scrapedAdsData.slice(0, 12).map(ad => convertToAd(ad, 'vip'));
 
 // Special Ads (next 24 scraped ads)
-export const specialAds: Advertisement[] = scrapedAdsData.slice(32, 56).map(ad => convertToAd(ad, 'special'));
+export const specialAds: Advertisement[] = scrapedAdsData.slice(12, 36).map(ad => convertToAd(ad, 'special'));
 
 // Regular Ads (remaining scraped ads)
-export const regularAds: Advertisement[] = scrapedAdsData.slice(56).map(ad => convertToAd(ad, 'general'));
-
-// All jewel ads combined (for top section)
-export const jewelAds = [...diamondAds, ...sapphireAds, ...rubyAds, ...goldAds];
+export const regularAds: Advertisement[] = scrapedAdsData.slice(36).map(ad => convertToAd(ad, 'general'));
 
 // All ads combined
-export const allAds = [...jewelAds, ...vipAds, ...specialAds, ...regularAds];
+export const allAds = [...vipAds, ...specialAds, ...regularAds];
 
 // Helper function to get ad by ID
 export const getAdById = (id: number): Advertisement | undefined => {
     return allAds.find(ad => ad.id === id);
-};
-
-// Helper function to calculate days running from startDate
-export const getDaysRunning = (startDate: string): number => {
-    const start = new Date(startDate);
-    const now = new Date();
-    const diffTime = Math.abs(now.getTime() - start.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
 };

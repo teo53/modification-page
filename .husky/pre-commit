@@ -1,0 +1,11 @@
+#!/bin/sh
+
+echo ""
+echo "🔒 CTO급 Pre-commit 감사 시작..."
+echo ""
+
+# 감사 스크립트 실행
+node .audit/scripts/pre-commit.cjs
+
+# 종료 코드 전달
+exit $?

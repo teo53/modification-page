@@ -45,9 +45,9 @@ const VerificationButton: React.FC<VerificationButtonProps> = ({ onVerify, statu
             case 'failed':
                 return `${base} bg-red-500/20 border-2 border-red-500 text-red-500 hover:bg-red-500/30`;
             case 'loading':
-                return `${base} bg-surface text-text-muted cursor-not-allowed`;
+                return `${base} bg-white/10 text-text-muted cursor-not-allowed`;
             default:
-                return `${base} bg-primary text-white hover:bg-primary-hover`;
+                return `${base} bg-primary text-black hover:bg-primary-hover`;
         }
     };
 

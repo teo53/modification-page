@@ -1,0 +1,137 @@
+{
+  "project": {
+    "name": "LunaAlba",
+    "type": "vite-react-fullstack",
+    "stack": [
+      "Vite",
+      "React 19",
+      "TypeScript",
+      "NestJS",
+      "PostgreSQL",
+      "TailwindCSS"
+    ]
+  },
+  "riskClassification": {
+    "CRITICAL": {
+      "patterns": [
+        "pages/api/auth/**",
+        "pages/api/payment/**",
+        "app/api/auth/**",
+        "app/api/payment/**",
+        "lib/db/**",
+        "lib/supabase/**",
+        "middleware.ts",
+        "middleware.js"
+      ],
+      "auditOn": "EVERY_CHANGE",
+      "claudeRequired": true
+    },
+    "HIGH": {
+      "patterns": [
+        "pages/api/**",
+        "app/api/**",
+        "lib/auth/**",
+        "lib/security/**"
+      ],
+      "auditOn": "COMMIT",
+      "claudeRequired": true
+    },
+    "MEDIUM": {
+      "patterns": [
+        "components/**",
+        "lib/utils/**",
+        "hooks/**",
+        "contexts/**"
+      ],
+      "auditOn": "WEEKLY",
+      "claudeRequired": false
+    },
+    "LOW": {
+      "patterns": [
+        "styles/**",
+        "public/**",
+        "types/**"
+      ],
+      "auditOn": "NEVER",
+      "claudeRequired": false
+    }
+  },
+  "dangerPatterns": {
+    "SQL_INJECTION": {
+      "pattern": "\\.query\\s*\\(\\s*`[^`]*\\$\\{",
+      "severity": "CRITICAL",
+      "description": "SQL 쿼리에 변수 직접 삽입 - 해커가 DB 조작 가능",
+      "fix": "Prepared statement 또는 Supabase 쿼리 빌더 사용"
+    },
+    "HARDCODED_SECRET": {
+      "pattern": "(api[_-]?key|secret|password|token)\\s*[=:]\\s*['\"`][A-Za-z0-9_\\-]{16,}['\"`]",
+      "severity": "CRITICAL",
+      "description": "비밀키가 코드에 노출 - GitHub 올리면 해킹당함",
+      "fix": ".env 파일로 이동하고 환경변수로 참조"
+    },
+    "EVAL_USAGE": {
+      "pattern": "\\beval\\s*\\(",
+      "severity": "CRITICAL",
+      "description": "eval은 임의 코드 실행 허용 - 치명적 보안 구멍",
+      "fix": "eval 제거하고 안전한 대안 사용"
+    },
+    "INNERHTML": {
+      "pattern": "\\.innerHTML\\s*=",
+      "severity": "HIGH",
+      "description": "XSS 공격 가능성",
+      "fix": "React의 dangerouslySetInnerHTML 또는 DOMPurify 사용"
+    },
+    "CONSOLE_LOG": {
+      "pattern": "console\\.(log|debug|info)\\(",
+      "severity": "LOW",
+      "description": "프로덕션에 로그 남으면 정보 노출",
+      "fix": "배포 전 제거 또는 조건부 로깅"
+    },
+    "TODO_FIXME": {
+      "pattern": "(TODO|FIXME|HACK|XXX):",
+      "severity": "LOW",
+      "description": "미완성 코드 표시",
+      "fix": "배포 전 해결 필요"
+    }
+  },
+  "auditSchedule": {
+    "instant": {
+      "trigger": "CRITICAL 파일 수정",
+      "scope": "해당 파일만",
+      "claudePrompt": "instant-audit.md"
+    },
+    "commit": {
+      "trigger": "git commit",
+      "scope": "변경된 파일 중 HIGH 이상",
+      "claudePrompt": "commit-audit.md"
+    },
+    "weekly": {
+      "trigger": "매주 일요일",
+      "scope": "전체 프로젝트",
+      "claudePrompt": "weekly-audit.md"
+    },
+    "deploy": {
+      "trigger": "배포 직전",
+      "scope": "전체 + 심층 분석",
+      "claudePrompt": "deploy-audit.md"
+    }
+  },
+  "notifications": {
+    "CRITICAL": {
+      "action": "BLOCK",
+      "message": "🚨 커밋 차단: 치명적 보안 문제"
+    },
+    "HIGH": {
+      "action": "WARN",
+      "message": "⚠️ 경고: 확인 필요한 문제"
+    },
+    "MEDIUM": {
+      "action": "LOG",
+      "message": "📝 참고: 개선 권장 사항"
+    },
+    "LOW": {
+      "action": "IGNORE",
+      "message": null
+    }
+  }
+}

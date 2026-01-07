@@ -1,48 +1,90 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Search, MapPin, Briefcase, Zap, MessageSquare, Upload, Users, Clock } from 'lucide-react';
+import { MapPin, Briefcase, MessageSquare, Upload, FileText, Clock, Star } from 'lucide-react';
+import { getCurrentUser } from '../../utils/auth';
 
+// 메뉴 아이템 정의
 const menuItems = [
-    { id: 'region-search', label: '지역검색', icon: Search, to: '/search', color: 'from-blue-600/20 to-blue-400/5 border-blue-500/30' },
     { id: 'region', label: '지역별', icon: MapPin, to: '/region', color: 'from-green-600/20 to-green-400/5 border-green-500/30' },
     { id: 'industry', label: '업종별', icon: Briefcase, to: '/industry', color: 'from-purple-600/20 to-purple-400/5 border-purple-500/30' },
-    { id: 'theme', label: '검색', icon: Zap, to: '/theme', color: 'from-yellow-600/20 to-yellow-400/5 border-yellow-500/30' },
     { id: 'urgent', label: '급구', icon: Clock, to: '/urgent', color: 'from-red-600/20 to-red-400/5 border-red-500/30' },
     { id: 'community', label: '커뮤니티', icon: MessageSquare, to: '/community', color: 'from-cyan-600/20 to-cyan-400/5 border-cyan-500/30' },
-    { id: 'post-ad', label: '광고게시', icon: Upload, to: '/post-ad', color: 'from-pink-600/20 to-pink-400/5 border-pink-500/30' },
-    { id: 'group', label: '공동모집', icon: Users, to: '/support', color: 'from-indigo-600/20 to-indigo-400/5 border-indigo-500/30' },
+    { id: 'review', label: '업소후기', icon: Star, to: '/community?category=review', color: 'from-yellow-600/20 to-yellow-400/5 border-yellow-500/30' },
+    { id: 'job-seek', label: '구직등록', icon: FileText, to: '/job-seeker', color: 'from-emerald-600/20 to-emerald-400/5 border-emerald-500/30' },
 ];
 
-const QuickMenuBar: React.FC = () => {
+// 광고주/관리자 전용 메뉴
+const advertiserMenuItem = {
+    id: 'post-ad',
+    label: '광고게시',
+    icon: Upload,
+    to: '/post-ad',
+    color: 'from-pink-600/20 to-pink-400/5 border-pink-500/30'
+};
+
+interface QuickMenuBarProps {
+    itemsPerRow?: number;
+    isEditMode?: boolean;
+}
+
+const QuickMenuBar: React.FC<QuickMenuBarProps> = ({
+    itemsPerRow,
+    isEditMode = false
+}) => {
+    const currentUser = getCurrentUser();
+
+    // 관리자 또는 광고주인 경우 광고게시 메뉴 추가
+    const isAdminOrAdvertiser = currentUser && (
+        currentUser.type === 'advertiser' ||
+        currentUser.email === 'admin@lunaalba.com'
+    );
+
+    const visibleMenuItems = isAdminOrAdvertiser
+        ? [...menuItems, advertiserMenuItem]
+        : menuItems;
+
+    const gridStyle = itemsPerRow
+        ? { gridTemplateColumns: `repeat(${itemsPerRow}, minmax(0, 1fr))` }
+        : undefined;
+
     return (
-        <section className="py-8 container mx-auto px-4">
-            <h2 className="text-xl font-bold text-text-main mb-6 text-center">빠른 메뉴</h2>
-            <div className="grid grid-cols-4 md:grid-cols-8 gap-3 md:gap-4">
-                {menuItems.map((item) => {
-                    const Icon = item.icon;
-                    return (
-                        <Link
-                            key={item.id}
-                            to={item.to}
-                            className={`
-                                relative group flex flex-col items-center justify-center gap-2 p-4 md:p-6 
-                                rounded-2xl border bg-gradient-to-br ${item.color}
-                                hover:scale-105 transition-all duration-300
-                                hover:shadow-lg hover:shadow-white/10
-                            `}
-                        >
-                            <div className="p-3 rounded-xl bg-surface group-hover:bg-border transition-colors">
-                                <Icon size={24} className="text-text-main" />
-                            </div>
-                            <span className="text-xs md:text-sm font-bold text-text-main text-center">
-                                {item.label}
-                            </span>
-                        </Link>
-                    );
-                })}
+        <section className="py-4 container mx-auto px-4">
+            <h2 className="text-lg font-bold text-white mb-4 text-center">빠른 메뉴</h2>
+            <div className="flex justify-center">
+                <div
+                    className={`grid gap-2 md:gap-3 max-w-4xl ${!itemsPerRow ? `grid-cols-3 sm:grid-cols-4 md:grid-cols-6 ${isAdminOrAdvertiser ? 'lg:grid-cols-7' : 'lg:grid-cols-6'}` : ''}`}
+                    style={gridStyle}
+                >
+                    {visibleMenuItems.map((item) => {
+                        const Icon = item.icon;
+                        const Wrapper = isEditMode ? 'div' : Link;
+                        const linkProps = isEditMode ? {} : { to: item.to };
+
+                        return (
+                            <Wrapper
+                                key={item.id}
+                                {...linkProps as any}
+                                className={`
+                                    relative group flex flex-col items-center justify-center gap-1.5 p-3 md:p-4 
+                                    rounded-xl border bg-gradient-to-br ${item.color}
+                                    ${!isEditMode && 'hover:scale-105 hover:shadow-lg hover:shadow-white/10'}
+                                    transition-all duration-300
+                                `}
+                            >
+                                <div className="p-2 rounded-lg bg-black/30 group-hover:bg-black/40 transition-colors">
+                                    <Icon size={20} className="text-white" />
+                                </div>
+                                <span className="text-[10px] md:text-xs font-bold text-white text-center">
+                                    {item.label}
+                                </span>
+                            </Wrapper>
+                        );
+                    })}
+                </div>
             </div>
         </section>
     );
 };
 
 export default QuickMenuBar;
+

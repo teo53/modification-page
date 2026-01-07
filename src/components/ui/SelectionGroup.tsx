@@ -9,7 +9,7 @@ interface Option {
 interface SelectionGroupProps {
     options: Option[];
     value: string | number | (string | number)[];
-    onChange: (value: string | number | (string | number)[]) => void;
+    onChange: (value: any) => void;
     multiSelect?: boolean;
     className?: string;
     gridCols?: number;

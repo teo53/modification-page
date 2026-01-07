@@ -1,154 +1,68 @@
 <!doctype html>
 <html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
 
-    <!-- PWA Meta Tags -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover" />
-    <meta name="theme-color" content="#3a3a3a" />
-    <meta name="background-color" content="#3a3a3a" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="LunaAlba" />
-    <meta name="application-name" content="LunaAlba" />
-    <meta name="msapplication-TileColor" content="#3a3a3a" />
-    <meta name="msapplication-TileImage" content="/icons/icon-144x144.png" />
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>달빛알바 (DalbitAlba) - 밤의 일자리 구인구직</title>
 
-    <!-- SEO Meta Tags -->
-    <meta name="description" content="LunaAlba - 밤의 일자리 구인구직 플랫폼. 유흥업소 구인구직, 밤알바, 룸알바 정보" />
-    <meta name="keywords" content="밤알바, 구인구직, 유흥알바, 룸알바, 밤의일자리" />
-    <meta name="author" content="LunaAlba" />
+  <!-- SEO & Social Control -->
+  <meta name="robots" content="index, follow" />
+  <meta name="googlebot" content="index, follow" />
 
-    <!-- Open Graph -->
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="LunaAlba - 밤의 일자리" />
-    <meta property="og:description" content="밤의 일자리 구인구직 플랫폼" />
-    <meta property="og:image" content="/icons/icon-512x512.png" />
-    <meta property="og:url" content="https://lunaalba.com" />
-    <meta property="og:site_name" content="LunaAlba" />
-    <meta property="og:locale" content="ko_KR" />
+  <!-- Open Graph / Social Media -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="달빛알바 (DalbitAlba) - 대한민국 No.1 유흥알바 채용 플랫폼" />
+  <meta property="og:description" content="고소득 알바, 유흥알바, 밤알바 구인구직은 달빛알바에서. 지역별, 업종별, 테마별 맞춤 일자리를 쉽고 빠르게 찾아보세요." />
+  <meta property="og:image" content="/og-image.png" />
+  <meta property="og:url" content="https://www.dalbitalba.co.kr" />
+  <meta property="og:site_name" content="DalbitAlba" />
 
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="LunaAlba - 밤의 일자리" />
-    <meta name="twitter:description" content="밤의 일자리 구인구직 플랫폼" />
-    <meta name="twitter:image" content="/icons/icon-512x512.png" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="달빛알바 - 대한민국 No.1 유흥알바 채용 플랫폼" />
+  <meta name="twitter:description" content="고소득 알바, 유흥알바 구인구직은 달빛알바에서. 쉽고 빠른 채용 정보." />
+  <meta name="twitter:image" content="/og-image.png" />
 
-    <!-- Favicon & Icons -->
-    <link rel="icon" type="image/png" href="/favicon.png" />
-    <link rel="icon" type="image/svg+xml" href="/icons/icon.svg" />
-    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
-    <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152x152.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
-    <link rel="apple-touch-icon" sizes="167x167" href="/icons/icon-152x152.png" />
+  <!-- Security Headers -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <!-- X-Frame-Options는 HTTP 헤더로만 설정 가능하므로 제거 -->
+  <meta name="referrer" content="no-referrer" />
 
-    <!-- Preconnect to external resources -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <!-- Disable caching for sensitive pages -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
 
-    <!-- Splash Screens for iOS -->
-    <meta name="apple-mobile-web-app-capable" content="yes" />
+  <!-- Microsoft Clarity - 실제 Project ID를 입력하면 자동 활성화됩니다 -->
+  <!-- 1. https://clarity.microsoft.com 에서 프로젝트 생성 -->
+  <!-- 2. 아래 CLARITY_PROJECT_ID를 실제 ID로 교체 -->
+  <script type="text/javascript">
+    (function (c, l, a, r, i, t, y) {
+      c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+      t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+      y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+    })(window, document, "clarity", "script", "upekygy0jj");
+  </script>
 
-    <title>LunaAlba - 밤의 일자리 구인구직</title>
-
-    <style>
-      /* PWA Loading Screen */
-      html, body {
-        margin: 0;
-        padding: 0;
-        background-color: #111111;
-      }
-
-      /* iOS Safe Area Support */
-      body {
-        padding-top: env(safe-area-inset-top);
-        padding-bottom: env(safe-area-inset-bottom);
-        padding-left: env(safe-area-inset-left);
-        padding-right: env(safe-area-inset-right);
-      }
-
-      /* App Loading Indicator */
-      #app-loader {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        background: linear-gradient(135deg, #1a1a2e 0%, #111111 100%);
-        z-index: 9999;
-        opacity: 1;
-        transition: opacity 0.3s ease;
-      }
-
-      #app-loader.hidden {
-        opacity: 0;
-        pointer-events: none;
-      }
-
-      #app-loader svg {
-        width: 80px;
-        height: 80px;
-        animation: pulse 2s ease-in-out infinite;
-      }
-
-      #app-loader .loader-text {
-        margin-top: 20px;
-        color: #ffffff;
-        font-family: 'Noto Sans KR', sans-serif;
-        font-size: 18px;
-        font-weight: 600;
-      }
-
-      @keyframes pulse {
-        0%, 100% { transform: scale(1); opacity: 1; }
-        50% { transform: scale(1.05); opacity: 0.8; }
-      }
-    </style>
-  </head>
-  <body>
-    <!-- App Loading Screen -->
-    <div id="app-loader">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-        <!-- Crescent Moon -->
-        <path d="M130,380 C80,320 70,220 100,150 C130,80 190,30 270,30 C200,60 160,120 160,200 C160,280 200,340 270,380 C200,400 150,400 130,380Z" fill="white"/>
-        <!-- Cat silhouette -->
-        <g transform="translate(200, 180)">
-          <ellipse cx="80" cy="140" rx="65" ry="50" fill="white"/>
-          <path d="M20,140 Q-20,100 -30,60 Q-35,30 -20,10" stroke="white" stroke-width="35" fill="none" stroke-linecap="round"/>
-          <circle cx="100" cy="60" r="42" fill="white"/>
-          <path d="M65,30 L72,0 L88,25 Z" fill="white"/>
-          <path d="M105,25 L125,-5 L135,22 Z" fill="white"/>
-          <path d="M145,130 Q175,100 170,60" stroke="white" stroke-width="16" fill="none" stroke-linecap="round"/>
-        </g>
-        <!-- Star -->
-        <g transform="translate(380, 100)">
-          <path d="M0,-30 L4,-8 L26,-4 L4,0 L0,22 L-4,0 L-26,-4 L-4,-8 Z" fill="white"/>
-        </g>
-      </svg>
-      <div class="loader-text">LunaAlba</div>
-    </div>
-
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-
+  <!-- Google Analytics 4 (Optional) -->
+  <!-- Get your Measurement ID from https://analytics.google.com -->
+  <!--
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
     <script>
-      // Hide loader when app is ready
-      window.addEventListener('load', function() {
-        setTimeout(function() {
-          var loader = document.getElementById('app-loader');
-          if (loader) {
-            loader.classList.add('hidden');
-            setTimeout(function() {
-              loader.remove();
-            }, 300);
-          }
-        }, 500);
-      });
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
     </script>
-  </body>
+    -->
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
 </html>

@@ -1,62 +1,65 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Search, Filter, Clock } from 'lucide-react';
+import { Search, Filter } from 'lucide-react';
 import AdCard from '../components/ad/AdCard';
 import SelectionGroup from '../components/ui/SelectionGroup';
 import HorizontalFilterBar from '../components/ui/HorizontalFilterBar';
-import { allAds, jewelAds, vipAds, specialAds } from '../data/mockAds';
-import { useApp } from '../context/AppContext';
+import { allAds } from '../data/mockAds';
+import { USE_API_ADS, fetchAdsFromApi } from '../utils/adStorage';
 
-// Tier priority for sorting (higher = more premium) - defined outside component
-const TIER_PRIORITY: { [key: string]: number } = {
-    'diamond': 100,
-    'sapphire': 90,
-    'ruby': 80,
-    'gold': 70,
-    'vip': 60,
-    'special': 50,
-    'premium': 40,
-    'general': 10,
+// 광고 상품 타입 라벨 (실제 데이터 productType 값과 매핑)
+const PRODUCT_TYPE_LABELS: Record<string, string> = {
+    'all': '전체',
+    'vip': 'VIP 프리미엄',
+    'special': '스페셜',
+    'general': '일반',
 };
 
 const SearchResults: React.FC = () => {
-    const [searchParams] = useSearchParams();
-    const { state, addSearchHistory, dispatch } = useApp();
-
-    // Read URL params to initialize state (no useEffect needed)
-    const initialSearchValues = useMemo(() => {
-        const type = searchParams.get('type');
-        const brand = searchParams.get('brand');
-        const tier = searchParams.get('tier');
-
-        return {
-            searchQuery: brand || '',
-            tierFilter: tier || (type === 'special' ? 'special' : null),
-            filters: {
-                region: 'all',
-                industry: 'all',
-                salary: 'all',
-                type: type && type !== 'special' ? type : 'all'
-            }
-        };
-    }, [searchParams]);
+    const [searchParams, setSearchParams] = useSearchParams();
+    const initialProductType = searchParams.get('productType') || 'all';
 
     const [sortOrder, setSortOrder] = useState('latest');
     const [displayCount, setDisplayCount] = useState(12);
-    const [searchQuery, setSearchQuery] = useState(initialSearchValues.searchQuery);
-    const [tierFilter] = useState<string | null>(initialSearchValues.tierFilter);
-    const [showHistory, setShowHistory] = useState(false);
-    const [filters, setFilters] = useState(initialSearchValues.filters);
+    const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
+    const [productTypeFilter, setProductTypeFilter] = useState(initialProductType);
+    const [apiAds, setApiAds] = useState<any[]>([]);
+    const [filters, setFilters] = useState({
+        region: 'all',
+        industry: 'all',
+        salary: 'all',
+        type: 'all'
+    });
 
-    const handleHistoryClick = (query: string) => {
-        setSearchQuery(query);
-        setShowHistory(false);
-        setDisplayCount(12);
-    };
-
-    const clearHistory = () => {
-        dispatch({ type: 'CLEAR_SEARCH_HISTORY' });
-    };
+    // API에서 광고 데이터 로드
+    useEffect(() => {
+        const loadApiAds = async () => {
+            if (USE_API_ADS) {
+                try {
+                    const response = await fetchAdsFromApi();
+                    const data = response?.ads || [];
+                    if (data.length > 0) {
+                        setApiAds(data.map((ad: any) => ({
+                            id: ad.id,
+                            title: ad.title,
+                            location: ad.location || ad.region || '',
+                            pay: ad.salary || '협의',
+                            thumbnail: ad.thumbnail || '',
+                            images: ad.images || [],
+                            badges: ad.themes || [],
+                            isNew: true,
+                            isHot: ad.productType === 'vip',
+                            productType: ad.productType || 'general',
+                            industry: ad.industry || ''
+                        })));
+                    }
+                } catch (error) {
+                    console.warn('API fetch failed for search, using local data');
+                }
+            }
+        };
+        loadApiAds();
+    }, []);
 
     const SORT_OPTIONS = [
         { label: '최신순', value: 'latest' },
@@ -64,19 +67,30 @@ const SearchResults: React.FC = () => {
         { label: '인기순', value: 'popular' },
     ];
 
+    // 광고주 등록 데이터 가져오기 (useMemo 밖으로 이동)
+    const userAdsRaw = JSON.parse(localStorage.getItem('lunaalba_user_ads') || '[]');
+    const userAds = useMemo(() => userAdsRaw
+        .filter((ad: any) => ad.status === 'active')
+        .map((ad: any) => ({
+            id: parseInt(ad.id),
+            title: ad.title,
+            location: ad.location,
+            pay: ad.salary,
+            thumbnail: '',
+            images: [],
+            badges: ad.themes || ['채용중'],
+            isNew: true,
+            isHot: false,
+            productType: ad.productType || 'general',
+            price: '협의',
+            duration: '30일',
+            industry: ad.industry || ''
+        })), [userAdsRaw]); // userAdsRaw는 렌더링마다 바뀌므로 useMemo로 감싸는게 좋음 (다만 localStorage.getItem은 사이드이펙트라 컴포넌트 내부 변수로 선언 시 매번 실행됨. 여기선 간단히 처리)
+
     // 필터링 및 정렬된 광고 목록
     const filteredAds = useMemo(() => {
-        // Start with tier-filtered ads if tier is set
-        let results: typeof allAds;
-        if (tierFilter === 'jewel') {
-            results = [...jewelAds];
-        } else if (tierFilter === 'vip') {
-            results = [...vipAds];
-        } else if (tierFilter === 'special') {
-            results = [...specialAds];
-        } else {
-            results = [...allAds];
-        }
+        // API 광고 + 로컬 사용자 광고 + 목업 광고 병합
+        let results = [...apiAds, ...userAds, ...allAds];
 
         // 검색어 필터
         if (searchQuery) {
@@ -85,6 +99,11 @@ const SearchResults: React.FC = () => {
                 ad.title.toLowerCase().includes(query) ||
                 ad.location.toLowerCase().includes(query)
             );
+        }
+
+        // 광고 상품 타입 필터
+        if (productTypeFilter !== 'all') {
+            results = results.filter(ad => ad.productType === productTypeFilter);
         }
 
         // 지역 필터
@@ -140,7 +159,7 @@ const SearchResults: React.FC = () => {
                     break;
                 case 'beginner':
                     results = results.filter(ad =>
-                        ad.badges.some(b => b.includes('초보'))
+                        ad.badges.some((b: string) => b.includes('초보'))
                     );
                     break;
                 case 'high-pay':
@@ -151,116 +170,102 @@ const SearchResults: React.FC = () => {
                     break;
                 case 'same-day':
                     results = results.filter(ad =>
-                        ad.badges.some(b => b.includes('당일'))
+                        ad.badges.some((b: string) => b.includes('당일'))
                     );
                     break;
             }
         }
 
-        // 정렬 - Always sort by tier first (paid ads first), then by selected criteria
-        results.sort((a, b) => {
-            // First, sort by tier priority (paid ads first)
-            const aTier = TIER_PRIORITY[a.productType] || 10;
-            const bTier = TIER_PRIORITY[b.productType] || 10;
-            if (aTier !== bTier) return bTier - aTier;
-
-            // Then sort by selected criteria
-            if (sortOrder === 'pay') {
+        // 정렬
+        if (sortOrder === 'pay') {
+            results.sort((a: any, b: any) => {
                 const aPay = parseInt(a.pay.replace(/[^0-9]/g, '')) || 0;
                 const bPay = parseInt(b.pay.replace(/[^0-9]/g, '')) || 0;
                 return bPay - aPay;
-            } else if (sortOrder === 'popular') {
-                return (b.isHot ? 1 : 0) - (a.isHot ? 1 : 0);
-            }
-            return 0;
-        });
+            });
+        } else if (sortOrder === 'popular') {
+            results.sort((a: any, b: any) => (b.isHot ? 1 : 0) - (a.isHot ? 1 : 0));
+        }
 
         return results.length > 0 ? results : allAds.slice(0, 12);
-    }, [searchQuery, filters, sortOrder, tierFilter]);
+    }, [searchQuery, filters, sortOrder, userAds, apiAds, productTypeFilter]);
 
     const handleFilterChange = (newFilters: typeof filters) => {
         setFilters(newFilters);
-        setDisplayCount(12);
+        setDisplayCount(12); // 필터 변경 시 표시 개수 리셋
     };
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
-        if (searchQuery.trim()) {
-            addSearchHistory(searchQuery.trim());
-        }
-        setShowHistory(false);
         setDisplayCount(12);
     };
 
     return (
-        <div className="pb-20 bg-background">
+        <div className="pb-20">
             {/* Search Header */}
-            <div className="bg-card border-b border-border">
-                <div className="container mx-auto px-4 py-6">
-                    <h1 className="text-xl font-bold text-text-main mb-4">검색 결과</h1>
-                    <form onSubmit={handleSearch} className="flex gap-2">
-                        <div className="flex-1 relative">
-                            <input
-                                type="text"
-                                placeholder="지역, 업종, 키워드로 검색해보세요"
-                                className="w-full bg-accent border border-border rounded-lg py-3 pl-12 pr-4 text-text-main focus:border-primary outline-none"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                onFocus={() => setShowHistory(true)}
-                            />
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={20} />
-
-                            {/* Search History Dropdown */}
-                            {showHistory && state.searchHistory.length > 0 && (
-                                <div className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-lg shadow-lg z-50 max-h-64 overflow-y-auto">
-                                    <div className="flex items-center justify-between p-3 border-b border-border">
-                                        <span className="text-sm font-bold text-text-main flex items-center gap-2">
-                                            <Clock size={14} />
-                                            최근 검색어
-                                        </span>
-                                        <button
-                                            type="button"
-                                            onClick={clearHistory}
-                                            className="text-xs text-text-muted hover:text-primary"
-                                        >
-                                            전체 삭제
-                                        </button>
-                                    </div>
-                                    {state.searchHistory.slice(0, 10).map((item, idx) => (
-                                        <button
-                                            key={idx}
-                                            type="button"
-                                            onClick={() => handleHistoryClick(item.query)}
-                                            className="w-full text-left px-4 py-2 text-text-main hover:bg-surface transition-colors flex items-center gap-2"
-                                        >
-                                            <Clock size={14} className="text-text-muted" />
-                                            {item.query}
-                                        </button>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                        <button
-                            type="submit"
-                            className="bg-primary text-white px-6 rounded-lg font-bold hover:bg-primary-hover transition-colors"
-                        >
-                            검색
-                        </button>
-                        <button
-                            type="button"
-                            className="bg-accent border border-border text-text-main px-4 rounded-lg flex items-center gap-2 hover:bg-accent-dark"
-                        >
-                            <Filter size={20} />
-                        </button>
-                    </form>
-                </div>
+            <div className="container mx-auto px-4 py-8">
+                <h1 className="text-2xl font-bold text-white mb-4">검색 결과</h1>
+                <form onSubmit={handleSearch} className="flex gap-4">
+                    <div className="flex-1 relative">
+                        <input
+                            type="text"
+                            placeholder="지역, 업종, 키워드로 검색해보세요"
+                            className="w-full bg-accent border border-white/10 rounded-lg py-3 pl-12 pr-4 text-white focus:border-primary outline-none"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={20} />
+                    </div>
+                    <button
+                        type="submit"
+                        className="bg-primary text-black px-6 rounded-lg font-bold hover:bg-primary/90 transition-colors"
+                    >
+                        검색
+                    </button>
+                    <button
+                        type="button"
+                        className="bg-accent border border-white/10 text-white px-4 rounded-lg flex items-center gap-2 hover:bg-white/5"
+                    >
+                        <Filter size={20} />
+                        필터
+                    </button>
+                </form>
             </div>
 
             {/* Horizontal Filter Bar */}
             <HorizontalFilterBar onFilterChange={handleFilterChange} />
 
+            {/* 광고 상품 타입 필터 */}
+            <div className="container mx-auto px-4 mb-4">
+                <div className="flex flex-wrap gap-2">
+                    {Object.entries(PRODUCT_TYPE_LABELS).map(([value, label]) => (
+                        <button
+                            key={value}
+                            onClick={() => {
+                                setProductTypeFilter(value);
+                                setSearchParams(prev => {
+                                    if (value === 'all') {
+                                        prev.delete('productType');
+                                    } else {
+                                        prev.set('productType', value);
+                                    }
+                                    return prev;
+                                });
+                                setDisplayCount(12);
+                            }}
+                            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${productTypeFilter === value
+                                ? 'bg-primary text-black'
+                                : 'bg-accent/50 text-text-muted hover:bg-accent border border-white/10'
+                                }`}
+                        >
+                            {label}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
             {/* Results Section */}
-            <div className="container mx-auto px-4 py-4">
+            <div className="container mx-auto px-4">
                 <div className="flex items-center justify-between mb-4">
                     <span className="text-text-muted">
                         총 <span className="text-primary font-bold">{filteredAds.length}</span>건의 검색결과
@@ -268,11 +273,11 @@ const SearchResults: React.FC = () => {
                     <SelectionGroup
                         options={SORT_OPTIONS}
                         value={sortOrder}
-                        onChange={(v) => setSortOrder(v as string)}
+                        onChange={setSortOrder}
                     />
                 </div>
 
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     {filteredAds.slice(0, displayCount).map((ad) => (
                         <AdCard
                             key={ad.id}
@@ -281,11 +286,10 @@ const SearchResults: React.FC = () => {
                             location={ad.location}
                             pay={ad.pay}
                             image={ad.thumbnail}
-                            badges={ad.badges.slice(0, 2)}
+                            badges={ad.badges}
                             isNew={ad.isNew}
                             isHot={ad.isHot}
-                            productType={ad.productType}
-                            variant={ad.productType === 'diamond' ? 'diamond' : ad.productType === 'sapphire' ? 'sapphire' : ad.productType === 'ruby' ? 'ruby' : ad.productType === 'gold' ? 'gold' : ad.productType === 'vip' ? 'vip' : ad.productType === 'special' ? 'special' : 'regular'}
+                            variant={ad.productType === 'vip' ? 'vip' : ad.productType === 'special' ? 'special' : 'regular'}
                         />
                     ))}
                 </div>
@@ -294,7 +298,7 @@ const SearchResults: React.FC = () => {
                     <div className="mt-8 flex justify-center">
                         <button
                             onClick={() => setDisplayCount(prev => Math.min(prev + 12, filteredAds.length))}
-                            className="bg-primary text-white px-8 py-3 rounded-lg font-bold hover:bg-primary-hover transition-colors"
+                            className="bg-gradient-to-r from-primary/80 to-primary text-black px-8 py-3 rounded-lg font-bold hover:from-primary hover:to-primary/80 transition-all shadow-[0_0_20px_rgba(212,175,55,0.3)]"
                         >
                             더보기 ({filteredAds.length - displayCount}건)
                         </button>
@@ -304,7 +308,7 @@ const SearchResults: React.FC = () => {
                 {filteredAds.length === 0 && (
                     <div className="text-center py-20">
                         <p className="text-text-muted text-lg">검색 결과가 없습니다.</p>
-                        <p className="text-text-light mt-2">다른 검색어나 필터를 시도해보세요.</p>
+                        <p className="text-text-muted/60 mt-2">다른 검색어나 필터를 시도해보세요.</p>
                     </div>
                 )}
             </div>

@@ -1,150 +1,190 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Clock, MapPin } from 'lucide-react';
+import { ChevronRight, Sparkles, Users } from 'lucide-react';
 
-interface HighlightConfig {
-    color: 'yellow' | 'pink' | 'green' | 'cyan';
-    text: string;
-}
-
-interface TextAd {
-    id: number;
-    title: string;
-    location: string;
-    badge?: string;
-    isNew?: boolean;
-    isHot?: boolean;
-    isUrgent?: boolean;
-    highlightConfig?: HighlightConfig;
-}
-
-const textAds: TextAd[] = [
-    { id: 1, title: '⭐세상 어디에도 없는 【직인으뮤】 육상리제이!!!', location: '서울', badge: 'VIP', isNew: true, highlightConfig: { color: 'pink', text: '직인으뮤' } },
-    { id: 2, title: '친절접수☎메이저식♬한국판페이♬만족지급♬안심운영 ★★초보환영 고수우대★★', location: '서울', badge: 'HOT', isHot: true },
-    { id: 3, title: '☆☆☆톨미 이벤트☆☆☆', location: '서울', badge: 'NEW', highlightConfig: { color: 'cyan', text: '이벤트' } },
-    { id: 4, title: '❤ 손님 많아서 인니를 모십니다 ❤', location: '서울', isUrgent: true },
-    { id: 5, title: '★실 봉급 100-150만 아닌 맹글짧!!!홀를짧!!!백만원모집!①', location: '서울', badge: 'VIP', highlightConfig: { color: 'yellow', text: '' } },
-    { id: 6, title: '● 복 많은성실알밤들♥올 강압어데에서 성여어에서 성어어!!!', location: '서울' },
-    { id: 7, title: '♥제이스♥VIP♥', location: '서울', badge: 'VIP', highlightConfig: { color: 'green', text: 'VIP' } },
-    { id: 8, title: '❤최고에✌참담❤', location: '서울' },
-    { id: 9, title: '● 고페이✹ VIP ● 옵조대이 ●', location: '서울', badge: 'VIP', highlightConfig: { color: 'pink', text: '고페이' } },
-    { id: 10, title: '❤에반미 ❤모토봉열 ❤ 팔주100 ❤', location: '서울' },
-    { id: 11, title: '○ 고페이들 ○ 카타본들 ○', location: '서울' },
-    { id: 12, title: '복 농악술어니 ❤ 업위기어지 ❤', location: '서울' },
-    { id: 13, title: '❤ 카지도 ❤ 부상어아이어', location: '서울' },
-    { id: 14, title: '★보장직, 지원금❤️당일지급 밀방1등 VIP💫숙소지원 보상조 맹강👷 발까지요!!', location: '서울', badge: 'VIP', isNew: true },
-    { id: 15, title: '★PREMIUM★ 후기 200 응이 가거기요.', location: '서울', badge: 'PREMIUM' },
-    { id: 16, title: '강남 역삼 선불💰고주탁 구수 모집', location: '서울 강남구', isUrgent: true },
+// =============================================================================
+// 텍스트 광고 데이터 (좌측)
+// =============================================================================
+const textAds = [
+    { id: 1, title: '강남 VIP룸', location: '서울', description: '☆☆☆정통 하이클럽 수위낮음 초보환영 ☆☆☆', pay: '면접 후 협의', category: '기타', days: 177, rotation: 59 },
+    { id: 2, title: '♥체인소팬 VVIP♥', location: '서울 강북구', description: '♥체인소팬 VVIP♥', pay: '500,000원', payType: '당일', category: '기타', days: 258, rotation: 86 },
+    { id: 3, title: '유흥파한해술클럽', location: '서울', description: '★하루 100~150만원★ 유흥파한해술클럽 에선 실현가능~!', pay: '500,000원', payType: '당일', category: '기타', days: 267, rotation: 89, badge: 'VIP' },
+    { id: 4, title: '단밤', location: '서울 송파구', description: '가락,송파 No1. 에서 공주님들 모십니다.', pay: '500,000원', payType: '당일', category: '기타', days: 126, rotation: 34 },
+    { id: 5, title: '□놀면뭐하니□말해야지...', location: '서울 강남구', description: '✅놀면뭐하니✅말해야지✅', pay: '500,000원', payType: '당일', category: '기타', days: 102, rotation: 34, badge: 'HOT' },
+    { id: 6, title: '트리거', location: '서울', description: '강남최고대우펜적수OK보보장합니다', pay: '500,000원', payType: '당일', category: '기타', days: 294, rotation: 98 },
 ];
 
-const TextAdsList: React.FC = () => {
-    // Split ads into two groups for demo
-    const highlightAds = textAds.filter((_, i) => i % 2 === 0);
-    const standardAds = textAds.filter((_, i) => i % 2 !== 0);
+// =============================================================================
+// 구직자 데이터 (우측)
+// =============================================================================
+const jobSeekers = [
+    { id: 1, nickname: '안○○', age: 26, gender: '여', title: '인천 경기 스웨 구함', category: '마사지', pay: '300,000원', payType: '당일', date: '12-25', isNew: true },
+    { id: 2, nickname: '007○○', age: 32, gender: '여', title: '88사이즈 통통한데 사이즈 안보는곳 찾아요ㅠㅠ', category: '노래주점', pay: '300,000원', payType: '당일', date: '12-25' },
+    { id: 3, nickname: '윤○○', age: 25, gender: '여', title: '사이즈자신있는 여자두명 같이일구합니다 하이...', category: '룸싸롱', pay: '', payType: '면접 후 협의', date: '12-25', isNew: true },
+    { id: 4, nickname: '꾸○○', age: 20, gender: '여', title: '숍 스웨 구해요', category: '마사지', pay: '600,000원', payType: '당일', date: '12-24' },
+    { id: 5, nickname: '○○○', age: 28, gender: '여', title: 'ㅈㄱㅅㅁㅅ찾아요', category: '기타', pay: '', payType: '면접 후 협의', date: '12-24' },
+    { id: 6, nickname: '체○○', age: 28, gender: '여', title: '77-88 사이즈 일할곳 구합니다 (서울권)', category: '노래주점', pay: '', payType: '면접 후 협의', date: '12-24', isNew: true },
+    { id: 7, nickname: '○○○', age: 32, gender: '여', title: '수원 영통', category: '룸싸롱', pay: '', payType: '면접 후 협의', date: '12-24' },
+    { id: 8, nickname: 'Binbo○○○', age: 20, gender: '여', title: '부산입니다', category: '노래주점', pay: '', payType: '면접 후 협의', date: '12-23', isNew: true },
+];
 
-    const renderTitle = (title: string, config?: HighlightConfig) => {
-        const colorMap: Record<string, string> = {
-            yellow: 'bg-yellow-500/30 text-yellow-100 shadow-[0_0_10px_rgba(234,179,8,0.2)]',
-            pink: 'bg-pink-500/30 text-pink-100 shadow-[0_0_10px_rgba(236,72,153,0.2)]',
-            green: 'bg-green-500/30 text-green-100 shadow-[0_0_10px_rgba(34,197,94,0.2)]',
-            cyan: 'bg-cyan-500/30 text-cyan-100 shadow-[0_0_10px_rgba(6,182,212,0.2)]',
-        };
+interface TextAdsListProps {
+    isEditMode?: boolean;
+}
 
-        const colorClass = config?.color ? colorMap[config.color] : colorMap.yellow;
-        const textToHighlight = config?.text;
-
-        if (!textToHighlight) {
-            return <span className={`px-1 py-0.5 rounded ${colorClass}`}>{title}</span>;
-        }
-
-        const parts = title.split(textToHighlight);
-        if (parts.length === 1) return title; // Not found
-
-        return (
-            <span>
-                {parts.map((part, i) => (
-                    <React.Fragment key={i}>
-                        {part}
-                        {i < parts.length - 1 && (
-                            <span className={`px-1 py-0.5 rounded ${colorClass}`}>{textToHighlight}</span>
-                        )}
-                    </React.Fragment>
-                ))}
-            </span>
-        );
+const TextAdsList: React.FC<TextAdsListProps> = ({ isEditMode = false }) => {
+    const LinkComponent = isEditMode ? 'div' : Link;
+    const getLinkProps = (to: string) => isEditMode ? {} : { to };
+    const handleClick = (e: React.MouseEvent) => {
+        if (isEditMode) e.preventDefault();
     };
 
     return (
         <section className="py-8 container mx-auto px-4">
-            <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-text-main">전체 채용 광고</h2>
-                <Link to="/search" className="text-sm text-text-muted hover:text-primary">더보기 +</Link>
-            </div>
-
             <div className="grid lg:grid-cols-2 gap-6">
-                {/* Column 1: Highlighter / Emphasized Ads */}
-                <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
-                    <div className="px-6 py-3 bg-primary/10 border-b border-primary/20 text-sm font-bold text-primary flex items-center justify-center">
-                        프리미엄 강조형
+
+                {/* ============================================= */}
+                {/* 좌측: 추천채용 (텍스트 광고) */}
+                {/* ============================================= */}
+                <div className="bg-accent/30 rounded-xl border border-white/5 overflow-hidden">
+                    {/* 헤더 - 보라색 그라데이션 */}
+                    <div className="bg-gradient-to-r from-purple-600 to-purple-700 px-5 py-3 flex items-center justify-between">
+                        <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                            <Sparkles size={18} />
+                            추천채용
+                        </h2>
+                        <LinkComponent {...getLinkProps('/post-ad') as any} onClick={handleClick} className="text-xs bg-white/20 hover:bg-white/30 text-white px-3 py-1.5 rounded-lg transition-colors font-medium cursor-pointer">
+                            광고신청 +
+                        </LinkComponent>
                     </div>
-                    <div className="divide-y divide-border">
-                        {highlightAds.map((ad, index) => (
-                            <Link
+
+                    {/* 광고 목록 */}
+                    <div className="divide-y divide-white/5">
+                        {textAds.map((ad) => (
+                            <LinkComponent
                                 key={ad.id}
-                                to={`/ad/${ad.id}`}
-                                className="flex items-center gap-3 px-6 py-4 hover:bg-primary/5 transition-colors group relative overflow-hidden"
+                                {...getLinkProps(`/ad/${ad.id}`) as any}
+                                onClick={handleClick}
+                                className="block p-4 hover:bg-white/5 transition-colors group cursor-pointer"
                             >
-                                <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-yellow-400 to-amber-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                <div className="text-text-muted text-sm w-6 text-center">{index + 1}</div>
-                                <div className="flex-1 min-w-0">
-                                    <div className="flex items-center gap-2 mb-1">
-                                        <div className="flex gap-1">
-                                            {ad.isNew && <span className="bg-blue-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">NEW</span>}
-                                            {ad.isHot && <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">HOT</span>}
-                                            {ad.badge === 'VIP' && <span className="bg-primary text-white text-[10px] font-bold px-1.5 py-0.5 rounded">VIP</span>}
-                                        </div>
-                                        <div className="text-xs text-text-muted flex items-center gap-1">
-                                            <MapPin size={10} />
-                                            {ad.location}
-                                        </div>
-                                    </div>
-                                    <h3 className="truncate">
-                                        {renderTitle(ad.title, ad.highlightConfig)}
-                                    </h3>
+                                {/* 상단: 배지 + 제목 + 지역 */}
+                                <div className="flex items-center gap-2 mb-2">
+                                    {ad.badge === 'HOT' && (
+                                        <span className="bg-gradient-to-r from-red-500 to-orange-500 text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-lg">HOT</span>
+                                    )}
+                                    {ad.badge === 'VIP' && (
+                                        <span className="bg-gradient-to-r from-yellow-500 to-amber-400 text-black text-[10px] font-bold px-2 py-0.5 rounded shadow-lg">VIP</span>
+                                    )}
+                                    <span className="text-pink-400 font-bold text-sm">{ad.title}</span>
+                                    <span className="text-text-muted text-xs ml-auto">{ad.location}</span>
                                 </div>
-                            </Link>
+
+                                {/* 설명 */}
+                                <p className="text-white/80 text-sm mb-3 truncate group-hover:text-white transition-colors">
+                                    {ad.description}
+                                </p>
+
+                                {/* 하단: 급여(강조) + 카테고리 + 활동일 */}
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                        {/* 급여 - 강조된 배지 */}
+                                        <span className="inline-flex items-center gap-1 bg-gradient-to-r from-yellow-500/30 to-amber-500/30 text-yellow-300 text-xs font-bold px-3 py-1 rounded-full border border-yellow-500/30">
+                                            {ad.payType || '당일'} {ad.pay}
+                                        </span>
+                                        <span className="text-text-muted text-xs">{ad.category}</span>
+                                    </div>
+                                    <span className="text-xs text-text-muted">
+                                        <span className="text-primary font-bold">{ad.rotation}회</span> {ad.days}일
+                                    </span>
+                                </div>
+                            </LinkComponent>
                         ))}
                     </div>
+
+                    {/* 더보기 */}
+                    <LinkComponent
+                        {...getLinkProps('/search') as any}
+                        onClick={handleClick}
+                        className="flex items-center justify-center gap-1 py-3 text-sm text-text-muted hover:text-primary border-t border-white/5 transition-colors cursor-pointer"
+                    >
+                        더보기 <ChevronRight size={14} />
+                    </LinkComponent>
                 </div>
 
-                {/* Column 2: Standard Ads */}
-                <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
-                    <div className="px-6 py-3 bg-surface border-b border-border text-sm font-bold text-text-muted flex items-center justify-center">
-                        일반 리스트형
+                {/* ============================================= */}
+                {/* 우측: 최신인재정보 (구직자 게시판) */}
+                {/* ============================================= */}
+                <div className="bg-accent/30 rounded-xl border border-white/5 overflow-hidden">
+                    {/* 헤더 - 핑크 그라데이션 */}
+                    <div className="bg-gradient-to-r from-pink-500 to-rose-500 px-5 py-3 flex items-center justify-between">
+                        <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                            <Users size={18} />
+                            최신인재정보
+                        </h2>
+                        <LinkComponent {...getLinkProps('/job-seeker-list') as any} onClick={handleClick} className="text-xs bg-white/20 hover:bg-white/30 text-white px-3 py-1.5 rounded-lg transition-colors font-medium cursor-pointer">
+                            MORE
+                        </LinkComponent>
                     </div>
-                    <div className="divide-y divide-border">
-                        {standardAds.map((ad, index) => (
-                            <Link
-                                key={ad.id}
-                                to={`/ad/${ad.id}`}
-                                className="flex items-center gap-3 px-6 py-4 hover:bg-surface transition-colors group"
+
+                    {/* 테이블 헤더 */}
+                    <div className="grid grid-cols-12 gap-2 px-4 py-2.5 bg-white/5 text-[11px] text-text-muted font-bold border-b border-white/5">
+                        <div className="col-span-2">이름</div>
+                        <div className="col-span-1 text-center">성별</div>
+                        <div className="col-span-4">제목</div>
+                        <div className="col-span-2">희망업종</div>
+                        <div className="col-span-2">희망급여</div>
+                        <div className="col-span-1 text-right">작성일</div>
+                    </div>
+
+                    {/* 구직자 목록 */}
+                    <div className="divide-y divide-white/5">
+                        {jobSeekers.map((seeker) => (
+                            <LinkComponent
+                                key={seeker.id}
+                                {...getLinkProps(`/job-seeker/${seeker.id}`) as any}
+                                onClick={handleClick}
+                                className="grid grid-cols-12 gap-2 px-4 py-3 hover:bg-white/5 transition-colors items-center text-sm cursor-pointer"
                             >
-                                <div className="text-text-muted text-sm w-6 text-center">{index + 1}</div>
-                                <div className="flex-1 min-w-0">
-                                    <div className="flex items-center gap-2 mb-1">
-                                        <div className="text-xs text-text-muted flex items-center gap-1">
-                                            <MapPin size={10} />
-                                            {ad.location}
-                                        </div>
-                                        {ad.isUrgent && <Clock size={12} className="text-red-400" />}
-                                    </div>
-                                    <h3 className="text-text-main group-hover:text-primary transition-colors truncate">
-                                        {ad.title}
-                                    </h3>
+                                {/* 이름 */}
+                                <div className="col-span-2 text-white font-medium truncate">{seeker.nickname}</div>
+
+                                {/* 성별/나이 */}
+                                <div className="col-span-1 text-center text-text-muted text-xs">{seeker.age}/{seeker.gender}</div>
+
+                                {/* 제목 */}
+                                <div className="col-span-4 truncate text-white flex items-center gap-1">
+                                    <span className="truncate">{seeker.title}</span>
+                                    {seeker.isNew && <span className="text-red-400 font-bold text-xs flex-shrink-0">N</span>}
                                 </div>
-                            </Link>
+
+                                {/* 희망업종 */}
+                                <div className="col-span-2 text-text-muted text-xs truncate">{seeker.category}</div>
+
+                                {/* 희망급여 - 강조 */}
+                                <div className="col-span-2">
+                                    {seeker.pay ? (
+                                        <span className="inline-flex items-center bg-gradient-to-r from-pink-500/30 to-rose-500/30 text-pink-300 text-[10px] font-bold px-2 py-0.5 rounded-full border border-pink-500/30">
+                                            {seeker.payType} {seeker.pay}
+                                        </span>
+                                    ) : (
+                                        <span className="text-text-muted text-[10px]">{seeker.payType}</span>
+                                    )}
+                                </div>
+
+                                {/* 작성일 */}
+                                <div className="col-span-1 text-right text-text-muted text-xs">{seeker.date}</div>
+                            </LinkComponent>
                         ))}
                     </div>
+
+                    {/* 더보기 - 구직자 목록 페이지로 링크 */}
+                    <LinkComponent
+                        {...getLinkProps('/job-seeker-list') as any}
+                        onClick={handleClick}
+                        className="flex items-center justify-center gap-1 py-3 text-sm text-text-muted hover:text-primary border-t border-white/5 transition-colors cursor-pointer"
+                    >
+                        더보기 <ChevronRight size={14} />
+                    </LinkComponent>
                 </div>
             </div>
         </section>

@@ -65,7 +65,7 @@ const HeroSection: React.FC = () => {
                             <p className="text-xl md:text-2xl text-white/90">
                                 {slide.subtitle}
                             </p>
-                            <button className="mt-6 px-8 py-3 bg-card text-black font-bold rounded-full hover:bg-primary hover:text-white transition-colors">
+                            <button className="mt-6 px-8 py-3 bg-white text-black font-bold rounded-full hover:bg-primary hover:text-white transition-colors">
                                 자세히 보기
                             </button>
                         </div>
@@ -93,7 +93,7 @@ const HeroSection: React.FC = () => {
                     <button
                         key={i}
                         onClick={() => setCurrent(i)}
-                        className={`w-2.5 h-2.5 rounded-full transition-all ${i === current ? 'bg-card w-8' : 'bg-card/50'
+                        className={`w-2.5 h-2.5 rounded-full transition-all ${i === current ? 'bg-white w-8' : 'bg-white/50'
                             }`}
                     />
                 ))}

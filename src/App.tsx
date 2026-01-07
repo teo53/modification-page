@@ -1,297 +1,112 @@
-import { lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { AppProvider } from './context/AppContext';
-import { ThemeProvider } from './context/ThemeContext';
-import AppLayout from './components/app/AppLayout';
-import AgeGate from './components/app/AgeGate';
-import BackHandler from './components/app/BackHandler';
+import { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import Layout from './components/layout/Layout';
+import ErrorBoundary from './components/ErrorBoundary';
+import AdultVerification, { isAdultVerified } from './components/auth/AdultVerification';
+import { ToastProvider } from './components/common/Toast';
+import { ThemeProvider } from './contexts/ThemeContext';
+import { seedTestAccounts } from './utils/testAccounts';
 
-// Lazy load pages for code splitting
-const Home = lazy(() => import('./pages/Home'));
-const AdDetail = lazy(() => import('./pages/AdDetail'));
-const PostAd = lazy(() => import('./pages/PostAd'));
-const AdvertiserDashboard = lazy(() => import('./pages/AdvertiserDashboard'));
-const AdminCRM = lazy(() => import('./pages/AdminCRM'));
-const CommunityPage = lazy(() => import('./pages/CommunityPage'));
-const CommunityPostDetail = lazy(() => import('./pages/CommunityPostDetail'));
-const CommunityWrite = lazy(() => import('./pages/CommunityWrite'));
-const SearchResults = lazy(() => import('./pages/SearchResults'));
-const CustomerSupport = lazy(() => import('./pages/CustomerSupport'));
-const Login = lazy(() => import('./pages/Login'));
-const Signup = lazy(() => import('./pages/Signup'));
-const ThemePage = lazy(() => import('./pages/ThemePage'));
-const UrgentPage = lazy(() => import('./pages/UrgentPage'));
-const IndustryPage = lazy(() => import('./pages/IndustryPage'));
-const JobSeekersPage = lazy(() => import('./pages/JobSeekersPage'));
-const PostResumePage = lazy(() => import('./pages/PostResumePage'));
-const NotFound = lazy(() => import('./pages/NotFound'));
-const FavoritesPage = lazy(() => import('./pages/FavoritesPage'));
-const MyPage = lazy(() => import('./pages/MyPage'));
-const MyPageEdit = lazy(() => import('./pages/MyPageEdit'));
-const MyPageViews = lazy(() => import('./pages/MyPageViews'));
-const MyPageApplications = lazy(() => import('./pages/MyPageApplications'));
-const MyPageNotifications = lazy(() => import('./pages/MyPageNotifications'));
-const MyPagePrivacy = lazy(() => import('./pages/MyPagePrivacy'));
+import Home from './pages/Home';
 
-// Page loader
-const PageLoader = () => (
-  <div className="flex items-center justify-center min-h-[60vh]">
-    <div className="flex flex-col items-center gap-4">
-      <div className="w-10 h-10 border-3 border-primary border-t-transparent rounded-full animate-spin" />
-      <span className="text-text-muted text-sm">로딩중...</span>
-    </div>
-  </div>
-);
+import AdDetail from './pages/AdDetail';
+
+import PostAd from './pages/PostAd';
+
+import AdvertiserCRM from './pages/AdvertiserCRM';
+import AdminCRM from './pages/AdminCRM';
+import ContentManager from './pages/admin/ContentManager';
+
+import CommunityPage from './pages/CommunityPage';
+import CommunityPostDetail from './pages/CommunityPostDetail';
+import CommunityWrite from './pages/CommunityWrite';
+
+import SearchResults from './pages/SearchResults';
+
+import CustomerSupport from './pages/CustomerSupport';
+
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import ThemePage from './pages/ThemePage';
+import UrgentPage from './pages/UrgentPage';
+import IndustryPage from './pages/IndustryPage';
+import RegionPage from './pages/RegionPage';
+import NotFound from './pages/NotFound';
+import TermsOfService from './pages/TermsOfService';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import YouthProtectionPolicy from './pages/YouthProtectionPolicy';
+import JobSeekerPage from './pages/JobSeekerPage';
+import JobSeekerListPage from './pages/JobSeekerListPage';
+import AdminFloatingPanel from './components/admin/AdminFloatingPanel';
+
 
 function App() {
+  const [adultVerified, setAdultVerified] = useState(isAdultVerified());
+
+  // 앱 시작 시 테스트 계정 자동 시드 (한 번만 실행)
+  useEffect(() => {
+    seedTestAccounts();
+  }, []);
+
+  // 성인인증 필요 시 인증 화면 표시
+  if (!adultVerified) {
+    return (
+      <AdultVerification onVerified={() => setAdultVerified(true)} />
+    );
+  }
+
   return (
-    <ThemeProvider>
-      <AppProvider>
-        <AgeGate>
+    <ThemeProvider defaultTheme="dark">
+      <ToastProvider>
+        <ErrorBoundary>
           <BrowserRouter>
-          <BackHandler />
           <Routes>
-          <Route path="/" element={<AppLayout />}>
-            {/* Main Routes */}
-            <Route
-              index
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <Home />
-                </Suspense>
-              }
-            />
-            <Route
-              path="ad/:id"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <AdDetail />
-                </Suspense>
-              }
-            />
-            <Route
-              path="search"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <SearchResults />
-                </Suspense>
-              }
-            />
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Home />} />
+              <Route path="/ad/:id" element={<AdDetail />} />
+              <Route path="/post-ad" element={<PostAd />} />
+              <Route path="/theme" element={<ThemePage />} />
+              <Route path="/theme/:category" element={<ThemePage />} />
+              <Route path="/industry" element={<IndustryPage />} />
+              <Route path="/industry/:type" element={<IndustryPage />} />
+              <Route path="/region" element={<RegionPage />} />
+              <Route path="/region/:location" element={<RegionPage />} />
+              <Route path="/search" element={<SearchResults />} />
+              <Route path="/community" element={<CommunityPage />} />
+              <Route path="/community/write" element={<CommunityWrite />} />
+              <Route path="/community/post/:id" element={<CommunityPostDetail />} />
+              <Route path="/advertiser" element={<AdvertiserCRM />} />
+              <Route path="/advertiser/dashboard" element={<Navigate to="/advertiser" replace />} />
+              <Route path="/advertiser/crm" element={<Navigate to="/advertiser" replace />} />
 
-            {/* Category Routes */}
-            <Route
-              path="theme"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <ThemePage />
-                </Suspense>
-              }
-            />
-            <Route
-              path="theme/:category"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <ThemePage />
-                </Suspense>
-              }
-            />
-            <Route
-              path="industry"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <IndustryPage />
-                </Suspense>
-              }
-            />
-            <Route
-              path="industry/:type"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <IndustryPage />
-                </Suspense>
-              }
-            />
-            <Route
-              path="urgent"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <UrgentPage />
-                </Suspense>
-              }
-            />
+              {/* Admin Routes */}
+              <Route path="/admin" element={<Navigate to="/admin/crm" replace />} />
+              <Route path="/admin/dashboard" element={<Navigate to="/admin/crm" replace />} />
+              <Route path="/admin/crm" element={<AdminCRM />} />
+              <Route path="/admin/content" element={<ContentManager />} />
+              <Route path="urgent" element={<UrgentPage />} />
+              <Route path="login" element={<Login />} />
+              <Route path="signup" element={<Signup />} />
+              <Route path="support" element={<CustomerSupport />} />
+              <Route path="job-seeker" element={<JobSeekerPage />} />
+              <Route path="job-seeker-list" element={<JobSeekerListPage />} />
 
-            {/* Job Seekers Routes */}
-            <Route
-              path="job-seekers"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <JobSeekersPage />
-                </Suspense>
-              }
-            />
-            <Route
-              path="post-resume"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <PostResumePage />
-                </Suspense>
-              }
-            />
+              {/* Legal Pages */}
+              <Route path="terms" element={<TermsOfService />} />
+              <Route path="privacy" element={<PrivacyPolicy />} />
+              <Route path="youth-protection" element={<YouthProtectionPolicy />} />
 
-            {/* Community Routes */}
-            <Route
-              path="community"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <CommunityPage />
-                </Suspense>
-              }
-            />
-            <Route
-              path="community/write"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <CommunityWrite />
-                </Suspense>
-              }
-            />
-            <Route
-              path="community/post/:id"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <CommunityPostDetail />
-                </Suspense>
-              }
-            />
-
-            {/* User Routes */}
-            <Route
-              path="login"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <Login />
-                </Suspense>
-              }
-            />
-            <Route
-              path="signup"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <Signup />
-                </Suspense>
-              }
-            />
-            <Route
-              path="favorites"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <FavoritesPage />
-                </Suspense>
-              }
-            />
-            <Route
-              path="mypage"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <MyPage />
-                </Suspense>
-              }
-            />
-            <Route
-              path="mypage/edit"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <MyPageEdit />
-                </Suspense>
-              }
-            />
-            <Route
-              path="mypage/views"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <MyPageViews />
-                </Suspense>
-              }
-            />
-            <Route
-              path="mypage/applications"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <MyPageApplications />
-                </Suspense>
-              }
-            />
-            <Route
-              path="mypage/notifications"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <MyPageNotifications />
-                </Suspense>
-              }
-            />
-            <Route
-              path="mypage/privacy"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <MyPagePrivacy />
-                </Suspense>
-              }
-            />
-
-            {/* Advertiser Routes */}
-            <Route
-              path="post-ad"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <PostAd />
-                </Suspense>
-              }
-            />
-            <Route
-              path="advertiser/dashboard"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <AdvertiserDashboard />
-                </Suspense>
-              }
-            />
-
-            {/* Admin Routes */}
-            <Route
-              path="admin/crm"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <AdminCRM />
-                </Suspense>
-              }
-            />
-
-            {/* Support */}
-            <Route
-              path="support"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <CustomerSupport />
-                </Suspense>
-              }
-            />
-
-            {/* 404 */}
-            <Route
-              path="*"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <NotFound />
-                </Suspense>
-              }
-            />
-          </Route>
+              <Route path="*" element={<NotFound />} />
+            </Route>
           </Routes>
+          {/* 관리자 전용 플로팅 패널 */}
+          <AdminFloatingPanel />
           </BrowserRouter>
-        </AgeGate>
-      </AppProvider>
+        </ErrorBoundary>
+      </ToastProvider>
     </ThemeProvider>
   );
 }
 
 export default App;
+

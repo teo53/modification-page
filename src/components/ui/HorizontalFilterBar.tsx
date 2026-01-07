@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import { MapPin, Briefcase, DollarSign, Clock, Users, Star, Sparkles } from 'lucide-react';
 
 interface FilterOption {
@@ -6,50 +6,6 @@ interface FilterOption {
     label: string;
     icon?: React.ComponentType<{ size?: number; className?: string }>;
 }
-
-interface FilterGroupProps {
-    title: string;
-    category: string;
-    options: FilterOption[];
-    selected: string;
-    onSelect: (category: string, value: string) => void;
-}
-
-// Moved outside to prevent recreation on each render
-const FilterGroup: React.FC<FilterGroupProps> = ({
-    title,
-    category,
-    options,
-    selected,
-    onSelect
-}) => (
-    <div className="flex items-center gap-4">
-        <span className="text-sm font-medium text-primary whitespace-nowrap w-12">{title}</span>
-        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
-            {options.map((option) => {
-                const Icon = option.icon;
-                const isSelected = selected === option.id;
-                return (
-                    <button
-                        key={option.id}
-                        onClick={() => onSelect(category, option.id)}
-                        className={`
-                            px-4 py-2 rounded-lg text-sm whitespace-nowrap transition-all duration-200
-                            flex items-center gap-1.5 font-medium border
-                            ${isSelected
-                                ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20'
-                                : 'bg-card text-text-muted border-border hover:border-primary/30 hover:text-text-main hover:bg-surface'
-                            }
-                        `}
-                    >
-                        {Icon && <Icon size={14} className={isSelected ? 'text-white' : 'text-text-muted group-hover:text-text-main'} />}
-                        {option.label}
-                    </button>
-                );
-            })}
-        </div>
-    </div>
-);
 
 interface HorizontalFilterBarProps {
     onFilterChange?: (filters: {
@@ -66,31 +22,35 @@ const HorizontalFilterBar: React.FC<HorizontalFilterBarProps> = ({ onFilterChang
     const [selectedSalary, setSelectedSalary] = useState('all');
     const [selectedType, setSelectedType] = useState('all');
 
-    const handleFilterChange = useCallback((category: string, value: string) => {
-        const newFilters = {
-            region: category === 'region' ? value : selectedRegion,
-            industry: category === 'industry' ? value : selectedIndustry,
-            salary: category === 'salary' ? value : selectedSalary,
-            type: category === 'type' ? value : selectedType
+    const handleFilterChange = (category: string, value: string) => {
+        let newFilters = {
+            region: selectedRegion,
+            industry: selectedIndustry,
+            salary: selectedSalary,
+            type: selectedType
         };
 
         switch (category) {
             case 'region':
                 setSelectedRegion(value);
+                newFilters.region = value;
                 break;
             case 'industry':
                 setSelectedIndustry(value);
+                newFilters.industry = value;
                 break;
             case 'salary':
                 setSelectedSalary(value);
+                newFilters.salary = value;
                 break;
             case 'type':
                 setSelectedType(value);
+                newFilters.type = value;
                 break;
         }
 
         onFilterChange?.(newFilters);
-    }, [selectedRegion, selectedIndustry, selectedSalary, selectedType, onFilterChange]);
+    };
 
     const regions: FilterOption[] = [
         { id: 'all', label: '전체지역', icon: MapPin },
@@ -130,8 +90,47 @@ const HorizontalFilterBar: React.FC<HorizontalFilterBarProps> = ({ onFilterChang
         { id: 'same-day', label: '당일지급' },
     ];
 
+    const FilterGroup = ({
+        title,
+        category,
+        options,
+        selected
+    }: {
+        title: string;
+        category: string;
+        options: FilterOption[];
+        selected: string;
+    }) => (
+        <div className="flex items-center gap-4">
+            <span className="text-sm font-medium text-primary whitespace-nowrap w-12">{title}</span>
+            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+                {options.map((option) => {
+                    const Icon = option.icon;
+                    const isSelected = selected === option.id;
+                    return (
+                        <button
+                            key={option.id}
+                            onClick={() => handleFilterChange(category, option.id)}
+                            className={`
+                                px-4 py-2 rounded-lg text-sm whitespace-nowrap transition-all duration-200
+                                flex items-center gap-1.5 font-medium border
+                                ${isSelected
+                                    ? 'bg-primary text-black border-primary shadow-[0_0_15px_rgba(212,175,55,0.3)]'
+                                    : 'bg-accent/50 text-text-muted border-white/5 hover:border-white/20 hover:text-white hover:bg-white/5'
+                                }
+                            `}
+                        >
+                            {Icon && <Icon size={14} className={isSelected ? 'text-black' : 'text-text-muted group-hover:text-white'} />}
+                            {option.label}
+                        </button>
+                    );
+                })}
+            </div>
+        </div>
+    );
+
     return (
-        <div className="bg-card border-y border-border py-6 mb-8 sticky top-0 z-20 shadow-lg">
+        <div className="bg-black/95 border-y border-white/10 py-6 mb-8 sticky top-0 z-20 backdrop-blur-md shadow-xl">
             <div className="container mx-auto px-4">
                 <div className="space-y-4">
                     <FilterGroup
@@ -139,14 +138,12 @@ const HorizontalFilterBar: React.FC<HorizontalFilterBarProps> = ({ onFilterChang
                         category="region"
                         options={regions}
                         selected={selectedRegion}
-                        onSelect={handleFilterChange}
                     />
                     <FilterGroup
                         title="업종"
                         category="industry"
                         options={industries}
                         selected={selectedIndustry}
-                        onSelect={handleFilterChange}
                     />
                     <div className="flex flex-col lg:flex-row gap-4 lg:items-center">
                         <div className="flex-1">
@@ -155,17 +152,15 @@ const HorizontalFilterBar: React.FC<HorizontalFilterBarProps> = ({ onFilterChang
                                 category="salary"
                                 options={salaryRanges}
                                 selected={selectedSalary}
-                                onSelect={handleFilterChange}
                             />
                         </div>
-                        <div className="w-px h-8 bg-border hidden lg:block mx-4"></div>
+                        <div className="w-px h-8 bg-white/10 hidden lg:block mx-4"></div>
                         <div className="flex-1">
                             <FilterGroup
                                 title="조건"
                                 category="type"
                                 options={types}
                                 selected={selectedType}
-                                onSelect={handleFilterChange}
                             />
                         </div>
                     </div>

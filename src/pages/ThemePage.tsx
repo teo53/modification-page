@@ -1,15 +1,87 @@
-import React, { useState, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Star, Coffee, Clock, Calendar, DollarSign, Heart, Music, GlassWater, Home, Sparkles, Users, Shield, Zap, Gift } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import AdCard from '../components/ad/AdCard';
 import SelectionGroup from '../components/ui/SelectionGroup';
 import { allAds } from '../data/mockAds';
+import { allSampleAds } from '../data/sampleAds';
+import { useDataMode } from '../contexts/DataModeContext';
+
+// 숫자 카운트업 애니메이션 훅
+// 숫자 카운트업 애니메이션 훅
+const useCountUp = (end: number, duration: number = 2000) => {
+    const [count, setCount] = useState(0);
+    const countRef = useRef(0);
+    const frameRef = useRef<number>(0);
+
+    useEffect(() => {
+        const startTime = Date.now();
+        const startValue = 0;
+
+        const animate = () => {
+            const now = Date.now();
+            const progress = Math.min((now - startTime) / duration, 1);
+
+            if (progress === 1) {
+                setCount(end);
+                return;
+            }
+
+            // easeOutExpo 이징 함수
+            const easeProgress = 1 - Math.pow(2, -10 * progress);
+            const currentValue = Math.floor(startValue + (end - startValue) * easeProgress);
+
+            if (countRef.current !== currentValue) {
+                countRef.current = currentValue;
+                setCount(currentValue);
+            }
+
+            if (progress < 1) {
+                frameRef.current = requestAnimationFrame(animate);
+            }
+        };
+
+        frameRef.current = requestAnimationFrame(animate);
+
+        return () => {
+            if (frameRef.current) {
+                cancelAnimationFrame(frameRef.current);
+            }
+        };
+    }, [end, duration]);
+
+    return count;
+};
+
+// 통계 카드 컴포넌트
+interface StatCardProps {
+    icon: LucideIcon;
+    iconColor: string;
+    value: number;
+    suffix?: string;
+    label: string;
+    textColor?: string;
+}
+
+const StatCard: React.FC<StatCardProps> = ({ icon: Icon, iconColor, value, suffix = '', label, textColor = 'text-white' }) => {
+    const animatedValue = useCountUp(value, 2000);
+
+    return (
+        <div className="bg-accent/50 rounded-xl border border-white/5 p-6 text-center">
+            <Icon className={`${iconColor} w-8 h-8 mx-auto mb-2`} />
+            <div className={`text-3xl md:text-4xl font-bold ${textColor} mb-2`}>
+                {animatedValue}{suffix}
+            </div>
+            <div className="text-sm text-text-muted">{label}</div>
+        </div>
+    );
+};
 
 // 테마 카테고리 정의 (키워드 기반 필터링)
 const themes = [
     { id: 'high-pay', name: '고소득', icon: DollarSign, color: 'text-yellow-400', keywords: ['VIP', '고수입', '100,000', '120,000'] },
     { id: 'same-day', name: '당일지급', icon: Clock, color: 'text-blue-400', keywords: ['당일지급', '당일'] },
-    { id: 'short', name: '단기알바', icon: Calendar, color: 'text-green-400', keywords: ['단기', '주말', '토요일', '일요일', '1일'] },
+    { id: 'weekend', name: '주말알바', icon: Calendar, color: 'text-green-400', keywords: ['주말', '토요일', '일요일'] },
     { id: 'beginner', name: '초보환영', icon: Heart, color: 'text-pink-400', keywords: ['초보환영', '초보가능', '초보', '신입환영'] },
     { id: 'lodging', name: '숙소제공', icon: Home, color: 'text-purple-400', keywords: ['숙소지원', '숙소제공', '숙소'] },
     { id: 'no-alcohol', name: '술강요X', icon: GlassWater, color: 'text-cyan-400', keywords: ['술강요없음', '술X'] },
@@ -28,54 +100,53 @@ const SORT_OPTIONS = [
 ];
 
 const ThemePage: React.FC = () => {
-    const { category } = useParams<{ category: string }>();
+    const { useSampleData } = useDataMode();
+    const baseAdsData = useSampleData ? allSampleAds : allAds;
 
-    // Initialize active themes from URL param (no useEffect needed)
-    const initialTheme = useMemo(() => {
-        if (category) {
-            const matchedTheme = themes.find(t => t.id === category);
-            if (matchedTheme) {
-                return [category];
-            }
-        }
-        return ['high-pay'];
-    }, [category]);
+    // 광고주 등록 데이터도 함께 가져오기
+    const userAdsRaw = JSON.parse(localStorage.getItem('lunaalba_user_ads') || '[]');
+    const userAds = userAdsRaw
+        .filter((ad: any) => ad.status === 'active')
+        .map((ad: any) => ({
+            id: parseInt(ad.id),
+            title: ad.title,
+            location: ad.location,
+            pay: ad.salary,
+            thumbnail: '',
+            images: [],
+            badges: ad.themes || ['채용중'],
+            isNew: true,
+            isHot: false,
+            productType: ad.productType || 'general',
+            price: '협의',
+            duration: '30일'
+        }));
 
-    const [activeThemes, setActiveThemes] = useState<string[]>(initialTheme);
+    const adsData = [...userAds, ...baseAdsData];
+
+    const [activeTheme, setActiveTheme] = useState('high-pay');
     const [sortOrder, setSortOrder] = useState('latest');
     const [displayCount, setDisplayCount] = useState(24);
 
-    // Toggle theme selection (multi-select support)
-    const toggleTheme = (themeId: string) => {
-        setActiveThemes(prev => {
-            if (prev.includes(themeId)) {
-                // Remove if already selected (but keep at least one)
-                const newThemes = prev.filter(t => t !== themeId);
-                return newThemes.length > 0 ? newThemes : prev;
-            } else {
-                // Add to selection
-                return [...prev, themeId];
-            }
-        });
-    };
-
-    // 필터링된 광고 목록 (multi-select: must match ALL selected themes)
+    // 필터링된 광고 목록
     const filteredAds = useMemo(() => {
-        let results = [...allAds];
+        let results = [...adsData];
 
-        // 테마 필터 - must match ALL selected themes
-        if (activeThemes.length > 0) {
-            results = results.filter(ad => {
-                return activeThemes.every(themeId => {
-                    const theme = themes.find(t => t.id === themeId);
-                    if (!theme) return true;
-                    return theme.keywords.some(keyword =>
-                        ad.title.toLowerCase().includes(keyword.toLowerCase()) ||
-                        ad.badges.some(badge => badge.toLowerCase().includes(keyword.toLowerCase())) ||
-                        ad.pay.includes(keyword)
-                    );
-                });
-            });
+        // 테마 필터
+        const theme = themes.find(t => t.id === activeTheme);
+        if (theme) {
+            results = results.filter(ad =>
+                // 키워드 기반 검색 (기존)
+                theme.keywords.some(keyword =>
+                    ad.title.toLowerCase().includes(keyword.toLowerCase()) ||
+                    ad.badges.some((badge: string) => badge.toLowerCase().includes(keyword.toLowerCase())) ||
+                    ad.pay.includes(keyword)
+                ) ||
+                // themes 배열 기반 검색 (신규 - UserAd용)
+                (ad.badges && ad.badges.some((badge: string) =>
+                    theme.keywords.some(keyword => badge.includes(keyword))
+                ))
+            );
         }
 
         // 정렬
@@ -90,69 +161,78 @@ const ThemePage: React.FC = () => {
         }
 
         // 결과가 없으면 기본 데이터 반환
-        return results.length > 0 ? results : allAds.slice(0, 12);
-    }, [activeThemes, sortOrder]);
+        return results.length > 0 ? results : adsData.slice(0, 12);
+    }, [activeTheme, sortOrder, adsData]);
 
-    const activeThemeNames = activeThemes.map(id => themes.find(t => t.id === id)?.name).filter(Boolean);
+    const activeThemeData = themes.find(t => t.id === activeTheme);
 
     return (
-        <div className="container mx-auto px-4 py-6">
+        <div className="container mx-auto px-4 py-8">
             {/* 헤더 */}
-            <div className="mb-6 text-center">
-                <h1 className="text-xl font-bold text-text-main mb-2">테마별 알바</h1>
-                <p className="text-xs text-text-muted">원하는 조건의 일자리를 쉽고 빠르게 찾아보세요</p>
+            <div className="mb-12 text-center">
+                <div className="flex items-center justify-center gap-2 mb-4">
+                    <h1 className="text-3xl font-bold text-white">테마별 알바</h1>
+                    {useSampleData && (
+                        <span className="text-xs bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded-full">샘플</span>
+                    )}
+                </div>
+                <p className="text-text-muted">원하는 조건의 일자리를 테마별로 쉽고 빠르게 찾아보세요.</p>
             </div>
 
-            {/* 통계 카드 - 컴팩트 버전 */}
-            <div className="grid grid-cols-4 gap-2 mb-6">
-                <div className="bg-card rounded-lg border border-border p-2 text-center">
-                    <Sparkles className="text-primary w-5 h-5 mx-auto mb-1" />
-                    <div className="text-lg font-bold text-text-main">{themes.length}</div>
-                    <div className="text-[10px] text-text-muted">테마</div>
-                </div>
-                <div className="bg-card rounded-lg border border-border p-2 text-center">
-                    <Gift className="text-green-400 w-5 h-5 mx-auto mb-1" />
-                    <div className="text-lg font-bold text-green-400">{allAds.length}+</div>
-                    <div className="text-[10px] text-text-muted">업소</div>
-                </div>
-                <div className="bg-card rounded-lg border border-border p-2 text-center">
-                    <Star className="text-yellow-400 w-5 h-5 mx-auto mb-1" />
-                    <div className="text-lg font-bold text-yellow-400">95%</div>
-                    <div className="text-[10px] text-text-muted">만족도</div>
-                </div>
-                <div className="bg-card rounded-lg border border-border p-2 text-center">
-                    <Zap className="text-red-400 w-5 h-5 mx-auto mb-1" />
-                    <div className="text-sm font-bold text-red-400 animate-pulse">실시간</div>
-                    <div className="text-[10px] text-text-muted">업데이트</div>
+            {/* 통계 카드 - 애니메이션 적용 */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+                <StatCard
+                    icon={Sparkles}
+                    iconColor="text-primary"
+                    value={themes.length}
+                    label="테마 카테고리"
+                />
+                <StatCard
+                    icon={Gift}
+                    iconColor="text-green-400"
+                    value={adsData.length}
+                    suffix="+"
+                    label="등록업소"
+                    textColor="text-green-400"
+                />
+                <StatCard
+                    icon={Star}
+                    iconColor="text-yellow-400"
+                    value={95}
+                    suffix="%"
+                    label="만족도"
+                    textColor="text-yellow-400"
+                />
+                <div className="bg-accent/50 rounded-xl border border-white/5 p-6 text-center">
+                    <Zap className="text-red-400 w-8 h-8 mx-auto mb-2" />
+                    <div className="text-xl md:text-2xl font-bold text-red-400 mb-2 animate-pulse">실시간</div>
+                    <div className="text-sm text-text-muted">업데이트</div>
                 </div>
             </div>
 
             {/* 테마 그리드 */}
-            <div className="mb-8">
-                <div className="flex items-center justify-between mb-3">
-                    <h2 className="text-base font-bold text-text-main">테마 선택</h2>
-                    <span className="text-xs text-text-muted">복수 선택 가능</span>
-                </div>
-                <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
+            <div className="mb-12">
+                <h2 className="text-xl font-bold text-white mb-4">테마 선택</h2>
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                     {themes.map((theme) => {
                         const Icon = theme.icon;
-                        const isActive = activeThemes.includes(theme.id);
+                        const isActive = activeTheme === theme.id;
                         return (
                             <button
                                 key={theme.id}
-                                onClick={() => toggleTheme(theme.id)}
+                                onClick={() => setActiveTheme(theme.id)}
                                 className={`
-                                    p-2 rounded-lg border transition-all duration-200 flex flex-col items-center gap-1
+                                    p-4 rounded-xl border transition-all duration-300 flex flex-col items-center gap-2
                                     ${isActive
-                                        ? 'bg-primary/10 border-primary shadow-[0_0_10px_rgba(255,107,53,0.2)]'
-                                        : 'bg-card border-border hover:border-primary/30'
+                                        ? 'bg-primary/10 border-primary shadow-[0_0_15px_rgba(212,175,55,0.3)]'
+                                        : 'bg-accent border-white/5 hover:border-white/20 hover:bg-white/5'
                                     }
                                 `}
                             >
-                                <div className={`p-2 rounded-full bg-surface ${theme.color}`}>
-                                    <Icon size={18} />
+                                <div className={`p-3 rounded-full bg-black/30 ${theme.color}`}>
+                                    <Icon size={24} />
                                 </div>
-                                <span className={`font-bold text-[11px] leading-tight text-center whitespace-nowrap ${isActive ? 'text-primary' : 'text-text-main'}`}>
+                                <span className={`font-bold text-sm ${isActive ? 'text-primary' : 'text-white'}`}>
                                     {theme.name}
                                 </span>
                             </button>
@@ -163,27 +243,21 @@ const ThemePage: React.FC = () => {
 
             {/* 결과 목록 */}
             <div className="mb-8">
-                <div className="flex flex-col gap-3 mb-4">
-                    <div className="flex items-center justify-between">
-                        <h2 className="text-base font-bold text-text-main">
-                            추천 리스트 <span className="text-primary">({filteredAds.length}건)</span>
-                        </h2>
-                        <SelectionGroup
-                            options={SORT_OPTIONS}
-                            value={sortOrder}
-                            onChange={(v) => setSortOrder(v as string)}
-                        />
-                    </div>
-                    <div className="flex flex-wrap gap-1">
-                        {activeThemeNames.map((name, idx) => (
-                            <span key={idx} className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium">
-                                #{name}
-                            </span>
-                        ))}
-                    </div>
+                <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                        <span className="text-primary">#{activeThemeData?.name}</span>
+                        <span className="text-text-muted font-normal text-base">
+                            추천 리스트 ({filteredAds.length}건)
+                        </span>
+                    </h2>
+                    <SelectionGroup
+                        options={SORT_OPTIONS}
+                        value={sortOrder}
+                        onChange={setSortOrder}
+                    />
                 </div>
 
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     {filteredAds.slice(0, displayCount).map((ad) => (
                         <AdCard
                             key={ad.id}
@@ -204,7 +278,7 @@ const ThemePage: React.FC = () => {
                     <div className="text-center mt-8">
                         <button
                             onClick={() => setDisplayCount(prev => Math.min(prev + 12, filteredAds.length))}
-                            className="px-8 py-3 bg-primary text-white font-bold rounded-lg hover:bg-primary-hover transition-colors"
+                            className="px-8 py-3 bg-primary text-black font-bold rounded-lg hover:bg-primary/90 transition-colors"
                         >
                             더보기 ({filteredAds.length - displayCount}건)
                         </button>

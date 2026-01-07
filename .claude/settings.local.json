@@ -1,0 +1,41 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run start:dev:*)",
+      "Bash(curl:*)",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OTFhYWRkNy1hNmY1LTRmOGEtOGFjOS1mMTllMjBmNzk2YmEiLCJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJyb2xlIjoiU0VFS0VSIiwidGVuYW50SWQiOiJkZWZhdWx0LXRlbmFudCIsImlhdCI6MTc2NjcxODAzOSwiZXhwIjoxNzY2NzE4OTM5fQ.VRzMjCOsXvqvOIpvp_cPF-icLyLf_8ZIX1p1M4ASReY\")",
+      "Bash(xargs cat:*)",
+      "Bash(cat:*)",
+      "Bash(git filter-branch:*)",
+      "Bash(openssl rand:*)",
+      "Bash(npm install:*)",
+      "Bash(python:*)",
+      "Bash(SEEKER_TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MmIxMzg3NC0wZGFiLTRjNDMtOGQ4OS1jZmVkODYxMzMzZWIiLCJlbWFpbCI6InNlZWtlckB0ZXN0LmNvbSIsInJvbGUiOiJTRUVLRVIiLCJ0ZW5hbnRJZCI6ImRlZmF1bHQtdGVuYW50IiwiaWF0IjoxNzY2NzIxMjg4LCJleHAiOjE3NjY3MjIxODh9.DGv0qulNLfTbHHy87QEprxjKxxBW_cTBMk4gnSdkzzA\")",
+      "Bash(__NEW_LINE__ echo \"==========================================\")",
+      "Bash(__NEW_LINE__ echo \"[1] GET /admin/stats \\(관리자 통계\\)\")",
+      "Bash(__NEW_LINE__ echo \"\")",
+      "Bash(node update-role-to-admin.js:*)",
+      "Bash(ADMIN_TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyZTYwMmJiNS04Y2NjLTQxNzktODk0OC0wOWNlNjFmNjJiN2YiLCJlbWFpbCI6ImFkbWluQHRlc3QuY29tIiwicm9sZSI6IkFETUlOIiwidGVuYW50SWQiOiJkZWZhdWx0LXRlbmFudCIsImlhdCI6MTc2NjcyMTc2MiwiZXhwIjoxNzY2NzIyNjYyfQ.U_YhPBjZ-juFYD7UG7JlI64qB5feRQZo5Snc5VL8mzc\")",
+      "Bash(node:*)",
+      "Bash(EMPLOYER_TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlODlhNzhiMi02YzIyLTQ4ZTQtODVkMy1kODJmM2QxMTE3ZTciLCJlbWFpbCI6ImVtcGxveWVyMUB0ZXN0LmNvbSIsInJvbGUiOiJFTVBMT1lFUiIsInRlbmFudElkIjoiZGVmYXVsdC10ZW5hbnQiLCJpYXQiOjE3NjY3MjI3NjQsImV4cCI6MTc2NjcyMzY2NH0.YAqp8yQrqvmAuPBtdPHdAtv3MuIhAb-EG5Y0xQQ_UZg\")",
+      "Bash(__NEW_LINE__ echo \"광고 등록 재시도...\")",
+      "Bash(__NEW_LINE__ cat /tmp/login-response.json)",
+      "Bash(NEW_TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlODlhNzhiMi02YzIyLTQ4ZTQtODVkMy1kODJmM2QxMTE3ZTciLCJlbWFpbCI6ImVtcGxveWVyMUB0ZXN0LmNvbSIsInJvbGUiOiJFTVBMT1lFUiIsInRlbmFudElkIjoiZGVmYXVsdC10ZW5hbnQiLCJpYXQiOjE3NjY3MjI5MjMsImV4cCI6MTc2NjcyMzgyM30.dSZLYRDNDJRjpAP153kDxDXdjsfJXTE_JIgZ6W82XCQ\")",
+      "Bash(npx prisma generate:*)",
+      "Bash(npx prisma db push)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(taskkill:*)",
+      "Bash(EMPLOYER_TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlODlhNzhiMi02YzIyLTQ4ZTQtODVkMy1kODJmM2QxMTE3ZTciLCJlbWFpbCI6ImVtcGxveWVyMUB0ZXN0LmNvbSIsInJvbGUiOiJFTVBMT1lFUiIsInRlbmFudElkIjoiZGVmYXVsdC10ZW5hbnQiLCJpYXQiOjE3NjY3MjMzMDUsImV4cCI6MTc2NjcyNDIwNX0.lsq_UBL8d8KCZbNQ3HBJjQsAVAM85QhJ4iM21oB11EE\")",
+      "Bash(__NEW_LINE__ curl -X POST http://localhost:4000/api/v1/ads )",
+      "Bash(__NEW_LINE__ echo \"===========================================\n[Test 1] 필수 필드 누락 - businessName\")",
+      "Bash(__NEW_LINE__ echo \"===========================================\n[Test 2] 필수 필드 누락 - title\")",
+      "Bash(__NEW_LINE__ echo \"===========================================\n[Test 3] 잘못된 데이터 타입 - ageMin \\(string\\)\")",
+      "Bash(__NEW_LINE__ echo \"===========================================\n[Test 4] SEEKER 역할로 광고 등록 시도\")",
+      "Bash(tee:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nfeat: Add comprehensive validation system and fix field mapping\n\nBackend improvements:\n- Add validation rules to create-ad.dto.ts \\(phone, age 14-100, workDays, Cloudinary URLs\\)\n- Add duplicate ad prevention in ads.service.ts\n- Implement 23 validation rules with Korean error messages\n\nFrontend improvements:\n- Fix error handling in adService.ts to extract backend validation errors\n- Fix field mapping in PostAd.tsx \\(40+ fields now properly mapped\\)\n- Map nested objects: messengers → contactKakao/Line/Telegram\n- Map nested objects: salary → salaryType/salaryAmount\n- Map nested objects: ageLimit → ageMin/ageMax/ageNoLimit\n- Map nested objects: workHours → workHoursType/Start/End\n- Add previously missing fields \\(welfare, preferredConditions, etc.\\)\n\nTesting:\n- Add backend validation test script \\(23 tests, 100% pass\\)\n- Add frontend validation test script \\(6 tests, 100% pass\\)\n- Add browser console test guide\n\nDocumentation:\n- Add 8 comprehensive documentation files\n- Document all field mappings and validation rules\n- Provide test plans and results\n\nImpact:\n- Data transmission rate: 40% → 100%\n- Fields transmitted: 8 → 40+\n- User experience: Generic errors → Specific error messages with examples\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git push:*)"
+    ]
+  }
+}
