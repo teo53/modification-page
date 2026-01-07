@@ -9,7 +9,6 @@ import { useInfiniteContent } from '../../hooks/useInfiniteContent';
 import { AdCard } from './AdCard';
 import { FeedSkeleton } from './FeedSkeleton';
 import { ChevronUp, RefreshCw, AlertCircle } from 'lucide-react';
-import type { AdListItem } from '@lunaalba/types';
 
 interface VirtualizedFeedProps {
   className?: string;
