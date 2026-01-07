@@ -58,31 +58,21 @@ body {
   background-color: var(--color-background);
   color: var(--color-text-main);
   transition: background-color 0.3s ease, color 0.3s ease;
-  /* Prevent overscroll bounce on iOS */
-  overscroll-behavior: none;
-  overscroll-behavior-y: none;
   -webkit-overflow-scrolling: touch;
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 
-/* Prevent iOS bounce on html and body */
-html, body {
+/* Prevent iOS overscroll bounce on html */
+html {
   overscroll-behavior: none;
   overscroll-behavior-y: none;
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
 }
 
-/* Main app container should scroll */
+/* Root container */
 #root {
-  width: 100%;
-  height: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
-  overscroll-behavior: none;
-  overscroll-behavior-y: none;
-  -webkit-overflow-scrolling: touch;
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 /* Custom Scrollbar - Dark */

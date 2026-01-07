@@ -77,14 +77,8 @@ const AppLayout: React.FC = () => {
           transparent={isTransparentAppBar}
         />
 
-        {/* Main Content - Simple render without complex animations */}
-        <main
-          className={`flex-1 overflow-y-auto overflow-x-hidden ${showBottomNav ? 'pb-20' : ''}`}
-          style={{
-            minHeight: 'calc(100vh - 56px - 64px)',
-            WebkitOverflowScrolling: 'touch',
-          }}
-        >
+        {/* Main Content - Simple render */}
+        <main className={`flex-1 ${showBottomNav ? 'pb-20' : ''}`}>
           <Suspense
             fallback={
               <div className="flex items-center justify-center h-64">

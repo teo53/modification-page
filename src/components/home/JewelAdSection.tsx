@@ -46,8 +46,8 @@ const JewelAdCard: React.FC<JewelAdCardProps> = ({ ad, index }) => {
     const tier = ad.productType as keyof typeof jewelConfig;
     const config = jewelConfig[tier] || jewelConfig.gold;
 
-    // Mock ad duration (days running)
-    const daysRunning = Math.floor(Math.random() * 30) + 1;
+    // Stable ad duration based on ad ID (not random)
+    const daysRunning = ((ad.id * 3) % 25) + 5; // 5-30일 범위
 
     return (
         <Link to={`/ad/${ad.id}`} className="block">
