@@ -83,7 +83,7 @@ const Signup: React.FC = () => {
         if (key === 'adult') setIsAdultVerified(checked);
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
         setSuccess('');
@@ -150,8 +150,8 @@ const Signup: React.FC = () => {
             return;
         }
 
-        // Attempt signup
-        const result = signup({
+        // Attempt signup (async for password hashing)
+        const result = await signup({
             email: formData.email,
             password: formData.password,
             name: formData.name,

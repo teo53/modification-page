@@ -1,6 +1,15 @@
 // Simple LocalStorage-based Auth Utility
 // For demo purposes - not for production
 
+// Simple hash function using SubtleCrypto (browser native)
+const hashPassword = async (password: string): Promise<string> => {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password + 'lunaalba_salt_2024'); // Add salt
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+};
+
 export interface User {
     id: string;
     email: string;
@@ -36,8 +45,8 @@ const saveUsers = (users: User[]) => {
     localStorage.setItem(USERS_KEY, JSON.stringify(users));
 };
 
-// Sign up
-export const signup = (userData: Omit<User, 'id' | 'createdAt'> & { password: string }): { success: boolean; message: string; user?: User } => {
+// Sign up (async for password hashing)
+export const signup = async (userData: Omit<User, 'id' | 'createdAt'> & { password: string }): Promise<{ success: boolean; message: string; user?: User }> => {
     const users = getUsers();
 
     // Check if email already exists
@@ -57,9 +66,10 @@ export const signup = (userData: Omit<User, 'id' | 'createdAt'> & { password: st
         createdAt: new Date().toISOString(),
     };
 
-    // Store password separately (simple hash simulation)
+    // Store hashed password separately
+    const hashedPassword = await hashPassword(userData.password);
     const passwords = JSON.parse(localStorage.getItem('lunaalba_passwords') || '{}');
-    passwords[newUser.id] = userData.password;
+    passwords[newUser.id] = hashedPassword;
     localStorage.setItem('lunaalba_passwords', JSON.stringify(passwords));
 
     users.push(newUser);
@@ -71,8 +81,8 @@ export const signup = (userData: Omit<User, 'id' | 'createdAt'> & { password: st
     return { success: true, message: '회원가입 성공!', user: newUser };
 };
 
-// Login
-export const login = (email: string, password: string): { success: boolean; message: string; user?: User } => {
+// Login (async for password hashing)
+export const login = async (email: string, password: string): Promise<{ success: boolean; message: string; user?: User }> => {
     const users = getUsers();
     const user = users.find(u => u.email === email);
 
@@ -81,7 +91,8 @@ export const login = (email: string, password: string): { success: boolean; mess
     }
 
     const passwords = JSON.parse(localStorage.getItem('lunaalba_passwords') || '{}');
-    if (passwords[user.id] !== password) {
+    const hashedPassword = await hashPassword(password);
+    if (passwords[user.id] !== hashedPassword) {
         return { success: false, message: '비밀번호가 일치하지 않습니다.' };
     }
 

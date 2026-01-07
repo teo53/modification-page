@@ -14,7 +14,7 @@ const Login: React.FC = () => {
     const [success, setSuccess] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
         setSuccess('');
@@ -27,8 +27,8 @@ const Login: React.FC = () => {
             return;
         }
 
-        // Attempt login
-        const result = login(email, password);
+        // Attempt login (async for password hashing)
+        const result = await login(email, password);
 
         if (result.success && result.user) {
             // Sync with AppContext
