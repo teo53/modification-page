@@ -2,9 +2,8 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "pnpm --filter @lunaalba/types build && pnpm --filter @lunaalba/web build",
   "outputDirectory": "apps/web/dist",
-  "installCommand": "npm install -g pnpm && pnpm install --ignore-scripts",
+  "installCommand": "corepack enable && pnpm install",
   "framework": "vite",
-  "nodeVersion": "22.x",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ]
