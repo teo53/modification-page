@@ -1,10 +1,10 @@
-
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import {
     Bold, Italic, Underline, AlignLeft, AlignCenter, AlignRight, AlignJustify,
     List, ListOrdered, Image as ImageIcon, Link as LinkIcon,
     Palette, Highlighter, Minus
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
 interface RichTextEditorProps {
     value: string;
@@ -12,8 +12,37 @@ interface RichTextEditorProps {
     placeholder?: string;
 }
 
+interface ToolbarButtonProps {
+    icon: LucideIcon;
+    command: string;
+    arg?: string;
+    title?: string;
+    onExecCommand: (command: string, value?: string) => void;
+}
+
+// Moved outside to prevent recreation on each render
+const ToolbarButton: React.FC<ToolbarButtonProps> = ({
+    icon: Icon,
+    command,
+    arg,
+    title,
+    onExecCommand
+}) => (
+    <button
+        type="button"
+        title={title}
+        onMouseDown={(e) => {
+            e.preventDefault();
+            onExecCommand(command, arg);
+        }}
+        className="p-1.5 rounded hover:bg-white/10 transition-colors text-text-muted"
+    >
+        <Icon size={16} />
+    </button>
+);
+
 const DEFAULT_TEMPLATE = `
-    < p > - 업소소개 :</p >
+    <p>- 업소소개 :</p>
 <p><br></p>
 <p>- 시스템(근무타임) :</p>
 <p><br></p>
@@ -25,7 +54,7 @@ const DEFAULT_TEMPLATE = `
 <p><br></p>
 `;
 
-const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, placeholder: _placeholder }) => {
+const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange }) => {
     const editorRef = useRef<HTMLDivElement>(null);
     const [isFocused, setIsFocused] = useState(false);
 
@@ -34,6 +63,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, placeh
         if (!value && onChange) {
             onChange(DEFAULT_TEMPLATE);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
@@ -56,41 +86,15 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, placeh
         }
     };
 
-    const execCommand = (command: string, value: string | undefined = undefined) => {
+    const execCommand = useCallback((command: string, value: string | undefined = undefined) => {
         document.execCommand(command, false, value);
         if (editorRef.current) {
             editorRef.current.focus();
         }
-    };
-
-    const ToolbarButton = ({
-        icon: Icon,
-        command,
-        arg,
-        active = false,
-        title
-    }: {
-        icon: any,
-        command: string,
-        arg?: string,
-        active?: boolean,
-        title?: string
-    }) => (
-        <button
-            type="button"
-            title={title}
-            onMouseDown={(e) => {
-                e.preventDefault();
-                execCommand(command, arg);
-            }}
-            className={`p - 1.5 rounded hover: bg - white / 10 transition - colors ${active ? 'text-primary' : 'text-text-muted'} `}
-        >
-            <Icon size={16} />
-        </button>
-    );
+    }, []);
 
     return (
-        <div className={`border rounded - lg overflow - hidden transition - colors bg - white text - black ${isFocused ? 'border-primary' : 'border-gray-300'} `}>
+        <div className={`border rounded-lg overflow-hidden transition-colors bg-white text-black ${isFocused ? 'border-primary' : 'border-gray-300'}`}>
             {/* Toolbar */}
             <div className="bg-gray-100 border-b border-gray-300 p-2 flex flex-wrap gap-1 items-center">
                 <div className="flex items-center gap-1 mr-2">
@@ -122,22 +126,22 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, placeh
 
                 <div className="w-px h-5 bg-gray-300 mx-1" />
 
-                <ToolbarButton icon={Bold} command="bold" title="Bold" />
-                <ToolbarButton icon={Italic} command="italic" title="Italic" />
-                <ToolbarButton icon={Underline} command="underline" title="Underline" />
-                <ToolbarButton icon={Minus} command="strikeThrough" title="Strike" />
+                <ToolbarButton icon={Bold} command="bold" title="Bold" onExecCommand={execCommand} />
+                <ToolbarButton icon={Italic} command="italic" title="Italic" onExecCommand={execCommand} />
+                <ToolbarButton icon={Underline} command="underline" title="Underline" onExecCommand={execCommand} />
+                <ToolbarButton icon={Minus} command="strikeThrough" title="Strike" onExecCommand={execCommand} />
 
                 <div className="w-px h-5 bg-gray-300 mx-1" />
 
-                <ToolbarButton icon={AlignLeft} command="justifyLeft" title="Align Left" />
-                <ToolbarButton icon={AlignCenter} command="justifyCenter" title="Align Center" />
-                <ToolbarButton icon={AlignRight} command="justifyRight" title="Align Right" />
-                <ToolbarButton icon={AlignJustify} command="justifyFull" title="Justify" />
+                <ToolbarButton icon={AlignLeft} command="justifyLeft" title="Align Left" onExecCommand={execCommand} />
+                <ToolbarButton icon={AlignCenter} command="justifyCenter" title="Align Center" onExecCommand={execCommand} />
+                <ToolbarButton icon={AlignRight} command="justifyRight" title="Align Right" onExecCommand={execCommand} />
+                <ToolbarButton icon={AlignJustify} command="justifyFull" title="Justify" onExecCommand={execCommand} />
 
                 <div className="w-px h-5 bg-gray-300 mx-1" />
 
-                <ToolbarButton icon={List} command="insertUnorderedList" title="Bullet List" />
-                <ToolbarButton icon={ListOrdered} command="insertOrderedList" title="Numbered List" />
+                <ToolbarButton icon={List} command="insertUnorderedList" title="Bullet List" onExecCommand={execCommand} />
+                <ToolbarButton icon={ListOrdered} command="insertOrderedList" title="Numbered List" onExecCommand={execCommand} />
 
                 <div className="w-px h-5 bg-gray-300 mx-1" />
 

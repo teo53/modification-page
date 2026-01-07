@@ -1,37 +1,33 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { MessageSquare, ThumbsUp, Eye } from 'lucide-react';
 
 import communityData from '../data/community_data.json';
 import { getUserPosts } from '../utils/communityStorage';
 
+// Category mapping
+const categoryMap: { [key: string]: string } = {
+    'job': '구인구직',
+    'review': '업소후기',
+    'region': '지역정보',
+    'qna': '질문답변',
+    'free': '자유게시판'
+};
+
 const CommunityPage: React.FC = () => {
     const [searchParams] = useSearchParams();
-    const [selectedCategory, setSelectedCategory] = useState('전체');
-    const [userPosts, setUserPosts] = useState(getUserPosts());
 
-    // Refresh user posts on mount
-    useEffect(() => {
-        setUserPosts(getUserPosts());
-    }, []);
-
-    // Map URL category params to Korean category names
-    useEffect(() => {
+    // Initialize category from URL params
+    const initialCategory = useMemo(() => {
         const categoryParam = searchParams.get('category');
-        if (categoryParam) {
-            const categoryMap: { [key: string]: string } = {
-                'job': '구인구직',
-                'review': '업소후기',
-                'region': '지역정보',
-                'qna': '질문답변',
-                'free': '자유게시판'
-            };
-            const mappedCategory = categoryMap[categoryParam];
-            if (mappedCategory) {
-                setSelectedCategory(mappedCategory);
-            }
+        if (categoryParam && categoryMap[categoryParam]) {
+            return categoryMap[categoryParam];
         }
+        return '전체';
     }, [searchParams]);
+
+    const [selectedCategory, setSelectedCategory] = useState(initialCategory);
+    const [userPosts] = useState(() => getUserPosts());
 
     const categories = [
         { id: '전체', label: '전체' },

@@ -2,7 +2,23 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Clock, MapPin } from 'lucide-react';
 
-const textAds = [
+interface HighlightConfig {
+    color: 'yellow' | 'pink' | 'green' | 'cyan';
+    text: string;
+}
+
+interface TextAd {
+    id: number;
+    title: string;
+    location: string;
+    badge?: string;
+    isNew?: boolean;
+    isHot?: boolean;
+    isUrgent?: boolean;
+    highlightConfig?: HighlightConfig;
+}
+
+const textAds: TextAd[] = [
     { id: 1, title: '⭐세상 어디에도 없는 【직인으뮤】 육상리제이!!!', location: '서울', badge: 'VIP', isNew: true, highlightConfig: { color: 'pink', text: '직인으뮤' } },
     { id: 2, title: '친절접수☎메이저식♬한국판페이♬만족지급♬안심운영 ★★초보환영 고수우대★★', location: '서울', badge: 'HOT', isHot: true },
     { id: 3, title: '☆☆☆톨미 이벤트☆☆☆', location: '서울', badge: 'NEW', highlightConfig: { color: 'cyan', text: '이벤트' } },
@@ -26,7 +42,7 @@ const TextAdsList: React.FC = () => {
     const highlightAds = textAds.filter((_, i) => i % 2 === 0);
     const standardAds = textAds.filter((_, i) => i % 2 !== 0);
 
-    const renderTitle = (title: string, config: any) => {
+    const renderTitle = (title: string, config?: HighlightConfig) => {
         const colorMap: Record<string, string> = {
             yellow: 'bg-yellow-500/30 text-yellow-100 shadow-[0_0_10px_rgba(234,179,8,0.2)]',
             pink: 'bg-pink-500/30 text-pink-100 shadow-[0_0_10px_rgba(236,72,153,0.2)]',
@@ -34,7 +50,7 @@ const TextAdsList: React.FC = () => {
             cyan: 'bg-cyan-500/30 text-cyan-100 shadow-[0_0_10px_rgba(6,182,212,0.2)]',
         };
 
-        const colorClass = colorMap[config?.color] || colorMap.yellow;
+        const colorClass = config?.color ? colorMap[config.color] : colorMap.yellow;
         const textToHighlight = config?.text;
 
         if (!textToHighlight) {
@@ -93,7 +109,7 @@ const TextAdsList: React.FC = () => {
                                         </div>
                                     </div>
                                     <h3 className="truncate">
-                                        {renderTitle(ad.title, (ad as any).highlightConfig)}
+                                        {renderTitle(ad.title, ad.highlightConfig)}
                                     </h3>
                                 </div>
                             </Link>
