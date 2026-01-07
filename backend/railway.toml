@@ -1,8 +1,0 @@
-# Railway Configuration for DalbitAlba Backend
-
-[build]
-builder = "dockerfile"
-
-[deploy]
-healthcheckPath = "/api/v1/health"
-healthcheckTimeout = 300
