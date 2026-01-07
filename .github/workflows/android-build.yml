@@ -1,0 +1,151 @@
+name: Android APK Build
+
+on:
+  push:
+    branches: [ main, master, 'claude/*' ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Build type (debug/release)'
+        required: true
+        default: 'debug'
+        type: choice
+        options:
+          - debug
+          - release
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Show build info
+        run: |
+          echo "=== Build Info ==="
+          echo "Commit: $(git rev-parse HEAD)"
+          echo "Branch: $(git branch --show-current)"
+          echo "Date: $(date)"
+          git log --oneline -5
+          echo "=================="
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Clean and install dependencies
+        run: |
+          npm cache clean --force
+          rm -rf node_modules
+          npm ci
+
+      - name: Build web assets
+        run: |
+          npm run build
+          echo "Build completed at: $(date)" > dist/build-info.txt
+          echo "Commit: $(git rev-parse HEAD)" >> dist/build-info.txt
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Sync Capacitor
+        run: npx cap sync android
+
+      - name: Make Gradle wrapper executable
+        run: chmod +x android/gradlew
+
+      - name: Auto-increment version code
+        run: |
+          VERSION_FILE="android/app/version.properties"
+          if [ -f "$VERSION_FILE" ]; then
+            CURRENT=$(grep VERSION_CODE "$VERSION_FILE" | cut -d'=' -f2)
+            NEXT=$((CURRENT + 1))
+            echo "VERSION_CODE=$NEXT" > "$VERSION_FILE"
+            echo "Version code incremented to $NEXT"
+          fi
+
+      - name: Decode Keystore (Release only)
+        if: github.event.inputs.build_type == 'release' && github.event_name == 'workflow_dispatch'
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/release-key.jks
+          echo "storeFile=release-key.jks" > android/keystore.properties
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> android/keystore.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/keystore.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/keystore.properties
+
+      - name: Build Debug APK
+        if: github.event.inputs.build_type != 'release' || github.event_name != 'workflow_dispatch'
+        working-directory: android
+        run: ./gradlew assembleDebug --stacktrace
+
+      - name: Build Release APK
+        if: github.event.inputs.build_type == 'release' && github.event_name == 'workflow_dispatch'
+        working-directory: android
+        run: ./gradlew assembleRelease --stacktrace
+
+      - name: Upload Debug APK
+        if: github.event.inputs.build_type != 'release' || github.event_name != 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: LunaAlba-debug
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 30
+
+      - name: Create debug keystore for signing
+        if: github.event.inputs.build_type != 'release' || github.event_name != 'workflow_dispatch'
+        run: |
+          keytool -genkey -v -keystore android/app/debug.keystore \
+            -storepass android -alias androiddebugkey -keypass android \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -dname "CN=Android Debug,O=Android,C=US"
+
+      - name: Build signed Release APK
+        if: github.event.inputs.build_type != 'release' || github.event_name != 'workflow_dispatch'
+        working-directory: android
+        run: |
+          ./gradlew assembleRelease \
+            -Pandroid.injected.signing.store.file=$(pwd)/app/debug.keystore \
+            -Pandroid.injected.signing.store.password=android \
+            -Pandroid.injected.signing.key.alias=androiddebugkey \
+            -Pandroid.injected.signing.key.password=android
+
+      - name: Upload signed Release APK
+        if: github.event.inputs.build_type != 'release' || github.event_name != 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: LunaAlba-release-signed
+          path: android/app/build/outputs/apk/release/app-release.apk
+          retention-days: 30
+
+      - name: Upload Release APK
+        if: github.event.inputs.build_type == 'release' && github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: LunaAlba-release
+          path: android/app/build/outputs/apk/release/app-release.apk
+          retention-days: 90
+
+      - name: Commit version increment
+        if: success()
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add android/app/version.properties
+          git diff --staged --quiet || git commit -m "chore: Auto-increment version code [skip ci]"
+          git push || true

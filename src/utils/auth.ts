@@ -24,12 +24,20 @@ export interface User {
     name: string;
     nickname?: string;
     phone: string;
-    phoneVerified: boolean;  // 핸드폰 실명인증 완료 여부
-    gender: 'male' | 'female';  // 성별 (커뮤니티 접근 제한용)
+    phoneVerified?: boolean;  // 핸드폰 실명인증 완료 여부
+    gender?: 'male' | 'female';  // 성별 (커뮤니티 접근 제한용)
     type: 'worker' | 'advertiser';
+    role?: 'user' | 'admin'; // Admin role for CRM access
     businessNumber?: string;
     businessName?: string;
     createdAt: string;
+    // Job seeker profile fields
+    age?: string;
+    location?: string;
+    desiredJob?: string[];
+    experience?: string;
+    availableTime?: string[];
+    introduction?: string;
 }
 
 const USERS_KEY = 'lunaalba_users';
@@ -206,6 +214,12 @@ export const isLoggedIn = (): boolean => {
 export const isAdvertiser = (): boolean => {
     const user = getCurrentUser();
     return user?.type === 'advertiser';
+};
+
+// Check if admin
+export const isAdmin = (): boolean => {
+    const user = getCurrentUser();
+    return user?.role === 'admin';
 };
 
 // Migrate all existing plain text passwords to hashed

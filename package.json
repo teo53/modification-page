@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "generate-icons": "node scripts/generate-icons.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
@@ -20,6 +21,10 @@
     "audit:commit": "node .audit/scripts/pre-commit.cjs"
   },
   "dependencies": {
+    "@capacitor/android": "^8.0.0",
+    "@capacitor/app": "^8.0.0",
+    "@capacitor/cli": "^8.0.0",
+    "@capacitor/core": "^8.0.0",
     "@tailwindcss/postcss": "^4.1.17",
     "autoprefixer": "^10.4.22",
     "clsx": "^2.1.1",
@@ -55,9 +60,12 @@
     "globals": "^16.5.0",
     "husky": "^9.1.7",
     "jsdom": "^27.3.0",
+    "sharp": "^0.34.5",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.3",
     "vite": "^7.2.2",
-    "vitest": "^4.0.16"
+    "vite-plugin-pwa": "^1.2.0",
+    "vitest": "^4.0.16",
+    "workbox-window": "^7.4.0"
   }
 }

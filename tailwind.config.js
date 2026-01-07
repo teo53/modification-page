@@ -10,11 +10,11 @@ export default {
         // ===== 레거시 컬러 (기존 호환성 유지) =====
         background: '#111111',
         primary: {
-          DEFAULT: '#D4AF37',
-          hover: '#B5952F',
+          DEFAULT: '#E5C04B', // Bright Gold
+          hover: '#D4AF37',
         },
         secondary: {
-          DEFAULT: '#FF007F',
+          DEFAULT: '#FF007F', // Pink
           hover: '#D9006C',
         },
         accent: '#1E1E1E',
