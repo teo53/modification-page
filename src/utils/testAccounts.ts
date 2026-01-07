@@ -1,6 +1,15 @@
 // 테스트 계정 시드 유틸리티
 // 이 파일을 브라우저 콘솔에서 import하거나, 앱 초기화 시 실행
 
+// Hash function (must match auth.ts)
+const hashPassword = async (password: string): Promise<string> => {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password + 'lunaalba_salt_2024');
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+};
+
 export interface TestAccount {
     email: string;
     password: string;
@@ -46,8 +55,8 @@ export const testAccounts: TestAccount[] = [
     }
 ];
 
-// 테스트 계정 시드 함수
-export const seedTestAccounts = () => {
+// 테스트 계정 시드 함수 (async for password hashing)
+export const seedTestAccounts = async (): Promise<number> => {
     const USERS_KEY = 'lunaalba_users';
     const PASSWORDS_KEY = 'lunaalba_passwords';
 
@@ -57,11 +66,11 @@ export const seedTestAccounts = () => {
 
     let addedCount = 0;
 
-    testAccounts.forEach((account) => {
+    for (const account of testAccounts) {
         // 이미 존재하는 이메일인지 확인
         if (existingUsers.find((u: { email: string }) => u.email === account.email)) {
             console.log(`[TestSeed] 이미 존재: ${account.email}`);
-            return;
+            continue;
         }
 
         const userId = `test_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -79,11 +88,12 @@ export const seedTestAccounts = () => {
         };
 
         existingUsers.push(newUser);
-        existingPasswords[userId] = account.password;
+        // Hash password before storing
+        existingPasswords[userId] = await hashPassword(account.password);
         addedCount++;
 
         console.log(`[TestSeed] 계정 추가: ${account.email} (${account.type})`);
-    });
+    }
 
     // 저장
     localStorage.setItem(USERS_KEY, JSON.stringify(existingUsers));
