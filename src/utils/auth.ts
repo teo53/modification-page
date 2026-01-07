@@ -11,6 +11,14 @@ export interface User {
     businessNumber?: string;
     businessName?: string;
     createdAt: string;
+    // Job seeker profile fields
+    age?: string;
+    gender?: string;
+    location?: string;
+    desiredJob?: string[];
+    experience?: string;
+    availableTime?: string[];
+    introduction?: string;
 }
 
 const USERS_KEY = 'lunaalba_users';

@@ -23,6 +23,7 @@ const ThemePage = lazy(() => import('./pages/ThemePage'));
 const UrgentPage = lazy(() => import('./pages/UrgentPage'));
 const IndustryPage = lazy(() => import('./pages/IndustryPage'));
 const JobSeekersPage = lazy(() => import('./pages/JobSeekersPage'));
+const PostResumePage = lazy(() => import('./pages/PostResumePage'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const FavoritesPage = lazy(() => import('./pages/FavoritesPage'));
 const MyPage = lazy(() => import('./pages/MyPage'));
@@ -125,6 +126,14 @@ function App() {
               element={
                 <Suspense fallback={<PageLoader />}>
                   <JobSeekersPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="post-resume"
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <PostResumePage />
                 </Suspense>
               }
             />

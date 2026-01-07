@@ -93,20 +93,20 @@ const convertToAd = (scrapedAd: any, productType: Advertisement['productType']):
     };
 };
 
-// Jewel Tier Ads (Top Premium - first 12 ads split into tiers)
-export const diamondAds: Advertisement[] = scrapedAdsData.slice(0, 3).map(ad => convertToAd(ad, 'diamond'));
-export const sapphireAds: Advertisement[] = scrapedAdsData.slice(3, 6).map(ad => convertToAd(ad, 'sapphire'));
-export const rubyAds: Advertisement[] = scrapedAdsData.slice(6, 9).map(ad => convertToAd(ad, 'ruby'));
-export const goldAds: Advertisement[] = scrapedAdsData.slice(9, 12).map(ad => convertToAd(ad, 'gold'));
+// Jewel Tier Ads - Diamond:2, Sapphire:4, Ruby:6, Gold:8 (total 20)
+export const diamondAds: Advertisement[] = scrapedAdsData.slice(0, 2).map(ad => convertToAd(ad, 'diamond'));
+export const sapphireAds: Advertisement[] = scrapedAdsData.slice(2, 6).map(ad => convertToAd(ad, 'sapphire'));
+export const rubyAds: Advertisement[] = scrapedAdsData.slice(6, 12).map(ad => convertToAd(ad, 'ruby'));
+export const goldAds: Advertisement[] = scrapedAdsData.slice(12, 20).map(ad => convertToAd(ad, 'gold'));
 
 // VIP Premium Ads (next 12 scraped ads)
-export const vipAds: Advertisement[] = scrapedAdsData.slice(12, 24).map(ad => convertToAd(ad, 'vip'));
+export const vipAds: Advertisement[] = scrapedAdsData.slice(20, 32).map(ad => convertToAd(ad, 'vip'));
 
 // Special Ads (next 24 scraped ads)
-export const specialAds: Advertisement[] = scrapedAdsData.slice(24, 48).map(ad => convertToAd(ad, 'special'));
+export const specialAds: Advertisement[] = scrapedAdsData.slice(32, 56).map(ad => convertToAd(ad, 'special'));
 
 // Regular Ads (remaining scraped ads)
-export const regularAds: Advertisement[] = scrapedAdsData.slice(48).map(ad => convertToAd(ad, 'general'));
+export const regularAds: Advertisement[] = scrapedAdsData.slice(56).map(ad => convertToAd(ad, 'general'));
 
 // All jewel ads combined (for top section)
 export const jewelAds = [...diamondAds, ...sapphireAds, ...rubyAds, ...goldAds];

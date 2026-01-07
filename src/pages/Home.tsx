@@ -67,39 +67,41 @@ const Home: React.FC = () => {
 
   return (
     <PullToRefresh onRefresh={handleRefresh} isRefreshing={isRefreshing}>
-      <div ref={containerRef} className="min-h-screen bg-background" style={{ overscrollBehavior: 'none' }}>
-        {/* Location Selector - Compact version (AppBar handles logo) */}
-        <div className="sticky top-14 z-40 bg-card border-b border-border px-4 py-2">
-          <button
-            onClick={() => setShowLocationDropdown(!showLocationDropdown)}
-            className="flex items-center gap-1 text-sm h-9 px-2 -ml-2 rounded-lg hover:bg-surface focus-visible:ring-2 focus-visible:ring-primary"
-            aria-label="지역 선택"
-            aria-expanded={showLocationDropdown}
-            aria-haspopup="listbox"
-          >
-            <MapPin size={16} className="text-primary" />
-            <span className="text-text-main font-medium">{selectedLocation}</span>
-            <ChevronDown size={16} className="text-text-muted" />
-          </button>
+      <div ref={containerRef} className="min-h-screen bg-background">
+        {/* Hero Banner with Location Selector */}
+        <section className="px-4 pt-2 pb-3">
+          {/* Location Selector Row */}
+          <div className="flex items-center justify-between mb-3">
+            <button
+              onClick={() => setShowLocationDropdown(!showLocationDropdown)}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-surface border border-border"
+              aria-label="지역 선택"
+            >
+              <MapPin size={16} className="text-primary" />
+              <span className="text-text-main font-medium text-sm">{selectedLocation}</span>
+              <ChevronDown size={14} className="text-text-muted" />
+            </button>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-text-muted">유흥업소 전문 구인구직</span>
+            </div>
+          </div>
 
+          {/* Location Dropdown */}
           {showLocationDropdown && (
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="absolute left-4 right-4 mt-2 bg-card rounded-xl shadow-lg border border-border z-50"
+              className="absolute left-4 right-4 mt-1 bg-card rounded-xl shadow-lg border border-border z-50"
               role="listbox"
-              aria-label="지역 목록"
             >
               {locations.map((loc) => (
                 <button
                   key={loc}
-                  role="option"
-                  aria-selected={selectedLocation === loc}
                   onClick={() => {
                     setSelectedLocation(loc);
                     setShowLocationDropdown(false);
                   }}
-                  className={`w-full h-12 px-4 text-left text-sm border-b border-border last:border-0 focus-visible:bg-surface ${
+                  className={`w-full h-11 px-4 text-left text-sm border-b border-border last:border-0 ${
                     selectedLocation === loc ? 'text-primary font-medium bg-primary/5' : 'text-text-main'
                   }`}
                 >
@@ -108,44 +110,40 @@ const Home: React.FC = () => {
               ))}
             </motion.div>
           )}
-        </div>
 
-        {/* Hero Banner Carousel */}
-        <section className="px-4 py-4">
+          {/* Banner Carousel */}
           <div className="relative rounded-2xl overflow-hidden">
             <AnimatePresence mode="wait">
               <motion.div
-                className={`bg-gradient-to-r ${banners[bannerIndex].bg} p-6 min-h-[160px]`}
+                className={`bg-gradient-to-r ${banners[bannerIndex].bg} p-5 min-h-[140px] flex flex-col justify-center`}
                 key={bannerIndex}
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -50 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                <p className="text-white/80 text-sm mb-1">올 겨울 든든하게 보낼</p>
-                <h2 className="text-white text-2xl font-bold mb-4">
+                <p className="text-white/80 text-xs mb-1">지금 바로 시작하세요</p>
+                <h2 className="text-white text-xl font-bold mb-3">
                   {banners[bannerIndex].title}
                 </h2>
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  className="bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm"
-                >
+                <div className="bg-white/20 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-xs w-fit">
                   {banners[bannerIndex].subtitle}
-                </motion.button>
+                </div>
               </motion.div>
             </AnimatePresence>
-            <div className="absolute bottom-3 right-3 bg-black/30 text-white text-xs px-2 py-1 rounded-full">
-              {bannerIndex + 1} / {banners.length}
+            <div className="absolute bottom-2 right-2 bg-black/40 text-white text-[10px] px-2 py-0.5 rounded-full">
+              {bannerIndex + 1}/{banners.length}
             </div>
           </div>
+
           {/* Banner dots */}
-          <div className="flex justify-center gap-1.5 mt-3">
+          <div className="flex justify-center gap-1.5 mt-2">
             {banners.map((_, idx) => (
               <button
                 key={idx}
                 onClick={() => setBannerIndex(idx)}
-                className={`h-2 rounded-full transition-all duration-300 ${
-                  idx === bannerIndex ? 'bg-primary w-6' : 'bg-border w-2'
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  idx === bannerIndex ? 'bg-primary w-5' : 'bg-border w-1.5'
                 }`}
               />
             ))}
@@ -153,34 +151,37 @@ const Home: React.FC = () => {
         </section>
 
         {/* Quick Menu Icons */}
-        <section className="px-4 py-2">
+        <section className="px-4 py-3">
           <div className="flex justify-around">
             {quickMenuItems.map((item) => (
               <Link key={item.id} to={item.path}>
                 <motion.div
                   whileTap={{ scale: 0.95 }}
-                  className="flex flex-col items-center gap-2"
+                  className="flex flex-col items-center gap-1.5"
                 >
-                  <div className="w-14 h-14 bg-accent rounded-2xl flex items-center justify-center">
-                    <item.Icon size={24} className="text-primary" />
+                  <div className="w-12 h-12 bg-accent rounded-xl flex items-center justify-center">
+                    <item.Icon size={22} className="text-primary" />
                   </div>
-                  <span className="text-xs font-medium text-text-main">{item.label}</span>
+                  <span className="text-[11px] font-medium text-text-main">{item.label}</span>
                 </motion.div>
               </Link>
             ))}
           </div>
         </section>
 
-        {/* Mission Banner */}
-        <section className="px-4 py-3">
-          <div className="bg-primary/10 rounded-xl p-4 flex items-center justify-between">
-            <div>
-              <p className="text-text-main font-bold">매일 미션 참여하고</p>
-              <p className="text-text-muted text-sm">현금처럼 쓸 수 있는 포인트 받자!</p>
+        {/* Event Banner */}
+        <section className="px-4 pb-3">
+          <div className="bg-gradient-to-r from-primary/20 to-primary/5 rounded-xl p-3 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center">
+                <Gift size={20} className="text-primary" />
+              </div>
+              <div>
+                <p className="text-text-main font-bold text-sm">신규 회원 혜택</p>
+                <p className="text-text-muted text-xs">가입시 포인트 3,000P 지급!</p>
+              </div>
             </div>
-            <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-              <Gift size={24} className="text-primary" />
-            </div>
+            <ChevronRight size={18} className="text-text-muted" />
           </div>
         </section>
 

@@ -3,89 +3,104 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   FileText, MapPin, Briefcase, Clock, ChevronRight,
-  Search, User, Star, Award, Calendar
+  Search, User, Award, Calendar, CheckCircle2
 } from 'lucide-react';
 
-// Mock job seeker data
+// Mock job seeker data - 유흥업소 구직자
 const jobSeekers = [
   {
     id: 1,
-    title: '성실하고 책임감 있는 20대 여성입니다',
+    title: '강남 라운지 경력 3년 여성입니다',
     name: '김**',
-    age: '20대 초반',
+    age: '20대 중반',
     gender: '여',
     location: '서울 강남구',
-    desiredJob: '서빙, 카페',
-    experience: '2년',
-    availableTime: '주말 가능',
-    introduction: '음식점 서빙 경력 2년입니다. 친절하고 빠릿빠릿하게 일합니다.',
+    desiredJob: '라운지, 룸살롱',
+    experience: '3년',
+    availableTime: '야간 전문',
+    introduction: '고급 라운지 3년 경력입니다. 서비스 마인드 확실하고 단골 관리 잘합니다.',
     verified: true,
-    premium: true,
+    hireCount: 12,
     postedAt: '10분 전',
   },
   {
     id: 2,
-    title: '경력 5년차 바텐더입니다',
+    title: '호텔바 경력 5년차 바텐더입니다',
     name: '이**',
     age: '30대 초반',
     gender: '남',
     location: '서울 홍대',
-    desiredJob: '바텐더, 홀서빙',
+    desiredJob: '바텐더, 호프',
     experience: '5년',
     availableTime: '야간 가능',
-    introduction: '호텔바, 칵테일바 경력 5년입니다. 칵테일 자격증 보유.',
+    introduction: '호텔바, 칵테일바 경력 5년입니다. 칵테일 자격증 보유. 고객 응대 능숙.',
     verified: true,
-    premium: true,
+    hireCount: 8,
     postedAt: '30분 전',
   },
   {
     id: 3,
-    title: '대학생 아르바이트 구합니다',
+    title: '노래방 도우미 경험있습니다',
     name: '박**',
     age: '20대 초반',
     gender: '여',
     location: '서울 신촌',
-    desiredJob: '카페, 편의점',
+    desiredJob: '노래방, 주점',
     experience: '6개월',
-    availableTime: '평일 오후',
-    introduction: '시간 약속 잘 지키고 성실하게 일합니다!',
+    availableTime: '주말 야간',
+    introduction: '밝은 성격이고 노래도 잘합니다. 시간 약속 잘 지킵니다!',
     verified: false,
-    premium: false,
+    hireCount: 2,
     postedAt: '1시간 전',
   },
   {
     id: 4,
-    title: '주점/라운지 경력자입니다',
+    title: '텐프로/하이퍼블릭 경력자입니다',
     name: '최**',
     age: '20대 후반',
     gender: '여',
     location: '서울 강남구',
-    desiredJob: '주점, 라운지, 룸',
-    experience: '3년',
+    desiredJob: '텐프로, 하이퍼블릭',
+    experience: '4년',
     availableTime: '야간 전문',
-    introduction: '고급 라운지 3년 경력입니다. 서비스 마인드 확실합니다.',
+    introduction: '강남 유명 업소 4년 경력입니다. TC 관리 능숙하고 매출 상위권 유지.',
     verified: true,
-    premium: true,
+    hireCount: 15,
     postedAt: '2시간 전',
   },
   {
     id: 5,
-    title: '성실한 30대 남성 구직중',
+    title: '클럽/라운지바 서빙 경력자',
     name: '정**',
-    age: '30대 중반',
+    age: '20대 초반',
     gender: '남',
-    location: '서울 송파구',
-    desiredJob: '배달, 물류',
-    experience: '1년',
-    availableTime: '시간 협의',
-    introduction: '배달 경험 있습니다. 오토바이 면허 보유.',
+    location: '서울 이태원',
+    desiredJob: '클럽, 라운지바',
+    experience: '2년',
+    availableTime: '금/토 야간',
+    introduction: '이태원 클럽 2년 경력. 체력 좋고 빠릿빠릿하게 일합니다.',
     verified: true,
-    premium: false,
+    hireCount: 5,
     postedAt: '3시간 전',
+  },
+  {
+    id: 6,
+    title: '룸살롱 경력 여성 구직합니다',
+    name: '한**',
+    age: '20대 후반',
+    gender: '여',
+    location: '서울 역삼동',
+    desiredJob: '룸살롱, 라운지',
+    experience: '5년',
+    availableTime: '평일/주말 가능',
+    introduction: '역삼동 일대 룸살롱 경력 5년. 단골 고객 다수 보유.',
+    verified: true,
+    hireCount: 20,
+    postedAt: '4시간 전',
   },
 ];
 
-const categories = ['전체', '서빙/홀', '주점/라운지', '카페', '배달', '사무'];
+const categories = ['전체', '라운지/룸', '텐프로', '노래방', '클럽/바', '호프/주점'];
 
 const JobSeekersPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('전체');
@@ -94,11 +109,11 @@ const JobSeekersPage: React.FC = () => {
   const filteredSeekers = jobSeekers.filter(seeker => {
     if (selectedCategory !== '전체') {
       const categoryMap: Record<string, string[]> = {
-        '서빙/홀': ['서빙', '홀서빙'],
-        '주점/라운지': ['주점', '라운지', '룸', '바텐더'],
-        '카페': ['카페'],
-        '배달': ['배달', '물류'],
-        '사무': ['사무'],
+        '라운지/룸': ['라운지', '룸살롱', '룸'],
+        '텐프로': ['텐프로', '하이퍼블릭'],
+        '노래방': ['노래방'],
+        '클럽/바': ['클럽', '라운지바', '바'],
+        '호프/주점': ['호프', '주점', '바텐더'],
       };
       const keywords = categoryMap[selectedCategory] || [];
       if (!keywords.some(k => seeker.desiredJob.includes(k))) {
@@ -112,9 +127,9 @@ const JobSeekersPage: React.FC = () => {
   });
 
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="min-h-screen bg-background pb-24">
       {/* Header Section */}
-      <div className="sticky top-14 z-30 bg-card border-b border-border">
+      <div className="bg-card border-b border-border">
         {/* Search Bar */}
         <div className="px-4 py-3">
           <div className="relative">
@@ -152,11 +167,11 @@ const JobSeekersPage: React.FC = () => {
         <div className="bg-primary/10 rounded-xl p-4 flex items-center justify-between">
           <div>
             <p className="text-text-main font-bold">오늘의 구직자</p>
-            <p className="text-text-muted text-sm">실시간 업데이트 중</p>
+            <p className="text-text-muted text-sm">유흥업소 전문 인력</p>
           </div>
           <div className="flex items-center gap-1 text-primary font-bold text-2xl">
             <User size={24} />
-            {jobSeekers.length * 12}+
+            {jobSeekers.length * 15}+
           </div>
         </div>
       </div>
@@ -168,14 +183,23 @@ const JobSeekersPage: React.FC = () => {
             <motion.div
               whileTap={{ scale: 0.98 }}
               className={`bg-card rounded-xl border overflow-hidden ${
-                seeker.premium ? 'border-primary/50' : 'border-border'
+                seeker.hireCount >= 10 ? 'border-primary/50' : 'border-border'
               }`}
             >
-              {/* Premium Badge */}
-              {seeker.premium && (
-                <div className="bg-primary/10 px-3 py-1.5 flex items-center gap-2">
-                  <Star size={12} className="text-primary fill-primary" />
-                  <span className="text-xs font-bold text-primary">프리미엄 구직자</span>
+              {/* Hire Count Badge */}
+              {seeker.hireCount >= 5 && (
+                <div className="bg-primary/10 px-3 py-1.5 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 size={14} className="text-primary" />
+                    <span className="text-xs font-bold text-primary">
+                      구직 성공 {seeker.hireCount}회
+                    </span>
+                  </div>
+                  {seeker.hireCount >= 10 && (
+                    <span className="text-[10px] bg-primary text-white px-2 py-0.5 rounded-full font-bold">
+                      베테랑
+                    </span>
+                  )}
                 </div>
               )}
 
@@ -194,7 +218,7 @@ const JobSeekersPage: React.FC = () => {
                     <User size={24} className="text-text-muted" />
                   </div>
                   <div className="flex-1">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <span className="font-medium text-text-main">{seeker.name}</span>
                       <span className="text-xs text-text-muted">{seeker.age} · {seeker.gender}</span>
                       {seeker.verified && (
@@ -252,7 +276,7 @@ const JobSeekersPage: React.FC = () => {
       )}
 
       {/* Post Resume CTA */}
-      <div className="fixed bottom-20 left-0 right-0 px-4 py-3 bg-gradient-to-t from-background to-transparent">
+      <div className="fixed bottom-20 left-0 right-0 px-4 py-3 bg-gradient-to-t from-background via-background to-transparent">
         <Link to="/post-resume">
           <motion.button
             whileTap={{ scale: 0.98 }}
