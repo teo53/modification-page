@@ -8,6 +8,7 @@ export interface User {
     nickname?: string;
     phone: string;
     type: 'worker' | 'advertiser';
+    role?: 'user' | 'admin'; // Admin role for CRM access
     businessNumber?: string;
     businessName?: string;
     createdAt: string;
@@ -114,4 +115,10 @@ export const isLoggedIn = (): boolean => {
 export const isAdvertiser = (): boolean => {
     const user = getCurrentUser();
     return user?.type === 'advertiser';
+};
+
+// Check if admin
+export const isAdmin = (): boolean => {
+    const user = getCurrentUser();
+    return user?.role === 'admin';
 };

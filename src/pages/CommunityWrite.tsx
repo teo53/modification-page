@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { ArrowLeft, Camera, X, Send } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
+import { ArrowLeft, Camera, X, Send, LogIn, UserPlus } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { createPost } from '../utils/communityStorage';
+import { getCurrentUser } from '../utils/auth';
 
 const categories = [
     { id: '구인구직', label: '구인구직', description: '구인/구직 관련 글' },
@@ -16,6 +17,13 @@ const CommunityWrite: React.FC = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const initialCategory = searchParams.get('category') || '자유게시판';
+    const [user, setUser] = useState(getCurrentUser());
+
+    // Check login status
+    useEffect(() => {
+        const currentUser = getCurrentUser();
+        setUser(currentUser);
+    }, []);
 
     const [formData, setFormData] = useState({
         category: initialCategory,
@@ -76,6 +84,45 @@ const CommunityWrite: React.FC = () => {
             navigate('/community');
         }, 1500);
     };
+
+    // Login required check
+    if (!user) {
+        return (
+            <div className="min-h-screen bg-background flex items-center justify-center p-4">
+                <div className="bg-card rounded-2xl border border-border p-8 max-w-md w-full text-center">
+                    <div className="w-20 h-20 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <LogIn size={40} className="text-primary" />
+                    </div>
+                    <h2 className="text-xl font-bold text-text-main mb-2">로그인이 필요합니다</h2>
+                    <p className="text-text-muted mb-6">
+                        게시글을 작성하려면 먼저 로그인해주세요.
+                    </p>
+                    <div className="space-y-3">
+                        <Link
+                            to="/login"
+                            className="w-full py-3 rounded-xl bg-primary text-white font-bold flex items-center justify-center gap-2"
+                        >
+                            <LogIn size={20} />
+                            로그인
+                        </Link>
+                        <Link
+                            to="/signup"
+                            className="w-full py-3 rounded-xl bg-surface border border-border text-text-main font-medium flex items-center justify-center gap-2"
+                        >
+                            <UserPlus size={20} />
+                            회원가입
+                        </Link>
+                        <button
+                            onClick={() => navigate('/community')}
+                            className="w-full py-3 text-text-muted hover:text-text-main transition-colors text-sm"
+                        >
+                            커뮤니티로 돌아가기
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     if (showSuccess) {
         return (

@@ -91,6 +91,7 @@ function appReducer(state: AppState, action: AppAction): AppState {
 
     case 'LOGOUT':
       localStorage.removeItem('user');
+      localStorage.removeItem('lunaalba_current_user');
       return {
         ...state,
         user: null,
@@ -165,11 +166,22 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   // Initialize from localStorage
   useEffect(() => {
-    // Load user
-    const savedUser = localStorage.getItem('user');
+    // Load user - check both possible storage keys
+    const savedUser = localStorage.getItem('lunaalba_current_user') || localStorage.getItem('user');
     if (savedUser) {
       try {
-        dispatch({ type: 'SET_USER', payload: JSON.parse(savedUser) });
+        const userData = JSON.parse(savedUser);
+        // Normalize user data format
+        dispatch({
+          type: 'SET_USER',
+          payload: {
+            id: userData.id,
+            name: userData.name,
+            email: userData.email,
+            type: userData.type === 'worker' ? 'user' : userData.type === 'advertiser' ? 'advertiser' : userData.type,
+            phone: userData.phone
+          }
+        });
       } catch (e) {
         console.error('Failed to parse user', e);
       }

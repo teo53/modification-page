@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
-import { Users, DollarSign, AlertTriangle, CheckCircle, XCircle, Clock, MessageSquare } from 'lucide-react';
+import { Users, DollarSign, AlertTriangle, CheckCircle, XCircle, Clock, MessageSquare, ShieldX, LogIn } from 'lucide-react';
+import { getCurrentUser } from '../utils/auth';
 
 const pieData = [
     { name: 'VIP', value: 400 },
@@ -19,7 +21,63 @@ const revenueData = [
 ];
 
 const AdminCRM: React.FC = () => {
+    const navigate = useNavigate();
     const [heatmapPoints, setHeatmapPoints] = React.useState<{ x: number, y: number, value: number }[]>([]);
+    const [user, setUser] = useState(getCurrentUser());
+    const [hasAccess, setHasAccess] = useState(false);
+
+    useEffect(() => {
+        const currentUser = getCurrentUser();
+        setUser(currentUser);
+        setHasAccess(currentUser?.role === 'admin');
+    }, []);
+
+    // No access - not logged in
+    if (!user) {
+        return (
+            <div className="min-h-screen bg-background flex items-center justify-center p-4">
+                <div className="bg-card rounded-2xl border border-border p-8 max-w-md w-full text-center">
+                    <div className="w-20 h-20 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <ShieldX size={40} className="text-red-500" />
+                    </div>
+                    <h2 className="text-xl font-bold text-text-main mb-2">접근 권한이 없습니다</h2>
+                    <p className="text-text-muted mb-6">
+                        관리자 로그인이 필요합니다.
+                    </p>
+                    <Link
+                        to="/login"
+                        className="w-full py-3 rounded-xl bg-primary text-white font-bold flex items-center justify-center gap-2"
+                    >
+                        <LogIn size={20} />
+                        로그인
+                    </Link>
+                </div>
+            </div>
+        );
+    }
+
+    // No admin access
+    if (!hasAccess) {
+        return (
+            <div className="min-h-screen bg-background flex items-center justify-center p-4">
+                <div className="bg-card rounded-2xl border border-border p-8 max-w-md w-full text-center">
+                    <div className="w-20 h-20 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <ShieldX size={40} className="text-red-500" />
+                    </div>
+                    <h2 className="text-xl font-bold text-text-main mb-2">관리자 권한이 필요합니다</h2>
+                    <p className="text-text-muted mb-6">
+                        이 페이지는 관리자만 접근할 수 있습니다.
+                    </p>
+                    <button
+                        onClick={() => navigate('/')}
+                        className="w-full py-3 rounded-xl bg-surface border border-border text-text-main font-medium"
+                    >
+                        홈으로 돌아가기
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="container mx-auto px-4 py-8">

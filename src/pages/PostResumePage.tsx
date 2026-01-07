@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   User, MapPin, Briefcase, Clock, Camera, ChevronDown,
-  Phone, Calendar, FileText, CheckCircle2, AlertCircle
+  Phone, Calendar, FileText, CheckCircle2, AlertCircle, LogIn, UserPlus
 } from 'lucide-react';
+import { getCurrentUser } from '../utils/auth';
 
 interface ResumeFormData {
   name: string;
@@ -40,6 +41,14 @@ const locations = [
 
 const PostResumePage: React.FC = () => {
   const navigate = useNavigate();
+  const [user, setUser] = useState(getCurrentUser());
+
+  // Check login status
+  useEffect(() => {
+    const currentUser = getCurrentUser();
+    setUser(currentUser);
+  }, []);
+
   const [formData, setFormData] = useState<ResumeFormData>({
     name: '',
     age: '',
@@ -105,6 +114,45 @@ const PostResumePage: React.FC = () => {
       navigate('/job-seekers');
     }, 2000);
   };
+
+  // Login required check
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <div className="bg-card rounded-2xl border border-border p-8 max-w-md w-full text-center">
+          <div className="w-20 h-20 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-6">
+            <LogIn size={40} className="text-primary" />
+          </div>
+          <h2 className="text-xl font-bold text-text-main mb-2">로그인이 필요합니다</h2>
+          <p className="text-text-muted mb-6">
+            이력서를 등록하려면 먼저 로그인해주세요.
+          </p>
+          <div className="space-y-3">
+            <Link
+              to="/login"
+              className="w-full py-3 rounded-xl bg-primary text-white font-bold flex items-center justify-center gap-2"
+            >
+              <LogIn size={20} />
+              로그인
+            </Link>
+            <Link
+              to="/signup"
+              className="w-full py-3 rounded-xl bg-surface border border-border text-text-main font-medium flex items-center justify-center gap-2"
+            >
+              <UserPlus size={20} />
+              회원가입
+            </Link>
+            <button
+              onClick={() => navigate('/job-seekers')}
+              className="w-full py-3 text-text-muted hover:text-text-main transition-colors text-sm"
+            >
+              구직글 목록으로 돌아가기
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (showSuccess) {
     return (
