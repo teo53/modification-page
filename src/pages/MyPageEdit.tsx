@@ -59,7 +59,7 @@ const MyPageEdit: React.FC = () => {
     setFormData(prev => ({
       ...prev,
       desiredJob: prev.desiredJob.includes(job)
-        ? prev.desiredJob.filter(j => j !== job)
+        ? prev.desiredJob.filter((j: string) => j !== job)
         : [...prev.desiredJob, job]
     }));
   };
@@ -68,7 +68,7 @@ const MyPageEdit: React.FC = () => {
     setFormData(prev => ({
       ...prev,
       availableTime: prev.availableTime.includes(time)
-        ? prev.availableTime.filter(t => t !== time)
+        ? prev.availableTime.filter((t: string) => t !== time)
         : [...prev.availableTime, time]
     }));
   };
