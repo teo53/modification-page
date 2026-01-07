@@ -6,11 +6,13 @@ on:
     paths:
       - 'apps/web/**'
       - 'packages/types/**'
+      - 'pnpm-lock.yaml'
   pull_request:
     branches: [main, develop]
     paths:
       - 'apps/web/**'
       - 'packages/types/**'
+      - 'pnpm-lock.yaml'
 
 jobs:
   lint-and-build:
