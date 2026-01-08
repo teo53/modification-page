@@ -507,19 +507,27 @@ const AdDetail: React.FC = () => {
                 </div>
             </div>
 
-            {/* 모바일 하단 고정 버튼 */}
-            <div className="md:hidden fixed bottom-0 left-0 right-0 p-4 bg-accent/95 backdrop-blur-md border-t border-white/10 flex gap-3 z-50">
-                <a
-                    href={`tel:${primaryPhone}`}
-                    className="flex-1 py-3.5 rounded-xl bg-primary text-black font-bold flex items-center justify-center gap-2"
-                >
-                    <Phone size={20} />
-                    전화하기
-                </a>
-                <button className="flex-1 py-3.5 rounded-xl bg-[#FAE100] text-[#371D1E] font-bold flex items-center justify-center gap-2">
-                    <MessageCircle size={20} />
-                    카톡문의
-                </button>
+            {/* 모바일 하단 고정 버튼 - z-30으로 헤더(z-40)보다 아래 설정, safe-area 대응 */}
+            <div
+                className="md:hidden fixed bottom-0 left-0 right-0 bg-accent/95 backdrop-blur-md border-t border-white/10 z-30"
+                style={{ paddingBottom: 'max(16px, env(safe-area-inset-bottom))' }}
+            >
+                <div className="p-4 pt-3 flex gap-3">
+                    <a
+                        href={`tel:${primaryPhone}`}
+                        className="flex-1 py-4 rounded-xl bg-primary text-black font-bold flex items-center justify-center gap-2 active:scale-95 transition-transform touch-manipulation"
+                    >
+                        <Phone size={20} />
+                        전화하기
+                    </a>
+                    <button
+                        className="flex-1 py-4 rounded-xl bg-[#FAE100] text-[#371D1E] font-bold flex items-center justify-center gap-2 active:scale-95 transition-transform touch-manipulation"
+                        onClick={() => window.open('https://open.kakao.com/', '_blank')}
+                    >
+                        <MessageCircle size={20} />
+                        카톡문의
+                    </button>
+                </div>
             </div>
         </div>
     );

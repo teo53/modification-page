@@ -27,6 +27,50 @@ body {
   -webkit-text-size-adjust: 100%;
 }
 
+/* ===== 모바일 스크롤 튕김(rubber banding) 방지 ===== */
+/* iOS Safari, Android Chrome 등에서 스크롤 끝에서 튕김 현상 방지 */
+html {
+  overscroll-behavior: none;
+  overscroll-behavior-y: none;
+}
+
+body {
+  overscroll-behavior: none;
+  overscroll-behavior-y: none;
+  /* iOS에서 pull-to-refresh 방지 */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 모바일 앱 환경에서 스크롤 바운스 완전 비활성화 */
+@supports (-webkit-touch-callout: none) {
+  /* iOS Safari 전용 */
+  html, body {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  #root {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+}
+
+/* Android Chrome에서도 overscroll 방지 */
+@media screen and (max-width: 768px) {
+  html, body {
+    overscroll-behavior-y: contain;
+  }
+}
+
 /* ===== Global Button & Interactive Element Styles ===== */
 button,
 [role="button"],
