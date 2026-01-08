@@ -145,12 +145,12 @@ const AdminCRM: React.FC = () => {
         }
     };
 
-    // Admin auth check - re-check on auth state changes
+    // Admin auth check - role 필드 기반 (이메일 하드코딩 제거)
     useEffect(() => {
         const checkAuth = () => {
             const user = getCurrentUser();
-            const adminEmails = ['admin@lunaalba.com', 'admin@example.com', 'admin@dalbitalba.com'];
-            if (user && adminEmails.includes(user.email)) {
+            // role 필드가 'admin'인지 확인 (이메일 기반 체크 제거)
+            if (user && user.role === 'admin') {
                 setIsAuthorized(true);
             } else {
                 setIsAuthorized(false);
@@ -165,20 +165,32 @@ const AdminCRM: React.FC = () => {
 
         // Load users from API (with localStorage fallback)
         const loadUsers = async () => {
-            const result = await adminService.getUsers(userFilter);
-            if (result.success && result.data) {
-                setUsers(result.data as unknown as StoredUser[]);
+            try {
+                const result = await adminService.getUsers(userFilter);
+                if (result.success && result.data) {
+                    setUsers(result.data as unknown as StoredUser[]);
+                }
+            } catch (error) {
+                console.error('Failed to load users:', error);
+                // Fallback to empty array on error
+                setUsers([]);
             }
         };
         loadUsers();
 
         // Load pending ads (API or localStorage)
         const loadPendingAds = async () => {
-            if (USE_API_ADS) {
-                const apiAds = await fetchPendingAdsFromApi();
-                setPendingAds(apiAds);
-            } else {
-                setPendingAds(getPendingAds());
+            try {
+                if (USE_API_ADS) {
+                    const apiAds = await fetchPendingAdsFromApi();
+                    setPendingAds(apiAds);
+                } else {
+                    setPendingAds(getPendingAds());
+                }
+            } catch (error) {
+                console.error('Failed to load pending ads:', error);
+                // Fallback to empty array on error
+                setPendingAds([]);
             }
         };
         loadPendingAds();

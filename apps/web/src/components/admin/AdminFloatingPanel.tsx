@@ -7,38 +7,32 @@ import { Link } from 'react-router-dom';
 import { Settings, Users, BarChart2, ChevronUp, ChevronDown, X, Shield } from 'lucide-react';
 import { getCurrentUser } from '../../utils/auth';
 
-// 관리자 이메일 목록
-const ADMIN_EMAILS = ['admin@lunaalba.com', 'admin@example.com', 'admin@dalbitalba.com'];
-
 const AdminFloatingPanel: React.FC = () => {
     const [isAdmin, setIsAdmin] = useState(false);
     const [isExpanded, setIsExpanded] = useState(false);
     const [isMinimized, setIsMinimized] = useState(false);
 
     useEffect(() => {
+        // 관리자 상태 체크 함수 (role 필드 기반)
+        const checkAdminStatus = () => {
+            const user = getCurrentUser();
+            setIsAdmin(user !== null && user.role === 'admin');
+        };
+
         // 초기 체크
         checkAdminStatus();
 
         // storage 변경 감지 (로그인/로그아웃 시)
-        const handleStorageChange = () => {
-            checkAdminStatus();
-        };
-
-        window.addEventListener('storage', handleStorageChange);
+        window.addEventListener('storage', checkAdminStatus);
 
         // 커스텀 이벤트 리스너 (같은 탭에서의 로그인/로그아웃 감지)
-        window.addEventListener('authStateChanged', handleStorageChange);
+        window.addEventListener('authStateChanged', checkAdminStatus);
 
         return () => {
-            window.removeEventListener('storage', handleStorageChange);
-            window.removeEventListener('authStateChanged', handleStorageChange);
+            window.removeEventListener('storage', checkAdminStatus);
+            window.removeEventListener('authStateChanged', checkAdminStatus);
         };
     }, []);
-
-    const checkAdminStatus = () => {
-        const user = getCurrentUser();
-        setIsAdmin(user !== null && ADMIN_EMAILS.includes(user.email));
-    };
 
     // 관리자가 아니면 렌더링하지 않음
     if (!isAdmin) return null;

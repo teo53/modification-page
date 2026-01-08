@@ -14,7 +14,6 @@ interface DataModeContextType {
 
 const DataModeContext = createContext<DataModeContextType | undefined>(undefined);
 
-const ADMIN_EMAILS = ['admin@lunaalba.com', 'admin@example.com', 'admin@dalbitalba.com'];
 const DATA_MODE_KEY = 'lunaalba_data_mode';
 const CRM_MODE_KEY = 'lunaalba_crm_mode';
 
@@ -30,7 +29,8 @@ export const DataModeProvider: React.FC<{ children: ReactNode }> = ({ children }
     useEffect(() => {
         const checkAdmin = () => {
             const user = getCurrentUser();
-            setIsAdmin(user ? ADMIN_EMAILS.includes(user.email) : false);
+            // role 필드가 'admin'인지 확인 (이메일 기반 체크 제거)
+            setIsAdmin(user ? user.role === 'admin' : false);
         };
 
         checkAdmin();

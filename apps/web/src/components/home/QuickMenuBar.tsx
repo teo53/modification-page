@@ -33,10 +33,10 @@ const QuickMenuBar: React.FC<QuickMenuBarProps> = ({
 }) => {
     const currentUser = getCurrentUser();
 
-    // 관리자 또는 광고주인 경우 광고게시 메뉴 추가
+    // 관리자 또는 광고주인 경우 광고게시 메뉴 추가 (role 필드 기반)
     const isAdminOrAdvertiser = currentUser && (
         currentUser.type === 'advertiser' ||
-        currentUser.email === 'admin@lunaalba.com'
+        currentUser.role === 'admin'
     );
 
     const visibleMenuItems = isAdminOrAdvertiser

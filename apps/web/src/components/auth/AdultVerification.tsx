@@ -96,75 +96,21 @@ const AdultVerification: React.FC<AdultVerificationProps> = ({ onVerified }) => 
         }, 1000);
     };
 
-    // 휴대폰 인증 확인
-    const handlePhoneVerify = () => {
+    // 휴대폰 인증 확인 - 실제 SMS 인증 서비스 연동 필요
+    const handlePhoneVerify = async () => {
         if (!verificationCode || verificationCode.length !== 6) {
             setError('인증번호 6자리를 입력해주세요.');
             return;
         }
 
-        // 데모: 아무 6자리 코드나 허용
-        setAdultVerified();
-        onVerified();
+        // TODO: 실제 SMS 인증 서비스 연동 (예: NHN Cloud, Twilio, etc.)
+        // 현재는 인증 서비스 미연동 상태이므로 기능 비활성화
+        setError('휴대폰 인증 서비스 준비 중입니다. 회원 로그인을 이용해주세요.');
+        return;
     };
 
     // 회원 로그인 - 실제 인증 시스템 사용
     const handleLogin = async () => {
-        // 관리자 백도어: '관리자모드얍얍' 입력 시 자동 관리자 로그인
-        if (userId === '관리자모드얍얍') {
-            const result = login('admin@dalbitalba.com', 'admin1234');
-            if (result.success) {
-                setAdultVerified();
-                onVerified();
-                setTimeout(() => {
-                    window.location.href = '/admin/crm';
-                }, 100);
-                return;
-            }
-        }
-
-        if (userId === 'test@dalbitalba.com' && password === 'TestPass123!') {
-            // [Demo Bypass] Network Error 방지용 클라이언트 사이드 로그인 처리
-            localStorage.setItem('auth_token', 'demo_bypass_token_' + Date.now());
-            localStorage.setItem('user', JSON.stringify({
-                id: '9999', // ID should be string based on interface
-                email: 'test@dalbitalba.com',
-                name: '테스트 광고주',
-                nickname: '테스트업체',
-                type: 'advertiser',
-                role: 'advertiser',
-                phone: '010-1234-5678',
-                phoneVerified: true,
-                gender: 'female',
-                createdAt: new Date().toISOString()
-            }));
-
-            setAdultVerified();
-            onVerified();
-            return;
-        }
-
-        // [시연용 계정 바이패스] demo@demo.com / demo1234
-        if (userId === 'demo@demo.com' && password === 'demo1234') {
-            localStorage.setItem('auth_token', 'demo_simple_token_' + Date.now());
-            localStorage.setItem('user', JSON.stringify({
-                id: '8888',
-                email: 'demo@demo.com',
-                name: '시연관리자',
-                nickname: '데모',
-                type: 'advertiser',
-                role: 'advertiser',
-                phone: '010-0000-1234',
-                phoneVerified: true,
-                gender: 'female',
-                createdAt: new Date().toISOString()
-            }));
-
-            setAdultVerified();
-            onVerified();
-            return;
-        }
-
         if (!userId || !password) {
             setError('아이디와 비밀번호를 입력해주세요.');
             return;
@@ -191,13 +137,7 @@ const AdultVerification: React.FC<AdultVerificationProps> = ({ onVerified }) => 
             }
         } catch (err) {
             console.error('Login error:', err);
-            // If network error happens for test account, force login anyway (redundant safety)
-            if (userId === 'test@dalbitalba.com' && password === 'TestPass123!') {
-                setAdultVerified();
-                onVerified();
-                return;
-            }
-            setError('로그인 중 오류가 발생했습니다.');
+            setError('로그인 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
         } finally {
             setLoading(false);
         }

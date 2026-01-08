@@ -232,8 +232,8 @@ const PostAd = () => {
             return;
         }
 
-        // Admin has full access to all features
-        const isAdmin = user.email === 'admin@lunaalba.com' || user.email === 'admin@example.com';
+        // Admin has full access to all features (role 필드 기반)
+        const isAdmin = user.role === 'admin';
 
         if (!isAdmin && user.type !== 'advertiser') {
             setLoading(false); // Stop loading if it was true
