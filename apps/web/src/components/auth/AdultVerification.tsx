@@ -1,19 +1,23 @@
 import React, { useState } from 'react';
-import { Smartphone, CreditCard, User } from 'lucide-react';
+import { Smartphone, CreditCard, User, X } from 'lucide-react';
 import { login, loginWithApi, USE_API_AUTH, getCurrentUser } from '../../utils/auth';
+import Signup from '../../pages/Signup';
 
 // 성인인증 여부를 로컬 스토리지에 저장 (세션 스토리지에서 변경)
 const ADULT_VERIFIED_KEY = 'lunaalba_adult_verified';
 const ADULT_VERIFIED_TIMESTAMP = 'lunaalba_adult_verified_time';
 
+// 개발 환경 자동 우회 설정 (환경 변수로 제어 가능)
+const DEV_AUTO_BYPASS = import.meta.env.VITE_DEV_ADULT_BYPASS !== 'false';
+
 export const isAdultVerified = (): boolean => {
-    // 개발 환경에서는 자동으로 인증 우회 (localhost)
+    // 개발 환경에서 자동 우회 (환경 변수로 비활성화 가능)
     const isDev = window.location.hostname === 'localhost' ||
         window.location.hostname === '127.0.0.1' ||
         import.meta.env.DEV;
 
-    if (isDev) {
-        return true; // 개발 환경에서는 자동 인증
+    if (isDev && DEV_AUTO_BYPASS) {
+        return true; // 개발 환경에서는 자동 인증 (VITE_DEV_ADULT_BYPASS=false로 비활성화)
     }
 
     // 이미 로그인된 사용자는 자동으로 성인인증 통과
@@ -54,6 +58,9 @@ interface AdultVerificationProps {
 }
 
 const AdultVerification: React.FC<AdultVerificationProps> = ({ onVerified }) => {
+    // 회원가입 모달 상태
+    const [showSignupModal, setShowSignupModal] = useState(false);
+
     // 회원 로그인 상태
     const [memberType, setMemberType] = useState<'business' | 'personal'>('business');
     const [userId, setUserId] = useState('');
@@ -390,11 +397,7 @@ const AdultVerification: React.FC<AdultVerificationProps> = ({ onVerified }) => 
                             {/* 회원가입 링크 */}
                             <div className="mt-6 text-center">
                                 <button
-                                    onClick={() => {
-                                        setAdultVerified();
-                                        onVerified();
-                                        window.location.href = '/signup';
-                                    }}
+                                    onClick={() => setShowSignupModal(true)}
                                     className="text-gray-500 hover:text-white text-sm transition-colors border-b border-transparent hover:border-white/50 pb-0.5"
                                 >
                                     아직 회원이 아니신가요? <span className="text-[#EF5350]">회원가입 하기</span>
@@ -428,6 +431,36 @@ const AdultVerification: React.FC<AdultVerificationProps> = ({ onVerified }) => 
                     <p className="text-xs text-gray-600">위반 시 3년 이하의 징역 또는 3천만원 이하의 벌금에 처해질 수 있습니다.</p>
                 </div>
             </div>
+
+            {/* 회원가입 모달 */}
+            {showSignupModal && (
+                <div className="fixed inset-0 bg-black/80 z-[60] flex items-center justify-center p-4 overflow-auto">
+                    <div className="relative w-full max-w-2xl max-h-[90vh] overflow-auto bg-[#1a1a1a] rounded-2xl">
+                        {/* 모달 헤더 */}
+                        <div className="sticky top-0 z-10 bg-[#1a1a1a] border-b border-white/10 px-6 py-4 flex items-center justify-between">
+                            <h2 className="text-xl font-bold text-white">회원가입</h2>
+                            <button
+                                onClick={() => setShowSignupModal(false)}
+                                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                            >
+                                <X size={24} className="text-gray-400" />
+                            </button>
+                        </div>
+                        {/* 회원가입 폼 */}
+                        <div className="p-6">
+                            <Signup
+                                isModal={true}
+                                onSignupSuccess={() => {
+                                    setShowSignupModal(false);
+                                    setAdultVerified();
+                                    onVerified();
+                                }}
+                                onClose={() => setShowSignupModal(false)}
+                            />
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

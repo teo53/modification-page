@@ -5,7 +5,13 @@ import { signup } from '../utils/auth';
 import PhoneVerification from '../components/auth/PhoneVerification';
 import BusinessVerification from '../components/auth/BusinessVerification';
 
-const Signup: React.FC = () => {
+interface SignupProps {
+    isModal?: boolean;
+    onSignupSuccess?: () => void;
+    onClose?: () => void;
+}
+
+const Signup: React.FC<SignupProps> = ({ isModal = false, onSignupSuccess, onClose }) => {
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -220,10 +226,16 @@ const Signup: React.FC = () => {
         if (result.success) {
             setSuccess(result.message + ' 잠시 후 이동합니다...');
             setTimeout(() => {
-                if (result.user?.type === 'advertiser') {
-                    navigate('/advertiser/dashboard');
+                // 모달 모드일 때는 콜백 호출
+                if (isModal && onSignupSuccess) {
+                    onSignupSuccess();
                 } else {
-                    navigate('/');
+                    // 일반 페이지 모드
+                    if (result.user?.type === 'advertiser') {
+                        navigate('/advertiser/dashboard');
+                    } else {
+                        navigate('/');
+                    }
                 }
             }, 1500);
         } else {
@@ -234,13 +246,15 @@ const Signup: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center py-12 px-4">
-            <div className="max-w-lg w-full space-y-8">
-                {/* Header */}
-                <div className="text-center">
-                    <h1 className="text-3xl font-bold text-white mb-2">회원가입</h1>
-                    <p className="text-text-muted">달빛알바의 회원이 되어주세요</p>
-                </div>
+        <div className={isModal ? "" : "min-h-screen flex items-center justify-center py-12 px-4"}>
+            <div className={isModal ? "space-y-6" : "max-w-lg w-full space-y-8"}>
+                {/* Header - 모달 모드에서는 숨김 (모달 자체 헤더 사용) */}
+                {!isModal && (
+                    <div className="text-center">
+                        <h1 className="text-3xl font-bold text-white mb-2">회원가입</h1>
+                        <p className="text-text-muted">달빛알바의 회원이 되어주세요</p>
+                    </div>
+                )}
 
                 <form onSubmit={handleSubmit} className="mt-8 space-y-6 bg-accent rounded-xl p-8 border border-white/5">
                     {/* Error Message */}
@@ -675,7 +689,17 @@ const Signup: React.FC = () => {
                     {/* Login Link */}
                     <div className="text-center text-sm text-text-muted">
                         이미 계정이 있으신가요?{' '}
-                        <Link to="/login" className="text-primary hover:underline font-medium">로그인</Link>
+                        {isModal ? (
+                            <button
+                                type="button"
+                                onClick={onClose}
+                                className="text-primary hover:underline font-medium"
+                            >
+                                로그인으로 돌아가기
+                            </button>
+                        ) : (
+                            <Link to="/login" className="text-primary hover:underline font-medium">로그인</Link>
+                        )}
                     </div>
                 </form>
             </div>
