@@ -235,11 +235,16 @@ export class AuthController {
     // ============================================
     private setRefreshTokenCookie(res: Response, token: string) {
         const maxAge = 7 * 24 * 60 * 60 * 1000; // 7일
+        const isProduction = process.env.NODE_ENV === 'production';
 
         res.cookie('refreshToken', token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
+            // 프로덕션에서는 HTTPS 필수
+            secure: isProduction,
+            // 'none': 크로스 오리진 지원 (모바일 앱 Capacitor 지원)
+            // 'lax': 같은 사이트에서만 (기본 웹 브라우저)
+            // 프로덕션에서는 'none' + secure: true로 크로스 오리진 지원
+            sameSite: isProduction ? 'none' : 'lax',
             maxAge,
             path: '/',
         });

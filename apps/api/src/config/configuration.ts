@@ -34,6 +34,11 @@ export default () => ({
         apiSecret: process.env.CLOUDINARY_API_SECRET,
     },
 
+    // SMS (Solapi)
+    SMS_API_KEY: process.env.SMS_API_KEY,
+    SMS_API_SECRET: process.env.SMS_API_SECRET,
+    SMS_SENDER: process.env.SMS_SENDER,
+
     // Redis
     redis: {
         url: process.env.UPSTASH_REDIS_REST_URL,
