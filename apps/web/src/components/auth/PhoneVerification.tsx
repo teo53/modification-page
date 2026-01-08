@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Phone, Shield, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
-import { useToast } from '../common/Toast';
+import { useToastOptional } from '../common/Toast';
 
 interface PhoneVerificationProps {
     phone: string;
@@ -23,13 +23,8 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
     const [error, setError] = useState('');
     const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-    // Toast hook (graceful fallback if not available)
-    let toast: { showDemoCode: (code: string) => void; showToast: (toast: any) => void } | null = null;
-    try {
-        toast = useToast();
-    } catch {
-        // Toast not available, will use alert fallback
-    }
+    // Toast hook - safely returns null if not in provider context
+    const toast = useToastOptional();
 
     // Timer countdown
     useEffect(() => {

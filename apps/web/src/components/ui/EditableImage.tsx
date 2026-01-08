@@ -21,10 +21,20 @@ const EditableImage: React.FC<EditableImageProps> = ({
     isEditMode = false,
     className = ''
 }) => {
-    const { getContent, updateContent } = sectionId && itemId && field ? useContentEditor() : { getContent: () => initialSrc, updateContent: () => { } };
+    // Always call the hook unconditionally
+    const contentEditor = useContentEditor();
 
-    const shouldEdit = isEditMode && sectionId && itemId && field;
-    const src = shouldEdit ? getContent(sectionId!, itemId!, field!, initialSrc) : initialSrc;
+    const hasEditParams = sectionId && itemId && field;
+    const shouldEdit = isEditMode && hasEditParams;
+
+    // Use content editor if params are available, otherwise use initial values
+    const src = shouldEdit && hasEditParams
+        ? contentEditor.getContent(sectionId!, itemId!, field!, initialSrc)
+        : initialSrc;
+
+    const updateContent = hasEditParams
+        ? contentEditor.updateContent
+        : () => { /* no-op */ };
 
     const [isDragging, setIsDragging] = useState(false);
     const [isHovered, setIsHovered] = useState(false);

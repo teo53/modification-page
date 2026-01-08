@@ -118,7 +118,7 @@ const Step3ProductSelection: React.FC<Step3Props> = ({
                     <div className="sticky top-4">
                         <div className="bg-gradient-to-b from-white/5 to-white/[0.02] rounded-xl border border-white/10 p-3">
                             {/* Web View - 실제 레이아웃 구조 반영 */}
-                            {true && (
+                            {(
                                 <div className="bg-gradient-to-b from-gray-900 to-gray-950 rounded-lg p-3 border border-white/10">
                                     <div className="text-center mb-2">
                                         <span className="text-[9px] text-white/50 font-medium">메인 페이지 광고 위치</span>

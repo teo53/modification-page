@@ -16,6 +16,50 @@ interface HorizontalFilterBarProps {
     }) => void;
 }
 
+// FilterGroup component moved outside to avoid "Cannot create components during render" error
+interface FilterGroupProps {
+    title: string;
+    category: string;
+    options: FilterOption[];
+    selected: string;
+    onFilterChange: (category: string, value: string) => void;
+}
+
+const FilterGroup: React.FC<FilterGroupProps> = ({
+    title,
+    category,
+    options,
+    selected,
+    onFilterChange
+}) => (
+    <div className="flex items-center gap-4">
+        <span className="text-sm font-medium text-primary whitespace-nowrap w-12">{title}</span>
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+            {options.map((option) => {
+                const Icon = option.icon;
+                const isSelected = selected === option.id;
+                return (
+                    <button
+                        key={option.id}
+                        onClick={() => onFilterChange(category, option.id)}
+                        className={`
+                            px-4 py-2 rounded-lg text-sm whitespace-nowrap transition-all duration-200
+                            flex items-center gap-1.5 font-medium border
+                            ${isSelected
+                                ? 'bg-primary text-black border-primary shadow-[0_0_15px_rgba(212,175,55,0.3)]'
+                                : 'bg-accent/50 text-text-muted border-white/5 hover:border-white/20 hover:text-white hover:bg-white/5'
+                            }
+                        `}
+                    >
+                        {Icon && <Icon size={14} className={isSelected ? 'text-black' : 'text-text-muted group-hover:text-white'} />}
+                        {option.label}
+                    </button>
+                );
+            })}
+        </div>
+    </div>
+);
+
 const HorizontalFilterBar: React.FC<HorizontalFilterBarProps> = ({ onFilterChange }) => {
     const [selectedRegion, setSelectedRegion] = useState('all');
     const [selectedIndustry, setSelectedIndustry] = useState('all');
@@ -23,7 +67,7 @@ const HorizontalFilterBar: React.FC<HorizontalFilterBarProps> = ({ onFilterChang
     const [selectedType, setSelectedType] = useState('all');
 
     const handleFilterChange = (category: string, value: string) => {
-        let newFilters = {
+        const newFilters = {
             region: selectedRegion,
             industry: selectedIndustry,
             salary: selectedSalary,
@@ -90,45 +134,6 @@ const HorizontalFilterBar: React.FC<HorizontalFilterBarProps> = ({ onFilterChang
         { id: 'same-day', label: '당일지급' },
     ];
 
-    const FilterGroup = ({
-        title,
-        category,
-        options,
-        selected
-    }: {
-        title: string;
-        category: string;
-        options: FilterOption[];
-        selected: string;
-    }) => (
-        <div className="flex items-center gap-4">
-            <span className="text-sm font-medium text-primary whitespace-nowrap w-12">{title}</span>
-            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
-                {options.map((option) => {
-                    const Icon = option.icon;
-                    const isSelected = selected === option.id;
-                    return (
-                        <button
-                            key={option.id}
-                            onClick={() => handleFilterChange(category, option.id)}
-                            className={`
-                                px-4 py-2 rounded-lg text-sm whitespace-nowrap transition-all duration-200
-                                flex items-center gap-1.5 font-medium border
-                                ${isSelected
-                                    ? 'bg-primary text-black border-primary shadow-[0_0_15px_rgba(212,175,55,0.3)]'
-                                    : 'bg-accent/50 text-text-muted border-white/5 hover:border-white/20 hover:text-white hover:bg-white/5'
-                                }
-                            `}
-                        >
-                            {Icon && <Icon size={14} className={isSelected ? 'text-black' : 'text-text-muted group-hover:text-white'} />}
-                            {option.label}
-                        </button>
-                    );
-                })}
-            </div>
-        </div>
-    );
-
     return (
         <div className="bg-black/95 border-y border-white/10 py-6 mb-8 sticky top-0 z-20 backdrop-blur-md shadow-xl">
             <div className="container mx-auto px-4">
@@ -138,12 +143,14 @@ const HorizontalFilterBar: React.FC<HorizontalFilterBarProps> = ({ onFilterChang
                         category="region"
                         options={regions}
                         selected={selectedRegion}
+                        onFilterChange={handleFilterChange}
                     />
                     <FilterGroup
                         title="업종"
                         category="industry"
                         options={industries}
                         selected={selectedIndustry}
+                        onFilterChange={handleFilterChange}
                     />
                     <div className="flex flex-col lg:flex-row gap-4 lg:items-center">
                         <div className="flex-1">
@@ -152,6 +159,7 @@ const HorizontalFilterBar: React.FC<HorizontalFilterBarProps> = ({ onFilterChang
                                 category="salary"
                                 options={salaryRanges}
                                 selected={selectedSalary}
+                                onFilterChange={handleFilterChange}
                             />
                         </div>
                         <div className="w-px h-8 bg-white/10 hidden lg:block mx-4"></div>
@@ -161,6 +169,7 @@ const HorizontalFilterBar: React.FC<HorizontalFilterBarProps> = ({ onFilterChang
                                 category="type"
                                 options={types}
                                 selected={selectedType}
+                                onFilterChange={handleFilterChange}
                             />
                         </div>
                     </div>

@@ -30,8 +30,8 @@ const AdvertiserCRM: React.FC = () => {
     const [showLogoModal, setShowLogoModal] = useState(false);
     const [logoUrl, setLogoUrl] = useState('');
     const [bannerUrl, setBannerUrl] = useState('');
-    const [chartData, _setChartData] = useState(defaultChartData);
-    const [_isLoading, setLoading] = useState(true);
+    const [chartData] = useState(defaultChartData);
+    const [, setIsLoading] = useState(true);
 
     useEffect(() => {
         const currentUser = getCurrentUser();
@@ -47,7 +47,7 @@ const AdvertiserCRM: React.FC = () => {
 
         // Load ads: Use API if available, fallback to localStorage
         const loadAds = async () => {
-            setLoading(true);
+            setIsLoading(true);
             try {
                 if (USE_API_ADS) {
                     const apiAds = await fetchMyAdsFromApi();
@@ -73,7 +73,7 @@ const AdvertiserCRM: React.FC = () => {
                 setMyAds(getMyAds());
                 setStats(getAdStats());
             } finally {
-                setLoading(false);
+                setIsLoading(false);
             }
         };
 

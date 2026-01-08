@@ -80,11 +80,11 @@ const AdminCRM: React.FC = () => {
     // 현재 모드에 따른 표시 데이터
     const displayUsers = crmOperationalMode ? users : sampleUsers;
 
-    // 샘플 대기 광고 (홍보 시연용)
+    // 샘플 대기 광고 (홍보 시연용) - static timestamps for demo purposes
     const samplePendingAds = [
-        { id: 'sample_ad_1', title: '강남 룸살롱 신규 오픈', businessName: '강남 프리미엄 라운지', productType: 'diamond' as const, createdAt: new Date(Date.now() - 10 * 60 * 1000).toISOString() },
-        { id: 'sample_ad_2', title: '청담 라운지 프리미엄', businessName: '청담 VIP 클럽', productType: 'sapphire' as const, createdAt: new Date(Date.now() - 25 * 60 * 1000).toISOString() },
-        { id: 'sample_ad_3', title: '압구정 클럽 리뉴얼', businessName: '압구정 칵테일 바', productType: 'gold' as const, createdAt: new Date(Date.now() - 60 * 60 * 1000).toISOString() },
+        { id: 'sample_ad_1', title: '강남 룸살롱 신규 오픈', businessName: '강남 프리미엄 라운지', productType: 'diamond' as const, createdAt: '2024-12-15T09:50:00Z', timeText: '10분 전' },
+        { id: 'sample_ad_2', title: '청담 라운지 프리미엄', businessName: '청담 VIP 클럽', productType: 'sapphire' as const, createdAt: '2024-12-15T09:35:00Z', timeText: '25분 전' },
+        { id: 'sample_ad_3', title: '압구정 클럽 리뉴얼', businessName: '압구정 칵테일 바', productType: 'gold' as const, createdAt: '2024-12-15T09:00:00Z', timeText: '1시간 전' },
     ];
 
     const displayPendingAds = crmOperationalMode ? pendingAds : samplePendingAds;
@@ -472,8 +472,8 @@ const AdminCRM: React.FC = () => {
                                 <>
                                     <div className="divide-y divide-white/5">
                                         {displayPendingAds.slice(0, 5).map((ad) => {
-                                            const timeAgo = Math.floor((Date.now() - new Date(ad.createdAt).getTime()) / 60000);
-                                            const timeText = timeAgo < 60 ? `${timeAgo}분 전` : `${Math.floor(timeAgo / 60)}시간 전`;
+                                            // Use pre-computed timeText for sample data, or show date for API data
+                                            const timeText = 'timeText' in ad ? ad.timeText : new Date(ad.createdAt).toLocaleDateString('ko-KR');
                                             const productLabel = ad.productType === 'diamond' ? 'Diamond' :
                                                 ad.productType === 'sapphire' ? 'Sapphire' :
                                                     ad.productType === 'ruby' ? 'Ruby' :
