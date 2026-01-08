@@ -2,10 +2,14 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Header from './Header';
 import Footer from './Footer';
+import OfflineIndicator from '../common/OfflineIndicator';
 
 const Layout: React.FC = () => {
     return (
         <div className="min-h-screen flex flex-col bg-background text-text-main font-sans">
+            {/* Offline Status Indicator */}
+            <OfflineIndicator />
+
             {/* Skip to main content - 접근성 개선 */}
             <a
                 href="#main-content"
