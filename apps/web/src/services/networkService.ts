@@ -1,8 +1,6 @@
 // =============================================================================
-// Network Service (Capacitor + Web) - Offline Detection & Caching
+// Network Service - Offline Detection & Caching (Web Only)
 // =============================================================================
-
-import { Capacitor } from '@capacitor/core';
 
 // Types
 interface NetworkStatus {
@@ -18,9 +16,9 @@ class NetworkService {
     private listeners: NetworkHandler[] = [];
     private initialized = false;
 
-    // Check if running in Capacitor native environment
+    // Check if running in native environment (for future Capacitor integration)
     isNative(): boolean {
-        return Capacitor.isNativePlatform();
+        return false; // Web only for now
     }
 
     // Get current online status
@@ -35,50 +33,8 @@ class NetworkService {
     async init(): Promise<void> {
         if (this.initialized) return;
 
-        if (this.isNative()) {
-            await this.initNative();
-        } else {
-            this.initWeb();
-        }
-
+        this.initWeb();
         this.initialized = true;
-    }
-
-    // Initialize for native platforms
-    private async initNative(): Promise<void> {
-        try {
-            const { Network } = await import('@capacitor/network');
-
-            // Get initial status
-            const status = await Network.getStatus();
-            this.isOnline = status.connected;
-            this.connectionType = status.connectionType;
-
-            // Listen for changes
-            Network.addListener('networkStatusChange', (status) => {
-                const wasOnline = this.isOnline;
-                this.isOnline = status.connected;
-                this.connectionType = status.connectionType;
-
-                console.log('Network status changed:', status);
-
-                // Notify listeners
-                this.notifyListeners({
-                    connected: this.isOnline,
-                    connectionType: this.connectionType,
-                });
-
-                // Show notification on status change
-                if (!wasOnline && this.isOnline) {
-                    this.showOnlineNotification();
-                } else if (wasOnline && !this.isOnline) {
-                    this.showOfflineNotification();
-                }
-            });
-        } catch (error) {
-            console.error('Failed to init native network:', error);
-            this.initWeb(); // Fallback to web
-        }
     }
 
     // Initialize for web
@@ -117,36 +73,23 @@ class NetworkService {
     // Show online notification
     private showOnlineNotification(): void {
         console.log('Network: Back online');
-        // Could trigger a toast/notification here
     }
 
     // Show offline notification
     private showOfflineNotification(): void {
         console.log('Network: Offline');
-        // Could trigger a toast/notification here
     }
 
     // Cache data for offline use
     async cacheData(key: string, data: unknown): Promise<void> {
         try {
-            if (this.isNative()) {
-                const { Preferences } = await import('@capacitor/preferences');
-                await Preferences.set({
-                    key: `cache_${key}`,
-                    value: JSON.stringify({
-                        data,
-                        timestamp: Date.now(),
-                    }),
-                });
-            } else {
-                localStorage.setItem(
-                    `cache_${key}`,
-                    JSON.stringify({
-                        data,
-                        timestamp: Date.now(),
-                    })
-                );
-            }
+            localStorage.setItem(
+                `cache_${key}`,
+                JSON.stringify({
+                    data,
+                    timestamp: Date.now(),
+                })
+            );
         } catch (error) {
             console.error('Failed to cache data:', error);
         }
@@ -155,15 +98,7 @@ class NetworkService {
     // Get cached data
     async getCachedData<T>(key: string, maxAge?: number): Promise<T | null> {
         try {
-            let cached: string | null = null;
-
-            if (this.isNative()) {
-                const { Preferences } = await import('@capacitor/preferences');
-                const result = await Preferences.get({ key: `cache_${key}` });
-                cached = result.value;
-            } else {
-                cached = localStorage.getItem(`cache_${key}`);
-            }
+            const cached = localStorage.getItem(`cache_${key}`);
 
             if (!cached) return null;
 
@@ -187,28 +122,13 @@ class NetworkService {
     // Clear cached data
     async clearCache(key?: string): Promise<void> {
         try {
-            if (this.isNative()) {
-                const { Preferences } = await import('@capacitor/preferences');
-                if (key) {
-                    await Preferences.remove({ key: `cache_${key}` });
-                } else {
-                    // Clear all cache_ prefixed items
-                    const keys = await Preferences.keys();
-                    for (const k of keys.keys) {
-                        if (k.startsWith('cache_')) {
-                            await Preferences.remove({ key: k });
-                        }
-                    }
-                }
+            if (key) {
+                localStorage.removeItem(`cache_${key}`);
             } else {
-                if (key) {
-                    localStorage.removeItem(`cache_${key}`);
-                } else {
-                    // Clear all cache_ prefixed items
-                    Object.keys(localStorage)
-                        .filter(k => k.startsWith('cache_'))
-                        .forEach(k => localStorage.removeItem(k));
-                }
+                // Clear all cache_ prefixed items
+                Object.keys(localStorage)
+                    .filter(k => k.startsWith('cache_'))
+                    .forEach(k => localStorage.removeItem(k));
             }
         } catch (error) {
             console.error('Failed to clear cache:', error);
