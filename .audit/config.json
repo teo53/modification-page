@@ -116,6 +116,41 @@
       "claudePrompt": "deploy-audit.md"
     }
   },
+  "criticalPackages": {
+    "description": "메이저 버전 변경 시 빌드 실패 위험이 높은 패키지",
+    "packages": [
+      {
+        "name": "prisma",
+        "reason": "스키마 문법 및 API 변경이 자주 발생",
+        "recommendedRange": "~",
+        "lastBreakingVersion": "7.0.0"
+      },
+      {
+        "name": "@prisma/client",
+        "reason": "prisma와 버전 동기화 필수",
+        "recommendedRange": "~",
+        "lastBreakingVersion": "7.0.0"
+      },
+      {
+        "name": "@nestjs/core",
+        "reason": "데코레이터 및 DI 시스템 변경",
+        "recommendedRange": "^",
+        "lastBreakingVersion": "10.0.0"
+      },
+      {
+        "name": "typescript",
+        "reason": "타입 시스템 변경으로 컴파일 실패 가능",
+        "recommendedRange": "~",
+        "lastBreakingVersion": "5.0.0"
+      },
+      {
+        "name": "react",
+        "reason": "훅 및 렌더링 API 변경",
+        "recommendedRange": "^",
+        "lastBreakingVersion": "19.0.0"
+      }
+    ]
+  },
   "notifications": {
     "CRITICAL": {
       "action": "BLOCK",
