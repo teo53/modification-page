@@ -236,6 +236,17 @@ const CommunityWrite: React.FC = () => {
                         </div>
                     </div>
 
+                    {/* 정책 안내 */}
+                    <div className="p-3 bg-white/5 rounded-lg border border-white/10 mb-4">
+                        <p className="text-xs text-text-muted text-center">
+                            게시글 작성 시{' '}
+                            <a href="/terms" className="text-primary hover:underline">커뮤니티 이용규칙</a> 및{' '}
+                            <a href="/privacy" className="text-primary hover:underline">개인정보처리방침</a>에 동의합니다.
+                            <br />
+                            욕설, 비방, 허위정보는 삭제될 수 있습니다.
+                        </p>
+                    </div>
+
                     {/* Submit Button */}
                     <button
                         type="submit"

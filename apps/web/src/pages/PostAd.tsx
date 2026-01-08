@@ -782,6 +782,18 @@ const PostAd = () => {
                 amount={totalPrice}
                 onPaymentComplete={handlePaymentComplete}
             />
+
+            {/* 정책 안내 */}
+            <div className="mt-8 p-4 bg-white/5 rounded-lg border border-white/10">
+                <p className="text-xs text-text-muted text-center">
+                    광고 등록 시{' '}
+                    <a href="/terms" className="text-primary hover:underline">이용약관</a>,{' '}
+                    <a href="/privacy" className="text-primary hover:underline">개인정보처리방침</a>,{' '}
+                    <a href="/youth-protection" className="text-primary hover:underline">청소년보호정책</a>에 동의하는 것으로 간주됩니다.
+                    <br />
+                    허위 또는 불법 광고는 관리자 검토 후 삭제될 수 있습니다.
+                </p>
+            </div>
         </div>
     );
 };
