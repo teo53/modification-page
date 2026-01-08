@@ -606,7 +606,9 @@ const Signup: React.FC<SignupProps> = ({ isModal = false, onSignupSuccess, onClo
                                         onChange={(e) => handleAgreementChange('terms', e.target.checked)}
                                         className="w-4 h-4 rounded border-white/20 bg-black/40 accent-primary"
                                     />
-                                    <span className="text-text-muted flex-1">이용약관 동의 <span className="text-red-400">*</span></span>
+                                    <span className="text-text-muted flex-1">
+                                        <a href="/terms" target="_blank" className="text-primary hover:underline">이용약관</a> 동의 <span className="text-red-400">*</span>
+                                    </span>
                                     <button
                                         type="button"
                                         onClick={() => setExpandedTerms(expandedTerms === 'terms' ? null : 'terms')}
@@ -634,7 +636,9 @@ const Signup: React.FC<SignupProps> = ({ isModal = false, onSignupSuccess, onClo
                                         onChange={(e) => handleAgreementChange('privacy', e.target.checked)}
                                         className="w-4 h-4 rounded border-white/20 bg-black/40 accent-primary"
                                     />
-                                    <span className="text-text-muted flex-1">개인정보처리방침 동의 <span className="text-red-400">*</span></span>
+                                    <span className="text-text-muted flex-1">
+                                        <a href="/privacy" target="_blank" className="text-primary hover:underline">개인정보처리방침</a> 동의 <span className="text-red-400">*</span>
+                                    </span>
                                     <button
                                         type="button"
                                         onClick={() => setExpandedTerms(expandedTerms === 'privacy' ? null : 'privacy')}

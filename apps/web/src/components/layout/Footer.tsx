@@ -9,7 +9,7 @@ const Footer: React.FC = () => {
     const isAdmin = user?.role === 'admin';
 
     return (
-        <footer className="bg-accent/50 border-t border-white/10 mt-auto">
+        <footer className="bg-accent/50 border-t border-white/10 mt-auto" role="contentinfo" aria-label="사이트 푸터">
             <div className="container mx-auto px-4 py-12">
                 {/* Main Footer Content */}
                 <div className="grid md:grid-cols-4 gap-8 mb-8">

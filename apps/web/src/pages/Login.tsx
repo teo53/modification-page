@@ -102,52 +102,59 @@ const Login: React.FC = () => {
                 <form onSubmit={handleSubmit} className="mt-8 space-y-6 bg-accent rounded-xl p-8 border border-white/5">
                     {/* Error Message */}
                     {error && (
-                        <div className="flex items-center gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400">
-                            <AlertCircle size={18} />
+                        <div id="login-error" role="alert" className="flex items-center gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400">
+                            <AlertCircle size={18} aria-hidden="true" />
                             <span className="text-sm">{error}</span>
                         </div>
                     )}
 
                     {/* Success Message */}
                     {success && (
-                        <div className="flex items-center gap-2 p-3 rounded-lg bg-green-500/10 border border-green-500/20 text-green-400">
-                            <CheckCircle size={18} />
+                        <div role="status" className="flex items-center gap-2 p-3 rounded-lg bg-green-500/10 border border-green-500/20 text-green-400">
+                            <CheckCircle size={18} aria-hidden="true" />
                             <span className="text-sm">{success}</span>
                         </div>
                     )}
 
                     <div className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium text-white mb-2">이메일</label>
+                            <label htmlFor="login-email" className="block text-sm font-medium text-white mb-2">이메일</label>
                             <div className="relative">
-                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
+                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={18} aria-hidden="true" />
                                 <input
+                                    id="login-email"
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full bg-background border border-white/10 rounded-lg py-3 pl-10 pr-4 text-white focus:border-primary outline-none"
+                                    className="w-full bg-background border border-white/10 rounded-lg py-3 pl-10 pr-4 text-white focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
                                     placeholder="이메일을 입력하세요"
+                                    autoComplete="email"
+                                    aria-describedby={error ? "login-error" : undefined}
                                 />
                             </div>
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-white mb-2">비밀번호</label>
+                            <label htmlFor="login-password" className="block text-sm font-medium text-white mb-2">비밀번호</label>
                             <div className="relative">
-                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
+                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={18} aria-hidden="true" />
                                 <input
+                                    id="login-password"
                                     type={showPassword ? 'text' : 'password'}
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full bg-background border border-white/10 rounded-lg py-3 pl-10 pr-12 text-white focus:border-primary outline-none"
+                                    className="w-full bg-background border border-white/10 rounded-lg py-3 pl-10 pr-12 text-white focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
                                     placeholder="비밀번호를 입력하세요"
+                                    autoComplete="current-password"
+                                    aria-describedby={error ? "login-error" : undefined}
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-white"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-white transition-colors"
+                                    aria-label={showPassword ? "비밀번호 숨기기" : "비밀번호 표시"}
                                 >
-                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                    {showPassword ? <EyeOff size={18} aria-hidden="true" /> : <Eye size={18} aria-hidden="true" />}
                                 </button>
                             </div>
                         </div>

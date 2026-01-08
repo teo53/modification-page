@@ -205,3 +205,56 @@ export const checkApiConnection = async (): Promise<boolean> => {
         return false;
     }
 };
+
+// ============================================
+// SMS 인증 Functions (Solapi)
+// ============================================
+
+interface SmsResponse {
+    success: boolean;
+    message: string;
+    code?: string; // 데모 모드에서만 반환
+}
+
+interface SmsApiResponse {
+    success: boolean;
+    message: string;
+    demoCode?: string;
+}
+
+/**
+ * SMS 인증번호 발송 요청
+ */
+export const sendSmsVerificationCode = async (phone: string): Promise<SmsResponse> => {
+    try {
+        const response = await api.post<SmsApiResponse>('/auth/phone/send-code', { phone });
+        const data = response.data;
+        if (!data) {
+            return { success: false, message: 'SMS 발송에 실패했습니다.' };
+        }
+        return {
+            success: data.success,
+            message: data.message,
+            code: data.demoCode, // 데모 모드에서만 반환
+        };
+    } catch (error: any) {
+        const message = error.response?.data?.message || 'SMS 발송에 실패했습니다.';
+        return { success: false, message };
+    }
+};
+
+/**
+ * SMS 인증번호 검증
+ */
+export const verifySmsCode = async (phone: string, code: string): Promise<SmsResponse> => {
+    try {
+        const response = await api.post<SmsResponse>('/auth/phone/verify-code', { phone, code });
+        if (!response.data) {
+            return { success: false, message: '인증 확인에 실패했습니다.' };
+        }
+        return response.data;
+    } catch (error: any) {
+        const message = error.response?.data?.message || '인증번호 확인에 실패했습니다.';
+        return { success: false, message };
+    }
+};

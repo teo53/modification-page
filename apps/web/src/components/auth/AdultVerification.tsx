@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Smartphone, CreditCard, User, X } from 'lucide-react';
 import { login, loginWithApi, USE_API_AUTH, getCurrentUser } from '../../utils/auth';
+import { sendSmsVerificationCode, verifySmsCode } from '../../utils/authService';
 import Signup from '../../pages/Signup';
 
 // 성인인증 여부를 로컬 스토리지에 저장 (세션 스토리지에서 변경)
@@ -74,39 +75,72 @@ const AdultVerification: React.FC<AdultVerificationProps> = ({ onVerified }) => 
     const [isCodeSent, setIsCodeSent] = useState(false);
     const [countdown, setCountdown] = useState(0);
 
-    // 휴대폰 인증 코드 전송
-    const handleSendCode = () => {
+    // 휴대폰 인증 코드 전송 (Solapi API 연동)
+    const handleSendCode = async () => {
         if (!phone || phone.length < 10) {
             setError('올바른 휴대폰 번호를 입력해주세요.');
             return;
         }
 
-        setIsCodeSent(true);
-        setCountdown(180);
+        setLoading(true);
         setError('');
 
-        const timer = setInterval(() => {
-            setCountdown(prev => {
-                if (prev <= 1) {
-                    clearInterval(timer);
-                    return 0;
+        try {
+            const result = await sendSmsVerificationCode(phone);
+
+            if (result.success) {
+                setIsCodeSent(true);
+                setCountdown(180);
+
+                // 데모 모드에서는 코드를 알림으로 표시
+                if (result.code) {
+                    alert(`[데모 모드] 인증번호: ${result.code}`);
                 }
-                return prev - 1;
-            });
-        }, 1000);
+
+                const timer = setInterval(() => {
+                    setCountdown(prev => {
+                        if (prev <= 1) {
+                            clearInterval(timer);
+                            return 0;
+                        }
+                        return prev - 1;
+                    });
+                }, 1000);
+            } else {
+                setError(result.message);
+            }
+        } catch {
+            setError('인증번호 발송에 실패했습니다. 잠시 후 다시 시도해주세요.');
+        } finally {
+            setLoading(false);
+        }
     };
 
-    // 휴대폰 인증 확인 - 실제 SMS 인증 서비스 연동 필요
+    // 휴대폰 인증 확인 (Solapi API 연동)
     const handlePhoneVerify = async () => {
         if (!verificationCode || verificationCode.length !== 6) {
             setError('인증번호 6자리를 입력해주세요.');
             return;
         }
 
-        // TODO: 실제 SMS 인증 서비스 연동 (예: NHN Cloud, Twilio, etc.)
-        // 현재는 인증 서비스 미연동 상태이므로 기능 비활성화
-        setError('휴대폰 인증 서비스 준비 중입니다. 회원 로그인을 이용해주세요.');
-        return;
+        setLoading(true);
+        setError('');
+
+        try {
+            const result = await verifySmsCode(phone, verificationCode);
+
+            if (result.success) {
+                // 인증 성공 - 성인인증 완료
+                setAdultVerified();
+                onVerified();
+            } else {
+                setError(result.message);
+            }
+        } catch {
+            setError('인증 확인에 실패했습니다. 잠시 후 다시 시도해주세요.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     // 회원 로그인 - 실제 인증 시스템 사용

@@ -3,7 +3,7 @@
  * 아임웹 스타일의 노코드 사이트 관리 인터페이스
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
     Settings, Globe, Phone, Building2, CreditCard, Menu, Layout,
@@ -36,27 +36,25 @@ const menuItems: MenuItem[] = [
     { id: 'seo', label: 'SEO', icon: <Search size={20} />, description: '검색 최적화, 메타 태그' },
 ];
 
+// 초기 권한 상태 계산 함수
+function getInitialAuthState(): { isAuthorized: boolean; config: SiteConfig | null } {
+    const user = getCurrentUser();
+    if (user && user.role === 'admin') {
+        return { isAuthorized: true, config: getSiteConfig() };
+    }
+    return { isAuthorized: false, config: null };
+}
+
 const ContentManager: React.FC = () => {
     const navigate = useNavigate();
-    const [isAuthorized, setIsAuthorized] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
+    const initialState = getInitialAuthState();
+    const [isAuthorized] = useState(initialState.isAuthorized);
+    const [isLoading] = useState(false);
     const [activeSection, setActiveSection] = useState('basic');
-    const [config, setConfig] = useState<SiteConfig | null>(null);
+    const [config, setConfig] = useState<SiteConfig | null>(initialState.config);
     const [hasChanges, setHasChanges] = useState(false);
     const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
     const [showPreview, setShowPreview] = useState(false);
-
-    // 권한 체크 - role 필드 기반 (이메일 하드코딩 제거)
-    useEffect(() => {
-        const user = getCurrentUser();
-        if (user && user.role === 'admin') {
-            setIsAuthorized(true);
-            setConfig(getSiteConfig());
-        } else {
-            setIsAuthorized(false);
-        }
-        setIsLoading(false);
-    }, []);
 
     // 설정 변경 감지
     const handleConfigChange = <K extends keyof SiteConfig>(
@@ -847,37 +845,49 @@ const ThemeEditor: React.FC<{
     onChange: (field: keyof SiteConfig['theme'], value: string) => void;
     setHasChanges: React.Dispatch<React.SetStateAction<boolean>>;
 }> = ({ config, onChange, setHasChanges }) => {
-    // 로컬 상태로 색상 임시 저장
-    const [localColors, setLocalColors] = useState(config.theme);
+    // pending changes만 추적하고, localColors는 config.theme + pending으로 계산
+    const [pendingColorValues, setPendingColorValues] = useState<Partial<typeof config.theme>>({});
     const [pendingChanges, setPendingChanges] = useState<{ [key: string]: boolean }>({});
 
-    // config이 바뀌면 로컬 상태 동기화
-    useEffect(() => {
-        setLocalColors(config.theme);
-        setPendingChanges({});
-    }, [config.theme]);
+    // localColors는 항상 config.theme 기반으로 pending 변경사항 적용
+    const localColors = { ...config.theme, ...pendingColorValues };
 
-    const handleColorChange = (key: keyof typeof localColors, value: string) => {
-        setLocalColors(prev => ({ ...prev, [key]: value }));
+    const handleColorChange = (key: keyof typeof config.theme, value: string) => {
+        setPendingColorValues(prev => ({ ...prev, [key]: value }));
         setPendingChanges(prev => ({ ...prev, [key]: true }));
     };
 
-    const applyColor = (key: keyof typeof localColors) => {
+    const applyColor = (key: keyof typeof config.theme) => {
         onChange(key, localColors[key]);
+        // 적용 후 pending에서 제거 (이미 config에 반영됨)
+        setPendingColorValues(prev => {
+            const next = { ...prev };
+            delete next[key];
+            return next;
+        });
         setPendingChanges(prev => ({ ...prev, [key]: false }));
         setHasChanges(true);
     };
 
     const applyAllColors = () => {
-        Object.keys(localColors).forEach(key => {
-            onChange(key as keyof typeof localColors, localColors[key as keyof typeof localColors]);
+        Object.keys(pendingColorValues).forEach(key => {
+            const themeKey = key as keyof typeof config.theme;
+            if (pendingColorValues[themeKey]) {
+                onChange(themeKey, pendingColorValues[themeKey]!);
+            }
         });
+        setPendingColorValues({});
         setPendingChanges({});
         setHasChanges(true);
     };
 
-    const resetColor = (key: keyof typeof localColors) => {
-        setLocalColors(prev => ({ ...prev, [key]: config.theme[key] }));
+    const resetColor = (key: keyof typeof config.theme) => {
+        // pending에서 해당 key 제거하면 config.theme 값으로 복원됨
+        setPendingColorValues(prev => {
+            const next = { ...prev };
+            delete next[key];
+            return next;
+        });
         setPendingChanges(prev => ({ ...prev, [key]: false }));
     };
 
@@ -976,7 +986,7 @@ const ThemeEditor: React.FC<{
                     <div className="flex justify-end gap-3 pt-4 border-t border-white/5">
                         <button
                             onClick={() => {
-                                setLocalColors(config.theme);
+                                setPendingColorValues({});
                                 setPendingChanges({});
                             }}
                             className="px-4 py-2 bg-white/5 hover:bg-white/10 text-white text-sm rounded-lg transition-colors"

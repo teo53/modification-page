@@ -35,7 +35,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
             } else {
                 setError(result.error || '업로드 실패');
             }
-        } catch (err) {
+        } catch {
             setError('업로드 중 오류가 발생했습니다.');
         } finally {
             setIsUploading(false);

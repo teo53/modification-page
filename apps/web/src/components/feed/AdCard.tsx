@@ -7,6 +7,7 @@ import { memo, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MapPin, Clock, Eye, Flame, Zap } from 'lucide-react';
 import type { AdListItem } from '@lunaalba/types';
+import DataSourceBadge from '../common/DataSourceBadge';
 
 interface AdCardProps {
   ad: AdListItem;
@@ -123,10 +124,15 @@ function AdCardComponent({ ad }: AdCardProps) {
 
         {/* Footer */}
         <div className="flex items-center justify-between text-xs text-theme-text-tertiary">
-          <span className="flex items-center gap-1">
-            <Clock className="w-3 h-3" />
-            {formatDate(ad.createdAt)}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="flex items-center gap-1">
+              <Clock className="w-3 h-3" />
+              {formatDate(ad.createdAt)}
+            </span>
+            {ad.dataSource && (
+              <DataSourceBadge source={ad.dataSource} showLabel={false} />
+            )}
+          </div>
           <span className="flex items-center gap-1">
             <Eye className="w-3 h-3" />
             {ad.viewCount.toLocaleString()}

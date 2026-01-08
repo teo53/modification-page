@@ -11,6 +11,12 @@ export enum AdStatus {
   REJECTED = 'REJECTED',
 }
 
+// Data source to distinguish between advertiser-submitted and scraped data
+export enum DataSource {
+  ADVERTISER = 'ADVERTISER',  // Directly submitted by advertiser
+  SCRAPER = 'SCRAPER',        // Collected from external sites
+}
+
 export interface Ad {
   id: string;
   tenantId: string;
@@ -108,6 +114,10 @@ export interface Ad {
   rotationCount: number;
   firstAdDate: string;
 
+  // Data Source
+  dataSource: DataSource;
+  sourceUrl?: string;  // Original URL for scraped data
+
   createdAt: string;
   updatedAt: string;
 }
@@ -142,6 +152,7 @@ export interface AdListItem {
   status: AdStatus;
   viewCount: number;
   createdAt: string;
+  dataSource?: DataSource;  // Optional for backwards compatibility
 }
 
 // Pagination

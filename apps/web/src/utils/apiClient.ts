@@ -270,7 +270,7 @@ export class SecureApiClient {
 
             return { data, error, status: response.status };
 
-        } catch (err) {
+        } catch {
             return { data: null, error: '네트워크 오류가 발생했습니다.', status: 0 };
         }
     }
