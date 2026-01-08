@@ -1,15 +1,13 @@
 // Security utilities for anti-debugging and protection
 
-// Admin emails list - users with these emails can access developer tools
-const ADMIN_EMAILS = ['admin@lunaalba.com', 'admin@example.com', 'admin@dalbitalba.com'];
-
-// Check if current user is admin
+// Check if current user is admin (role 기반 체크)
 export const isCurrentUserAdmin = (): boolean => {
     try {
         const userStr = localStorage.getItem('lunaalba_current_user');
         if (!userStr) return false;
         const user = JSON.parse(userStr);
-        return ADMIN_EMAILS.includes(user.email);
+        // role 필드가 'admin'인지 확인 (이메일 기반 체크 제거)
+        return user.role === 'admin';
     } catch {
         return false;
     }

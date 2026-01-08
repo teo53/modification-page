@@ -46,11 +46,10 @@ const ContentManager: React.FC = () => {
     const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
     const [showPreview, setShowPreview] = useState(false);
 
-    // 권한 체크
+    // 권한 체크 - role 필드 기반 (이메일 하드코딩 제거)
     useEffect(() => {
         const user = getCurrentUser();
-        const adminEmails = ['admin@lunaalba.com', 'admin@example.com', 'admin@dalbitalba.com'];
-        if (user && adminEmails.includes(user.email)) {
+        if (user && user.role === 'admin') {
             setIsAuthorized(true);
             setConfig(getSiteConfig());
         } else {

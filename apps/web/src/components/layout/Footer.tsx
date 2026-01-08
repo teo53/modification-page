@@ -5,7 +5,8 @@ import { getCurrentUser } from '../../utils/auth';
 
 const Footer: React.FC = () => {
     const user = getCurrentUser();
-    const isAdmin = user?.email === 'admin@dalbitalba.com' || user?.email === 'admin@example.com';
+    // role 필드가 'admin'인지 확인 (이메일 기반 체크 제거)
+    const isAdmin = user?.role === 'admin';
 
     return (
         <footer className="bg-accent/50 border-t border-white/10 mt-auto">

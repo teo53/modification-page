@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/layout/Layout';
 import ErrorBoundary from './components/ErrorBoundary';
 import AdultVerification, { isAdultVerified } from './components/auth/AdultVerification';
+import ProtectedRoute from './components/auth/ProtectedRoute';
 import { ToastProvider } from './components/common/Toast';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { seedTestAccounts } from './utils/testAccounts';
@@ -75,15 +76,28 @@ function App() {
               <Route path="/community" element={<CommunityPage />} />
               <Route path="/community/write" element={<CommunityWrite />} />
               <Route path="/community/post/:id" element={<CommunityPostDetail />} />
-              <Route path="/advertiser" element={<AdvertiserCRM />} />
+              {/* Advertiser Routes - 광고주 전용 */}
+              <Route path="/advertiser" element={
+                <ProtectedRoute requiredRole="advertiser">
+                  <AdvertiserCRM />
+                </ProtectedRoute>
+              } />
               <Route path="/advertiser/dashboard" element={<Navigate to="/advertiser" replace />} />
               <Route path="/advertiser/crm" element={<Navigate to="/advertiser" replace />} />
 
-              {/* Admin Routes */}
+              {/* Admin Routes - 관리자 전용 */}
               <Route path="/admin" element={<Navigate to="/admin/crm" replace />} />
               <Route path="/admin/dashboard" element={<Navigate to="/admin/crm" replace />} />
-              <Route path="/admin/crm" element={<AdminCRM />} />
-              <Route path="/admin/content" element={<ContentManager />} />
+              <Route path="/admin/crm" element={
+                <ProtectedRoute requiredRole="admin">
+                  <AdminCRM />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/content" element={
+                <ProtectedRoute requiredRole="admin">
+                  <ContentManager />
+                </ProtectedRoute>
+              } />
               <Route path="urgent" element={<UrgentPage />} />
               <Route path="login" element={<Login />} />
               <Route path="signup" element={<Signup />} />
