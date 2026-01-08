@@ -1,321 +1,705 @@
 /**
- * QueenAlba 단일 페이지 스크래퍼 v4
- * 
+ * QueenAlba Browser Console Scraper v5
+ *
+ * 개선된 브라우저 콘솔 스크래퍼
+ * - 모듈화된 DOM 탐색 로직
+ * - 강건한 셀렉터 (클래스/ID 변화에 대응)
+ * - 여러 페이지 자동 순회
+ * - 백엔드 API POST 지원
+ *
  * 사용 방법:
  * 1. queenalba.net에 로그인
- * 2. 광고 상세 페이지로 이동 (예: guin_detail.php?num=33341)
- * 3. F12 → Console → 아래 코드 붙여넣기
- * 4. 결과가 JSON으로 출력됨
- * 
- * 핵심 패턴:
- * - 실제 광고 이미지: /wys2/file_attach/YYYY/MM/DD/timestamp-number.jpg
- * - UI 이미지(제외): /img/ 폴더
+ * 2. F12 → Console → 아래 코드 붙여넣기
+ * 3. Enter 눌러 실행
+ *
+ * 사용 가능한 함수:
+ * - scrapeCurrentPage(): 현재 페이지 스크래핑
+ * - scrapeMultiplePages(maxPages): 여러 페이지 자동 순회
+ * - downloadJSON(data, filename): JSON 파일 다운로드
+ * - postToAPI(data, apiUrl): 백엔드 API로 전송
  */
 
-(function scrapeCurrentPage() {
-    console.log('🚀 단일 페이지 스크래퍼 v4 시작...');
+const QueenAlbaScraper = (function() {
+    'use strict';
 
     const BASE_URL = 'https://queenalba.net';
-
-    // Extract ad ID from URL
-    const urlMatch = window.location.href.match(/num=(\d+)/);
-    const adId = urlMatch ? parseInt(urlMatch[1]) : Date.now();
-
-    // Initialize data structure
-    const data = {
-        id: adId,
-        url: window.location.href,
-        title: '',
-        scraped_at: new Date().toISOString(),
-
-        advertiser: {
-            nickname: '',
-            call_number: '',
-            call_mgmt_number: '',
-            phone: '',
-            kakao_id: '',
-            telegram_id: '',
-            business_name: '',
-            work_location: '',
-            views: 0
-        },
-
-        recruitment: {
-            job_type: '',
-            employment_type: '',
-            salary: '',
-            deadline: '',
-            benefits: [],
-            keywords: []
-        },
-
-        detail: {
-            description: '',
-            images: []
-        },
-
-        company: {
-            company_name: '',
-            company_address: '',
-            representative: ''
-        },
-
-        thumbnail: '',
-        location: '',
-        pay: '',
-        phones: [],
-        content: '',
-        detail_images: []
+    const CONFIG = {
+        delayBetweenPages: 2000,  // 페이지 간 지연 (ms)
+        maxRetries: 3,            // 재시도 횟수
+        imagePattern: /wys2\/file_attach/,  // 광고 이미지 패턴
+        excludePattern: /\/img\//,           // 제외할 이미지 패턴
     };
 
-    // ===== 1. 모든 이미지에서 실제 광고 콘텐츠 이미지만 추출 =====
-    // 핵심 패턴: /wys2/file_attach/YYYY/MM/DD/timestamp-number.jpg
-    console.log('🖼️ 광고 이미지 추출 중...');
+    // ============================================================
+    // DOM Extraction Utilities (모듈화된 DOM 탐색)
+    // ============================================================
 
-    document.querySelectorAll('img').forEach(img => {
-        let src = img.src || img.getAttribute('data-src') || '';
-
-        if (!src) return;
-
-        // 실제 광고 이미지 패턴 확인: wys2/file_attach 경로
-        if (src.includes('wys2/file_attach') || src.includes('/wys2/file_attach')) {
-            // 상대 경로 처리
-            if (src.startsWith('//')) src = 'https:' + src;
-            if (src.startsWith('/')) src = BASE_URL + src;
-            if (!src.startsWith('http')) src = BASE_URL + '/' + src;
-
-            // ../ 처리
-            src = src.replace(/\/\.\.\//g, '/');
-
-            if (!data.detail.images.includes(src)) {
-                data.detail.images.push(src);
-                console.log('  ✓ 광고 이미지:', src.substring(src.lastIndexOf('/') + 1));
+    const DOMExtractor = {
+        /**
+         * 안전한 텍스트 추출
+         */
+        getText(element, defaultValue = '') {
+            if (!element) return defaultValue;
+            try {
+                return element.textContent?.trim() || defaultValue;
+            } catch (e) {
+                return defaultValue;
             }
-        }
-    });
+        },
 
-    console.log(`  📷 총 ${data.detail.images.length}개 광고 이미지 발견`);
+        /**
+         * 여러 셀렉터 시도 (fallback 지원)
+         */
+        querySelector(selectors, context = document) {
+            const selectorList = Array.isArray(selectors) ? selectors : [selectors];
+            for (const selector of selectorList) {
+                try {
+                    const element = context.querySelector(selector);
+                    if (element) return element;
+                } catch (e) {
+                    continue;
+                }
+            }
+            return null;
+        },
 
-    // ===== 2. 업체정보 테이블에서 추출 =====
-    console.log('📊 업체정보 추출 중...');
+        /**
+         * 여러 셀렉터로 모든 요소 찾기
+         */
+        querySelectorAll(selectors, context = document) {
+            const selectorList = Array.isArray(selectors) ? selectors : [selectors];
+            const results = [];
+            for (const selector of selectorList) {
+                try {
+                    const elements = context.querySelectorAll(selector);
+                    elements.forEach(el => {
+                        if (!results.includes(el)) results.push(el);
+                    });
+                } catch (e) {
+                    continue;
+                }
+            }
+            return results;
+        },
 
-    // 먼저 추출된 데이터를 추적
-    const extracted = {};
-
-    // 테이블 행들 탐색
-    document.querySelectorAll('table tr').forEach(row => {
-        const cells = row.querySelectorAll('th, td');
-        if (cells.length >= 2) {
-            // 첫번째 셀에서 라벨 추출 (HTML 태그 제외, 텍스트만)
-            const labelElement = cells[0];
-            const label = labelElement.textContent.trim().split('\n')[0].replace(/\s+/g, '');
-
-            // 두번째 셀에서 값 추출 (script 태그 내용 제외)
-            const valueElement = cells[1];
-            let value = '';
-
-            // script 태그가 아닌 직접 텍스트 노드만 추출
-            const walker = document.createTreeWalker(
-                valueElement,
-                NodeFilter.SHOW_TEXT,
-                {
-                    acceptNode: function (node) {
-                        if (node.parentElement.tagName === 'SCRIPT') {
-                            return NodeFilter.FILTER_REJECT;
-                        }
-                        return NodeFilter.FILTER_ACCEPT;
+        /**
+         * 텍스트 포함 요소 찾기 (클래스/ID 의존성 제거)
+         */
+        findByText(text, tagNames = ['td', 'th', 'div', 'span']) {
+            const tags = Array.isArray(tagNames) ? tagNames : [tagNames];
+            for (const tag of tags) {
+                const elements = document.getElementsByTagName(tag);
+                for (const el of elements) {
+                    if (el.textContent?.includes(text)) {
+                        return el;
                     }
                 }
-            );
+            }
+            return null;
+        },
 
-            const textParts = [];
-            while (walker.nextNode()) {
-                const text = walker.currentNode.textContent.trim();
-                if (text && text.length < 200) { // 너무 긴 텍스트는 스크립트일 가능성
-                    textParts.push(text);
+        /**
+         * 테이블 행에서 라벨-값 쌍 추출
+         */
+        extractTableData(tableOrRows) {
+            const data = {};
+            const rows = tableOrRows.tagName === 'TABLE'
+                ? tableOrRows.querySelectorAll('tr')
+                : (tableOrRows.length ? tableOrRows : [tableOrRows]);
+
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('th, td');
+                if (cells.length >= 2) {
+                    const label = this.getText(cells[0]).replace(/\s+/g, '');
+                    const valueCell = cells[1];
+
+                    // script 태그 제외하고 텍스트 추출
+                    let value = '';
+                    const walker = document.createTreeWalker(
+                        valueCell,
+                        NodeFilter.SHOW_TEXT,
+                        {
+                            acceptNode: (node) => {
+                                if (node.parentElement?.tagName === 'SCRIPT') {
+                                    return NodeFilter.FILTER_REJECT;
+                                }
+                                return NodeFilter.FILTER_ACCEPT;
+                            }
+                        }
+                    );
+
+                    const texts = [];
+                    while (walker.nextNode()) {
+                        const text = walker.currentNode.textContent?.trim();
+                        if (text && text.length < 200 && !text.startsWith('function')) {
+                            texts.push(text);
+                        }
+                    }
+                    value = texts.join(' ').trim();
+
+                    if (value && !value.includes('$.ajax')) {
+                        data[label] = value;
+                    }
+                }
+            });
+
+            return data;
+        }
+    };
+
+    // ============================================================
+    // Field Mappers (필드 매핑 로직)
+    // ============================================================
+
+    const FieldMapper = {
+        /**
+         * 업체정보 필드 매핑
+         */
+        mapAdvertiserFields(rawData) {
+            const info = {
+                nickname: '',
+                call_number: '',
+                call_mgmt_number: '',
+                phone: '',
+                kakao_id: '',
+                telegram_id: '',
+                business_name: '',
+                work_location: '',
+                views: 0
+            };
+
+            const labelMappings = {
+                nickname: ['닉네임', '담당자', '이름'],
+                call_number: ['콜번호'],
+                call_mgmt_number: ['콜관리번호', '콜관리'],
+                phone: ['전화번호', '연락처', '핸드폰', '휴대폰'],
+                kakao_id: ['카톡', '카카오', 'kakao', 'KakaoID'],
+                telegram_id: ['텔레그램', 'telegram', '텔레'],
+                business_name: ['상호', '업소명', '업체명'],
+                work_location: ['근무지역', '지역', '위치', '근무지']
+            };
+
+            Object.entries(rawData).forEach(([label, value]) => {
+                Object.entries(labelMappings).forEach(([field, keywords]) => {
+                    if (keywords.some(kw => label.includes(kw))) {
+                        // 중복 방지: 첫 번째 매칭만 사용
+                        if (!info[field] || field === 'call_number' && label.includes('관리')) {
+                            // 콜관리번호는 별도 필드
+                            if (field === 'call_number' && label.includes('관리')) {
+                                info.call_mgmt_number = value;
+                            } else {
+                                info[field] = value.split('\n')[0].trim();
+                            }
+                        }
+                    }
+                });
+            });
+
+            // 전화번호 정규화
+            if (info.phone) {
+                const phoneMatch = info.phone.match(/0\d{1,2}-?\d{3,4}-?\d{4}/);
+                if (phoneMatch) info.phone = phoneMatch[0];
+            }
+
+            return info;
+        },
+
+        /**
+         * 채용정보 필드 매핑
+         */
+        mapRecruitmentFields(rawData) {
+            const info = {
+                job_type: '',
+                employment_type: '',
+                salary: '',
+                deadline: '',
+                benefits: [],
+                keywords: []
+            };
+
+            const labelMappings = {
+                job_type: ['업무', '업종', '직종', '업무내용'],
+                employment_type: ['고용형태', '근무형태', '채용형태'],
+                salary: ['급여', '월급', '시급', '연봉'],
+                deadline: ['마감', '모집기간', '채용기간']
+            };
+
+            Object.entries(rawData).forEach(([label, value]) => {
+                Object.entries(labelMappings).forEach(([field, keywords]) => {
+                    if (keywords.some(kw => label.includes(kw)) && !info[field]) {
+                        if (field === 'salary') {
+                            const salaryMatch = value.match(/([\d,]+원)/);
+                            info[field] = salaryMatch ? salaryMatch[1] : value.split(/\s+/)[0];
+                        } else {
+                            info[field] = value.split('\n')[0].trim();
+                        }
+                    }
+                });
+            });
+
+            return info;
+        },
+
+        /**
+         * 기업정보 필드 매핑
+         */
+        mapCompanyFields(rawData) {
+            const info = {
+                company_name: '',
+                company_address: '',
+                representative: ''
+            };
+
+            const labelMappings = {
+                company_name: ['회사명', '업체명', '기업명'],
+                company_address: ['회사주소', '업체주소', '주소'],
+                representative: ['대표자', '대표', '사업자']
+            };
+
+            Object.entries(rawData).forEach(([label, value]) => {
+                Object.entries(labelMappings).forEach(([field, keywords]) => {
+                    if (keywords.some(kw => label.includes(kw)) && !info[field]) {
+                        info[field] = value;
+                    }
+                });
+            });
+
+            return info;
+        }
+    };
+
+    // ============================================================
+    // Image Extractor
+    // ============================================================
+
+    const ImageExtractor = {
+        /**
+         * 광고 이미지 추출 (UI 이미지 제외)
+         */
+        extractAdImages() {
+            const images = [];
+
+            document.querySelectorAll('img').forEach(img => {
+                let src = img.src || img.getAttribute('data-src') || '';
+                if (!src) return;
+
+                // 광고 이미지 패턴 확인
+                if (CONFIG.imagePattern.test(src) && !CONFIG.excludePattern.test(src)) {
+                    // URL 정규화
+                    if (src.startsWith('//')) src = 'https:' + src;
+                    else if (src.startsWith('/')) src = BASE_URL + src;
+                    else if (!src.startsWith('http')) src = BASE_URL + '/' + src;
+
+                    src = src.replace(/\/\.\.\//g, '/');
+
+                    if (!images.includes(src)) {
+                        images.push(src);
+                    }
+                }
+            });
+
+            return images;
+        }
+    };
+
+    // ============================================================
+    // Core Scraper Functions
+    // ============================================================
+
+    /**
+     * 현재 페이지 스크래핑
+     */
+    function scrapeCurrentPage() {
+        console.log('🚀 스크래퍼 v5 시작...');
+
+        // Extract ad ID from URL
+        const urlMatch = window.location.href.match(/num=(\d+)/);
+        const adId = urlMatch ? parseInt(urlMatch[1]) : Date.now();
+
+        // Initialize data structure
+        const data = {
+            id: adId,
+            url: window.location.href,
+            title: '',
+            scraped_at: new Date().toISOString(),
+            advertiser: {},
+            recruitment: {},
+            detail: { description: '', images: [] },
+            company: {},
+            thumbnail: '',
+            // Legacy fields
+            location: '',
+            pay: '',
+            phones: [],
+            content: '',
+            detail_images: []
+        };
+
+        // 1. Extract images
+        console.log('🖼️ 이미지 추출 중...');
+        data.detail.images = ImageExtractor.extractAdImages();
+        console.log(`  📷 ${data.detail.images.length}개 이미지 발견`);
+
+        // 2. Extract table data
+        console.log('📊 테이블 데이터 추출 중...');
+        const rawTableData = {};
+        document.querySelectorAll('table tr').forEach(row => {
+            Object.assign(rawTableData, DOMExtractor.extractTableData(row));
+        });
+
+        // 3. Map fields
+        data.advertiser = FieldMapper.mapAdvertiserFields(rawTableData);
+        data.recruitment = FieldMapper.mapRecruitmentFields(rawTableData);
+        data.company = FieldMapper.mapCompanyFields(rawTableData);
+
+        // 4. Extract views
+        const viewsText = document.body.innerText.match(/조회[:\s]*([\d,]+)/);
+        if (viewsText) {
+            data.advertiser.views = parseInt(viewsText[1].replace(/,/g, ''));
+        }
+
+        // 5. Set title
+        const titleSelectors = ['h1', 'h2', '.tit', '.title', '[class*="title"]'];
+        for (const selector of titleSelectors) {
+            const el = document.querySelector(selector);
+            if (el) {
+                const text = el.textContent?.trim().split('\n')[0];
+                if (text && !text.includes('퀸알바')) {
+                    data.title = text;
+                    break;
                 }
             }
-            value = textParts.join(' ').trim();
+        }
+        data.title = data.title || data.advertiser.nickname ||
+                     data.advertiser.business_name || `광고 #${adId}`;
 
-            // 값이 비어있거나 function으로 시작하면 건너뛰기
-            if (!value || value.startsWith('function') || value.includes('$.ajax')) return;
+        // 6. Set thumbnail
+        data.thumbnail = data.detail.images[0] || '';
 
-            // 업체정보 필드 매핑
-            if ((label.includes('닉네임') || label.includes('담당자')) && !extracted.nickname) {
-                data.advertiser.nickname = value.split('\n')[0].trim();
-                extracted.nickname = true;
-                console.log('  ✓ 닉네임:', data.advertiser.nickname);
+        // 7. Set legacy fields
+        data.location = data.advertiser.work_location;
+        data.pay = data.recruitment.salary;
+        data.phones = data.advertiser.phone ? [data.advertiser.phone] : [];
+        data.content = data.detail.description;
+        data.detail_images = data.detail.images;
+
+        // Output
+        console.log('\n✅ 스크래핑 완료!');
+        console.log('==========================================');
+        console.log('📌 ID:', data.id);
+        console.log('📌 타이틀:', data.title);
+        console.log('📌 닉네임:', data.advertiser.nickname);
+        console.log('📌 전화번호:', data.advertiser.phone);
+        console.log('📌 카톡ID:', data.advertiser.kakao_id);
+        console.log('📌 지역:', data.advertiser.work_location);
+        console.log('📌 조회수:', data.advertiser.views);
+        console.log('📌 급여:', data.recruitment.salary);
+        console.log('📌 이미지 수:', data.detail.images.length);
+        console.log('==========================================');
+
+        window.lastScrapedAd = data;
+        return data;
+    }
+
+    /**
+     * 광고 목록 페이지에서 상세 URL 추출
+     */
+    function extractAdUrls() {
+        const urls = [];
+        document.querySelectorAll('a[href*="guin_detail.php?num="]').forEach(link => {
+            const href = link.getAttribute('href');
+            if (href) {
+                const fullUrl = href.startsWith('http') ? href : BASE_URL + '/' + href.replace(/^\//, '');
+                if (!urls.includes(fullUrl)) {
+                    urls.push(fullUrl);
+                }
             }
-            else if (label.includes('콜번호') && !label.includes('관리') && !extracted.call_number) {
-                data.advertiser.call_number = value;
-                extracted.call_number = true;
-            }
-            else if (label.includes('콜관리') && !extracted.call_mgmt_number) {
-                data.advertiser.call_mgmt_number = value;
-                extracted.call_mgmt_number = true;
-            }
-            else if ((label.includes('전화') || label.includes('연락처')) && !extracted.phone) {
-                // 전화번호 패턴으로 정제 (010-XXXX-XXXX)
-                const phoneMatch = value.match(/0\d{1,2}-?\d{3,4}-?\d{4}/);
-                data.advertiser.phone = phoneMatch ? phoneMatch[0] : value.split(/\s+/)[0];
-                extracted.phone = true;
-                console.log('  ✓ 전화번호:', data.advertiser.phone);
-            }
-            else if ((label.includes('카톡') || label.includes('카카오')) && !extracted.kakao_id) {
-                data.advertiser.kakao_id = value.split(/\s+/)[0];
-                extracted.kakao_id = true;
-                console.log('  ✓ 카톡ID:', data.advertiser.kakao_id);
-            }
-            else if (label.includes('텔레그램') && !extracted.telegram_id) {
-                data.advertiser.telegram_id = value.split(/\s+/)[0];
-                extracted.telegram_id = true;
-            }
-            else if (label.includes('상호') && !label.includes('회사') && !extracted.business_name) {
-                // "상호명: XXX | 주소: YYY" 형태 파싱
-                const nameMatch = value.match(/상호명[:\s]*([^|]+)/);
-                data.advertiser.business_name = nameMatch ? nameMatch[1].trim() : value.split('|')[0].trim();
-                extracted.business_name = true;
-                console.log('  ✓ 상호:', data.advertiser.business_name);
-            }
-            else if ((label.includes('근무지역') || label === '지역') && !extracted.work_location) {
-                data.advertiser.work_location = value.split('\n')[0].trim();
-                extracted.work_location = true;
-                console.log('  ✓ 근무지역:', data.advertiser.work_location);
-            }
-            // 채용정보
-            else if ((label.includes('업무') || label.includes('업종') || label.includes('직종')) && !extracted.job_type) {
-                data.recruitment.job_type = value.split('\n')[0].trim();
-                extracted.job_type = true;
-                console.log('  ✓ 업무:', data.recruitment.job_type);
-            }
-            else if ((label.includes('고용형태') || label.includes('근무형태')) && !extracted.employment_type) {
-                data.recruitment.employment_type = value;
-                extracted.employment_type = true;
-            }
-            else if (label.includes('급여') && !extracted.salary) {
-                // "17,000,000원 2025년 최저시급..." 형태에서 금액만 추출
-                const salaryMatch = value.match(/([\d,]+원)/);
-                data.recruitment.salary = salaryMatch ? salaryMatch[1] : value.split(/\s+/)[0];
-                extracted.salary = true;
-                console.log('  ✓ 급여:', data.recruitment.salary);
-            }
-            else if (label.includes('마감') && !extracted.deadline) {
-                data.recruitment.deadline = value.split('\n')[0].trim();
-                extracted.deadline = true;
-            }
-            // 기업정보
-            else if ((label.includes('회사명') || label.includes('업체명')) && !extracted.company_name) {
-                data.company.company_name = value;
-                extracted.company_name = true;
-            }
-            else if ((label.includes('회사주소') || label.includes('업체주소') || label === '주소') && !extracted.company_address) {
-                data.company.company_address = value;
-                extracted.company_address = true;
-            }
-            else if (label.includes('대표') && label.includes('자') && !extracted.representative) {
-                data.company.representative = value;
-                extracted.representative = true;
+        });
+        return urls;
+    }
+
+    /**
+     * 여러 페이지 자동 순회
+     */
+    async function scrapeMultiplePages(maxPages = 5, options = {}) {
+        const {
+            delay = CONFIG.delayBetweenPages,
+            onProgress = null,
+            onError = null
+        } = options;
+
+        console.log(`🚀 ${maxPages}개 페이지 순회 시작...`);
+        const allAds = [];
+        let totalUrls = [];
+
+        // 1. 목록 페이지에서 URL 수집
+        for (let page = 1; page <= maxPages; page++) {
+            const listUrl = `${BASE_URL}/guin_list.php?page=${page}`;
+            console.log(`📄 목록 페이지 ${page} 로드 중: ${listUrl}`);
+
+            try {
+                const response = await fetch(listUrl, { credentials: 'include' });
+                const html = await response.text();
+
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+
+                doc.querySelectorAll('a[href*="guin_detail.php?num="]').forEach(link => {
+                    const href = link.getAttribute('href');
+                    if (href) {
+                        const fullUrl = href.startsWith('http') ? href : BASE_URL + '/' + href.replace(/^\//, '');
+                        if (!totalUrls.includes(fullUrl)) {
+                            totalUrls.push(fullUrl);
+                        }
+                    }
+                });
+
+                console.log(`  ✓ ${totalUrls.length}개 URL 수집됨`);
+                await sleep(delay);
+
+            } catch (error) {
+                console.error(`  ❌ 페이지 ${page} 로드 실패:`, error);
+                if (onError) onError(error, page);
             }
         }
-    });
 
-    // ===== 3. 조회수 추출 =====
-    const viewsText = document.body.innerText.match(/조회[:\s]*([\d,]+)/);
-    if (viewsText) {
-        data.advertiser.views = parseInt(viewsText[1].replace(/,/g, ''));
-        console.log('  ✓ 조회수:', data.advertiser.views);
+        // 2. 각 상세 페이지 스크래핑
+        console.log(`\n📊 총 ${totalUrls.length}개 광고 스크래핑 시작...`);
+
+        for (let i = 0; i < totalUrls.length; i++) {
+            const url = totalUrls[i];
+            console.log(`\n[${i + 1}/${totalUrls.length}] ${url}`);
+
+            try {
+                const response = await fetch(url, { credentials: 'include' });
+                const html = await response.text();
+
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+
+                // 임시로 document에서 추출 (간소화된 버전)
+                const adData = extractFromDocument(doc, url);
+                if (adData) {
+                    allAds.push(adData);
+                    console.log(`  ✓ 스크래핑 완료: ${adData.title}`);
+                }
+
+                if (onProgress) {
+                    onProgress(i + 1, totalUrls.length, adData);
+                }
+
+                await sleep(delay);
+
+            } catch (error) {
+                console.error(`  ❌ 스크래핑 실패:`, error);
+                if (onError) onError(error, url);
+            }
+        }
+
+        console.log(`\n✅ 완료! ${allAds.length}개 광고 수집됨`);
+        window.allScrapedAds = allAds;
+        return allAds;
     }
 
-    // ===== 4. 타이틀 설정 =====
-    // H1/H2 태그나 특정 클래스에서 추출 시도
-    let pageTitle = '';
-    const titleElements = [
-        document.querySelector('h1'),
-        document.querySelector('h2'),
-        document.querySelector('.tit'),
-        document.querySelector('.title'),
-        document.querySelector('[class*="title"]')
-    ];
+    /**
+     * 문서에서 데이터 추출 (외부 페이지용)
+     */
+    function extractFromDocument(doc, url) {
+        const urlMatch = url.match(/num=(\d+)/);
+        const adId = urlMatch ? parseInt(urlMatch[1]) : Date.now();
 
-    for (const el of titleElements) {
-        if (el && el.textContent.trim() && !el.textContent.includes('퀸알바')) {
-            pageTitle = el.textContent.trim().split('\n')[0];
-            break;
+        const data = {
+            id: adId,
+            url: url,
+            title: '',
+            scraped_at: new Date().toISOString(),
+            advertiser: {
+                nickname: '', phone: '', kakao_id: '', telegram_id: '',
+                business_name: '', work_location: '', views: 0,
+                call_number: '', call_mgmt_number: ''
+            },
+            recruitment: {
+                job_type: '', employment_type: '', salary: '',
+                deadline: '', benefits: [], keywords: []
+            },
+            detail: { description: '', images: [] },
+            company: { company_name: '', company_address: '', representative: '' },
+            thumbnail: ''
+        };
+
+        // Extract images
+        doc.querySelectorAll('img').forEach(img => {
+            let src = img.src || img.getAttribute('data-src') || '';
+            if (src && CONFIG.imagePattern.test(src)) {
+                if (src.startsWith('//')) src = 'https:' + src;
+                else if (src.startsWith('/')) src = BASE_URL + src;
+                if (!data.detail.images.includes(src)) {
+                    data.detail.images.push(src);
+                }
+            }
+        });
+
+        // Extract table data
+        const rawData = {};
+        doc.querySelectorAll('table tr').forEach(row => {
+            const cells = row.querySelectorAll('th, td');
+            if (cells.length >= 2) {
+                const label = cells[0].textContent?.trim().replace(/\s+/g, '') || '';
+                const value = cells[1].textContent?.trim() || '';
+                if (label && value && value.length < 200) {
+                    rawData[label] = value;
+                }
+            }
+        });
+
+        // Map fields
+        Object.assign(data.advertiser, FieldMapper.mapAdvertiserFields(rawData));
+        Object.assign(data.recruitment, FieldMapper.mapRecruitmentFields(rawData));
+        Object.assign(data.company, FieldMapper.mapCompanyFields(rawData));
+
+        // Set title
+        const titleEl = doc.querySelector('h1, h2, .tit, .title');
+        data.title = titleEl?.textContent?.trim().split('\n')[0] ||
+                     data.advertiser.nickname ||
+                     data.advertiser.business_name ||
+                     `광고 #${adId}`;
+
+        data.thumbnail = data.detail.images[0] || '';
+
+        // Legacy fields
+        data.location = data.advertiser.work_location;
+        data.pay = data.recruitment.salary;
+        data.phones = data.advertiser.phone ? [data.advertiser.phone] : [];
+        data.detail_images = data.detail.images;
+
+        return data;
+    }
+
+    // ============================================================
+    // Output Functions
+    // ============================================================
+
+    /**
+     * JSON 파일 다운로드
+     */
+    function downloadJSON(data, filename = 'scraped_ads.json') {
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(url);
+        console.log(`✅ ${filename} 다운로드됨`);
+    }
+
+    /**
+     * 백엔드 API로 데이터 전송
+     */
+    async function postToAPI(data, apiUrl, options = {}) {
+        const {
+            headers = { 'Content-Type': 'application/json' },
+            onSuccess = null,
+            onError = null
+        } = options;
+
+        console.log(`📤 API로 전송 중: ${apiUrl}`);
+
+        try {
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(data)
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const result = await response.json();
+            console.log('✅ API 전송 성공:', result);
+
+            if (onSuccess) onSuccess(result);
+            return result;
+
+        } catch (error) {
+            console.error('❌ API 전송 실패:', error);
+            if (onError) onError(error);
+            throw error;
         }
     }
 
-    data.title = data.advertiser.nickname ||
-        data.advertiser.business_name ||
-        pageTitle ||
-        `광고 #${adId}`;
+    // ============================================================
+    // Utility Functions
+    // ============================================================
 
-    // ===== 5. 썸네일 설정 =====
-    // 첫 번째 광고 이미지를 썸네일로 사용
-    if (data.detail.images.length > 0) {
-        data.thumbnail = data.detail.images[0];
-    } else {
-        // fallback: 프로필 이미지 찾기
-        const profileImg = document.querySelector('.profile_img img, .thumb img');
-        if (profileImg && profileImg.src) {
-            data.thumbnail = profileImg.src;
-        }
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    // Legacy fields
-    data.location = data.advertiser.work_location;
-    data.pay = data.recruitment.salary;
-    data.phones = data.advertiser.phone ? [data.advertiser.phone] : [];
-    data.content = data.detail.description;
-    data.detail_images = data.detail.images;
+    // ============================================================
+    // Public API
+    // ============================================================
 
-    // ===== 결과 출력 =====
-    console.log('\n✅ 스크래핑 완료!');
-    console.log('==========================================');
-    console.log('📌 ID:', data.id);
-    console.log('📌 타이틀:', data.title);
-    console.log('📌 닉네임:', data.advertiser.nickname);
-    console.log('📌 전화번호:', data.advertiser.phone);
-    console.log('📌 카톡ID:', data.advertiser.kakao_id);
-    console.log('📌 지역:', data.advertiser.work_location);
-    console.log('📌 조회수:', data.advertiser.views);
-    console.log('📌 업무:', data.recruitment.job_type);
-    console.log('📌 급여:', data.recruitment.salary);
-    console.log('📌 이미지 수:', data.detail.images.length);
-    if (data.detail.images.length > 0) {
-        console.log('📌 첫번째 이미지:', data.detail.images[0]);
-    }
-    console.log('==========================================');
+    return {
+        // Core functions
+        scrapeCurrentPage,
+        scrapeMultiplePages,
+        extractAdUrls,
 
-    console.log('\n📋 JSON 데이터:');
-    console.log(JSON.stringify(data, null, 2));
+        // Output functions
+        downloadJSON,
+        postToAPI,
 
-    // 전역 변수로 저장
-    window.lastScrapedAd = data;
-    console.log('\n💡 window.lastScrapedAd 에 저장됨. 콘솔에서 접근 가능.');
+        // Utilities
+        DOMExtractor,
+        FieldMapper,
+        ImageExtractor,
 
-    return data;
+        // Configuration
+        CONFIG,
+
+        // Version
+        VERSION: '5.0.0'
+    };
 })();
 
-// ===== 여러 광고 수집 도우미 =====
+// ============================================================
+// Auto-execute and setup globals
+// ============================================================
+
+// Execute scrape on current page
+const currentPageData = QueenAlbaScraper.scrapeCurrentPage();
+
+// Expose to window for easy access
+window.QueenAlbaScraper = QueenAlbaScraper;
+window.lastScrapedAd = currentPageData;
+
+// Help message
 console.log(`
-📌 ===========================================
-📌 여러 광고를 수집하는 방법:
-📌 ===========================================
-
-1. 첫번째 광고 페이지에서:
-   const allAds = [];
-   // 스크래퍼 실행 후
-   allAds.push(window.lastScrapedAd);
-
-2. 다른 광고 페이지로 이동 후:
-   // 스크래퍼 다시 실행
-   allAds.push(window.lastScrapedAd);
-
-3. 모든 광고 수집 후:
-   // JSON 다운로드
-   const blob = new Blob([JSON.stringify(allAds, null, 2)], {type: 'application/json'});
-   const a = document.createElement('a');
-   a.href = URL.createObjectURL(blob);
-   a.download = 'scraped_ads.json';
-   a.click();
+╔════════════════════════════════════════════════════════════╗
+║  QueenAlba Browser Console Scraper v${QueenAlbaScraper.VERSION}                  ║
+╠════════════════════════════════════════════════════════════╣
+║                                                            ║
+║  📌 현재 페이지 데이터: window.lastScrapedAd              ║
+║                                                            ║
+║  📌 사용 가능한 함수:                                      ║
+║                                                            ║
+║  1. 현재 페이지 스크래핑:                                  ║
+║     QueenAlbaScraper.scrapeCurrentPage()                  ║
+║                                                            ║
+║  2. 여러 페이지 자동 수집 (5페이지):                       ║
+║     await QueenAlbaScraper.scrapeMultiplePages(5)         ║
+║                                                            ║
+║  3. JSON 다운로드:                                         ║
+║     QueenAlbaScraper.downloadJSON(window.lastScrapedAd)   ║
+║     QueenAlbaScraper.downloadJSON(window.allScrapedAds)   ║
+║                                                            ║
+║  4. API로 전송:                                            ║
+║     await QueenAlbaScraper.postToAPI(                     ║
+║       window.lastScrapedAd,                               ║
+║       'https://your-api.com/ads'                          ║
+║     )                                                      ║
+║                                                            ║
+╚════════════════════════════════════════════════════════════╝
 `);

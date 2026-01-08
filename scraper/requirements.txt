@@ -1,6 +1,15 @@
-selenium==4.15.2
-webdriver-manager==4.0.1
-undetected-chromedriver==3.5.4
+# Core dependencies
 beautifulsoup4==4.12.2
 lxml==4.9.3
 requests==2.31.0
+
+# Async HTTP client
+aiohttp==3.9.1
+
+# Environment variable management
+python-dotenv==1.0.0
+
+# Browser automation (optional)
+selenium==4.15.2
+webdriver-manager==4.0.1
+undetected-chromedriver==3.5.4

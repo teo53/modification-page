@@ -381,20 +381,23 @@ async getAdvertiserStats(userId: string, tenantId: string) {
 
 ## 📌 테스트 아티팩트
 
-### 생성된 테스트 계정
-- **employer1@test.com** (EMPLOYER) - Password: `Employer123!@`
-- **seeker_test@test.com** (SEEKER) - Password: `Seeker123!@#$`
-
-### 생성된 테스트 광고
-- **Ad ID**: `88c84e67-f653-4194-9577-d3ee215cfb69`
-- **Status**: PENDING
-- **Owner**: employer1@test.com
+### 테스트 계정 설정
+테스트 계정 정보는 환경 변수를 통해 관리됩니다:
+```bash
+# .env 파일 예시
+TEST_EMPLOYER_EMAIL=your_employer@test.com
+TEST_EMPLOYER_PASSWORD=your_secure_password
+TEST_SEEKER_EMAIL=your_seeker@test.com
+TEST_SEEKER_PASSWORD=your_secure_password
+```
 
 ### 테스트 스크립트
 - `backend/create-employer.js` - Employer 계정 생성
 - `backend/create-seeker.js` - Seeker 계정 생성
 - `backend/test-seeker-simple.js` - 권한 테스트
 - `backend/test-permissions.js` - 수정/삭제 권한 테스트
+
+> **주의**: 테스트 스크립트 실행 전 `.env` 파일에 테스트 계정 정보를 설정하세요.
 
 ---
 
