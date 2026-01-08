@@ -8,20 +8,54 @@ import Signup from '../../pages/Signup';
 const ADULT_VERIFIED_KEY = 'lunaalba_adult_verified';
 const ADULT_VERIFIED_TIMESTAMP = 'lunaalba_adult_verified_time';
 
-// 개발 환경 자동 우회 설정 (환경 변수로 제어 가능)
-const DEV_AUTO_BYPASS = import.meta.env.VITE_DEV_ADULT_BYPASS !== 'false';
+// 개발 환경 자동 우회 - 명시적으로 'true'로 설정해야만 활성화
+// 프로덕션에서는 절대 우회되지 않음
+const DEV_AUTO_BYPASS = import.meta.env.VITE_DEV_ADULT_BYPASS === 'true';
+
+// 프로덕션 환경 체크 (Vercel, Netlify 등 배포 환경 감지)
+const isProduction = (): boolean => {
+    // PROD 환경변수 체크
+    if (import.meta.env.PROD) return true;
+    // 실제 도메인 체크 (localhost가 아닌 경우)
+    if (typeof window !== 'undefined') {
+        const hostname = window.location.hostname;
+        if (hostname !== 'localhost' && hostname !== '127.0.0.1' && !hostname.includes('192.168.')) {
+            return true;
+        }
+    }
+    return false;
+};
 
 export const isAdultVerified = (): boolean => {
-    // 개발 환경에서 자동 우회 (환경 변수로 비활성화 가능)
-    const isDev = window.location.hostname === 'localhost' ||
-        window.location.hostname === '127.0.0.1' ||
-        import.meta.env.DEV;
+    // 프로덕션에서는 절대 자동 우회하지 않음
+    if (isProduction()) {
+        // 프로덕션: localStorage 체크만 수행
+        const verified = localStorage.getItem(ADULT_VERIFIED_KEY);
+        const timestamp = localStorage.getItem(ADULT_VERIFIED_TIMESTAMP);
 
-    if (isDev && DEV_AUTO_BYPASS) {
-        return true; // 개발 환경에서는 자동 인증 (VITE_DEV_ADULT_BYPASS=false로 비활성화)
+        if (!verified || !timestamp) return false;
+
+        // 세션 유효시간: 7일
+        const verifiedTime = parseInt(timestamp);
+        const now = Date.now();
+        const sevenDays = 7 * 24 * 60 * 60 * 1000;
+
+        if (now - verifiedTime > sevenDays) {
+            localStorage.removeItem(ADULT_VERIFIED_KEY);
+            localStorage.removeItem(ADULT_VERIFIED_TIMESTAMP);
+            return false;
+        }
+
+        return verified === 'true';
     }
 
-    // 이미 로그인된 사용자는 자동으로 성인인증 통과
+    // 개발 환경에서만 자동 우회 가능 (VITE_DEV_ADULT_BYPASS=true 명시 필요)
+    if (DEV_AUTO_BYPASS && import.meta.env.DEV) {
+        console.log('[DEV] 성인인증 자동 우회 활성화됨');
+        return true;
+    }
+
+    // 이미 로그인된 사용자는 성인인증 통과
     const currentUser = getCurrentUser();
     if (currentUser) {
         // 로그인된 사용자는 자동으로 성인인증 처리
@@ -35,7 +69,7 @@ export const isAdultVerified = (): boolean => {
 
     if (!verified || !timestamp) return false;
 
-    // 세션 유효시간: 7일 (24시간에서 연장)
+    // 세션 유효시간: 7일
     const verifiedTime = parseInt(timestamp);
     const now = Date.now();
     const sevenDays = 7 * 24 * 60 * 60 * 1000;

@@ -38,6 +38,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import YouthProtectionPolicy from './pages/YouthProtectionPolicy';
 import JobSeekerPage from './pages/JobSeekerPage';
 import JobSeekerListPage from './pages/JobSeekerListPage';
+import JobSeekerDetailPage from './pages/JobSeekerDetailPage';
 import AdminFloatingPanel from './components/admin/AdminFloatingPanel';
 
 
@@ -103,7 +104,9 @@ function App() {
               <Route path="signup" element={<Signup />} />
               <Route path="support" element={<CustomerSupport />} />
               <Route path="job-seeker" element={<JobSeekerPage />} />
+              <Route path="job-seeker/:id" element={<JobSeekerDetailPage />} />
               <Route path="job-seeker-list" element={<JobSeekerListPage />} />
+              <Route path="job-seekers" element={<JobSeekerListPage />} />
 
               {/* Legal Pages */}
               <Route path="terms" element={<TermsOfService />} />

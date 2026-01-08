@@ -53,7 +53,7 @@ const SearchResults: React.FC = () => {
                             industry: ad.industry || ''
                         })));
                     }
-                } catch (error) {
+                } catch {
                     console.warn('API fetch failed for search, using local data');
                 }
             }
@@ -203,28 +203,29 @@ const SearchResults: React.FC = () => {
     return (
         <div className="pb-20">
             {/* Search Header */}
-            <div className="container mx-auto px-4 py-8">
-                <h1 className="text-2xl font-bold text-white mb-4">검색 결과</h1>
-                <form onSubmit={handleSearch} className="flex gap-4">
+            <div className="container mx-auto px-4 py-4 md:py-8">
+                {/* 모바일에서는 AppBar 타이틀과 중복되므로 헤더 숨김 */}
+                <h1 className="hidden md:block text-2xl font-bold text-white mb-4">검색 결과</h1>
+                <form onSubmit={handleSearch} className="flex gap-2 md:gap-4">
                     <div className="flex-1 relative">
                         <input
                             type="text"
-                            placeholder="지역, 업종, 키워드로 검색해보세요"
-                            className="w-full bg-accent border border-white/10 rounded-lg py-3 pl-12 pr-4 text-white focus:border-primary outline-none"
+                            placeholder="지역, 업종으로 검색"
+                            className="w-full bg-accent border border-white/10 rounded-lg py-3 pl-10 md:pl-12 pr-4 text-white text-sm md:text-base focus:border-primary outline-none"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={20} />
+                        <Search className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
                     </div>
                     <button
                         type="submit"
-                        className="bg-primary text-black px-6 rounded-lg font-bold hover:bg-primary/90 transition-colors"
+                        className="bg-primary text-black px-4 md:px-6 rounded-lg font-bold hover:bg-primary/90 transition-colors text-sm md:text-base"
                     >
                         검색
                     </button>
                     <button
                         type="button"
-                        className="bg-accent border border-white/10 text-white px-4 rounded-lg flex items-center gap-2 hover:bg-white/5"
+                        className="hidden md:flex bg-accent border border-white/10 text-white px-4 rounded-lg items-center gap-2 hover:bg-white/5"
                     >
                         <Filter size={20} />
                         필터
