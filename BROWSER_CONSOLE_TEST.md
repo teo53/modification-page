@@ -23,8 +23,8 @@
    ```
 
 4. **광고주 계정으로 로그인**
-   - 이메일: `employer1@test.com`
-   - 비밀번호: `Employer123!@`
+   - 테스트 계정 정보는 `.env` 파일 또는 시스템 관리자에게 문의하세요
+   - 환경 변수: `TEST_EMPLOYER_EMAIL`, `TEST_EMPLOYER_PASSWORD`
 
 5. **광고 등록 페이지로 이동**
    ```

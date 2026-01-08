@@ -1,5 +1,19 @@
-// 테스트 계정 시드 유틸리티
-// 이 파일을 브라우저 콘솔에서 import하거나, 앱 초기화 시 실행
+/**
+ * 테스트 계정 시드 유틸리티
+ *
+ * ⚠️  경고: 이 파일은 로컬 개발 환경 전용입니다.
+ * ⚠️  프로덕션 환경에서는 절대 사용하지 마세요.
+ * ⚠️  실제 계정 정보를 이 파일에 저장하지 마세요.
+ *
+ * 사용 방법:
+ * 1. 브라우저 콘솔에서 seedTestAccounts() 실행
+ * 2. 또는 앱 초기화 시 import
+ *
+ * 보안 주의사항:
+ * - 이 파일의 비밀번호는 더미 데이터입니다
+ * - 실제 사용 시 환경 변수 또는 별도 설정 파일 사용 권장
+ * - 이 파일은 .gitignore에 추가하는 것을 권장합니다
+ */
 
 export interface TestAccount {
     email: string;
@@ -12,69 +26,47 @@ export interface TestAccount {
     businessName?: string;
 }
 
+// ⚠️ 개발 환경 전용 더미 데이터
+// 프로덕션에서는 환경 변수를 통해 설정하세요
+const DEV_ONLY_PASSWORD = import.meta.env.VITE_TEST_PASSWORD || 'DevTest123!';
+
 export const testAccounts: TestAccount[] = [
     // ==============================
-    // 1. 여성 일반회원 테스트 계정
+    // 1. 일반회원 테스트 계정
     // ==============================
     {
-        email: 'member@dalbitalba.com',
-        password: 'Member2024!',
-        name: '김여름',
-        nickname: '여름이',
-        phone: '010-1234-5678',
+        email: import.meta.env.VITE_TEST_MEMBER_EMAIL || 'member@localhost.test',
+        password: DEV_ONLY_PASSWORD,
+        name: '테스트회원',
+        nickname: '테스터',
+        phone: '010-0000-0001',
         type: 'worker'
     },
     // ==============================
     // 2. 광고주 테스트 계정
     // ==============================
     {
-        email: 'advertiser@dalbitalba.com',
-        password: 'Advertiser2024!',
-        name: '광고주테스트',
+        email: import.meta.env.VITE_TEST_ADVERTISER_EMAIL || 'advertiser@localhost.test',
+        password: DEV_ONLY_PASSWORD,
+        name: '테스트광고주',
         nickname: '광고테스터',
-        phone: '010-9876-5432',
+        phone: '010-0000-0002',
         type: 'advertiser',
-        businessNumber: '123-45-67890',
+        businessNumber: '000-00-00001',
         businessName: '테스트업소'
     },
     // ==============================
-    // 3. 데모용 광고주 계정 (클라이언트 시연용)
+    // 3. 관리자 테스트 계정
     // ==============================
     {
-        email: 'test@dalbitalba.com',
-        password: 'TestPass123!',
-        name: '테스트 광고주',
-        nickname: '테스트업체',
-        phone: '010-1111-2222',
-        type: 'advertiser',
-        businessNumber: '111-22-33333',
-        businessName: '달빛테스트업소'
-    },
-    // ==============================
-    // 4. 관리자 계정
-    // ==============================
-    {
-        email: 'admin@dalbitalba.com',
-        password: 'DalbitAdmin2024!',
-        name: '관리자',
+        email: import.meta.env.VITE_TEST_ADMIN_EMAIL || 'admin@localhost.test',
+        password: DEV_ONLY_PASSWORD,
+        name: '테스트관리자',
         nickname: '어드민',
         phone: '010-0000-0000',
         type: 'advertiser',
         businessNumber: '000-00-00000',
-        businessName: '달빛알바 Admin'
-    },
-    // ==============================
-    // 5. 시연용 간편 계정 (쉬운 비밀번호)
-    // ==============================
-    {
-        email: 'demo@demo.com',
-        password: 'demo1234',
-        name: '시연관리자',
-        nickname: '데모',
-        phone: '010-0000-1234',
-        type: 'advertiser',
-        businessNumber: '999-99-99999',
-        businessName: '시연용업소'
+        businessName: 'Admin'
     }
 ];
 

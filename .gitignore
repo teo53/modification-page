@@ -32,3 +32,25 @@ scraper/.env
 **/.env
 .env
 backend/.env
+scraper/.env
+
+# Credentials and secrets
+**/credentials.py.bak
+**/cookies*.json
+**/*_credentials*
+**/*_secrets*
+
+# MCP config with tokens (use .example instead)
+mcp_config.json
+mcp_config_backup.json
+
+# Claude settings with local tokens
+.claude/settings.local.json
+
+# Session and auth files
+**/*.session
+**/*.auth
+
+# Test files with hardcoded data
+**/test-*.js.bak
+**/test_credentials*
