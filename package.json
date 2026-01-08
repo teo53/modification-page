@@ -22,7 +22,7 @@
     "release:patch": "node scripts/release.mjs patch",
     "release:minor": "node scripts/release.mjs minor",
     "release:major": "node scripts/release.mjs major",
-    "prepare": "node -e \"process.env.CI || require('child_process').execSync('npx husky', {stdio: 'inherit'})\""
+    "prepare": "husky || true"
   },
   "devDependencies": {
     "husky": "^9.1.7",
