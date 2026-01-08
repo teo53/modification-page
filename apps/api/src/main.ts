@@ -27,8 +27,10 @@ async function bootstrap() {
     process.env.FRONTEND_URL || 'http://localhost:5173',
     'http://localhost:5173',
     'http://localhost:3000',
+    // 프로덕션 도메인
+    'https://dalbitalba.co.kr',
+    'https://www.dalbitalba.co.kr',
     'https://dalbit-alba.vercel.app',
-    'https://lunaalba.com',
     // Capacitor 모바일 앱 지원
     'capacitor://localhost',
     'ionic://localhost',
@@ -45,7 +47,8 @@ async function bootstrap() {
       const isAllowed = allowedOrigins.includes(origin) ||
         /^https:\/\/.*\.vercel\.app$/.test(origin) ||
         /^https:\/\/.*\.railway\.app$/.test(origin) ||
-        /^https:\/\/.*dalbitalba\.co\.kr$/.test(origin) ||
+        // dalbitalba.co.kr 및 서브도메인
+        /^https:\/\/(www\.)?dalbitalba\.co\.kr$/.test(origin) ||
         /^http:\/\/localhost:\d+$/.test(origin) ||
         // Capacitor 앱 지원
         /^capacitor:\/\//.test(origin) ||
