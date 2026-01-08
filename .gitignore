@@ -54,3 +54,4 @@ mcp_config_backup.json
 # Test files with hardcoded data
 **/test-*.js.bak
 **/test_credentials*
+node-compile-cache/
