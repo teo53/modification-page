@@ -1,0 +1,81 @@
+name: Dependency Audit
+
+on:
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - '**/package.json'
+      - 'pnpm-lock.yaml'
+
+jobs:
+  audit-dependencies:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Check for breaking dependency changes
+        run: |
+          echo "🔍 Checking for potentially breaking dependency changes..."
+
+          # Critical packages that should be carefully reviewed when changed
+          CRITICAL_PACKAGES=(
+            "prisma"
+            "@prisma/client"
+            "@nestjs/core"
+            "@nestjs/common"
+            "typescript"
+            "react"
+            "react-dom"
+          )
+
+          # Get changed files
+          CHANGED_FILES=$(git diff --name-only origin/main HEAD 2>/dev/null || echo "")
+
+          if echo "$CHANGED_FILES" | grep -q "package.json\|pnpm-lock.yaml"; then
+            echo "📦 Package files changed - checking critical dependencies..."
+
+            # Check each critical package for major version changes
+            for pkg in "${CRITICAL_PACKAGES[@]}"; do
+              # Get version from main branch
+              OLD_VERSION=$(git show origin/main:apps/api/package.json 2>/dev/null | grep "\"$pkg\"" | grep -oP '"\^?\~?[0-9]+' | grep -oP '[0-9]+' | head -1 || echo "0")
+              # Get current version
+              NEW_VERSION=$(grep "\"$pkg\"" apps/api/package.json 2>/dev/null | grep -oP '"\^?\~?[0-9]+' | grep -oP '[0-9]+' | head -1 || echo "0")
+
+              if [ "$OLD_VERSION" != "0" ] && [ "$NEW_VERSION" != "0" ] && [ "$OLD_VERSION" != "$NEW_VERSION" ]; then
+                echo "⚠️  MAJOR VERSION CHANGE DETECTED: $pkg ($OLD_VERSION.x.x → $NEW_VERSION.x.x)"
+                echo "::warning::Major version change detected for $pkg: $OLD_VERSION → $NEW_VERSION. Please verify this is intentional and test thoroughly."
+              fi
+            done
+
+            echo "✅ Dependency audit complete"
+          else
+            echo "ℹ️  No package files changed"
+          fi
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run security audit
+        run: |
+          echo "🔒 Running security audit..."
+          pnpm audit --audit-level=high || echo "::warning::Security vulnerabilities found. Please review."
+
+      - name: Verify lockfile integrity
+        run: |
+          echo "🔐 Verifying lockfile integrity..."
+          pnpm install --frozen-lockfile
+          echo "✅ Lockfile is valid and up-to-date"
