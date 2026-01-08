@@ -21,8 +21,7 @@
     "mobile:run": "pnpm --filter @lunaalba/mobile run:android",
     "release:patch": "node scripts/release.mjs patch",
     "release:minor": "node scripts/release.mjs minor",
-    "release:major": "node scripts/release.mjs major",
-    "prepare": "npx husky || true"
+    "release:major": "node scripts/release.mjs major"
   },
   "devDependencies": {
     "husky": "^9.1.7",
