@@ -5,19 +5,20 @@ let devModeEnabled = false;
 let devModeKeySequence: number[] = [];
 const DEV_MODE_TIMEOUT = 2000; // 2초 내에 3번 입력
 
-// 비밀 단축키: Ctrl+Alt+Shift+D 를 3번 연속 입력
+// 비밀 단축키: Ctrl+Shift+K 를 5번 연속 입력 (K for "Kill security")
 export const enableDevModeShortcut = () => {
     document.addEventListener('keydown', (e) => {
-        // Ctrl+Alt+Shift+D 감지
-        if (e.ctrlKey && e.altKey && e.shiftKey && e.key === 'D') {
+        // Ctrl+Shift+K 감지 (대소문자 무관)
+        const key = e.key.toUpperCase();
+        if (e.ctrlKey && e.shiftKey && !e.altKey && key === 'K') {
             const now = Date.now();
 
             // 오래된 입력 제거
             devModeKeySequence = devModeKeySequence.filter(t => now - t < DEV_MODE_TIMEOUT);
             devModeKeySequence.push(now);
 
-            // 3번 연속 입력 시 개발자 모드 토글
-            if (devModeKeySequence.length >= 3) {
+            // 5번 연속 입력 시 개발자 모드 토글
+            if (devModeKeySequence.length >= 5) {
                 devModeEnabled = !devModeEnabled;
                 devModeKeySequence = [];
 
@@ -183,7 +184,7 @@ export const initializeSecurity = (options: {
         console.log('%c🔓 관리자 모드: 개발자 도구 접근이 허용됩니다.', 'color: blue; font-size: 14px; font-weight: bold;');
     } else {
         console.log('%c🛡️ Security measures initialized', 'color: green; font-size: 12px;');
-        console.log('%c💡 힌트: Ctrl+Alt+Shift+D x3', 'color: #666; font-size: 10px;');
+        console.log('%c💡 힌트: Ctrl+Shift+K x5', 'color: #666; font-size: 10px;');
     }
 };
 
