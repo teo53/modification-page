@@ -17,7 +17,7 @@ const CommunityTicker: React.FC = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isAnimating, setIsAnimating] = useState(false);
     const [isPaused, setIsPaused] = useState(false);
-    const intervalRef = useRef<NodeJS.Timeout | null>(null);
+    const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
     // Load posts from API or fallback to sample data
     // Ticker is visible to ALL users to show app activity
@@ -143,7 +143,7 @@ const CommunityTicker: React.FC = () => {
                                 <span className="text-sm text-white/90 truncate group-hover:text-primary transition-colors">
                                     {currentPost.title}
                                 </span>
-                                {currentPost.commentCount > 0 && (
+                                {(currentPost.commentCount ?? 0) > 0 && (
                                     <span className="text-[10px] text-primary font-bold shrink-0">
                                         [{currentPost.commentCount}]
                                     </span>
@@ -162,7 +162,7 @@ const CommunityTicker: React.FC = () => {
                                 <span className="text-sm text-white/90 truncate">
                                     {nextPost.title}
                                 </span>
-                                {nextPost.commentCount > 0 && (
+                                {(nextPost.commentCount ?? 0) > 0 && (
                                     <span className="text-[10px] text-primary font-bold shrink-0">
                                         [{nextPost.commentCount}]
                                     </span>
