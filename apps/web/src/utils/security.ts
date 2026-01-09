@@ -1,5 +1,42 @@
 // Security utilities for anti-debugging and protection
 
+// 개발자 모드 활성화 상태 (비밀 단축키로 활성화)
+let devModeEnabled = false;
+let devModeKeySequence: number[] = [];
+const DEV_MODE_TIMEOUT = 2000; // 2초 내에 3번 입력
+
+// 비밀 단축키: Ctrl+Alt+Shift+D 를 3번 연속 입력
+export const enableDevModeShortcut = () => {
+    document.addEventListener('keydown', (e) => {
+        // Ctrl+Alt+Shift+D 감지
+        if (e.ctrlKey && e.altKey && e.shiftKey && e.key === 'D') {
+            const now = Date.now();
+
+            // 오래된 입력 제거
+            devModeKeySequence = devModeKeySequence.filter(t => now - t < DEV_MODE_TIMEOUT);
+            devModeKeySequence.push(now);
+
+            // 3번 연속 입력 시 개발자 모드 토글
+            if (devModeKeySequence.length >= 3) {
+                devModeEnabled = !devModeEnabled;
+                devModeKeySequence = [];
+
+                if (devModeEnabled) {
+                    console.log('%c🔓 개발자 모드 활성화됨 (F12 사용 가능)', 'color: #00ff00; font-size: 16px; font-weight: bold; background: #000; padding: 8px;');
+                    alert('🔓 개발자 모드 활성화\n\nF12 및 개발자 도구를 사용할 수 있습니다.\n페이지 새로고침 시 비활성화됩니다.');
+                } else {
+                    console.log('%c🔒 개발자 모드 비활성화됨', 'color: #ff0000; font-size: 16px; font-weight: bold;');
+                }
+            }
+
+            e.preventDefault();
+        }
+    });
+};
+
+// 개발자 모드 상태 확인
+export const isDevModeEnabled = (): boolean => devModeEnabled;
+
 // Check if current user is admin (role 기반 체크)
 export const isCurrentUserAdmin = (): boolean => {
     try {
@@ -16,7 +53,7 @@ export const isCurrentUserAdmin = (): boolean => {
 // Disable right-click context menu
 export const disableRightClick = () => {
     document.addEventListener('contextmenu', (e) => {
-        if (isCurrentUserAdmin()) return; // Allow for admins
+        if (isCurrentUserAdmin() || isDevModeEnabled()) return; // Allow for admins or dev mode
         e.preventDefault();
         return false;
     });
@@ -25,8 +62,8 @@ export const disableRightClick = () => {
 // Disable keyboard shortcuts for developer tools
 export const disableDevToolsShortcuts = () => {
     document.addEventListener('keydown', (e) => {
-        // Allow all shortcuts for admins
-        if (isCurrentUserAdmin()) return;
+        // Allow all shortcuts for admins or dev mode
+        if (isCurrentUserAdmin() || isDevModeEnabled()) return;
 
         // F12
         if (e.key === 'F12') {
@@ -62,8 +99,8 @@ export const detectDevTools = (callback?: () => void) => {
     const threshold = 160;
 
     const check = () => {
-        // Skip detection for admins
-        if (isCurrentUserAdmin()) return;
+        // Skip detection for admins or dev mode
+        if (isCurrentUserAdmin() || isDevModeEnabled()) return;
 
         const widthThreshold = window.outerWidth - window.innerWidth > threshold;
         const heightThreshold = window.outerHeight - window.innerHeight > threshold;
@@ -131,6 +168,9 @@ export const initializeSecurity = (options: {
         ...options
     };
 
+    // 항상 비밀 단축키 활성화 (Ctrl+Alt+Shift+D x3)
+    enableDevModeShortcut();
+
     if (settings.disableRightClick) disableRightClick();
     if (settings.disableDevToolsShortcuts) disableDevToolsShortcuts();
     if (settings.detectDevTools) detectDevTools();
@@ -143,6 +183,7 @@ export const initializeSecurity = (options: {
         console.log('%c🔓 관리자 모드: 개발자 도구 접근이 허용됩니다.', 'color: blue; font-size: 14px; font-weight: bold;');
     } else {
         console.log('%c🛡️ Security measures initialized', 'color: green; font-size: 12px;');
+        console.log('%c💡 힌트: Ctrl+Alt+Shift+D x3', 'color: #666; font-size: 10px;');
     }
 };
 
