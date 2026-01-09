@@ -22,8 +22,32 @@ export class BusinessController {
     constructor(private readonly businessService: BusinessService) { }
 
     /**
-     * 사업자등록번호 검증
-     * POST /api/business/validate
+     * 국세청 API를 통한 사업자등록번호 검증
+     * POST /api/v1/business/verify
+     */
+    @Public()
+    @Post('verify')
+    @HttpCode(HttpStatus.OK)
+    async verifyBusinessNumber(@Body() dto: ValidateBusinessDto) {
+        const result = await this.businessService.verifyWithNTS(dto.businessNumber);
+
+        return {
+            success: result.valid,
+            valid: result.valid,
+            message: result.message,
+            data: {
+                businessNumber: this.businessService.formatBusinessNumber(result.businessNumber),
+                status: result.status,
+                statusCode: result.statusCode,
+                taxType: result.taxType,
+                closedDate: result.closedDate,
+            },
+        };
+    }
+
+    /**
+     * 사업자등록번호 검증 (기존 - 체크섬만)
+     * POST /api/v1/business/validate
      */
     @Public()
     @Post('validate')
@@ -44,7 +68,7 @@ export class BusinessController {
 
     /**
      * 사업자등록번호 형식 확인 (체크섬만)
-     * POST /api/business/check-format
+     * POST /api/v1/business/check-format
      */
     @Public()
     @Post('check-format')
