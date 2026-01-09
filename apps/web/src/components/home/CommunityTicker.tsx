@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { MessageSquare, ChevronRight } from 'lucide-react';
 import { api } from '../../utils/apiClient';
 import { sampleCommunityPosts } from '../../data/sampleCommunity';
+import { getCurrentUser } from '../../utils/auth';
 
 interface TickerPost {
     id: string;
@@ -17,10 +18,50 @@ const CommunityTicker: React.FC = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isAnimating, setIsAnimating] = useState(false);
     const [isPaused, setIsPaused] = useState(false);
+    const [canAccessCommunity, setCanAccessCommunity] = useState(false);
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+    // Check if user can access community (female users or admin)
+    useEffect(() => {
+        const checkAccess = () => {
+            const user = getCurrentUser();
+            if (!user) {
+                setCanAccessCommunity(false);
+                return;
+            }
+            // Admin always has access
+            if (user.role === 'admin') {
+                setCanAccessCommunity(true);
+                return;
+            }
+            // Female users have access
+            if (user.gender === 'female') {
+                setCanAccessCommunity(true);
+                return;
+            }
+            // Advertisers with active ads (simplified check - show for all advertisers)
+            if (user.type === 'advertiser') {
+                setCanAccessCommunity(true);
+                return;
+            }
+            setCanAccessCommunity(false);
+        };
+
+        checkAccess();
+
+        // Listen for auth changes
+        window.addEventListener('authStateChange', checkAccess);
+        window.addEventListener('storage', checkAccess);
+        return () => {
+            window.removeEventListener('authStateChange', checkAccess);
+            window.removeEventListener('storage', checkAccess);
+        };
+    }, []);
 
     // Load posts from API or fallback to sample data
     useEffect(() => {
+        if (!canAccessCommunity) return;
+
         const loadPosts = async () => {
             try {
                 const response = await api.get<any>('/community/posts?limit=10');
@@ -51,7 +92,7 @@ const CommunityTicker: React.FC = () => {
         };
 
         loadPosts();
-    }, []);
+    }, [canAccessCommunity]);
 
     // Auto-scroll animation
     useEffect(() => {
@@ -72,7 +113,8 @@ const CommunityTicker: React.FC = () => {
         };
     }, [posts.length, isPaused]);
 
-    if (posts.length === 0) return null;
+    // Don't render if no access or no posts
+    if (!canAccessCommunity || posts.length === 0) return null;
 
     const currentPost = posts[currentIndex];
     const nextPost = posts[(currentIndex + 1) % posts.length];

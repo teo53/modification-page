@@ -44,9 +44,9 @@ const Header: React.FC = () => {
     };
 
     return (
-        <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-white/10" role="banner" aria-label="사이트 헤더">
-            {/* Top Info Bar - CS & Stats */}
-            <div className="bg-gradient-to-r from-primary/10 to-secondary/10 border-b border-white/5">
+        <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-white/10 safe-area-pt" role="banner" aria-label="사이트 헤더">
+            {/* Top Info Bar - CS & Stats (Desktop only) */}
+            <div className="hidden sm:block bg-gradient-to-r from-primary/10 to-secondary/10 border-b border-white/5">
                 <div className="container mx-auto px-4 h-8 flex items-center justify-between text-xs">
                     {/* Customer Service */}
                     <div className="flex items-center gap-4">
