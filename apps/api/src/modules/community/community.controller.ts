@@ -15,16 +15,18 @@ import {
     Req,
     HttpCode,
     HttpStatus,
+    UseGuards,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { CommunityService } from './community.service';
 import { CreatePostDto, PostCategoryDto } from './dto/create-post.dto';
 import { CreateCommentDto } from './dto/create-comment.dto';
-import { Public } from '../../common/decorators/public.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { CommunityAccessGuard } from '../../common/guards/community-access.guard';
 import { ConfigService } from '@nestjs/config';
 
 @Controller('community')
+@UseGuards(CommunityAccessGuard)
 export class CommunityController {
     constructor(
         private communityService: CommunityService,
@@ -32,9 +34,8 @@ export class CommunityController {
     ) { }
 
     // ============================================
-    // 게시글 목록 (공개)
+    // 게시글 목록 (인증 + 접근 제어)
     // ============================================
-    @Public()
     @Get('posts')
     async findPosts(
         @Query('category') category: PostCategoryDto,
@@ -58,9 +59,8 @@ export class CommunityController {
     }
 
     // ============================================
-    // 게시글 상세 (공개)
+    // 게시글 상세
     // ============================================
-    @Public()
     @Get('posts/:id')
     async findPost(@Param('id') id: string, @Req() req: Request) {
         const tenantId = this.getTenantId(req);
@@ -73,9 +73,8 @@ export class CommunityController {
     }
 
     // ============================================
-    // 게시글 작성 (회원 + 익명)
+    // 게시글 작성
     // ============================================
-    @Public()
     @Post('posts')
     async createPost(
         @Body() dto: CreatePostDto,
@@ -158,7 +157,6 @@ export class CommunityController {
     // ============================================
     // 게시글 좋아요
     // ============================================
-    @Public()
     @Post('posts/:id/like')
     @HttpCode(HttpStatus.OK)
     async likePost(@Param('id') id: string) {
@@ -170,9 +168,8 @@ export class CommunityController {
     }
 
     // ============================================
-    // 댓글 목록 (공개)
+    // 댓글 목록
     // ============================================
-    @Public()
     @Get('posts/:postId/comments')
     async findComments(@Param('postId') postId: string) {
         const comments = await this.communityService.findComments(postId);
@@ -184,9 +181,8 @@ export class CommunityController {
     }
 
     // ============================================
-    // 댓글 작성 (회원 + 익명)
+    // 댓글 작성
     // ============================================
-    @Public()
     @Post('posts/:postId/comments')
     async createComment(
         @Param('postId') postId: string,

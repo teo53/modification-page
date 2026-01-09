@@ -410,32 +410,36 @@ const Step2RecruitmentInfo: React.FC<Step2Props> = ({
                 <SectionCard icon={Users} title="상세 모집 요강">
                     <div className="space-y-5">
                         {/* 나이 */}
-                        <div className="flex items-center gap-4">
-                            <label className="text-sm text-white/60 w-16 shrink-0">나이</label>
-                            <div className="flex items-center gap-2 flex-1">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+                            <label className="text-sm text-white/60 sm:w-16 shrink-0">나이</label>
+                            <div className="flex items-center gap-2 flex-1 flex-wrap">
                                 <input
                                     type="number"
+                                    inputMode="numeric"
+                                    pattern="[0-9]*"
                                     value={formData.ageLimit?.start || ''}
                                     onChange={(e) => updateFormData('ageLimit', { ...formData.ageLimit, start: +e.target.value })}
-                                    className="w-16 bg-black/40 border border-white/10 rounded-lg p-2.5 text-center text-white focus:border-primary outline-none"
+                                    className="w-20 sm:w-16 bg-black/40 border border-white/10 rounded-lg p-3 sm:p-2.5 text-center text-white text-base focus:border-primary outline-none"
                                     placeholder="20"
                                 />
                                 <span className="text-white/40">~</span>
                                 <input
                                     type="number"
+                                    inputMode="numeric"
+                                    pattern="[0-9]*"
                                     value={formData.ageLimit?.end || ''}
                                     onChange={(e) => updateFormData('ageLimit', { ...formData.ageLimit, end: +e.target.value })}
-                                    className="w-16 bg-black/40 border border-white/10 rounded-lg p-2.5 text-center text-white focus:border-primary outline-none"
+                                    className="w-20 sm:w-16 bg-black/40 border border-white/10 rounded-lg p-3 sm:p-2.5 text-center text-white text-base focus:border-primary outline-none"
                                     placeholder="35"
                                     disabled={formData.ageLimit?.noLimit}
                                 />
                                 <span className="text-white/40 text-sm">세</span>
-                                <label className="flex items-center gap-2 ml-auto cursor-pointer">
+                                <label className="flex items-center gap-2 ml-auto cursor-pointer min-h-[44px]">
                                     <input
                                         type="checkbox"
                                         checked={formData.ageLimit?.noLimit || false}
                                         onChange={(e) => updateFormData('ageLimit', { ...formData.ageLimit, noLimit: e.target.checked })}
-                                        className="w-4 h-4 rounded border-white/20 bg-black/40 accent-primary"
+                                        className="w-5 h-5 sm:w-4 sm:h-4 rounded border-white/20 bg-black/40 accent-primary"
                                     />
                                     <span className="text-sm text-white/60">무관</span>
                                 </label>
@@ -495,22 +499,22 @@ const Step2RecruitmentInfo: React.FC<Step2Props> = ({
                         </div>
 
                         {/* 마감일 */}
-                        <div className="flex items-center gap-4">
-                            <label className="text-sm text-white/60 w-16 shrink-0">마감일</label>
-                            <div className="flex items-center gap-2 flex-1">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+                            <label className="text-sm text-white/60 sm:w-16 shrink-0">마감일</label>
+                            <div className="flex items-center gap-2 flex-1 flex-wrap">
                                 <input
                                     type="date"
                                     value={formData.deadline?.date || ''}
                                     onChange={(e) => updateFormData('deadline', { ...formData.deadline, date: e.target.value })}
-                                    className="flex-1 bg-black/40 border border-white/10 rounded-lg p-2.5 text-white focus:border-primary outline-none"
+                                    className="flex-1 min-w-[140px] bg-black/40 border border-white/10 rounded-lg p-3 sm:p-2.5 text-white text-base focus:border-primary outline-none"
                                     disabled={formData.deadline?.always}
                                 />
-                                <label className="flex items-center gap-2 cursor-pointer">
+                                <label className="flex items-center gap-2 cursor-pointer min-h-[44px]">
                                     <input
                                         type="checkbox"
                                         checked={formData.deadline?.always || false}
                                         onChange={(e) => updateFormData('deadline', { ...formData.deadline, always: e.target.checked })}
-                                        className="w-4 h-4 rounded border-white/20 bg-black/40 accent-primary"
+                                        className="w-5 h-5 sm:w-4 sm:h-4 rounded border-white/20 bg-black/40 accent-primary"
                                     />
                                     <span className="text-sm text-white/60">상시모집</span>
                                 </label>
@@ -765,12 +769,12 @@ const Step2RecruitmentInfo: React.FC<Step2Props> = ({
 
                 {/* 상세 이미지 */}
                 <SectionCard icon={Image} title="상세 이미지">
-                    <div className="grid grid-cols-5 gap-4">
+                    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 sm:gap-4">
                         {formData.images?.map((img: any, idx: number) => (
                             <div key={idx} className="aspect-square relative group">
-                                <div className={`w-full h-full rounded-xl border-2 border-dashed flex items-center justify-center overflow-hidden transition-all ${img.file
+                                <div className={`w-full h-full rounded-xl border-2 border-dashed flex items-center justify-center overflow-hidden transition-all min-h-[80px] ${img.file
                                     ? 'border-primary/50 bg-primary/5'
-                                    : 'border-white/20 bg-white/5 hover:border-primary/30 hover:bg-primary/5'
+                                    : 'border-white/20 bg-white/5 hover:border-primary/30 hover:bg-primary/5 active:bg-primary/10'
                                     }`}>
                                     {img.file ? (
                                         <img
@@ -780,15 +784,15 @@ const Step2RecruitmentInfo: React.FC<Step2Props> = ({
                                         />
                                     ) : (
                                         <div className="text-center p-2">
-                                            <div className="w-8 h-8 mx-auto mb-2 rounded-full bg-white/10 flex items-center justify-center">
-                                                <span className="text-lg text-white/40">+</span>
+                                            <div className="w-10 h-10 sm:w-8 sm:h-8 mx-auto mb-2 rounded-full bg-white/10 flex items-center justify-center">
+                                                <span className="text-xl sm:text-lg text-white/40">+</span>
                                             </div>
-                                            <div className="text-[10px] text-white/40">이미지 {idx + 1}</div>
+                                            <div className="text-xs sm:text-[10px] text-white/40">이미지 {idx + 1}</div>
                                         </div>
                                     )}
                                     <input
                                         type="file"
-                                        className="absolute inset-0 opacity-0 cursor-pointer"
+                                        className="absolute inset-0 opacity-0 cursor-pointer min-h-[44px]"
                                         accept="image/*"
                                         onChange={(e) => {
                                             const file = e.target.files?.[0];
@@ -803,6 +807,7 @@ const Step2RecruitmentInfo: React.FC<Step2Props> = ({
                             </div>
                         ))}
                     </div>
+                    <p className="text-xs text-white/40 mt-3">탭하여 사진을 추가하세요 (최대 5장)</p>
                 </SectionCard>
 
                 {/* 상세내용 */}
@@ -816,16 +821,16 @@ const Step2RecruitmentInfo: React.FC<Step2Props> = ({
             </div>
 
             {/* Navigation Buttons */}
-            <div className="flex justify-between items-center pt-8 border-t border-white/10">
+            <div className="flex flex-col sm:flex-row gap-3 sm:justify-between items-stretch sm:items-center pt-8 border-t border-white/10">
                 <button
                     onClick={onPrev}
-                    className="px-8 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold transition-all"
+                    className="w-full sm:w-auto px-8 py-4 sm:py-3.5 rounded-xl bg-white/10 hover:bg-white/20 active:bg-white/25 text-white font-bold transition-all order-2 sm:order-1"
                 >
                     ← 이전 단계
                 </button>
                 <button
                     onClick={onNext}
-                    className="px-8 py-3.5 rounded-xl bg-gradient-to-r from-primary to-primary/80 text-black font-bold shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all"
+                    className="w-full sm:w-auto px-8 py-4 sm:py-3.5 rounded-xl bg-gradient-to-r from-primary to-primary/80 text-black font-bold shadow-lg shadow-primary/20 hover:shadow-primary/30 active:shadow-primary/40 transition-all order-1 sm:order-2"
                 >
                     다음 단계 →
                 </button>

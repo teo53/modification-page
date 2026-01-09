@@ -7,11 +7,15 @@ import PremiumJobGrid from '../components/home/PremiumJobGrid';
 import CompactAdGrid from '../components/home/CompactAdGrid';
 import TextAdsList from '../components/home/TextAdsList';
 import CommunityPreview from '../components/home/CommunityPreview';
+import CommunityTicker from '../components/home/CommunityTicker';
 import DenseAdList from '../components/home/DenseAdList';
 
 const Home: React.FC = () => {
     return (
         <div className="pb-20">
+            {/* 실시간 커뮤니티 티커 (에브리타임 스타일) */}
+            <CommunityTicker />
+
             {/* 프리미엄 광고 (메인 히어로) - 보석 등급 유지 */}
             <PremiumHeroAds />
             {/* 빠른 메뉴 (지역검색/업종별 등) */}

@@ -10,6 +10,8 @@ interface CommunityPreviewProps {
     isEditMode?: boolean;
 }
 
+// Community preview is visible to ALL users (titles/sections only)
+// Actual content access is restricted at the post detail page level
 const CommunityPreview: React.FC<CommunityPreviewProps> = ({ isEditMode = false }) => {
     const { useSampleData } = useDataMode();
 
