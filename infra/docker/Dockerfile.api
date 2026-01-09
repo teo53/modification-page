@@ -30,12 +30,10 @@ COPY apps/api ./apps/api
 RUN pnpm --filter @lunaalba/types build
 
 # Generate Prisma client and build API
-WORKDIR /app/apps/api
-RUN npx prisma generate
-RUN pnpm build
+RUN cd apps/api && npx prisma generate && pnpm build
 
-# Clean up dev dependencies and source files to reduce image size
-RUN rm -rf src test *.ts tsconfig*.json
+# Clean up unnecessary files
+RUN rm -rf apps/api/src apps/api/test apps/api/*.ts apps/api/tsconfig*.json packages/types/src
 
 # Set ownership
 RUN chown -R nestjs:nodejs /app
@@ -48,4 +46,5 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
 
 EXPOSE 3000
 
-CMD ["node", "dist/src/main"]
+# Run from workspace root so node_modules resolution works
+CMD ["node", "apps/api/dist/src/main"]
