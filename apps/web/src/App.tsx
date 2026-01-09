@@ -53,7 +53,13 @@ function App() {
   // 성인인증 필요 시 인증 화면 표시
   if (!adultVerified) {
     return (
-      <AdultVerification onVerified={() => setAdultVerified(true)} />
+      <ThemeProvider defaultTheme="dark">
+        <ToastProvider>
+          <ErrorBoundary>
+            <AdultVerification onVerified={() => setAdultVerified(true)} />
+          </ErrorBoundary>
+        </ToastProvider>
+      </ThemeProvider>
     );
   }
 
