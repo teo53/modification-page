@@ -39,9 +39,8 @@ RUN pnpm deploy --filter=@lunaalba/api --prod /prod/api
 RUN cp -r /app/apps/api/dist /prod/api/dist
 RUN cp -r /app/apps/api/prisma /prod/api/prisma
 
-# Copy generated Prisma client from node_modules
-RUN cp -r /app/apps/api/node_modules/.prisma /prod/api/node_modules/.prisma || cp -r /app/node_modules/.prisma /prod/api/node_modules/.prisma
-RUN cp -r /app/apps/api/node_modules/@prisma /prod/api/node_modules/@prisma 2>/dev/null || true
+# Copy generated Prisma client - find it wherever pnpm put it
+RUN find /app -name ".prisma" -type d | head -1 | xargs -I{} cp -r {} /prod/api/node_modules/.prisma
 
 # Production stage
 FROM node:20-alpine AS production
