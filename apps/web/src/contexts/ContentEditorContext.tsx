@@ -38,10 +38,16 @@ export const ContentEditorProvider: React.FC<{ children: ReactNode }> = ({ child
     );
 };
 
+// Default no-op context for when provider is not present (e.g., normal view mode)
+const defaultContextValue: ContentEditorContextType = {
+    edits: {},
+    updateContent: () => { /* no-op */ },
+    getContent: (_sectionId: string, _itemId: string, _field: string, initialValue: string) => initialValue,
+};
+
 export const useContentEditor = () => {
     const context = useContext(ContentEditorContext);
-    if (!context) {
-        throw new Error('useContentEditor must be used within a ContentEditorProvider');
-    }
-    return context;
+    // Return default no-op context if provider is not present
+    // This allows EditableImage/EditableText to work in view mode without provider
+    return context ?? defaultContextValue;
 };
