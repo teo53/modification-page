@@ -7,7 +7,7 @@ dockerfilePath = "infra/docker/Dockerfile.web"
 watchPatterns = ["apps/web/**", "packages/types/**", "infra/docker/nginx.conf"]
 
 [deploy]
-healthcheckPath = "/"
+healthcheckPath = "/health"
 healthcheckTimeout = 300
 
 [build.args]
