@@ -1,0 +1,15 @@
+# Railway Configuration for DalbitAlba Frontend
+# Root level configuration for the Website deployment
+
+[build]
+builder = "dockerfile"
+dockerfilePath = "infra/docker/Dockerfile.web"
+watchPatterns = ["apps/web/**", "packages/types/**", "infra/docker/nginx.conf"]
+
+[deploy]
+healthcheckPath = "/"
+healthcheckTimeout = 300
+
+[build.args]
+# 임시 API URL (API 서비스 분리 전까지는 작동하지 않음)
+VITE_API_URL = "https://modification-page-production.up.railway.app"
