@@ -1,7 +1,7 @@
 // Auth Service with Backend API Integration
 // Provides dual mode: API-based auth with localStorage fallback
 
-import { api, setAccessToken, clearAccessToken } from './apiClient';
+import { api, setAccessToken, clearAccessToken, setRefreshToken, clearAllTokens } from './apiClient';
 import type { User } from './auth';
 
 const CURRENT_USER_KEY = 'lunaalba_current_user';
@@ -49,6 +49,7 @@ interface AuthResponse {
         user: User;
         accessToken: string;
         expiresIn: number;
+        refreshToken?: string; // 모바일 앱용
     };
 }
 
@@ -61,10 +62,15 @@ export const loginWithApi = async (
         const response = await api.post<AuthResponse>('/auth/login', { email, password });
 
         if (response.data?.success && response.data.data) {
-            const { user, accessToken, expiresIn } = response.data.data;
+            const { user, accessToken, expiresIn, refreshToken } = response.data.data;
 
             // Store token for persistence
             persistToken(accessToken, expiresIn);
+
+            // 모바일 앱용 refresh token 저장
+            if (refreshToken) {
+                setRefreshToken(refreshToken);
+            }
 
             // Store user locally for quick access
             localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
@@ -91,9 +97,15 @@ export const signupWithApi = async (
         const response = await api.post<AuthResponse>('/auth/signup', userData);
 
         if (response.data?.success && response.data.data) {
-            const { user, accessToken, expiresIn } = response.data.data;
+            const { user, accessToken, expiresIn, refreshToken } = response.data.data;
 
             persistToken(accessToken, expiresIn);
+
+            // 모바일 앱용 refresh token 저장
+            if (refreshToken) {
+                setRefreshToken(refreshToken);
+            }
+
             localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
             window.dispatchEvent(new Event('authStateChange'));
 
@@ -118,6 +130,7 @@ export const logoutWithApi = async (): Promise<void> => {
         console.error('Logout API error:', error);
     } finally {
         clearPersistedToken();
+        clearAllTokens(); // 모든 토큰 삭제 (refresh token 포함)
         localStorage.removeItem(CURRENT_USER_KEY);
         window.dispatchEvent(new Event('authStateChange'));
     }
@@ -194,12 +207,32 @@ export const initializeAuth = async (): Promise<User | null> => {
 // ============================================
 // 백엔드 연결 상태 확인
 // ============================================
+const getHealthCheckUrl = (): string => {
+    // 환경변수 우선
+    if (import.meta.env.VITE_API_URL) {
+        return `${import.meta.env.VITE_API_URL}/health`;
+    }
+
+    // Capacitor 앱이거나 프로덕션 환경
+    const isCapacitor = typeof window !== 'undefined' && (window as any).Capacitor !== undefined;
+    const isProd = import.meta.env.PROD ||
+                   (typeof window !== 'undefined' &&
+                    window.location.hostname !== 'localhost' &&
+                    window.location.hostname !== '127.0.0.1');
+
+    if (isCapacitor || isProd) {
+        return 'https://modification-page-production.up.railway.app/api/v1/health';
+    }
+
+    return 'http://localhost:4000/api/v1/health';
+};
+
 export const checkApiConnection = async (): Promise<boolean> => {
     try {
-        const response = await fetch(
-            (import.meta.env.VITE_API_URL || 'http://localhost:4000/api/v1') + '/health',
-            { method: 'GET', signal: AbortSignal.timeout(5000) }
-        );
+        const response = await fetch(getHealthCheckUrl(), {
+            method: 'GET',
+            signal: AbortSignal.timeout(5000)
+        });
         return response.ok;
     } catch {
         return false;

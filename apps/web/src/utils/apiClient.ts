@@ -12,7 +12,10 @@ interface ApiResponse<T> {
     status: number;
 }
 
-// Token storage (in-memory only for security)
+// Token storage keys
+const REFRESH_TOKEN_KEY = 'lunaalba_refresh_token';
+
+// Token storage (in-memory for access token, localStorage for refresh token on mobile)
 let accessToken: string | null = null;
 let tokenExpiry: number = 0;
 
@@ -21,9 +24,39 @@ export const setAccessToken = (token: string, expiresIn: number) => {
     tokenExpiry = Date.now() + expiresIn * 1000;
 };
 
+// 모바일 앱용 Refresh Token 저장 (쿠키가 작동하지 않으므로 localStorage 사용)
+export const setRefreshToken = (token: string) => {
+    try {
+        localStorage.setItem(REFRESH_TOKEN_KEY, token);
+    } catch (e) {
+        console.warn('Failed to store refresh token:', e);
+    }
+};
+
+export const getRefreshToken = (): string | null => {
+    try {
+        return localStorage.getItem(REFRESH_TOKEN_KEY);
+    } catch {
+        return null;
+    }
+};
+
 export const clearAccessToken = () => {
     accessToken = null;
     tokenExpiry = 0;
+};
+
+export const clearRefreshToken = () => {
+    try {
+        localStorage.removeItem(REFRESH_TOKEN_KEY);
+    } catch {
+        // ignore
+    }
+};
+
+export const clearAllTokens = () => {
+    clearAccessToken();
+    clearRefreshToken();
 };
 
 export const isTokenExpired = (): boolean => {
@@ -49,22 +82,60 @@ export const isRateLimited = (endpoint: string): boolean => {
     return state.remaining <= 0;
 };
 
+// 모바일 앱 (Capacitor) 환경 감지
+const isCapacitorApp = (): boolean => {
+    return typeof window !== 'undefined' &&
+           (window as any).Capacitor !== undefined;
+};
+
+// 프로덕션 환경 감지
+const isProductionEnv = (): boolean => {
+    if (import.meta.env.PROD) return true;
+    if (isCapacitorApp()) return true; // 모바일 앱은 항상 프로덕션 API 사용
+    if (typeof window !== 'undefined') {
+        const hostname = window.location.hostname;
+        if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
+            return true;
+        }
+    }
+    return false;
+};
+
+// API URL 결정 (모바일 앱은 항상 프로덕션 URL 사용)
+const getApiBaseUrl = (): string => {
+    // 환경변수가 설정되어 있으면 우선 사용
+    if (import.meta.env.VITE_API_URL) {
+        return import.meta.env.VITE_API_URL;
+    }
+
+    // 프로덕션 또는 모바일 앱
+    if (isProductionEnv()) {
+        return 'https://modification-page-production.up.railway.app/api/v1';
+    }
+
+    // 개발 환경
+    return 'http://localhost:4000/api/v1';
+};
+
 // Secure API client
 export class SecureApiClient {
     private config: ApiConfig;
     private csrfToken: string | null = null;
 
     constructor(config: Partial<ApiConfig> = {}) {
-        const isProd = import.meta.env.PROD;
-        const defaultUrl = isProd
-            ? 'https://modification-page-production.up.railway.app/api/v1'
-            : 'http://localhost:4000/api/v1';
-
         this.config = {
-            // 우선순위: config.baseUrl > VITE_API_URL > 환경별 기본값
-            baseUrl: config.baseUrl || import.meta.env.VITE_API_URL || defaultUrl,
-            timeout: config.timeout || 10000  // 10초로 단축
+            baseUrl: config.baseUrl || getApiBaseUrl(),
+            timeout: config.timeout || 15000  // 모바일 네트워크를 위해 15초로 증가
         };
+
+        // 디버깅용 로그 (개발 환경에서만)
+        if (!isProductionEnv()) {
+            console.log('[API Client] Initialized with:', {
+                baseUrl: this.config.baseUrl,
+                isCapacitor: isCapacitorApp(),
+                isProd: isProductionEnv()
+            });
+        }
     }
 
     private getHeaders(): Headers {
@@ -181,23 +252,37 @@ export class SecureApiClient {
 
     private async refreshToken(): Promise<boolean> {
         try {
+            // 모바일 앱에서는 localStorage의 refresh token 사용
+            const storedRefreshToken = getRefreshToken();
+
             const response = await fetch(`${this.config.baseUrl}/auth/refresh`, {
                 method: 'POST',
-                credentials: 'include',
+                credentials: 'include', // 웹 브라우저용 쿠키
                 headers: {
                     'Content-Type': 'application/json'
-                }
+                },
+                // 모바일 앱용: refresh token을 body로 전송
+                body: storedRefreshToken ? JSON.stringify({ refreshToken: storedRefreshToken }) : undefined
             });
 
             if (response.ok) {
                 const result = await response.json();
-                // 백엔드 응답: { success: true, data: { accessToken, expiresIn } }
-                const { accessToken: newToken, expiresIn } = result.data || result;
+                // 백엔드 응답: { success: true, data: { accessToken, expiresIn, refreshToken? } }
+                const responseData = result.data || result;
+                const { accessToken: newToken, expiresIn, refreshToken: newRefreshToken } = responseData;
+
                 setAccessToken(newToken, expiresIn);
+
+                // 새 refresh token이 있으면 저장 (토큰 로테이션)
+                if (newRefreshToken) {
+                    setRefreshToken(newRefreshToken);
+                }
+
                 return true;
             }
             return false;
-        } catch {
+        } catch (err) {
+            console.error('[Token Refresh Error]', err);
             return false;
         }
     }

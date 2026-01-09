@@ -84,8 +84,22 @@ const CommunityPage: React.FC = () => {
     ];
 
     const loadInitialData = () => {
-        // 1. 로컬 스토리지 데이터 가져오기
-        const localPostsRaw = JSON.parse(localStorage.getItem('lunaalba_community_posts') || '[]');
+        // 1. 로컬 스토리지 데이터 가져오기 (안전한 파싱)
+        let localPostsRaw: any[] = [];
+        try {
+            const stored = localStorage.getItem('lunaalba_community_posts');
+            if (stored) {
+                localPostsRaw = JSON.parse(stored);
+                if (!Array.isArray(localPostsRaw)) {
+                    localPostsRaw = [];
+                }
+            }
+        } catch (e) {
+            console.warn('커뮤니티 게시글 로컬 데이터 파싱 실패:', e);
+            localStorage.removeItem('lunaalba_community_posts');
+            localPostsRaw = [];
+        }
+
         const localPosts = localPostsRaw.map((post: any) => ({
             id: String(post.id),
             category: post.category,
