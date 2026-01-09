@@ -17,17 +17,15 @@ if (import.meta.env.DEV) {
   printTestAccounts();
 }
 
-// Production mode: Enable security measures
-if (import.meta.env.PROD) {
-  initializeSecurity({
-    disableRightClick: false,  // UX 개선: 우클릭 허용
-    disableDevToolsShortcuts: true,
-    detectDevTools: true,
-    disableTextSelection: false,
-    clearConsole: false,
-    debuggerTrap: false
-  });
-}
+// Security measures (production) + dev shortcut (always)
+initializeSecurity({
+  disableRightClick: false,  // UX 개선: 우클릭 허용
+  disableDevToolsShortcuts: import.meta.env.PROD,  // 프로덕션에서만 차단
+  detectDevTools: import.meta.env.PROD,  // 프로덕션에서만 감지
+  disableTextSelection: false,
+  clearConsole: false,
+  debuggerTrap: false
+});
 
 // Initialize user behavior analytics
 initializeAnalytics();
