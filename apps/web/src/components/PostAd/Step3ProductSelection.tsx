@@ -338,14 +338,13 @@ const Step3ProductSelection: React.FC<Step3Props> = ({
 
                                     {/* Selected: Start Date & Price - Inline */}
                                     {isSelected && (
-                                        <div className="mt-2 pt-2 border-t border-white/10 flex items-center justify-between text-xs">
-                                            <div className="flex items-center gap-2">
-                                                <Clock size={12} className="text-white/50" />
-                                                <span className="text-white/50">시작일</span>
+                                        <div className="mt-2 pt-2 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs">
+                                            <div className="flex items-center gap-2 w-full sm:w-auto">
+                                                <Clock size={12} className="text-white/50 shrink-0" />
+                                                <span className="text-white/50 shrink-0">시작일</span>
                                                 <input
                                                     type="date"
-                                                    className="bg-black/60 border-2 border-primary/40 rounded-lg px-3 py-1.5 text-white text-xs focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none cursor-pointer hover:border-primary/60 transition-colors"
-                                                    style={{ colorScheme: 'dark' }}
+                                                    className="flex-1 sm:flex-none bg-black/60 border-2 border-primary/40 rounded-lg px-3 py-2 sm:py-1.5 text-white text-base sm:text-xs focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none cursor-pointer hover:border-primary/60 transition-colors min-h-[44px] sm:min-h-0"
                                                     min={today}
                                                     value={selectedProducts[product.id]?.startDate || today}
                                                     onChange={(e) => {
@@ -356,7 +355,7 @@ const Step3ProductSelection: React.FC<Step3Props> = ({
                                                     }}
                                                 />
                                             </div>
-                                            <span className="font-bold text-primary">
+                                            <span className="font-bold text-primary text-sm sm:text-xs">
                                                 {(priceNum * qty).toLocaleString()}원
                                             </span>
                                         </div>

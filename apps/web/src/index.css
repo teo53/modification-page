@@ -101,6 +101,83 @@ body {
   user-select: none;
 }
 
+/* ===== iOS Input Zoom Prevention ===== */
+/* iOS Safari auto-zooms on inputs with font-size < 16px */
+@supports (-webkit-touch-callout: none) {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="tel"],
+  input[type="search"],
+  input[type="url"],
+  input[type="date"],
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
+
+/* ===== Date Input Styling for Mobile ===== */
+input[type="date"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  min-height: 44px;
+  color-scheme: dark;
+}
+
+/* iOS/Android date picker indicator styling */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+  padding: 4px;
+  min-width: 20px;
+  min-height: 20px;
+}
+
+/* ===== Minimum Touch Target Size (Mobile) ===== */
+@media (pointer: coarse) {
+  button:not(.btn-icon-sm),
+  [role="button"],
+  input[type="submit"],
+  input[type="button"] {
+    min-height: 44px;
+  }
+
+  /* Form inputs need adequate height */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="tel"],
+  input[type="search"],
+  input[type="url"],
+  input[type="date"],
+  textarea,
+  select {
+    min-height: 44px;
+  }
+
+  /* Checkbox/Radio visual size adjustment */
+  input[type="checkbox"],
+  input[type="radio"] {
+    width: 22px;
+    height: 22px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+/* ===== Android Keyboard Fix ===== */
+/* Prevent content jump when keyboard opens */
+@media (max-width: 768px) {
+  .keyboard-open {
+    height: 100vh;
+    height: 100dvh;
+  }
+}
+
 /* ===== Global Button & Interactive Element Styles ===== */
 button,
 [role="button"],
