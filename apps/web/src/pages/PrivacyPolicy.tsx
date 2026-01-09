@@ -12,7 +12,7 @@ const PrivacyPolicy: React.FC = () => {
                         <Lock className="text-blue-400" size={32} />
                     </div>
                     <h1 className="text-3xl font-bold text-white mb-2">개인정보처리방침</h1>
-                    <p className="text-text-muted">루나알바 개인정보 보호 정책</p>
+                    <p className="text-text-muted">달빛알바 개인정보 보호 정책</p>
                 </div>
 
                 {/* Content */}
@@ -23,7 +23,7 @@ const PrivacyPolicy: React.FC = () => {
                             제1조 (개인정보의 처리 목적)
                         </h2>
                         <p className="text-text-muted leading-relaxed mb-4">
-                            (주)루나알바(이하 "회사")는 다음의 목적을 위하여 개인정보를 처리합니다.
+                            만물상사(이하 "회사")는 다음의 목적을 위하여 개인정보를 처리합니다.
                             처리하고 있는 개인정보는 다음의 목적 이외의 용도로는 이용되지 않으며,
                             이용 목적이 변경되는 경우에는 별도의 동의를 받는 등 필요한 조치를 이행할 예정입니다.
                         </p>
@@ -57,23 +57,23 @@ const PrivacyPolicy: React.FC = () => {
                                 <tbody className="text-text-muted">
                                     <tr className="border-b border-white/5">
                                         <td className="p-3">필수</td>
-                                        <td className="p-3">이메일, 비밀번호, 이름, 휴대폰번호, 성별</td>
-                                        <td className="p-3">회원 가입, 본인 확인</td>
+                                        <td className="p-3">이메일, 비밀번호, 이름, 닉네임, 휴대폰번호, 성별</td>
+                                        <td className="p-3">회원 가입, 본인 확인, 서비스 이용</td>
                                     </tr>
                                     <tr className="border-b border-white/5">
                                         <td className="p-3">선택</td>
-                                        <td className="p-3">주소, 프로필 사진</td>
+                                        <td className="p-3">주소, 상세주소, 프로필 사진</td>
                                         <td className="p-3">맞춤 서비스 제공</td>
                                     </tr>
                                     <tr className="border-b border-white/5">
                                         <td className="p-3">광고주</td>
-                                        <td className="p-3">사업자등록번호, 상호명, 사업자등록증</td>
-                                        <td className="p-3">광고 서비스 제공</td>
+                                        <td className="p-3">사업자등록번호, 상호명, 사업자등록증 사본</td>
+                                        <td className="p-3">광고주 자격 확인, 광고 서비스 제공</td>
                                     </tr>
                                     <tr>
                                         <td className="p-3">자동 수집</td>
-                                        <td className="p-3">IP주소, 쿠키, 방문기록</td>
-                                        <td className="p-3">서비스 이용 분석</td>
+                                        <td className="p-3">IP주소, 쿠키, 방문기록, 기기정보</td>
+                                        <td className="p-3">서비스 이용 분석, 부정이용 방지</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -180,14 +180,14 @@ const PrivacyPolicy: React.FC = () => {
                         <h2 className="text-xl font-bold text-white mb-4">제8조 (개인정보 보호책임자)</h2>
                         <div className="bg-background rounded-lg p-4 border border-white/5">
                             <div className="space-y-2">
-                                <p className="text-white"><strong>개인정보 보호책임자:</strong> 홍길동 (대표이사)</p>
+                                <p className="text-white"><strong>개인정보 보호책임자:</strong> 권해성 (대표)</p>
                                 <p className="text-text-muted flex items-center gap-2">
                                     <Mail size={14} />
-                                    이메일: privacy@lunaalba.com
+                                    이메일: privacy@dalbitalba.com
                                 </p>
                                 <p className="text-text-muted flex items-center gap-2">
                                     <Phone size={14} />
-                                    전화: 02-1234-5678
+                                    전화: 031-123-4567
                                 </p>
                             </div>
                         </div>

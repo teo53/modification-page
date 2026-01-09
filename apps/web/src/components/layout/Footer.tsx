@@ -63,7 +63,7 @@ const Footer: React.FC = () => {
                         <ul className="space-y-3 text-sm text-text-muted">
                             <li className="flex items-center gap-2">
                                 <Phone size={14} />
-                                <span>02-1234-5678</span>
+                                <span>031-123-4567</span>
                             </li>
                             <li className="flex items-center gap-2">
                                 <Mail size={14} />
@@ -71,7 +71,7 @@ const Footer: React.FC = () => {
                             </li>
                             <li className="flex items-start gap-2">
                                 <MapPin size={14} className="mt-1 shrink-0" />
-                                <span>서울특별시 강남구 테헤란로<br />123 달빛알바빌딩 5층</span>
+                                <span>경기도 수원시 영통구 청명로 4<br />6층 01호 (영통동, 다빈빌딩)</span>
                             </li>
                         </ul>
                     </div>
@@ -99,9 +99,9 @@ const Footer: React.FC = () => {
 
                     {/* Company Info */}
                     <div className="text-center text-xs text-text-muted/70 space-y-1">
-                        {/* TODO: 아래 정보를 실제 사업자 정보로 반드시 변경하세요 */}
-                        <p>상호명: (주)달빛알바 | 대표: 홍길동 | 사업자등록번호: 123-45-67890</p>
-                        <p>통신판매업신고번호: 2025-서울강남-00000 | 직업정보제공사업 신고번호: J1234567890123</p>
+                        <p>상호명: 만물상사 | 대표: 권해성 | 사업자등록번호: 823-12-02291</p>
+                        <p>소재지: 경기도 수원시 영통구 청명로 4, 6층 01호 (영통동, 다빈빌딩)</p>
+                        <p>업태: 도매 및 소매업, 정보통신업 | 종목: 전자상거래 소매업</p>
                         <p className="mt-3 text-text-muted/50">
                             달빛알바는 통신판매중개자이며 통신판매의 당사자가 아닙니다.<br />
                             따라서 달빛알바는 상품·거래정보 및 거래에 대하여 책임을 지지 않습니다.
@@ -127,7 +127,7 @@ const Footer: React.FC = () => {
 
                     {/* 청소년보호책임자 */}
                     <div className="mt-4 text-center text-xs text-text-muted/70">
-                        <p>청소년보호책임자: 홍길동 (contact@dalbitalba.com)</p>
+                        <p>청소년보호책임자: 권해성 (youth@dalbitalba.com)</p>
                     </div>
 
                     {/* Copyright */}

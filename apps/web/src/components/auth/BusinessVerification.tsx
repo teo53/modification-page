@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Building2, Upload, CheckCircle, AlertCircle, Loader2, FileText, X } from 'lucide-react';
+import { verifyBusinessWithNTS, formatBusinessNumber } from '../../utils/businessService';
 
 interface BusinessVerificationProps {
     businessNumber: string;
@@ -25,18 +26,12 @@ const BusinessVerification: React.FC<BusinessVerificationProps> = ({
     const [verificationResult, setVerificationResult] = useState<{
         valid: boolean;
         status: string;
+        statusCode: string;
         taxType: string;
+        closedDate?: string;
     } | null>(null);
     const [certificate, setCertificate] = useState<File | null>(null);
     const [certificatePreview, setCertificatePreview] = useState<string | null>(null);
-
-    // Format business number (000-00-00000)
-    const formatBusinessNumber = (value: string) => {
-        const numbers = value.replace(/\D/g, '');
-        if (numbers.length <= 3) return numbers;
-        if (numbers.length <= 5) return `${numbers.slice(0, 3)}-${numbers.slice(3)}`;
-        return `${numbers.slice(0, 3)}-${numbers.slice(3, 5)}-${numbers.slice(5, 10)}`;
-    };
 
     const handleBusinessNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const formatted = formatBusinessNumber(e.target.value);
@@ -54,7 +49,7 @@ const BusinessVerification: React.FC<BusinessVerificationProps> = ({
         return digits.length === 10;
     };
 
-    // Verify business number via API
+    // 국세청 API를 통한 사업자등록 검증
     const verifyBusinessNumber = async () => {
         if (!isValidFormat(businessNumber)) {
             setError('사업자등록번호 10자리를 입력해주세요.');
@@ -70,88 +65,45 @@ const BusinessVerification: React.FC<BusinessVerificationProps> = ({
         setError('');
 
         try {
-            const cleanNumber = businessNumber.replace(/\D/g, '');
-            const apiUrl = import.meta.env.VITE_API_URL;
+            // 국세청 API를 통한 사업자등록 검증
+            const result = await verifyBusinessWithNTS(businessNumber);
 
-            // 백엔드 API가 설정된 경우 API 호출
-            if (apiUrl) {
-                try {
-                    const response = await fetch(`${apiUrl}/business/validate`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ businessNumber: cleanNumber }),
-                    });
-
-                    const data = await response.json();
-
-                    if (data.success) {
-                        setVerificationResult({
-                            valid: true,
-                            status: data.data.status,
-                            taxType: data.data.taxType
-                        });
-                        onVerified(true);
-                    } else {
-                        setVerificationResult({
-                            valid: false,
-                            status: '확인불가',
-                            taxType: '-'
-                        });
-                        setError(data.message || '유효하지 않은 사업자등록번호입니다.');
-                        onVerified(false);
-                    }
-                    return;
-                } catch (err) {
-                    if (import.meta.env.DEV) {
-                        console.log('API 호출 실패, 로컬 검증으로 대체:', err);
-                    }
-                    // API 실패 시 로컬 검증으로 폴백
-                }
-            }
-
-            // 로컬 검증 (API 없거나 실패 시)
-            await new Promise(resolve => setTimeout(resolve, 500));
-            const isValidChecksum = validateBusinessNumberChecksum(cleanNumber);
-
-            if (isValidChecksum) {
+            if (result.success && result.valid && result.data) {
                 setVerificationResult({
                     valid: true,
-                    status: '형식 검증 완료',
-                    taxType: '확인 필요'
+                    status: result.data.status,
+                    statusCode: result.data.statusCode,
+                    taxType: result.data.taxType,
+                    closedDate: result.data.closedDate
                 });
                 onVerified(true);
+            } else if (result.success && result.data) {
+                // 사업자 확인은 됐으나 유효하지 않음 (휴업/폐업 등)
+                setVerificationResult({
+                    valid: false,
+                    status: result.data.status,
+                    statusCode: result.data.statusCode,
+                    taxType: result.data.taxType,
+                    closedDate: result.data.closedDate
+                });
+                setError(result.message);
+                onVerified(false);
             } else {
                 setVerificationResult({
                     valid: false,
                     status: '확인불가',
+                    statusCode: 'ERROR',
                     taxType: '-'
                 });
-                setError('유효하지 않은 사업자등록번호입니다.');
+                setError(result.message || '사업자등록 확인에 실패했습니다.');
                 onVerified(false);
             }
         } catch {
-            setError('사업자 확인 중 오류가 발생했습니다.');
+            setError('사업자 확인 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
             onVerified(false);
         } finally {
             setLoading(false);
         }
-    };
-
-    // Business number checksum validation (한국 사업자번호 검증 알고리즘)
-    const validateBusinessNumberChecksum = (num: string): boolean => {
-        if (num.length !== 10) return false;
-
-        const weights = [1, 3, 7, 1, 3, 7, 1, 3, 5];
-        let sum = 0;
-
-        for (let i = 0; i < 9; i++) {
-            sum += parseInt(num[i]) * weights[i];
-        }
-
-        sum += Math.floor((parseInt(num[8]) * 5) / 10);
-        const checkDigit = (10 - (sum % 10)) % 10;
-
-        return checkDigit === parseInt(num[9]);
     };
 
     // Handle certificate file upload
@@ -268,8 +220,15 @@ const BusinessVerification: React.FC<BusinessVerificationProps> = ({
                             <div className={`font-medium ${verificationResult.valid ? 'text-green-400' : 'text-red-400'}`}>
                                 {verificationResult.valid ? '사업자 확인 완료' : '확인 실패'}
                             </div>
-                            <div className="text-xs text-text-muted mt-1">
-                                사업 상태: {verificationResult.status} | 과세 유형: {verificationResult.taxType}
+                            <div className="text-xs text-text-muted mt-1 space-y-0.5">
+                                <p>사업 상태: {verificationResult.status}</p>
+                                <p>과세 유형: {verificationResult.taxType}</p>
+                                {verificationResult.closedDate && (
+                                    <p className="text-red-400">폐업일: {verificationResult.closedDate.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3')}</p>
+                                )}
+                                {verificationResult.statusCode === 'LOCAL' && (
+                                    <p className="text-yellow-400 text-[10px]">* 상세 확인은 서류 심사 시 진행됩니다</p>
+                                )}
                             </div>
                         </div>
                     </div>
