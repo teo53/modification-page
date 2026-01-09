@@ -56,7 +56,9 @@ function App() {
       <ThemeProvider defaultTheme="dark">
         <ToastProvider>
           <ErrorBoundary>
-            <AdultVerification onVerified={() => setAdultVerified(true)} />
+            <BrowserRouter>
+              <AdultVerification onVerified={() => setAdultVerified(true)} />
+            </BrowserRouter>
           </ErrorBoundary>
         </ToastProvider>
       </ThemeProvider>
