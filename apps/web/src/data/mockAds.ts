@@ -1,7 +1,10 @@
 // Mock ad data using real crawled images from queenalba.net
 // Updated to use real scraped data from scraped_ads.json
 
-import scrapedAdsData from './scraped_ads.json';
+import scrapedAdsDataRaw from './scraped_ads.json';
+
+// Ensure scrapedAdsData is always an array (defensive coding)
+const scrapedAdsData = Array.isArray(scrapedAdsDataRaw) ? scrapedAdsDataRaw : [];
 
 export interface Advertisement {
     id: number;
