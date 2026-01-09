@@ -65,52 +65,51 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
         setLoading(true);
         setError('');
 
-        const apiUrl = import.meta.env.VITE_API_URL;
-        let useDemoMode = !apiUrl;
+        // API URL: VITE_API_URL이 설정되어 있으면 사용, 아니면 상대 경로 (nginx 프록시 경유)
+        const apiUrl = import.meta.env.VITE_API_URL || '/api/v1';
+        let useDemoMode = false;
 
-        // 백엔드 API가 설정된 경우 API 호출 시도
-        if (apiUrl) {
-            try {
-                const response = await fetch(`${apiUrl}/auth/phone/send-code`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ phone: phone.replace(/\D/g, '') }),
-                });
+        // 백엔드 API 호출 시도
+        try {
+            const response = await fetch(`${apiUrl}/auth/phone/send-code`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone: phone.replace(/\D/g, '') }),
+            });
 
-                const data = await response.json();
+            const data = await response.json();
 
-                if (data.success) {
-                    setTimer(180); // 3 minutes
-                    setStep('code');
+            if (data.success) {
+                setTimer(180); // 3 minutes
+                setStep('code');
 
-                    // 데모 모드인 경우 코드 표시
-                    if (data.demoCode) {
-                        setSentCode(data.demoCode);
-                        if (import.meta.env.DEV) {
-                            console.log(`[DEMO] 인증번호: ${data.demoCode}`);
-                        }
-                        // Toast로 인증번호 표시
-                        if (toast) {
-                            toast.showDemoCode(data.demoCode);
-                        } else {
-                            navigator.clipboard?.writeText(data.demoCode);
-                            alert(`[테스트 모드] 인증번호: ${data.demoCode}\n\n클립보드에 복사되었습니다.`);
-                        }
+                // 데모 모드인 경우 코드 표시
+                if (data.demoCode) {
+                    setSentCode(data.demoCode);
+                    if (import.meta.env.DEV) {
+                        console.log(`[DEMO] 인증번호: ${data.demoCode}`);
                     }
-                    setLoading(false);
-                    return; // API 성공 시 여기서 종료
-                } else {
-                    setError(data.message || '인증번호 발송에 실패했습니다.');
-                    setLoading(false);
-                    return;
+                    // Toast로 인증번호 표시
+                    if (toast) {
+                        toast.showDemoCode(data.demoCode);
+                    } else {
+                        navigator.clipboard?.writeText(data.demoCode);
+                        alert(`[테스트 모드] 인증번호: ${data.demoCode}\n\n클립보드에 복사되었습니다.`);
+                    }
                 }
-            } catch (err) {
-                console.warn('SMS API 연결 실패, 데모 모드로 전환:', err);
-                useDemoMode = true; // API 실패 시 데모 모드로 폴백
+                setLoading(false);
+                return; // API 성공 시 여기서 종료
+            } else {
+                setError(data.message || '인증번호 발송에 실패했습니다.');
+                setLoading(false);
+                return;
             }
+        } catch (err) {
+            console.warn('SMS API 연결 실패, 데모 모드로 전환:', err);
+            useDemoMode = true; // API 실패 시 데모 모드로 폴백
         }
 
-        // 프론트엔드 데모 모드 (백엔드 없거나 연결 실패 시)
+        // 프론트엔드 데모 모드 (API 연결 실패 시)
         if (useDemoMode) {
             await new Promise(resolve => setTimeout(resolve, 800));
 
@@ -167,35 +166,12 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
         setLoading(true);
         setError('');
 
-        const apiUrl = import.meta.env.VITE_API_URL;
+        // API URL: VITE_API_URL이 설정되어 있으면 사용, 아니면 상대 경로 (nginx 프록시 경유)
+        const apiUrl = import.meta.env.VITE_API_URL || '/api/v1';
 
-        // 백엔드 API가 설정된 경우 API 호출
-        if (apiUrl) {
-            try {
-                const response = await fetch(`${apiUrl}/auth/phone/verify-code`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        phone: phone.replace(/\D/g, ''),
-                        code: enteredCode
-                    }),
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    setStep('verified');
-                    onVerified(true);
-                } else {
-                    setError(data.message || '인증번호가 일치하지 않습니다.');
-                }
-            } catch (err) {
-                console.error('Verify API Error:', err);
-                setError('서버 연결에 실패했습니다. 잠시 후 다시 시도해주세요.');
-            }
-        } else {
-            // 프론트엔드 데모 모드 (백엔드 없음)
-            await new Promise(resolve => setTimeout(resolve, 800));
+        // 데모 모드로 인증번호를 받은 경우 (sentCode가 있는 경우) 로컬 검증
+        if (sentCode) {
+            await new Promise(resolve => setTimeout(resolve, 500));
 
             if (enteredCode === sentCode) {
                 setStep('verified');
@@ -203,6 +179,32 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
             } else {
                 setError('인증번호가 일치하지 않습니다.');
             }
+            setLoading(false);
+            return;
+        }
+
+        // 백엔드 API 호출
+        try {
+            const response = await fetch(`${apiUrl}/auth/phone/verify-code`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    phone: phone.replace(/\D/g, ''),
+                    code: enteredCode
+                }),
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                setStep('verified');
+                onVerified(true);
+            } else {
+                setError(data.message || '인증번호가 일치하지 않습니다.');
+            }
+        } catch (err) {
+            console.error('Verify API Error:', err);
+            setError('서버 연결에 실패했습니다. 잠시 후 다시 시도해주세요.');
         }
 
         setLoading(false);
