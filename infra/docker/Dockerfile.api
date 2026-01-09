@@ -39,6 +39,10 @@ RUN pnpm deploy --filter=@lunaalba/api --prod /prod/api
 RUN cp -r /app/apps/api/dist /prod/api/dist
 RUN cp -r /app/apps/api/prisma /prod/api/prisma
 
+# Copy generated Prisma client from node_modules
+RUN cp -r /app/node_modules/.prisma /prod/api/node_modules/.prisma
+RUN cp -r /app/node_modules/@prisma /prod/api/node_modules/@prisma
+
 # Production stage
 FROM node:20-alpine AS production
 
@@ -50,9 +54,6 @@ RUN addgroup -g 1001 -S nodejs && \
 
 # Copy the standalone deployed package (no symlinks, real files)
 COPY --from=builder /prod/api .
-
-# Regenerate Prisma client for this environment
-RUN npx prisma generate
 
 # Set ownership
 RUN chown -R nestjs:nodejs /app
