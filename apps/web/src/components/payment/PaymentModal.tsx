@@ -12,11 +12,24 @@ interface PaymentModalProps {
     onPaymentComplete: (depositorName: string) => void;
 }
 
-// 계좌 정보 설정 (관리자가 나중에 변경)
+// 계좌 정보 설정 (환경변수에서 읽어옴)
+// .env 파일에 다음 변수 설정 필요:
+// VITE_PAYMENT_BANK_NAME=카카오뱅크
+// VITE_PAYMENT_ACCOUNT_NUMBER=3333-00-1234567
+// VITE_PAYMENT_ACCOUNT_HOLDER=달빛알바
 const BANK_INFO = {
-    bankName: '카카오뱅크',  // TODO: 실제 은행명으로 변경
-    accountNumber: '3333-00-0000000',  // TODO: 실제 계좌번호로 변경
-    accountHolder: '달빛알바',  // TODO: 실제 예금주로 변경
+    bankName: import.meta.env.VITE_PAYMENT_BANK_NAME || '(설정 필요)',
+    accountNumber: import.meta.env.VITE_PAYMENT_ACCOUNT_NUMBER || '(설정 필요)',
+    accountHolder: import.meta.env.VITE_PAYMENT_ACCOUNT_HOLDER || '(설정 필요)',
+};
+
+// 계좌정보 설정 확인
+const isBankInfoConfigured = (): boolean => {
+    return Boolean(
+        import.meta.env.VITE_PAYMENT_BANK_NAME &&
+        import.meta.env.VITE_PAYMENT_ACCOUNT_NUMBER &&
+        import.meta.env.VITE_PAYMENT_ACCOUNT_HOLDER
+    );
 };
 
 const PaymentModal: React.FC<PaymentModalProps> = ({
@@ -138,6 +151,13 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
                         <h3 className="text-sm font-medium text-text-muted flex items-center gap-2">
                             <span>💳</span> 입금 계좌 정보
                         </h3>
+
+                        {/* 계좌정보 미설정 경고 */}
+                        {!isBankInfoConfigured() && (
+                            <div className="bg-red-500/20 border border-red-500/30 rounded-lg p-3 text-sm text-red-300">
+                                ⚠️ 결제 계좌 정보가 설정되지 않았습니다. 관리자에게 문의해주세요.
+                            </div>
+                        )}
 
                         {/* Bank Name */}
                         <div className="flex items-center justify-between bg-background/50 rounded-lg p-3 border border-white/5">
