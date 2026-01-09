@@ -1,7 +1,11 @@
 # Railway Configuration for DalbitAlba Backend
+# ⚠️ 중요: Railway 대시보드 > Service Settings > Root Directory를
+#    빈칸 또는 "/" 로 설정해야 workspace 의존성이 작동합니다!
 
 [build]
 builder = "dockerfile"
+dockerfilePath = "apps/api/Dockerfile"
+watchPatterns = ["apps/api/**", "packages/types/**"]
 
 [deploy]
 healthcheckPath = "/api/v1/health"
