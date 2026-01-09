@@ -75,6 +75,7 @@ model User {
   phone         String?
   phoneVerified Boolean  @default(false) @map("phone_verified")
   profileImage  String?  @map("profile_image")
+  gender        Gender?  // 성별 (커뮤니티 접근 제어용)
   
   // 주소
   address       String?
@@ -127,6 +128,11 @@ enum UserRole {
   MODERATOR   // 운영자
   ADMIN       // 관리자
   SUPER_ADMIN // 슈퍼 관리자 (마스터 CRM)
+}
+
+enum Gender {
+  MALE    // 남성
+  FEMALE  // 여성
 }
 
 // =============================================================================

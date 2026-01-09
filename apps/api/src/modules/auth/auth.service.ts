@@ -15,9 +15,9 @@ import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
 import { PrismaService } from '../../prisma/prisma.service';
-import { SignupDto, SignupUserType } from './dto/signup.dto';
+import { SignupDto, SignupUserType, SignupGender } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
-import { UserRole } from '@prisma/client';
+import { UserRole, Gender } from '@prisma/client';
 import { WebhookService } from '../webhook/webhook.service';
 
 interface JwtPayload {
@@ -40,6 +40,7 @@ interface AuthResponse {
         name: string | null;
         nickname: string | null;
         role: UserRole;
+        gender: Gender | null;
         phone: string | null;
         businessName: string | null;
     };
@@ -88,6 +89,14 @@ export class AuthService {
             ? UserRole.EMPLOYER
             : UserRole.SEEKER;
 
+        // 성별 변환 (프론트엔드 enum → Prisma enum)
+        let gender: Gender | null = null;
+        if (dto.gender === SignupGender.MALE) {
+            gender = Gender.MALE;
+        } else if (dto.gender === SignupGender.FEMALE) {
+            gender = Gender.FEMALE;
+        }
+
         // 사용자 생성
         const user = await this.prisma.user.create({
             data: {
@@ -95,6 +104,7 @@ export class AuthService {
                 email: dto.email,
                 passwordHash,
                 role,
+                gender,
                 name: dto.name,
                 nickname: dto.nickname,
                 phone: dto.phone?.replace(/-/g, ''),
@@ -121,6 +131,7 @@ export class AuthService {
                 name: user.name,
                 nickname: user.nickname,
                 role: user.role,
+                gender: user.gender,
                 phone: user.phone,
                 businessName: user.businessName,
             },
@@ -197,6 +208,7 @@ export class AuthService {
                 name: user.name,
                 nickname: user.nickname,
                 role: user.role,
+                gender: user.gender,
                 phone: user.phone,
                 businessName: user.businessName,
             },
@@ -357,6 +369,7 @@ export class AuthService {
                 tenantId: true,
                 email: true,
                 role: true,
+                gender: true,
                 name: true,
                 nickname: true,
                 isActive: true,

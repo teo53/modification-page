@@ -21,6 +21,11 @@ export enum SignupUserType {
     ADVERTISER = 'advertiser',
 }
 
+export enum SignupGender {
+    MALE = 'male',
+    FEMALE = 'female',
+}
+
 export class SignupDto {
     // 이메일
     @IsEmail({}, { message: '올바른 이메일 형식을 입력해주세요.' })
@@ -68,6 +73,11 @@ export class SignupDto {
     // 회원 유형
     @IsEnum(SignupUserType, { message: '올바른 회원 유형을 선택해주세요.' })
     type: SignupUserType;
+
+    // 성별 (구직자인 경우 필수 - 커뮤니티 접근 제어용)
+    @IsOptional()
+    @IsEnum(SignupGender, { message: '올바른 성별을 선택해주세요.' })
+    gender?: SignupGender;
 
     // 주소 (선택)
     @IsOptional()
