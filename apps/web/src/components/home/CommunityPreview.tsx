@@ -1,59 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { MessageSquare, Eye, ThumbsUp, Sparkles } from 'lucide-react';
 
 import communityData from '../../data/community_data.json';
 import { sampleCommunityPosts } from '../../data/sampleCommunity';
 import { useDataMode } from '../../contexts/DataModeContext';
-import { getCurrentUser } from '../../utils/auth';
 
 interface CommunityPreviewProps {
     isEditMode?: boolean;
 }
 
+// Community preview is visible to ALL users (titles/sections only)
+// Actual content access is restricted at the post detail page level
 const CommunityPreview: React.FC<CommunityPreviewProps> = ({ isEditMode = false }) => {
     const { useSampleData } = useDataMode();
-    const [canAccessCommunity, setCanAccessCommunity] = useState(false);
-
-    // Check if user can access community (female users, advertisers, or admin)
-    useEffect(() => {
-        const checkAccess = () => {
-            const user = getCurrentUser();
-            if (!user) {
-                setCanAccessCommunity(false);
-                return;
-            }
-            // Admin always has access
-            if (user.role === 'admin') {
-                setCanAccessCommunity(true);
-                return;
-            }
-            // Female users have access
-            if (user.gender === 'female') {
-                setCanAccessCommunity(true);
-                return;
-            }
-            // Advertisers have access (assuming they have active ads)
-            if (user.type === 'advertiser') {
-                setCanAccessCommunity(true);
-                return;
-            }
-            setCanAccessCommunity(false);
-        };
-
-        checkAccess();
-
-        // Listen for auth changes
-        window.addEventListener('authStateChange', checkAccess);
-        window.addEventListener('storage', checkAccess);
-        return () => {
-            window.removeEventListener('authStateChange', checkAccess);
-            window.removeEventListener('storage', checkAccess);
-        };
-    }, []);
-
-    // Don't render if user doesn't have community access
-    if (!canAccessCommunity) return null;
 
     // Use sample data or real data based on admin toggle, but also checking localStorage fallback
     const sourcePosts = useSampleData ? sampleCommunityPosts : communityData;

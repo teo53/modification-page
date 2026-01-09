@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, ThumbsUp, MessageSquare, Eye, Share2 } from 'lucide-react';
+import { ArrowLeft, ThumbsUp, MessageSquare, Eye, Share2, Lock } from 'lucide-react';
 import DOMPurify from 'dompurify';
 import { api } from '../utils/apiClient';
 import ReportButton from '../components/common/ReportButton';
 import LoadingSpinner from '../components/common/LoadingSpinner';
+import { getCurrentUser } from '../utils/auth';
 
 interface Comment {
     id: string;
@@ -34,6 +35,21 @@ const CommunityPostDetail: React.FC = () => {
     const [error] = useState('');
     const [commentContent, setCommentContent] = useState('');
     const [commentSubmitting, setCommentSubmitting] = useState(false);
+
+    // Check community access permission
+    const checkAccess = () => {
+        const user = getCurrentUser();
+        if (!user) return false;
+        // Admin always has access
+        if (user.role === 'admin') return true;
+        // Female users have access
+        if (user.gender === 'female') return true;
+        // Advertisers have access
+        if (user.type === 'advertiser') return true;
+        return false;
+    };
+
+    const canAccess = checkAccess();
 
     useEffect(() => {
         const fetchPost = async () => {
@@ -117,6 +133,45 @@ const CommunityPostDetail: React.FC = () => {
 
     if (loading) {
         return <LoadingSpinner fullScreen text="게시글을 불러오는 중" />;
+    }
+
+    // Access denied - show message instead of content
+    if (!canAccess) {
+        return (
+            <div className="container mx-auto px-4 py-8 max-w-4xl">
+                <button
+                    onClick={() => navigate('/community')}
+                    className="flex items-center gap-2 text-text-muted hover:text-white mb-6 transition-colors"
+                >
+                    <ArrowLeft size={20} />
+                    <span>목록으로</span>
+                </button>
+
+                <div className="bg-accent rounded-xl border border-white/5 p-8 text-center">
+                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-red-500/20 flex items-center justify-center">
+                        <Lock size={32} className="text-red-400" />
+                    </div>
+                    <h2 className="text-xl font-bold text-white mb-2">접근 권한이 필요합니다</h2>
+                    <p className="text-text-muted mb-6">
+                        커뮤니티 글 내용은 여성회원 또는 광고주 회원만 열람할 수 있습니다.
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                        <Link
+                            to="/login"
+                            className="px-6 py-3 bg-primary text-black font-bold rounded-lg hover:bg-primary/90 transition-colors"
+                        >
+                            로그인하기
+                        </Link>
+                        <Link
+                            to="/signup"
+                            className="px-6 py-3 bg-white/10 text-white font-bold rounded-lg hover:bg-white/20 transition-colors"
+                        >
+                            회원가입
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        );
     }
 
     if (error || !post) {
