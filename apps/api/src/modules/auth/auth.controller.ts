@@ -11,7 +11,6 @@ import {
     HttpStatus,
     Req,
     Res,
-    UseGuards,
     Get,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
@@ -23,7 +22,6 @@ import { LoginDto } from './dto/login.dto';
 import { SendVerificationCodeDto, VerifyCodeDto } from './dto/phone-verification.dto';
 import { Public } from '../../common/decorators/public.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { ConfigService } from '@nestjs/config';
 
 @Controller('auth')
@@ -62,6 +60,8 @@ export class AuthController {
                 user: result.user,
                 accessToken: result.tokens.accessToken,
                 expiresIn: result.tokens.expiresIn,
+                // 모바일 앱용: refresh token도 body에 포함 (쿠키가 작동하지 않는 환경 지원)
+                refreshToken: result.tokens.refreshToken,
             },
         };
     }
@@ -96,6 +96,8 @@ export class AuthController {
                 user: result.user,
                 accessToken: result.tokens.accessToken,
                 expiresIn: result.tokens.expiresIn,
+                // 모바일 앱용: refresh token도 body에 포함
+                refreshToken: result.tokens.refreshToken,
             },
         };
     }
@@ -107,11 +109,12 @@ export class AuthController {
     @Post('refresh')
     @HttpCode(HttpStatus.OK)
     async refresh(
+        @Body() body: { refreshToken?: string },
         @Req() req: Request,
         @Res({ passthrough: true }) res: Response,
     ) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const refreshToken = req.cookies?.refreshToken;
+        // 모바일 앱: body에서 refreshToken 받음, 웹: 쿠키에서 받음
+        const refreshToken = body?.refreshToken || (req.cookies?.refreshToken as string | undefined);
 
         if (!refreshToken) {
             return {
@@ -126,7 +129,7 @@ export class AuthController {
 
         const tokens = await this.authService.refreshTokens(refreshToken, tenantId);
 
-        // 새 Refresh Token 설정
+        // 새 Refresh Token 쿠키 설정 (웹용)
         this.setRefreshTokenCookie(res, tokens.refreshToken);
 
         return {
@@ -135,6 +138,8 @@ export class AuthController {
             data: {
                 accessToken: tokens.accessToken,
                 expiresIn: tokens.expiresIn,
+                // 모바일 앱용: 새 refresh token도 body에 포함
+                refreshToken: tokens.refreshToken,
             },
         };
     }
@@ -148,8 +153,7 @@ export class AuthController {
         @Req() req: Request,
         @Res({ passthrough: true }) res: Response,
     ) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const refreshToken = req.cookies?.refreshToken;
+        const refreshToken = req.cookies?.refreshToken as string | undefined;
 
         await this.authService.logout(refreshToken);
 

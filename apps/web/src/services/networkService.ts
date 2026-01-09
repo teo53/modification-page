@@ -16,9 +16,22 @@ class NetworkService {
     private listeners: NetworkHandler[] = [];
     private initialized = false;
 
-    // Check if running in native environment (for future Capacitor integration)
+    // Check if running in native environment (Capacitor)
     isNative(): boolean {
-        return false; // Web only for now
+        return typeof window !== 'undefined' &&
+               (window as any).Capacitor !== undefined;
+    }
+
+    // Check if running in Android
+    isAndroid(): boolean {
+        return this.isNative() &&
+               (window as any).Capacitor?.getPlatform?.() === 'android';
+    }
+
+    // Check if running in iOS
+    isIOS(): boolean {
+        return this.isNative() &&
+               (window as any).Capacitor?.getPlatform?.() === 'ios';
     }
 
     // Get current online status

@@ -31,7 +31,7 @@ const AdvertiserCRM: React.FC = () => {
     const [logoUrl, setLogoUrl] = useState('');
     const [bannerUrl, setBannerUrl] = useState('');
     const [chartData] = useState(defaultChartData);
-    const [, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const currentUser = getCurrentUser();
@@ -196,6 +196,18 @@ const AdvertiserCRM: React.FC = () => {
                     <AlertCircle size={48} className="text-red-400 mx-auto mb-4" />
                     <p className="text-white">로그인이 필요합니다.</p>
                     <Link to="/login" className="text-primary underline">로그인하기</Link>
+                </div>
+            </div>
+        );
+    }
+
+    // 로딩 상태 표시
+    if (isLoading) {
+        return (
+            <div className="min-h-screen bg-background flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                    <p className="text-text-muted">광고 정보를 불러오는 중...</p>
                 </div>
             </div>
         );
