@@ -12,7 +12,7 @@ const YouthProtectionPolicy: React.FC = () => {
                         <Shield className="text-red-400" size={32} />
                     </div>
                     <h1 className="text-3xl font-bold text-white mb-2">청소년보호정책</h1>
-                    <p className="text-text-muted">루나알바 청소년 보호 정책 안내</p>
+                    <p className="text-text-muted">달빛알바 청소년 보호 정책 안내</p>
                 </div>
 
                 {/* Warning Banner */}
@@ -38,7 +38,7 @@ const YouthProtectionPolicy: React.FC = () => {
                         </h2>
                         <p className="text-text-muted leading-relaxed">
                             본 정책은 청소년보호법에 따라 청소년이 유해한 매체로부터 보호받을 수 있도록
-                            (주)루나알바(이하 "회사")가 마련한 청소년 보호 정책입니다.
+                            만물상사(이하 "회사")가 마련한 청소년 보호 정책입니다.
                             회사는 청소년이 건전한 인격체로 성장할 수 있도록 청소년유해매체물로부터
                             청소년을 보호하기 위해 본 정책을 수립하여 운영합니다.
                         </p>
@@ -113,14 +113,14 @@ const YouthProtectionPolicy: React.FC = () => {
                         </p>
                         <div className="bg-background rounded-lg p-4 border border-white/5">
                             <div className="space-y-2">
-                                <p className="text-white"><strong>청소년보호책임자:</strong> 홍길동 (대표이사)</p>
+                                <p className="text-white"><strong>청소년보호책임자:</strong> 권해성 (대표)</p>
                                 <p className="text-text-muted flex items-center gap-2">
                                     <Mail size={14} />
-                                    이메일: youth@lunaalba.com
+                                    이메일: youth@dalbitalba.com
                                 </p>
                                 <p className="text-text-muted flex items-center gap-2">
                                     <Phone size={14} />
-                                    전화: 02-1234-5678
+                                    전화: 031-123-4567
                                 </p>
                             </div>
                         </div>

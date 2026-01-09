@@ -55,4 +55,9 @@ export default () => ({
         ttl: parseInt(process.env.THROTTLE_TTL || '60', 10),
         limit: parseInt(process.env.THROTTLE_LIMIT || '100', 10),
     },
+
+    // 국세청 사업자등록 검증 API
+    nts: {
+        apiKey: process.env.NTS_API_KEY,
+    },
 });
