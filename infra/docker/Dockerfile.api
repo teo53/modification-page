@@ -39,8 +39,9 @@ RUN pnpm deploy --filter=@lunaalba/api --prod /prod/api
 RUN cp -r /app/apps/api/dist /prod/api/dist
 RUN cp -r /app/apps/api/prisma /prod/api/prisma
 
-# Copy generated Prisma client - find it wherever pnpm put it
-RUN find /app -name ".prisma" -type d | head -1 | xargs -I{} cp -r {} /prod/api/node_modules/.prisma
+# Generate Prisma client in the deployed directory
+WORKDIR /prod/api
+RUN npx prisma@6.2.1 generate
 
 # Production stage
 FROM node:20-alpine AS production
