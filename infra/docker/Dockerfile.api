@@ -1,17 +1,16 @@
 # =============================================================================
 # Dockerfile for LunaAlba API (NestJS)
-# Uses pnpm deploy for proper production deployment without symlink issues
+# Simple single-stage build - prioritizes reliability over image size
 # =============================================================================
 
-# Build stage
-FROM node:20-alpine AS builder
+FROM node:20-alpine
 
 WORKDIR /app
 
 # Install pnpm
 RUN corepack enable && corepack prepare pnpm@9 --activate
 
-# Copy workspace configuration
+# Copy workspace configuration first (for better caching)
 COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
 COPY packages/types/package.json ./packages/types/
 COPY apps/api/package.json ./apps/api/
@@ -23,39 +22,17 @@ RUN pnpm install --frozen-lockfile
 COPY packages/types ./packages/types
 COPY apps/api ./apps/api
 
-# Build types package first
+# Build types package
 RUN pnpm --filter @lunaalba/types build
 
-# Build API
+# Build API (prisma generate is included in build script)
 WORKDIR /app/apps/api
-RUN npx prisma generate
 RUN pnpm build
-
-# Create standalone deployment using pnpm deploy (no symlinks!)
-WORKDIR /app
-RUN pnpm deploy --filter=@lunaalba/api --prod /prod/api
-
-# Copy built artifacts to deploy directory
-RUN cp -r /app/apps/api/dist /prod/api/dist
-RUN cp -r /app/apps/api/prisma /prod/api/prisma
-
-# Copy generated Prisma client - find it wherever pnpm put it
-RUN find /app -name ".prisma" -type d | head -1 | xargs -I{} cp -r {} /prod/api/node_modules/.prisma
-
-# Production stage
-FROM node:20-alpine AS production
-
-WORKDIR /app
 
 # Create non-root user
 RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nestjs -u 1001
-
-# Copy the standalone deployed package (no symlinks, real files)
-COPY --from=builder /prod/api .
-
-# Set ownership
-RUN chown -R nestjs:nodejs /app
+    adduser -S nestjs -u 1001 && \
+    chown -R nestjs:nodejs /app
 
 USER nestjs
 
