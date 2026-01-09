@@ -1,5 +1,9 @@
 # Railway Configuration for DalbitAlba Frontend
 # Root level configuration for the Website deployment
+#
+# ⚠️ 중요: Railway 대시보드에서 다음 환경변수를 설정하세요:
+#    API_BACKEND_URL = API 서비스의 Railway URL (예: https://api-service-production.up.railway.app)
+#    또는 Railway 내부 URL 사용: http://api.railway.internal:3000
 
 [build]
 builder = "dockerfile"
@@ -11,5 +15,6 @@ healthcheckPath = "/health"
 healthcheckTimeout = 300
 
 [build.args]
-# 임시 API URL (API 서비스 분리 전까지는 작동하지 않음)
-VITE_API_URL = "https://modification-page-production.up.railway.app"
+# VITE_API_URL은 빌드타임에 사용 (클라이언트 사이드 API 호출용 - 현재는 nginx 프록시 사용)
+# 빈 값으로 설정하면 상대 경로(/api/v1/...)를 사용하여 nginx 프록시 경유
+VITE_API_URL = ""
