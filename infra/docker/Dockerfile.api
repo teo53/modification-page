@@ -40,8 +40,8 @@ RUN cp -r /app/apps/api/dist /prod/api/dist
 RUN cp -r /app/apps/api/prisma /prod/api/prisma
 
 # Copy generated Prisma client from node_modules
-RUN cp -r /app/node_modules/.prisma /prod/api/node_modules/.prisma
-RUN cp -r /app/node_modules/@prisma /prod/api/node_modules/@prisma
+RUN cp -r /app/apps/api/node_modules/.prisma /prod/api/node_modules/.prisma || cp -r /app/node_modules/.prisma /prod/api/node_modules/.prisma
+RUN cp -r /app/apps/api/node_modules/@prisma /prod/api/node_modules/@prisma 2>/dev/null || true
 
 # Production stage
 FROM node:20-alpine AS production
