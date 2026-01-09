@@ -17,11 +17,11 @@ if (import.meta.env.DEV) {
   printTestAccounts();
 }
 
-// Security measures (production) + dev shortcut (always)
+// Security measures - 개발자도구 차단 비활성화
 initializeSecurity({
-  disableRightClick: false,  // UX 개선: 우클릭 허용
-  disableDevToolsShortcuts: import.meta.env.PROD,  // 프로덕션에서만 차단
-  detectDevTools: import.meta.env.PROD,  // 프로덕션에서만 감지
+  disableRightClick: false,
+  disableDevToolsShortcuts: false,  // 비활성화
+  detectDevTools: false,  // 비활성화
   disableTextSelection: false,
   clearConsole: false,
   debuggerTrap: false
