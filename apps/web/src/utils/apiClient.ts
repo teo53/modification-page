@@ -171,7 +171,9 @@ export class SecureApiClient {
 
         try {
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), this.config.timeout);
+            const timeoutId = setTimeout(() => {
+                controller.abort(new DOMException('Request timeout', 'TimeoutError'));
+            }, this.config.timeout);
 
             const response = await fetch(`${this.config.baseUrl}${endpoint}`, {
                 method,
@@ -235,17 +237,30 @@ export class SecureApiClient {
             return { data, error, status: response.status };
 
         } catch (err) {
-            // Enhanced error logging
-            console.error('[API Error]', {
-                endpoint,
-                method,
-                error: err instanceof Error ? err.message : 'Unknown error',
-                timestamp: new Date().toISOString()
-            });
+            const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+            const errorName = err instanceof Error ? err.name : '';
 
-            if (err instanceof Error && err.name === 'AbortError') {
-                return { data: null, error: '요청 시간이 초과되었습니다.', status: 0 };
+            // Enhanced error logging (only in development)
+            if (!isProductionEnv()) {
+                console.error('[API Error]', {
+                    endpoint,
+                    method,
+                    error: errorMessage,
+                    name: errorName,
+                    timestamp: new Date().toISOString()
+                });
             }
+
+            // AbortError 또는 TimeoutError 처리
+            if (err instanceof Error && (err.name === 'AbortError' || err.name === 'TimeoutError')) {
+                return { data: null, error: '요청 시간이 초과되었습니다. 네트워크 상태를 확인해주세요.', status: 0 };
+            }
+
+            // TypeError (네트워크 오류) 처리
+            if (err instanceof TypeError) {
+                return { data: null, error: '서버에 연결할 수 없습니다. 네트워크 상태를 확인해주세요.', status: 0 };
+            }
+
             return { data: null, error: '네트워크 오류가 발생했습니다.', status: 0 };
         }
     }

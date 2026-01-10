@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Phone, Shield, CheckCircle, AlertCircle, Loader2, Mail } from 'lucide-react';
 import { useToastOptional } from '../common/Toast';
+import { api } from '../../utils/apiClient';
 
 interface PhoneVerificationProps {
     phone: string;
@@ -66,8 +67,13 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
         onPhoneChange(formatted);
     };
 
-    // API URL
-    const getApiUrl = () => import.meta.env.VITE_API_URL || '/api/v1';
+    // SMS API 응답 타입
+    interface SmsApiResponse {
+        success: boolean;
+        message: string;
+        demoCode?: string;
+        isDemoMode?: boolean;
+    }
 
     // Send SMS verification code
     const sendSmsCode = async () => {
@@ -81,48 +87,36 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
         setSentCode('');
         setIsDemoMode(false);
 
-        try {
-            const response = await fetch(`${getApiUrl()}/auth/phone/send-code`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ phone: phone.replace(/\D/g, '') }),
-            });
+        const response = await api.post<SmsApiResponse>('/auth/phone/send-code', {
+            phone: phone.replace(/\D/g, '')
+        });
 
-            const data = await response.json();
+        if (response.data?.success) {
+            setTimer(180);
+            setStep('code');
+            setVerificationMethod('phone');
+            setSmsFailCount(0);
+            setShowEmailFallback(false);
 
-            if (response.ok && data.success) {
-                setTimer(180);
-                setStep('code');
-                setVerificationMethod('phone');
-                setSmsFailCount(0);
-                setShowEmailFallback(false);
-
-                if (data.isDemoMode && data.demoCode) {
-                    setSentCode(data.demoCode);
-                    setIsDemoMode(true);
-                    console.log(`[테스트 모드] 인증번호: ${data.demoCode}`);
-                    if (toast) {
-                        toast.showDemoCode(data.demoCode);
-                    } else {
-                        navigator.clipboard?.writeText(data.demoCode);
-                        alert(`[테스트 모드] 인증번호: ${data.demoCode}\n\n클립보드에 복사되었습니다.`);
-                    }
+            if (response.data.isDemoMode && response.data.demoCode) {
+                setSentCode(response.data.demoCode);
+                setIsDemoMode(true);
+                console.log(`[테스트 모드] 인증번호: ${response.data.demoCode}`);
+                if (toast) {
+                    toast.showDemoCode(response.data.demoCode);
+                } else {
+                    navigator.clipboard?.writeText(response.data.demoCode);
+                    alert(`[테스트 모드] 인증번호: ${response.data.demoCode}\n\n클립보드에 복사되었습니다.`);
                 }
-            } else {
-                // SMS 발송 실패 - 이메일 폴백 옵션 표시
-                const newFailCount = smsFailCount + 1;
-                setSmsFailCount(newFailCount);
-                setError(data.message || 'SMS 발송에 실패했습니다.');
-
-                // SMS 실패 시 이메일 폴백 옵션 바로 표시
-                setShowEmailFallback(true);
             }
-        } catch (err) {
-            console.error('SMS API 연결 실패:', err);
-            setSmsFailCount(prev => prev + 1);
+        } else {
+            // SMS 발송 실패 - 이메일 폴백 옵션 표시
+            const newFailCount = smsFailCount + 1;
+            setSmsFailCount(newFailCount);
+            setError(response.error || response.data?.message || 'SMS 발송에 실패했습니다.');
 
-            if (import.meta.env.DEV) {
-                // 개발 모드: 데모 모드로 폴백
+            // 개발 모드에서 서버 연결 실패 시 데모 모드
+            if (import.meta.env.DEV && response.status === 0) {
                 await new Promise(resolve => setTimeout(resolve, 800));
                 const code = generateCode();
                 setSentCode(code);
@@ -139,13 +133,21 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                     alert(`[개발 모드 - 서버 연결 실패]\n인증번호: ${code}\n\n클립보드에 복사되었습니다.`);
                 }
             } else {
-                setError('서버 연결에 실패했습니다.');
+                // SMS 실패 시 이메일 폴백 옵션 바로 표시
                 setShowEmailFallback(true);
             }
         }
 
         setLoading(false);
     };
+
+    // Email API 응답 타입
+    interface EmailApiResponse {
+        success: boolean;
+        message: string;
+        demoCode?: string;
+        isDemoMode?: boolean;
+    }
 
     // Send email verification code
     const sendEmailCode = async () => {
@@ -160,39 +162,30 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
         setSentCode('');
         setIsDemoMode(false);
 
-        try {
-            const response = await fetch(`${getApiUrl()}/auth/email/send-code`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: email.toLowerCase().trim() }),
-            });
+        const response = await api.post<EmailApiResponse>('/auth/email/send-code', {
+            email: email.toLowerCase().trim()
+        });
 
-            const data = await response.json();
+        if (response.data?.success) {
+            setTimer(180);
+            setStep('code');
+            setVerificationMethod('email');
+            setShowEmailFallback(false);
 
-            if (response.ok && data.success) {
-                setTimer(180);
-                setStep('code');
-                setVerificationMethod('email');
-                setShowEmailFallback(false);
-
-                if (data.isDemoMode && data.demoCode) {
-                    setSentCode(data.demoCode);
-                    setIsDemoMode(true);
-                    console.log(`[테스트 모드] 이메일 인증번호: ${data.demoCode}`);
-                    if (toast) {
-                        toast.showDemoCode(data.demoCode);
-                    } else {
-                        navigator.clipboard?.writeText(data.demoCode);
-                        alert(`[테스트 모드] 이메일 인증번호: ${data.demoCode}\n\n클립보드에 복사되었습니다.`);
-                    }
+            if (response.data.isDemoMode && response.data.demoCode) {
+                setSentCode(response.data.demoCode);
+                setIsDemoMode(true);
+                console.log(`[테스트 모드] 이메일 인증번호: ${response.data.demoCode}`);
+                if (toast) {
+                    toast.showDemoCode(response.data.demoCode);
+                } else {
+                    navigator.clipboard?.writeText(response.data.demoCode);
+                    alert(`[테스트 모드] 이메일 인증번호: ${response.data.demoCode}\n\n클립보드에 복사되었습니다.`);
                 }
-            } else {
-                setError(data.message || '이메일 발송에 실패했습니다.');
             }
-        } catch (err) {
-            console.error('Email API 연결 실패:', err);
-
-            if (import.meta.env.DEV) {
+        } else {
+            // 개발 모드에서 서버 연결 실패 시 데모 모드
+            if (import.meta.env.DEV && response.status === 0) {
                 await new Promise(resolve => setTimeout(resolve, 800));
                 const code = generateCode();
                 setSentCode(code);
@@ -209,7 +202,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                     alert(`[개발 모드]\n이메일 인증번호: ${code}\n\n클립보드에 복사되었습니다.`);
                 }
             } else {
-                setError('서버 연결에 실패했습니다. 잠시 후 다시 시도해주세요.');
+                setError(response.error || response.data?.message || '이메일 발송에 실패했습니다.');
             }
         }
 
@@ -235,6 +228,12 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
             inputRefs.current[index - 1]?.focus();
         }
     };
+
+    // Verify API 응답 타입
+    interface VerifyApiResponse {
+        success: boolean;
+        message: string;
+    }
 
     // Verify code
     const verifyCode = async () => {
@@ -272,30 +271,20 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
             ? { phone: phone.replace(/\D/g, ''), code: enteredCode }
             : { email: email.toLowerCase().trim(), code: enteredCode };
 
-        try {
-            const response = await fetch(`${getApiUrl()}${endpoint}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(body),
-            });
+        const response = await api.post<VerifyApiResponse>(endpoint, body);
 
-            const data = await response.json();
-
-            if (response.ok && data.success) {
-                setStep('verified');
-                onVerified(true);
-                console.log(`[서버] ${verificationMethod === 'phone' ? '휴대폰' : '이메일'} 인증 성공`);
-            } else {
-                setError(data.message || '인증번호가 일치하지 않습니다.');
-            }
-        } catch (err) {
-            console.error('Verify API Error:', err);
-            if (import.meta.env.DEV && sentCode && enteredCode === sentCode) {
+        if (response.data?.success) {
+            setStep('verified');
+            onVerified(true);
+            console.log(`[서버] ${verificationMethod === 'phone' ? '휴대폰' : '이메일'} 인증 성공`);
+        } else {
+            // 개발 모드에서 서버 연결 실패 시 로컬 검증
+            if (import.meta.env.DEV && response.status === 0 && sentCode && enteredCode === sentCode) {
                 setStep('verified');
                 onVerified(true);
                 console.log('[개발 모드 폴백] 로컬 인증 성공');
             } else {
-                setError('서버 연결에 실패했습니다. 잠시 후 다시 시도해주세요.');
+                setError(response.error || response.data?.message || '인증번호가 일치하지 않습니다.');
             }
         }
 
