@@ -43,8 +43,10 @@ export class SmsService {
         if (this.isDemoMode) {
             this.logger.warn('SMS Service running in DEMO MODE - No real SMS will be sent');
             this.logger.warn('Set SMS_API_KEY, SMS_API_SECRET, SMS_SENDER in .env for production');
+            this.logger.warn(`Current values: apiKey=${this.apiKey ? '[SET]' : '[EMPTY]'}, apiSecret=${this.apiSecret ? '[SET]' : '[EMPTY]'}, sender=${this.sender || '[EMPTY]'}`);
         } else {
             this.logger.log('SMS Service initialized with Solapi API');
+            this.logger.log(`Sender number: ${this.sender}`);
         }
     }
 
@@ -161,29 +163,45 @@ export class SmsService {
             const timestamp = Date.now().toString();
             const signature = await this.generateSolapiSignature(timestamp);
 
+            // 전화번호 형식: Solapi는 국가코드 없이 01012345678 형식 사용
+            const formattedTo = to.replace(/\D/g, ''); // 숫자만 추출
+
+            // 발신번호도 숫자만 추출
+            const formattedFrom = this.sender.replace(/\D/g, '');
+
+            const requestBody = {
+                message: {
+                    to: formattedTo,
+                    from: formattedFrom,
+                    text,
+                },
+            };
+
+            this.logger.log(`Solapi API Request: to=${formattedTo}, from=${formattedFrom}, text length=${text.length}`);
+
             const response = await fetch('https://api.solapi.com/messages/v4/send', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `HMAC-SHA256 apiKey=${this.apiKey}, date=${timestamp}, salt=${signature.salt}, signature=${signature.signature}`,
                 },
-                body: JSON.stringify({
-                    message: {
-                        to,
-                        from: this.sender,
-                        text,
-                    },
-                }),
+                body: JSON.stringify(requestBody),
             });
 
             const data = await response.json();
 
+            this.logger.log(`Solapi API Response: status=${response.status}, data=${JSON.stringify(data)}`);
+
             if (response.ok && data.groupId) {
                 return { success: true, message: 'SMS sent successfully' };
             } else {
-                return { success: false, message: data.message || 'Failed to send SMS' };
+                // 상세 에러 메시지 로깅
+                const errorMessage = data.errorMessage || data.message || data.errorCode || 'Unknown error';
+                this.logger.error(`Solapi error: ${errorMessage}, full response: ${JSON.stringify(data)}`);
+                return { success: false, message: errorMessage };
             }
         } catch (error) {
+            this.logger.error(`Solapi exception: ${error.message}`, error.stack);
             return { success: false, message: error.message };
         }
     }
