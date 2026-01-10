@@ -91,29 +91,20 @@ export class SmsService {
         }
 
         // 실제 SMS 발송 (Solapi API)
-        try {
-            const response = await this.sendSolapi(normalizedPhone, `[달빛알바] 인증번호: ${code}`);
+        const response = await this.sendSolapi(normalizedPhone, `[달빛알바] 인증번호: ${code}`);
 
-            if (response.success) {
-                this.logger.log(`SMS sent to ${normalizedPhone}`);
-                return {
-                    success: true,
-                    message: '인증번호가 발송되었습니다. SMS를 확인해주세요.',
-                    isDemoMode: false,
-                };
-            } else {
-                throw new Error(response.message);
-            }
-        } catch (error) {
-            this.logger.error(`Failed to send SMS: ${error.message}`);
-            // SMS 발송 실패 시에도 데모 모드로 폴백
-            this.logger.warn(`SMS 발송 실패, 테스트 모드로 전환: ${normalizedPhone}`);
+        if (response.success) {
+            this.logger.log(`SMS sent to ${normalizedPhone}`);
             return {
                 success: true,
-                message: '[테스트 모드] SMS 발송에 실패하여 테스트 모드로 전환되었습니다.',
-                code, // 폴백으로 코드 반환
-                isDemoMode: true,
+                message: '인증번호가 발송되었습니다. SMS를 확인해주세요.',
+                isDemoMode: false,
             };
+        } else {
+            // SMS 발송 실패 - 저장된 인증번호 삭제 (보안상 중요)
+            this.verificationCodes.delete(normalizedPhone);
+            this.logger.error(`SMS send failed: ${response.message}`);
+            throw new BadRequestException('SMS 발송에 실패했습니다. 잠시 후 다시 시도해주세요.');
         }
     }
 

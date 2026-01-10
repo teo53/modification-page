@@ -110,24 +110,28 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                 return;
             }
         } catch (err) {
-            console.warn('SMS API 연결 실패, 클라이언트 데모 모드로 전환:', err);
+            console.error('SMS API 연결 실패:', err);
 
-            // 프론트엔드 폴백 데모 모드 (API 연결 실패 시)
-            await new Promise(resolve => setTimeout(resolve, 800));
+            // 개발 환경에서만 클라이언트 데모 모드 허용
+            if (import.meta.env.DEV) {
+                await new Promise(resolve => setTimeout(resolve, 800));
 
-            const code = generateCode();
-            setSentCode(code);
-            setIsDemoMode(true);
-            setTimer(180);
-            setStep('code');
+                const code = generateCode();
+                setSentCode(code);
+                setIsDemoMode(true);
+                setTimer(180);
+                setStep('code');
 
-            console.log(`[클라이언트 데모 모드] 인증번호: ${code}`);
-            // Toast로 인증번호 표시
-            if (toast) {
-                toast.showDemoCode(code);
+                console.log(`[개발 모드] 인증번호: ${code}`);
+                if (toast) {
+                    toast.showDemoCode(code);
+                } else {
+                    navigator.clipboard?.writeText(code);
+                    alert(`[개발 모드 - 서버 연결 실패]\n인증번호: ${code}\n\n클립보드에 복사되었습니다.`);
+                }
             } else {
-                navigator.clipboard?.writeText(code);
-                alert(`[서버 연결 실패 - 데모 모드]\n인증번호: ${code}\n\n클립보드에 복사되었습니다.\n실제 서비스에서는 SMS로 전송됩니다.`);
+                // 프로덕션에서는 에러 표시
+                setError('서버 연결에 실패했습니다. 잠시 후 다시 시도해주세요.');
             }
         }
 
@@ -208,11 +212,11 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
             }
         } catch (err) {
             console.error('Verify API Error:', err);
-            // 서버 연결 실패 시 로컬 검증 시도 (sentCode가 있는 경우)
-            if (sentCode && enteredCode === sentCode) {
+            // 개발 환경에서만 로컬 검증 폴백 허용
+            if (import.meta.env.DEV && sentCode && enteredCode === sentCode) {
                 setStep('verified');
                 onVerified(true);
-                console.log('[폴백] 로컬 인증 성공');
+                console.log('[개발 모드 폴백] 로컬 인증 성공');
             } else {
                 setError('서버 연결에 실패했습니다. 잠시 후 다시 시도해주세요.');
             }
