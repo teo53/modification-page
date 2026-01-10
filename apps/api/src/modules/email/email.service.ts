@@ -143,6 +143,39 @@ export class EmailService {
     }
 
     /**
+     * 이메일 인증번호 발송
+     */
+    async sendVerificationCode(to: string, code: string): Promise<EmailResult> {
+        return this.sendEmail({
+            to,
+            subject: '[달빛알바] 이메일 인증번호 안내',
+            html: `
+                <div style="font-family: 'Noto Sans KR', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                    <div style="background: linear-gradient(135deg, #D4AF37 0%, #FF007F 100%); padding: 20px; border-radius: 16px 16px 0 0; text-align: center;">
+                        <h1 style="color: #000; margin: 0; font-size: 24px;">🌙 달빛알바</h1>
+                    </div>
+                    <div style="padding: 30px; background: #1a1a1a; color: #fff; border-radius: 0 0 16px 16px; border: 1px solid #333; border-top: none;">
+                        <h2 style="color: #D4AF37; margin-top: 0;">이메일 인증번호</h2>
+                        <p style="color: #ccc;">아래 인증번호를 입력해주세요.</p>
+                        <div style="background: #000; padding: 25px; border-radius: 12px; text-align: center; margin: 25px 0; border: 2px solid #D4AF37;">
+                            <span style="font-size: 36px; font-weight: bold; letter-spacing: 8px; color: #D4AF37;">${code}</span>
+                        </div>
+                        <p style="color: #888; font-size: 13px; text-align: center;">
+                            ⏱️ 이 인증번호는 <strong style="color: #FF007F;">3분간</strong> 유효합니다.
+                        </p>
+                        <hr style="border: none; border-top: 1px solid #333; margin: 25px 0;" />
+                        <p style="color: #666; font-size: 12px; text-align: center;">
+                            본인이 요청하지 않은 경우, 이 이메일을 무시해주세요.<br/>
+                            문의: support@dalbitalba.co.kr
+                        </p>
+                    </div>
+                </div>
+            `,
+            text: `[달빛알바] 이메일 인증번호: ${code} (3분간 유효)`,
+        });
+    }
+
+    /**
      * 광고 승인 알림 이메일
      */
     async sendAdApprovalEmail(to: string, adTitle: string, isApproved: boolean, reason?: string): Promise<EmailResult> {

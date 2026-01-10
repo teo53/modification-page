@@ -1,15 +1,16 @@
 // =============================================================================
 // 📁 src/modules/auth/sms.service.ts
-// 🏷️  SMS 인증 서비스 (Solapi 연동)
+// 🏷️  SMS/이메일 인증 서비스 (Solapi 연동)
 // =============================================================================
 
-import { Injectable, Logger, BadRequestException } from '@nestjs/common';
+import { Injectable, Logger, BadRequestException, Inject, forwardRef } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../../prisma/prisma.service';
+import { EmailService } from '../email/email.service';
 
 interface VerificationCode {
     code: string;
-    phone: string;
+    identifier: string; // phone or email
     expiresAt: Date;
     attempts: number;
 }
@@ -18,6 +19,7 @@ interface VerificationCode {
 export class SmsService {
     private readonly logger = new Logger(SmsService.name);
     private readonly verificationCodes = new Map<string, VerificationCode>();
+    private readonly emailVerificationCodes = new Map<string, VerificationCode>();
 
     // SMS API 설정
     private readonly apiKey: string;
@@ -28,6 +30,8 @@ export class SmsService {
     constructor(
         private configService: ConfigService,
         private prisma: PrismaService,
+        @Inject(forwardRef(() => EmailService))
+        private emailService: EmailService,
     ) {
         this.apiKey = this.configService.get('SMS_API_KEY') || '';
         this.apiSecret = this.configService.get('SMS_API_SECRET') || '';
@@ -72,7 +76,7 @@ export class SmsService {
         const expiresAt = new Date(Date.now() + 3 * 60 * 1000);
         this.verificationCodes.set(normalizedPhone, {
             code,
-            phone: normalizedPhone,
+            identifier: normalizedPhone,
             expiresAt,
             attempts: 0,
         });
@@ -201,5 +205,112 @@ export class SmsService {
     isPhoneVerified(phone: string): boolean {
         // 실제로는 DB에서 확인해야 하지만, 세션/토큰 기반으로 처리
         return false;
+    }
+
+    // ============================================
+    // 이메일 인증번호 발송
+    // ============================================
+    async sendEmailVerificationCode(email: string): Promise<{ success: boolean; message: string; code?: string; isDemoMode?: boolean }> {
+        // 이메일 정규화
+        const normalizedEmail = email.toLowerCase().trim();
+
+        // 이메일 형식 검증
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(normalizedEmail)) {
+            throw new BadRequestException('올바른 이메일 형식을 입력해주세요.');
+        }
+
+        // 너무 자주 요청하는지 확인 (Rate Limiting)
+        const existing = this.emailVerificationCodes.get(normalizedEmail);
+        if (existing && existing.expiresAt > new Date()) {
+            const timeDiff = (existing.expiresAt.getTime() - Date.now()) / 1000;
+            if (timeDiff > 150) { // 30초 이내 재요청 방지
+                const remainingSeconds = Math.ceil(timeDiff - 150);
+                throw new BadRequestException(`잠시 후 다시 시도해주세요. (${remainingSeconds}초 후)`);
+            }
+        }
+
+        // 6자리 인증번호 생성
+        const code = Math.floor(100000 + Math.random() * 900000).toString();
+
+        // 인증번호 저장 (3분 유효)
+        const expiresAt = new Date(Date.now() + 3 * 60 * 1000);
+        this.emailVerificationCodes.set(normalizedEmail, {
+            code,
+            identifier: normalizedEmail,
+            expiresAt,
+            attempts: 0,
+        });
+
+        this.logger.log(`Email verification code generated for ${normalizedEmail.slice(0, 3)}***`);
+
+        // 이메일 발송
+        const result = await this.emailService.sendVerificationCode(normalizedEmail, code);
+
+        if (result.success) {
+            this.logger.log(`Email verification sent to ${normalizedEmail}`);
+
+            // 테스트 모드인 경우 (SMTP 미설정) 코드 반환
+            const isTestMode = !this.configService.get('SMTP_HOST') || !this.configService.get('SMTP_USER');
+            if (isTestMode) {
+                return {
+                    success: true,
+                    message: '[테스트 모드] 인증번호가 생성되었습니다. 아래 번호를 입력해주세요.',
+                    code,
+                    isDemoMode: true,
+                };
+            }
+
+            return {
+                success: true,
+                message: '인증번호가 이메일로 발송되었습니다. 메일함을 확인해주세요.',
+                isDemoMode: false,
+            };
+        } else {
+            // 이메일 발송 실패 - 저장된 인증번호 삭제
+            this.emailVerificationCodes.delete(normalizedEmail);
+            this.logger.error(`Email send failed: ${result.error}`);
+            throw new BadRequestException('이메일 발송에 실패했습니다. 잠시 후 다시 시도해주세요.');
+        }
+    }
+
+    // ============================================
+    // 이메일 인증번호 검증
+    // ============================================
+    async verifyEmailCode(email: string, code: string): Promise<{ success: boolean; message: string }> {
+        const normalizedEmail = email.toLowerCase().trim();
+        const stored = this.emailVerificationCodes.get(normalizedEmail);
+
+        if (!stored) {
+            throw new BadRequestException('인증번호를 먼저 요청해주세요.');
+        }
+
+        // 만료 확인
+        if (stored.expiresAt < new Date()) {
+            this.emailVerificationCodes.delete(normalizedEmail);
+            throw new BadRequestException('인증번호가 만료되었습니다. 다시 요청해주세요.');
+        }
+
+        // 시도 횟수 확인 (최대 5회)
+        if (stored.attempts >= 5) {
+            this.emailVerificationCodes.delete(normalizedEmail);
+            throw new BadRequestException('인증 시도 횟수를 초과했습니다. 다시 요청해주세요.');
+        }
+
+        // 코드 확인
+        if (stored.code !== code) {
+            stored.attempts++;
+            throw new BadRequestException(`인증번호가 일치하지 않습니다. (${5 - stored.attempts}회 남음)`);
+        }
+
+        // 인증 성공 - 저장 삭제
+        this.emailVerificationCodes.delete(normalizedEmail);
+
+        this.logger.log(`Email verified: ${normalizedEmail}`);
+
+        return {
+            success: true,
+            message: '이메일 인증이 완료되었습니다.',
+        };
     }
 }

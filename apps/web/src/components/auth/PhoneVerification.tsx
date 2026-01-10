@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Phone, Shield, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { Phone, Shield, CheckCircle, AlertCircle, Loader2, Mail } from 'lucide-react';
 import { useToastOptional } from '../common/Toast';
 
 interface PhoneVerificationProps {
@@ -9,19 +9,29 @@ interface PhoneVerificationProps {
     isVerified: boolean;
 }
 
+type VerificationMethod = 'phone' | 'email';
+type Step = 'input' | 'code' | 'verified';
+
 const PhoneVerification: React.FC<PhoneVerificationProps> = ({
     phone,
     onPhoneChange,
     onVerified,
     isVerified
 }) => {
-    const [step, setStep] = useState<'input' | 'code' | 'verified'>('input');
+    const [step, setStep] = useState<Step>('input');
     const [verificationCode, setVerificationCode] = useState(['', '', '', '', '', '']);
     const [sentCode, setSentCode] = useState('');
-    const [isDemoMode, setIsDemoMode] = useState(false); // 데모 모드 플래그
+    const [isDemoMode, setIsDemoMode] = useState(false);
     const [timer, setTimer] = useState(0);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+
+    // 이메일 폴백 관련 상태
+    const [verificationMethod, setVerificationMethod] = useState<VerificationMethod>('phone');
+    const [email, setEmail] = useState('');
+    const [showEmailFallback, setShowEmailFallback] = useState(false);
+    const [smsFailCount, setSmsFailCount] = useState(0);
+
     const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
     // Toast hook - safely returns null if not in provider context
@@ -56,8 +66,11 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
         onPhoneChange(formatted);
     };
 
-    // Send verification code
-    const sendCode = async () => {
+    // API URL
+    const getApiUrl = () => import.meta.env.VITE_API_URL || '/api/v1';
+
+    // Send SMS verification code
+    const sendSmsCode = async () => {
         if (phone.replace(/\D/g, '').length < 10) {
             setError('올바른 휴대폰 번호를 입력해주세요.');
             return;
@@ -65,15 +78,11 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
 
         setLoading(true);
         setError('');
-        setSentCode(''); // 이전 코드 초기화
-        setIsDemoMode(false); // 데모 모드 초기화
+        setSentCode('');
+        setIsDemoMode(false);
 
-        // API URL: VITE_API_URL이 설정되어 있으면 사용, 아니면 상대 경로 (nginx 프록시 경유)
-        const apiUrl = import.meta.env.VITE_API_URL || '/api/v1';
-
-        // 백엔드 API 호출 시도
         try {
-            const response = await fetch(`${apiUrl}/auth/phone/send-code`, {
+            const response = await fetch(`${getApiUrl()}/auth/phone/send-code`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ phone: phone.replace(/\D/g, '') }),
@@ -82,45 +91,45 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
             const data = await response.json();
 
             if (response.ok && data.success) {
-                setTimer(180); // 3 minutes
+                setTimer(180);
                 setStep('code');
+                setVerificationMethod('phone');
+                setSmsFailCount(0);
+                setShowEmailFallback(false);
 
-                // 데모/테스트 모드인 경우 코드 표시
                 if (data.isDemoMode && data.demoCode) {
                     setSentCode(data.demoCode);
                     setIsDemoMode(true);
                     console.log(`[테스트 모드] 인증번호: ${data.demoCode}`);
-                    // Toast로 인증번호 표시
                     if (toast) {
                         toast.showDemoCode(data.demoCode);
                     } else {
                         navigator.clipboard?.writeText(data.demoCode);
                         alert(`[테스트 모드] 인증번호: ${data.demoCode}\n\n클립보드에 복사되었습니다.`);
                     }
-                } else {
-                    // 실제 SMS 발송된 경우
-                    setIsDemoMode(false);
                 }
-                setLoading(false);
-                return; // API 성공 시 여기서 종료
             } else {
-                // API 오류 응답
-                setError(data.message || '인증번호 발송에 실패했습니다.');
-                setLoading(false);
-                return;
+                // SMS 발송 실패 - 이메일 폴백 옵션 표시
+                const newFailCount = smsFailCount + 1;
+                setSmsFailCount(newFailCount);
+                setError(data.message || 'SMS 발송에 실패했습니다.');
+
+                // SMS 실패 시 이메일 폴백 옵션 바로 표시
+                setShowEmailFallback(true);
             }
         } catch (err) {
             console.error('SMS API 연결 실패:', err);
+            setSmsFailCount(prev => prev + 1);
 
-            // 개발 환경에서만 클라이언트 데모 모드 허용
             if (import.meta.env.DEV) {
+                // 개발 모드: 데모 모드로 폴백
                 await new Promise(resolve => setTimeout(resolve, 800));
-
                 const code = generateCode();
                 setSentCode(code);
                 setIsDemoMode(true);
                 setTimer(180);
                 setStep('code');
+                setVerificationMethod('phone');
 
                 console.log(`[개발 모드] 인증번호: ${code}`);
                 if (toast) {
@@ -130,7 +139,76 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                     alert(`[개발 모드 - 서버 연결 실패]\n인증번호: ${code}\n\n클립보드에 복사되었습니다.`);
                 }
             } else {
-                // 프로덕션에서는 에러 표시
+                setError('서버 연결에 실패했습니다.');
+                setShowEmailFallback(true);
+            }
+        }
+
+        setLoading(false);
+    };
+
+    // Send email verification code
+    const sendEmailCode = async () => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            setError('올바른 이메일 형식을 입력해주세요.');
+            return;
+        }
+
+        setLoading(true);
+        setError('');
+        setSentCode('');
+        setIsDemoMode(false);
+
+        try {
+            const response = await fetch(`${getApiUrl()}/auth/email/send-code`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email.toLowerCase().trim() }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                setTimer(180);
+                setStep('code');
+                setVerificationMethod('email');
+                setShowEmailFallback(false);
+
+                if (data.isDemoMode && data.demoCode) {
+                    setSentCode(data.demoCode);
+                    setIsDemoMode(true);
+                    console.log(`[테스트 모드] 이메일 인증번호: ${data.demoCode}`);
+                    if (toast) {
+                        toast.showDemoCode(data.demoCode);
+                    } else {
+                        navigator.clipboard?.writeText(data.demoCode);
+                        alert(`[테스트 모드] 이메일 인증번호: ${data.demoCode}\n\n클립보드에 복사되었습니다.`);
+                    }
+                }
+            } else {
+                setError(data.message || '이메일 발송에 실패했습니다.');
+            }
+        } catch (err) {
+            console.error('Email API 연결 실패:', err);
+
+            if (import.meta.env.DEV) {
+                await new Promise(resolve => setTimeout(resolve, 800));
+                const code = generateCode();
+                setSentCode(code);
+                setIsDemoMode(true);
+                setTimer(180);
+                setStep('code');
+                setVerificationMethod('email');
+
+                console.log(`[개발 모드] 이메일 인증번호: ${code}`);
+                if (toast) {
+                    toast.showDemoCode(code);
+                } else {
+                    navigator.clipboard?.writeText(code);
+                    alert(`[개발 모드]\n이메일 인증번호: ${code}\n\n클립보드에 복사되었습니다.`);
+                }
+            } else {
                 setError('서버 연결에 실패했습니다. 잠시 후 다시 시도해주세요.');
             }
         }
@@ -146,7 +224,6 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
         newCode[index] = value.slice(-1);
         setVerificationCode(newCode);
 
-        // Auto-focus next input
         if (value && index < 5) {
             inputRefs.current[index + 1]?.focus();
         }
@@ -171,7 +248,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
         setLoading(true);
         setError('');
 
-        // 데모 모드인 경우 (isDemoMode=true이고 sentCode가 있는 경우) 로컬 검증
+        // 데모 모드 로컬 검증
         if (isDemoMode && sentCode) {
             await new Promise(resolve => setTimeout(resolve, 500));
 
@@ -186,18 +263,20 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
             return;
         }
 
-        // API URL: VITE_API_URL이 설정되어 있으면 사용, 아니면 상대 경로 (nginx 프록시 경유)
-        const apiUrl = import.meta.env.VITE_API_URL || '/api/v1';
+        // API 검증
+        const endpoint = verificationMethod === 'phone'
+            ? '/auth/phone/verify-code'
+            : '/auth/email/verify-code';
 
-        // 프로덕션 모드: 백엔드 API로 검증
+        const body = verificationMethod === 'phone'
+            ? { phone: phone.replace(/\D/g, ''), code: enteredCode }
+            : { email: email.toLowerCase().trim(), code: enteredCode };
+
         try {
-            const response = await fetch(`${apiUrl}/auth/phone/verify-code`, {
+            const response = await fetch(`${getApiUrl()}${endpoint}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    phone: phone.replace(/\D/g, ''),
-                    code: enteredCode
-                }),
+                body: JSON.stringify(body),
             });
 
             const data = await response.json();
@@ -205,14 +284,12 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
             if (response.ok && data.success) {
                 setStep('verified');
                 onVerified(true);
-                console.log('[서버] 인증 성공');
+                console.log(`[서버] ${verificationMethod === 'phone' ? '휴대폰' : '이메일'} 인증 성공`);
             } else {
-                // 서버에서 반환한 오류 메시지 표시
                 setError(data.message || '인증번호가 일치하지 않습니다.');
             }
         } catch (err) {
             console.error('Verify API Error:', err);
-            // 개발 환경에서만 로컬 검증 폴백 허용
             if (import.meta.env.DEV && sentCode && enteredCode === sentCode) {
                 setStep('verified');
                 onVerified(true);
@@ -240,20 +317,37 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
         setIsDemoMode(false);
         setTimer(0);
         setError('');
+        setShowEmailFallback(false);
+        setVerificationMethod('phone');
         onVerified(false);
+    };
+
+    // Switch to email verification
+    const switchToEmail = () => {
+        setVerificationMethod('email');
+        setShowEmailFallback(false);
+        setError('');
+    };
+
+    // Switch back to SMS
+    const switchToSms = () => {
+        setVerificationMethod('phone');
+        setError('');
     };
 
     if (isVerified || step === 'verified') {
         return (
             <div className="space-y-2">
-                <label className="block text-sm font-medium text-text-muted">휴대폰 본인인증</label>
+                <label className="block text-sm font-medium text-text-muted">본인인증</label>
                 <div className="flex items-center gap-3 p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
                     <div className="w-10 h-10 bg-green-500/20 rounded-full flex items-center justify-center">
                         <CheckCircle className="text-green-400" size={20} />
                     </div>
                     <div className="flex-1">
                         <div className="text-green-400 font-medium">본인인증 완료</div>
-                        <div className="text-sm text-text-muted">{phone}</div>
+                        <div className="text-sm text-text-muted">
+                            {verificationMethod === 'phone' ? phone : email}
+                        </div>
                     </div>
                     <button
                         type="button"
@@ -271,7 +365,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
         <div className="space-y-4">
             <label className="block text-sm font-medium text-text-muted flex items-center gap-2">
                 <Shield size={16} className="text-primary" />
-                휴대폰 본인인증 <span className="text-red-400">*</span>
+                본인인증 <span className="text-red-400">*</span>
             </label>
 
             {error && (
@@ -283,34 +377,102 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
 
             {step === 'input' && (
                 <div className="space-y-3">
-                    <div className="flex gap-2">
-                        <div className="relative flex-1">
-                            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
-                            <input
-                                type="tel"
-                                value={phone}
-                                onChange={handlePhoneChange}
-                                className="w-full bg-background border border-white/10 rounded-lg py-3 pl-10 pr-4 text-white focus:border-primary outline-none transition-colors"
-                                placeholder="010-0000-0000"
-                                maxLength={13}
-                            />
-                        </div>
-                        <button
-                            type="button"
-                            onClick={sendCode}
-                            disabled={loading || phone.replace(/\D/g, '').length < 10}
-                            className="px-4 py-3 bg-primary text-black font-bold rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 whitespace-nowrap"
-                        >
-                            {loading ? (
-                                <Loader2 size={18} className="animate-spin" />
-                            ) : (
-                                '인증요청'
+                    {/* SMS 인증 폼 */}
+                    {verificationMethod === 'phone' && (
+                        <>
+                            <div className="flex gap-2">
+                                <div className="relative flex-1">
+                                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
+                                    <input
+                                        type="tel"
+                                        value={phone}
+                                        onChange={handlePhoneChange}
+                                        className="w-full bg-background border border-white/10 rounded-lg py-3 pl-10 pr-4 text-white focus:border-primary outline-none transition-colors"
+                                        placeholder="010-0000-0000"
+                                        maxLength={13}
+                                    />
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={sendSmsCode}
+                                    disabled={loading || phone.replace(/\D/g, '').length < 10}
+                                    className="px-4 py-3 bg-primary text-black font-bold rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 whitespace-nowrap"
+                                >
+                                    {loading ? (
+                                        <Loader2 size={18} className="animate-spin" />
+                                    ) : (
+                                        'SMS 인증'
+                                    )}
+                                </button>
+                            </div>
+                            <p className="text-xs text-text-muted">
+                                입력하신 휴대폰 번호로 인증번호가 발송됩니다.
+                            </p>
+
+                            {/* 이메일 폴백 옵션 */}
+                            {showEmailFallback && (
+                                <div className="mt-4 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+                                    <div className="flex items-center gap-2 text-yellow-400 mb-2">
+                                        <Mail size={16} />
+                                        <span className="font-medium">SMS 발송에 문제가 있나요?</span>
+                                    </div>
+                                    <p className="text-sm text-text-muted mb-3">
+                                        이메일로 인증번호를 받으실 수 있습니다.
+                                    </p>
+                                    <button
+                                        type="button"
+                                        onClick={switchToEmail}
+                                        className="w-full py-2 bg-yellow-500/20 text-yellow-400 rounded-lg hover:bg-yellow-500/30 transition-colors text-sm font-medium"
+                                    >
+                                        이메일 인증으로 변경
+                                    </button>
+                                </div>
                             )}
-                        </button>
-                    </div>
-                    <p className="text-xs text-text-muted">
-                        입력하신 휴대폰 번호로 인증번호가 발송됩니다.
-                    </p>
+                        </>
+                    )}
+
+                    {/* 이메일 인증 폼 */}
+                    {verificationMethod === 'email' && (
+                        <>
+                            <div className="flex gap-2">
+                                <div className="relative flex-1">
+                                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
+                                    <input
+                                        type="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        className="w-full bg-background border border-white/10 rounded-lg py-3 pl-10 pr-4 text-white focus:border-primary outline-none transition-colors"
+                                        placeholder="example@email.com"
+                                    />
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={sendEmailCode}
+                                    disabled={loading || !email.includes('@')}
+                                    className="px-4 py-3 bg-primary text-black font-bold rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 whitespace-nowrap"
+                                >
+                                    {loading ? (
+                                        <Loader2 size={18} className="animate-spin" />
+                                    ) : (
+                                        '이메일 인증'
+                                    )}
+                                </button>
+                            </div>
+                            <p className="text-xs text-text-muted">
+                                입력하신 이메일 주소로 인증번호가 발송됩니다.
+                            </p>
+
+                            {/* SMS 인증으로 돌아가기 */}
+                            <button
+                                type="button"
+                                onClick={switchToSms}
+                                className="flex items-center gap-1 text-sm text-text-muted hover:text-white transition-colors"
+                            >
+                                <Phone size={14} />
+                                SMS 인증으로 변경
+                            </button>
+                        </>
+                    )}
                 </div>
             )}
 
@@ -318,7 +480,13 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                 <div className="space-y-4">
                     <div className="bg-accent/50 rounded-lg p-4 border border-white/10">
                         <div className="flex items-center justify-between mb-3">
-                            <span className="text-sm text-text-muted">인증번호 입력</span>
+                            <span className="text-sm text-text-muted flex items-center gap-2">
+                                {verificationMethod === 'phone' ? (
+                                    <><Phone size={14} /> SMS 인증번호</>
+                                ) : (
+                                    <><Mail size={14} /> 이메일 인증번호</>
+                                )}
+                            </span>
                             <span className={`text-sm font-mono ${timer < 60 ? 'text-red-400' : 'text-primary'}`}>
                                 {formatTimer(timer)}
                             </span>
@@ -359,7 +527,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                             </button>
                             <button
                                 type="button"
-                                onClick={sendCode}
+                                onClick={verificationMethod === 'phone' ? sendSmsCode : sendEmailCode}
                                 disabled={loading || timer > 150}
                                 className="px-4 py-3 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
                             >
@@ -371,8 +539,10 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                     <div className="flex items-start gap-2 text-xs text-text-muted">
                         <AlertCircle size={14} className="shrink-0 mt-0.5" />
                         <span>
-                            인증번호가 오지 않으면 입력하신 번호가 맞는지 확인해주세요.
-                            스팸함도 확인해보시기 바랍니다.
+                            {verificationMethod === 'phone'
+                                ? '인증번호가 오지 않으면 입력하신 번호가 맞는지 확인해주세요.'
+                                : '인증번호가 오지 않으면 스팸함을 확인해보세요.'
+                            }
                         </span>
                     </div>
 
@@ -381,7 +551,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                         onClick={resetVerification}
                         className="w-full text-center text-sm text-text-muted hover:text-white transition-colors py-2"
                     >
-                        ← 휴대폰 번호 변경
+                        ← {verificationMethod === 'phone' ? '휴대폰 번호' : '이메일'} 변경
                     </button>
                 </div>
             )}

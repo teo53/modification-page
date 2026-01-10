@@ -19,7 +19,7 @@ import { AuthService } from './auth.service';
 import { SmsService } from './sms.service';
 import { SignupDto } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
-import { SendVerificationCodeDto, VerifyCodeDto } from './dto/phone-verification.dto';
+import { SendVerificationCodeDto, VerifyCodeDto, SendEmailVerificationCodeDto, VerifyEmailCodeDto } from './dto/phone-verification.dto';
 import { Public } from '../../common/decorators/public.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { ConfigService } from '@nestjs/config';
@@ -230,6 +230,39 @@ export class AuthController {
     @HttpCode(HttpStatus.OK)
     async verifyCode(@Body() dto: VerifyCodeDto) {
         const result = await this.smsService.verifyCode(dto.phone, dto.code);
+        return {
+            success: result.success,
+            message: result.message,
+        };
+    }
+
+    // ============================================
+    // 이메일 인증번호 발송 (SMS 실패 시 대체)
+    // ============================================
+    @Public()
+    @Throttle({ default: { limit: 5, ttl: 60000 } }) // 1분에 5회 제한
+    @Post('email/send-code')
+    @HttpCode(HttpStatus.OK)
+    async sendEmailVerificationCode(@Body() dto: SendEmailVerificationCodeDto) {
+        const result = await this.smsService.sendEmailVerificationCode(dto.email);
+        return {
+            success: result.success,
+            message: result.message,
+            // 데모/테스트 모드 플래그
+            isDemoMode: result.isDemoMode ?? false,
+            // 테스트 모드에서만 코드 반환
+            ...(result.code && { demoCode: result.code }),
+        };
+    }
+
+    // ============================================
+    // 이메일 인증번호 확인
+    // ============================================
+    @Public()
+    @Post('email/verify-code')
+    @HttpCode(HttpStatus.OK)
+    async verifyEmailCode(@Body() dto: VerifyEmailCodeDto) {
+        const result = await this.smsService.verifyEmailCode(dto.email, dto.code);
         return {
             success: result.success,
             message: result.message,
