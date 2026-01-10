@@ -22,10 +22,15 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         private configService: ConfigService,
         private authService: AuthService,
     ) {
+        const jwtSecret = configService.get<string>('jwt.secret');
+        if (!jwtSecret) {
+            throw new Error('JWT_SECRET 환경 변수가 설정되지 않았습니다. 보안을 위해 반드시 설정해주세요.');
+        }
+
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
-            secretOrKey: configService.get('jwt.secret') || 'change-this-secret',
+            secretOrKey: jwtSecret,
         });
     }
 

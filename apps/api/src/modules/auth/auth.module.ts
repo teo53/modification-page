@@ -19,12 +19,18 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
         JwtModule.registerAsync({
             imports: [ConfigModule],
             inject: [ConfigService],
-            useFactory: (configService: ConfigService) => ({
-                secret: configService.get('jwt.secret') || 'change-this-secret',
-                signOptions: {
-                    expiresIn: configService.get('jwt.accessExpiration') || '15m',
-                },
-            }),
+            useFactory: (configService: ConfigService) => {
+                const secret = configService.get<string>('jwt.secret');
+                if (!secret) {
+                    throw new Error('JWT_SECRET 환경 변수가 설정되지 않았습니다.');
+                }
+                return {
+                    secret,
+                    signOptions: {
+                        expiresIn: configService.get('jwt.accessExpiration') || '15m',
+                    },
+                };
+            },
         }),
     ],
     controllers: [AuthController],

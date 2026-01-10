@@ -57,15 +57,15 @@ const Signup: React.FC<SignupProps> = ({ isModal = false, onSignupSuccess, onClo
         addressDetail: ''
     });
 
-    // Password strength calculation
+    // Password strength calculation (백엔드 규칙과 일치)
     const getPasswordStrength = (password: string): { level: number; text: string; color: string } => {
         if (!password) return { level: 0, text: '', color: '' };
         let strength = 0;
-        if (password.length >= 6) strength++;
-        if (password.length >= 10) strength++;
-        if (/[A-Z]/.test(password)) strength++;
+        if (password.length >= 12) strength++;
+        if (password.length >= 16) strength++;
+        if (/[A-Z]/.test(password) && /[a-z]/.test(password)) strength++;
         if (/[0-9]/.test(password)) strength++;
-        if (/[^A-Za-z0-9]/.test(password)) strength++;
+        if (/[@$!%*?&]/.test(password)) strength++; // 백엔드 허용 특수문자
 
         if (strength <= 2) return { level: 1, text: '약함', color: 'bg-red-500' };
         if (strength <= 3) return { level: 2, text: '보통', color: 'bg-yellow-500' };
@@ -116,17 +116,19 @@ const Signup: React.FC<SignupProps> = ({ isModal = false, onSignupSuccess, onClo
             errors.email = '올바른 이메일 형식을 입력해주세요. (예: example@email.com)';
         }
 
-        // Password validation - 강화된 규칙
+        // Password validation - 백엔드 규칙과 일치 (12자 이상, 대소문자+숫자+특수문자)
         if (!formData.password) {
             errors.password = '비밀번호를 입력해주세요.';
-        } else if (formData.password.length < 8) {
-            errors.password = '비밀번호는 8자 이상이어야 합니다.';
+        } else if (formData.password.length < 12) {
+            errors.password = '비밀번호는 12자 이상이어야 합니다.';
         } else if (!/[A-Z]/.test(formData.password)) {
             errors.password = '비밀번호에 대문자를 1개 이상 포함해주세요.';
         } else if (!/[a-z]/.test(formData.password)) {
             errors.password = '비밀번호에 소문자를 1개 이상 포함해주세요.';
         } else if (!/[0-9]/.test(formData.password)) {
             errors.password = '비밀번호에 숫자를 1개 이상 포함해주세요.';
+        } else if (!/[@$!%*?&]/.test(formData.password)) {
+            errors.password = '비밀번호에 특수문자(@$!%*?&)를 1개 이상 포함해주세요.';
         }
 
         // Confirm password validation
@@ -369,7 +371,7 @@ const Signup: React.FC<SignupProps> = ({ isModal = false, onSignupSuccess, onClo
                                     value={formData.password}
                                     onChange={handleChange}
                                     className={`w-full bg-background border rounded-lg py-3 pl-10 pr-12 text-white outline-none transition-colors ${fieldErrors.password ? 'border-red-500 focus:border-red-500' : 'border-white/10 focus:border-primary'}`}
-                                    placeholder="6자 이상 입력"
+                                    placeholder="12자 이상, 대소문자+숫자+특수문자"
                                     autoComplete="new-password"
                                 />
                                 <button

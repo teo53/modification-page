@@ -3,13 +3,15 @@
 
 /**
  * Password validation rules
+ * 백엔드와 동일한 규칙 유지 (signup.dto.ts 참조)
  */
 export const passwordRules = {
-    minLength: 8,
+    minLength: 12, // 백엔드: 12자 이상
     requireUppercase: true,
     requireLowercase: true,
     requireNumber: true,
-    requireSpecial: true
+    requireSpecial: true,
+    allowedSpecialChars: '@$!%*?&' // 백엔드 허용 특수문자
 };
 
 export interface PasswordValidationResult {
@@ -33,17 +35,18 @@ export const validatePassword = (password: string): PasswordValidationResult => 
     if (passwordRules.requireNumber && !/[0-9]/.test(password)) {
         errors.push('숫자를 포함해야 합니다');
     }
-    if (passwordRules.requireSpecial && !/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
-        errors.push('특수문자를 포함해야 합니다');
+    // 백엔드와 동일한 특수문자만 허용: @$!%*?&
+    if (passwordRules.requireSpecial && !/[@$!%*?&]/.test(password)) {
+        errors.push('특수문자(@$!%*?&)를 포함해야 합니다');
     }
 
     // Calculate strength
     let score = 0;
-    if (password.length >= 8) score++;
     if (password.length >= 12) score++;
+    if (password.length >= 16) score++;
     if (/[A-Z]/.test(password) && /[a-z]/.test(password)) score++;
     if (/[0-9]/.test(password)) score++;
-    if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) score++;
+    if (/[@$!%*?&]/.test(password)) score++;
 
     const strength = score <= 2 ? 'weak' : score <= 4 ? 'medium' : 'strong';
 
