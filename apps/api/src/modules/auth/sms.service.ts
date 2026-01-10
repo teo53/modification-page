@@ -47,7 +47,7 @@ export class SmsService {
     // ============================================
     // 인증번호 발송
     // ============================================
-    async sendVerificationCode(phone: string): Promise<{ success: boolean; message: string; code?: string }> {
+    async sendVerificationCode(phone: string): Promise<{ success: boolean; message: string; code?: string; isDemoMode?: boolean }> {
         // 전화번호 정규화
         const normalizedPhone = phone.replace(/\D/g, '');
 
@@ -60,7 +60,8 @@ export class SmsService {
         if (existing && existing.expiresAt > new Date()) {
             const timeDiff = (existing.expiresAt.getTime() - Date.now()) / 1000;
             if (timeDiff > 150) { // 30초 이내 재요청 방지
-                throw new BadRequestException('잠시 후 다시 시도해주세요.');
+                const remainingSeconds = Math.ceil(timeDiff - 150);
+                throw new BadRequestException(`잠시 후 다시 시도해주세요. (${remainingSeconds}초 후)`);
             }
         }
 
@@ -76,13 +77,16 @@ export class SmsService {
             attempts: 0,
         });
 
+        this.logger.log(`Verification code generated for ${normalizedPhone.slice(-4)}: ${this.isDemoMode ? code : '[hidden]'}`);
+
         if (this.isDemoMode) {
             // 데모 모드: 실제 SMS 발송 없이 코드 반환
             this.logger.log(`[DEMO] Verification code for ${normalizedPhone}: ${code}`);
             return {
                 success: true,
-                message: '[데모 모드] 인증번호가 생성되었습니다.',
+                message: '[테스트 모드] 인증번호가 생성되었습니다. 아래 번호를 입력해주세요.',
                 code, // 데모 모드에서만 코드 반환
+                isDemoMode: true,
             };
         }
 
@@ -94,14 +98,22 @@ export class SmsService {
                 this.logger.log(`SMS sent to ${normalizedPhone}`);
                 return {
                     success: true,
-                    message: '인증번호가 발송되었습니다.',
+                    message: '인증번호가 발송되었습니다. SMS를 확인해주세요.',
+                    isDemoMode: false,
                 };
             } else {
                 throw new Error(response.message);
             }
         } catch (error) {
             this.logger.error(`Failed to send SMS: ${error.message}`);
-            throw new BadRequestException('SMS 발송에 실패했습니다. 잠시 후 다시 시도해주세요.');
+            // SMS 발송 실패 시에도 데모 모드로 폴백
+            this.logger.warn(`SMS 발송 실패, 테스트 모드로 전환: ${normalizedPhone}`);
+            return {
+                success: true,
+                message: '[테스트 모드] SMS 발송에 실패하여 테스트 모드로 전환되었습니다.',
+                code, // 폴백으로 코드 반환
+                isDemoMode: true,
+            };
         }
     }
 

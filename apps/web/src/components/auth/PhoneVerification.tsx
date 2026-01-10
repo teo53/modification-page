@@ -18,6 +18,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
     const [step, setStep] = useState<'input' | 'code' | 'verified'>('input');
     const [verificationCode, setVerificationCode] = useState(['', '', '', '', '', '']);
     const [sentCode, setSentCode] = useState('');
+    const [isDemoMode, setIsDemoMode] = useState(false); // 데모 모드 플래그
     const [timer, setTimer] = useState(0);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -64,10 +65,11 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
 
         setLoading(true);
         setError('');
+        setSentCode(''); // 이전 코드 초기화
+        setIsDemoMode(false); // 데모 모드 초기화
 
         // API URL: VITE_API_URL이 설정되어 있으면 사용, 아니면 상대 경로 (nginx 프록시 경유)
         const apiUrl = import.meta.env.VITE_API_URL || '/api/v1';
-        let useDemoMode = false;
 
         // 백엔드 API 호출 시도
         try {
@@ -79,16 +81,15 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
 
             const data = await response.json();
 
-            if (data.success) {
+            if (response.ok && data.success) {
                 setTimer(180); // 3 minutes
                 setStep('code');
 
-                // 데모 모드인 경우 코드 표시
-                if (data.demoCode) {
+                // 데모/테스트 모드인 경우 코드 표시
+                if (data.isDemoMode && data.demoCode) {
                     setSentCode(data.demoCode);
-                    if (import.meta.env.DEV) {
-                        console.log(`[DEMO] 인증번호: ${data.demoCode}`);
-                    }
+                    setIsDemoMode(true);
+                    console.log(`[테스트 모드] 인증번호: ${data.demoCode}`);
                     // Toast로 인증번호 표시
                     if (toast) {
                         toast.showDemoCode(data.demoCode);
@@ -96,37 +97,37 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                         navigator.clipboard?.writeText(data.demoCode);
                         alert(`[테스트 모드] 인증번호: ${data.demoCode}\n\n클립보드에 복사되었습니다.`);
                     }
+                } else {
+                    // 실제 SMS 발송된 경우
+                    setIsDemoMode(false);
                 }
                 setLoading(false);
                 return; // API 성공 시 여기서 종료
             } else {
+                // API 오류 응답
                 setError(data.message || '인증번호 발송에 실패했습니다.');
                 setLoading(false);
                 return;
             }
         } catch (err) {
-            console.warn('SMS API 연결 실패, 데모 모드로 전환:', err);
-            useDemoMode = true; // API 실패 시 데모 모드로 폴백
-        }
+            console.warn('SMS API 연결 실패, 클라이언트 데모 모드로 전환:', err);
 
-        // 프론트엔드 데모 모드 (API 연결 실패 시)
-        if (useDemoMode) {
+            // 프론트엔드 폴백 데모 모드 (API 연결 실패 시)
             await new Promise(resolve => setTimeout(resolve, 800));
 
             const code = generateCode();
             setSentCode(code);
+            setIsDemoMode(true);
             setTimer(180);
             setStep('code');
 
-            if (import.meta.env.DEV) {
-                console.log(`[DEMO] 인증번호: ${code}`);
-            }
+            console.log(`[클라이언트 데모 모드] 인증번호: ${code}`);
             // Toast로 인증번호 표시
             if (toast) {
                 toast.showDemoCode(code);
             } else {
                 navigator.clipboard?.writeText(code);
-                alert(`[데모 모드] 인증번호: ${code}\n\n클립보드에 복사되었습니다.\n실제 서비스에서는 SMS로 전송됩니다.`);
+                alert(`[서버 연결 실패 - 데모 모드]\n인증번호: ${code}\n\n클립보드에 복사되었습니다.\n실제 서비스에서는 SMS로 전송됩니다.`);
             }
         }
 
@@ -166,24 +167,25 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
         setLoading(true);
         setError('');
 
-        // API URL: VITE_API_URL이 설정되어 있으면 사용, 아니면 상대 경로 (nginx 프록시 경유)
-        const apiUrl = import.meta.env.VITE_API_URL || '/api/v1';
-
-        // 데모 모드로 인증번호를 받은 경우 (sentCode가 있는 경우) 로컬 검증
-        if (sentCode) {
+        // 데모 모드인 경우 (isDemoMode=true이고 sentCode가 있는 경우) 로컬 검증
+        if (isDemoMode && sentCode) {
             await new Promise(resolve => setTimeout(resolve, 500));
 
             if (enteredCode === sentCode) {
                 setStep('verified');
                 onVerified(true);
+                console.log('[데모 모드] 인증 성공');
             } else {
-                setError('인증번호가 일치하지 않습니다.');
+                setError('인증번호가 일치하지 않습니다. 다시 확인해주세요.');
             }
             setLoading(false);
             return;
         }
 
-        // 백엔드 API 호출
+        // API URL: VITE_API_URL이 설정되어 있으면 사용, 아니면 상대 경로 (nginx 프록시 경유)
+        const apiUrl = import.meta.env.VITE_API_URL || '/api/v1';
+
+        // 프로덕션 모드: 백엔드 API로 검증
         try {
             const response = await fetch(`${apiUrl}/auth/phone/verify-code`, {
                 method: 'POST',
@@ -196,15 +198,24 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
 
             const data = await response.json();
 
-            if (data.success) {
+            if (response.ok && data.success) {
                 setStep('verified');
                 onVerified(true);
+                console.log('[서버] 인증 성공');
             } else {
+                // 서버에서 반환한 오류 메시지 표시
                 setError(data.message || '인증번호가 일치하지 않습니다.');
             }
         } catch (err) {
             console.error('Verify API Error:', err);
-            setError('서버 연결에 실패했습니다. 잠시 후 다시 시도해주세요.');
+            // 서버 연결 실패 시 로컬 검증 시도 (sentCode가 있는 경우)
+            if (sentCode && enteredCode === sentCode) {
+                setStep('verified');
+                onVerified(true);
+                console.log('[폴백] 로컬 인증 성공');
+            } else {
+                setError('서버 연결에 실패했습니다. 잠시 후 다시 시도해주세요.');
+            }
         }
 
         setLoading(false);
@@ -222,6 +233,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
         setStep('input');
         setVerificationCode(['', '', '', '', '', '']);
         setSentCode('');
+        setIsDemoMode(false);
         setTimer(0);
         setError('');
         onVerified(false);

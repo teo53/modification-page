@@ -215,6 +215,8 @@ export class AuthController {
         return {
             success: result.success,
             message: result.message,
+            // 데모/테스트 모드 플래그
+            isDemoMode: result.isDemoMode ?? false,
             // 데모 모드에서만 코드 반환
             ...(result.code && { demoCode: result.code }),
         };

@@ -247,12 +247,14 @@ interface SmsResponse {
     success: boolean;
     message: string;
     code?: string; // 데모 모드에서만 반환
+    isDemoMode?: boolean; // 데모 모드 여부
 }
 
 interface SmsApiResponse {
     success: boolean;
     message: string;
     demoCode?: string;
+    isDemoMode?: boolean;
 }
 
 /**
@@ -269,9 +271,11 @@ export const sendSmsVerificationCode = async (phone: string): Promise<SmsRespons
             success: data.success,
             message: data.message,
             code: data.demoCode, // 데모 모드에서만 반환
+            isDemoMode: data.isDemoMode ?? false,
         };
-    } catch (error: any) {
-        const message = error.response?.data?.message || 'SMS 발송에 실패했습니다.';
+    } catch (error: unknown) {
+        const err = error as { response?: { data?: { message?: string } } };
+        const message = err.response?.data?.message || 'SMS 발송에 실패했습니다.';
         return { success: false, message };
     }
 };
@@ -286,8 +290,9 @@ export const verifySmsCode = async (phone: string, code: string): Promise<SmsRes
             return { success: false, message: '인증 확인에 실패했습니다.' };
         }
         return response.data;
-    } catch (error: any) {
-        const message = error.response?.data?.message || '인증번호 확인에 실패했습니다.';
+    } catch (error: unknown) {
+        const err = error as { response?: { data?: { message?: string } } };
+        const message = err.response?.data?.message || '인증번호 확인에 실패했습니다.';
         return { success: false, message };
     }
 };
